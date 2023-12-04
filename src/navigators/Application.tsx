@@ -8,7 +8,7 @@ import type { ApplicationStackParamList } from '@/types/navigation';
 
 const Stack = createStackNavigator<ApplicationStackParamList>();
 
-function ApplicationNavigator() {
+const ApplicationNavigator = () => {
 	const { variant, navigationTheme } = useTheme();
 
 	return (
@@ -19,6 +19,6 @@ function ApplicationNavigator() {
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
-}
+};
 
 export default ApplicationNavigator;

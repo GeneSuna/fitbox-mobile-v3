@@ -13,12 +13,16 @@ type Props = {
 	mode?: 'contain' | 'cover' | 'stretch' | 'repeat' | 'center';
 };
 
-function Brand({ height, width, mode }: Props) {
+const Brand = ({ height, width, mode }: Props) => {
 	const { layout } = useTheme();
 
 	if (!isImageSourcePropType(LogoLight) || !isImageSourcePropType(LogoDark)) {
 		throw new Error('Image source is not valid');
 	}
+
+	const Tengi = false;
+
+	console.log('isDarkMode', Tengi);
 
 	return (
 		<View testID="brand-img-wrapper" style={{ height, width }}>
@@ -31,7 +35,7 @@ function Brand({ height, width, mode }: Props) {
 			/>
 		</View>
 	);
-}
+};
 
 Brand.defaultProps = {
 	height: 200,

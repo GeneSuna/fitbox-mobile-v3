@@ -55,6 +55,34 @@ module.exports = {
 		'import/prefer-default-export': 'off',
 		'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
 		'react/display-name': 'off',
+		'import/extensions': [
+			'error',
+			'ignorePackages',
+			{
+				ts: 'never',
+				tsx: 'never',
+			},
+		],
+		'react/function-component-definition': [
+			'error',
+			{
+				namedComponents: 'arrow-function',
+				unnamedComponents: 'arrow-function',
+			},
+		],
+		'no-plusplus': [
+			'error',
+			{
+				allowForLoopAfterthoughts: true,
+			},
+		],
+		'no-param-reassign': [
+			'error',
+			{
+				props: true,
+				ignorePropertyModificationsFor: ['draft'],
+			},
+		],
 		'prettier/prettier': [
 			'error',
 			{

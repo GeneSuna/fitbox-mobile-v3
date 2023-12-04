@@ -4,7 +4,7 @@ import { useTheme } from '@/theme';
 
 import type { PropsWithChildren } from 'react';
 
-function SafeScreen({ children }: PropsWithChildren) {
+const SafeScreen = ({ children }: PropsWithChildren) => {
 	const { layout, variant, navigationTheme } = useTheme();
 
 	return (
@@ -20,6 +20,6 @@ function SafeScreen({ children }: PropsWithChildren) {
 			{children}
 		</SafeAreaView>
 	);
-}
+};
 
 export default SafeScreen;
