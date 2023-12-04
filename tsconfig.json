@@ -3,7 +3,7 @@
   "compilerOptions": {
     "types": ["jest", "node"],
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./src/*"]
     },
 
     "module": "esnext",
@@ -58,5 +58,7 @@
     "babel.config.js",
     "index.js",
     "commitlint.config.js",
+    "next.config.js",
+    "lint-staged.config.js"
   ]
 }

@@ -8,7 +8,7 @@ export function hasProperty<Config, KeyPath extends string>(
 	let currentObj: any = configuration;
 
 	for (let i = 0; i < parts.length; i += 1) {
-		const part = parts[i];
+		const part = parts[i] as keyof Config;
 		if (!(part in currentObj)) {
 			return false;
 		}
