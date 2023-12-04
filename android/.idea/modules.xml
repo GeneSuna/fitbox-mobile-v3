@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/fitbox.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/fitbox.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-195042738/fitbox.react-native-gesture-handler.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-195042738/fitbox.react-native-gesture-handler.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1168465475/fitbox.react-native-mmkv.main.iml" filepath="$PROJECT_DIR$/.idea/modules/1168465475/fitbox.react-native-mmkv.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-493354226/fitbox.react-native-reanimated.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-493354226/fitbox.react-native-reanimated.main.iml" />
+    </modules>
+  </component>
+</project>

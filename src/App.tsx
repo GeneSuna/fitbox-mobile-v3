@@ -11,6 +11,7 @@ const queryClient = new QueryClient();
 
 export const storage = new MMKV();
 
+// eslint-disable-next-line react/function-component-definition
 function App() {
 	return (
 		<QueryClientProvider client={queryClient}>

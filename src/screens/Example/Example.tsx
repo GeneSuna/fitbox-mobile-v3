@@ -91,7 +91,7 @@ const Example = () => {
 						style={[layout.absolute, backgrounds.gray100, components.circle250]}
 					/>
 
-					<View style={[layout.absolute, gutters.paddingTop_80]}>
+					<View style={[layout.absolute, gutters.paddingBottom_12]}>
 						<Brand height={300} width={300} />
 					</View>
 				</View>

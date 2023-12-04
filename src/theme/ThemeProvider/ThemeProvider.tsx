@@ -42,6 +42,7 @@ type Props = PropsWithChildren<{
 	storage: MMKV;
 }>;
 
+// eslint-disable-next-line react/function-component-definition
 function ThemeProvider({ children, storage }: Props) {
 	// Current theme variant
 	const [variant, setVariant] = useState(
