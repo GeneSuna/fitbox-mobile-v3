@@ -3,8 +3,9 @@ import { DarkTheme } from '@react-navigation/native';
 import type { ThemeConfiguration } from '@/types/theme/config';
 
 const colorsLight = {
+	brand: '#7775E6',
 	red500: '#C13333',
-	gray800: '#303030',
+	gray800: '#3C3C3C',
 	gray400: '#4D4D4D',
 	gray200: '#A1A1A1',
 	gray100: '#DFDFDF',
@@ -26,17 +27,17 @@ const colorsDark = {
 const sizes = [12, 16, 24, 32, 40, 80] as const;
 
 export const config = {
-	fonts: {
-		sizes,
-		colors: colorsLight,
-	},
 	gutters: sizes,
-	backgrounds: colorsLight,
 	borders: {
 		widths: [1, 2],
 		radius: [4, 16],
 		colors: colorsLight,
 	},
+	fonts: {
+		sizes,
+		colors: colorsLight,
+	},
+	backgrounds: colorsLight,
 	navigationColors: {
 		...DarkTheme.colors,
 		background: colorsLight.gray50,
