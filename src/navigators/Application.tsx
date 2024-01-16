@@ -5,7 +5,7 @@ import {
 	Inbox,
 	Menu,
 	Startup,
-	Login,
+	Landing,
 } from '@/screens';
 import { useTheme } from '@/theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -77,7 +77,7 @@ const ApplicationNavigator = () => {
 				screenOptions={{ headerShown: false }}
 			>
 				<Stack.Screen name="Startup" component={Startup} />
-				<Stack.Screen name="Login" component={Login} />
+				<Stack.Screen name="Landing" component={Landing} />
 				<Stack.Screen name="Example" component={Example} />
 				<Stack.Screen name="Main" component={MainTabNavigator} />
 			</Stack.Navigator>

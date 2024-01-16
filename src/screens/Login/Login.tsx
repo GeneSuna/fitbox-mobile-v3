@@ -1,7 +1,7 @@
 // import { ScrollView } from '@/components/atoms';
 // import { SafeScreen } from '@/components/template';
 import { config } from '@/theme/_config';
-import { Text, StyleSheet, Dimensions } from 'react-native';
+import { Dimensions, StyleSheet, Text } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
