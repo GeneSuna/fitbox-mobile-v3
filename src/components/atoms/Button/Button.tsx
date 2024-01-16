@@ -14,6 +14,8 @@ interface ButtonProps extends ButtonTypeWithoutChildren {
 }
 
 const contrastColor = (color: string) => {
+	if (!color) return 'black';
+
 	const r = parseInt(color.substring(1, 3), 16);
 	const g = parseInt(color.substring(3, 5), 16);
 	const b = parseInt(color.substring(5, 7), 16);
@@ -21,22 +23,39 @@ const contrastColor = (color: string) => {
 	return yiq >= 140 ? 'black' : 'white';
 };
 
-const Button = ({ title, sm, rounded, variant, ...rest }: ButtonProps) => {
+const Button = ({
+	title,
+	sm,
+	rounded,
+	variant,
+	mode,
+	...rest
+}: ButtonProps) => {
 	const { colors } = config;
 
+	// is outlined
+	const isOutlined = mode === 'outlined';
+
 	const customStyle: StyleProp<ViewStyle> = {
-		backgroundColor: colors[variant as ButtonVariant] || colors.brand, // default is brand
+		// outlined
+		...(!isOutlined
+			? { backgroundColor: colors[variant as ButtonVariant] }
+			: { borderColor: colors[variant as ButtonVariant] }),
+
+		// rounded
 		...(!rounded ? { borderRadius: 6 } : {}),
 	};
 
 	const labelStyle: StyleProp<TextStyle> = {
-		color: contrastColor(customStyle.backgroundColor as string), // default is white
+		color: isOutlined
+			? colors[variant as ButtonVariant]
+			: contrastColor(customStyle.backgroundColor as string), // default is white
 		...(sm ? { fontSize: config.fonts.metrics.sm } : {}),
 		...(rest.labelStyle as TextStyle),
 	};
 
 	return (
-		<Btn {...rest} style={customStyle} labelStyle={labelStyle}>
+		<Btn {...rest} style={customStyle} labelStyle={labelStyle} mode={mode}>
 			{title}
 		</Btn>
 	);
@@ -45,7 +64,7 @@ const Button = ({ title, sm, rounded, variant, ...rest }: ButtonProps) => {
 Button.defaultProps = {
 	sm: false,
 	rounded: false,
-	variant: undefined,
+	variant: 'brand',
 };
 
 export default Button;

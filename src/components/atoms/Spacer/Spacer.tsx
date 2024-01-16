@@ -1,15 +1,14 @@
 import { config } from '@/theme/_config';
 import { StyleProp, View, ViewStyle } from 'react-native';
-
-type SizeMetrics = keyof typeof config.fonts.metrics;
+import { FontSizeMetrics } from '../Text/Text';
 
 interface SpacerProps {
-	size?: SizeMetrics;
+	size?: FontSizeMetrics;
 	horizontal?: boolean;
 }
 
 const Spacer = ({ size, horizontal }: SpacerProps) => {
-	const useSize = size as SizeMetrics;
+	const useSize = size as FontSizeMetrics;
 	const fontMetrics = config.fonts.metrics;
 
 	const viewStyle: StyleProp<ViewStyle> = {
