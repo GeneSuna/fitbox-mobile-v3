@@ -12,7 +12,10 @@ import { Button, ImageVariant, Row, Spacer, Text } from '@/components/atoms';
 import { Modal } from '@/components/molecules';
 import { config } from '@/theme/_config';
 import LogoImage from '@/theme/assets/images/logo_with_name.png';
-import { ApplicationScreenProps } from '@/types/navigation';
+import {
+	ApplicationScreenProps,
+	ApplicationStackParamList,
+} from '@/types/navigation';
 import { useTranslation } from 'react-i18next';
 
 const { width } = Dimensions.get('window');
@@ -25,16 +28,15 @@ const LandingScreen = ({ navigation }: ApplicationScreenProps) => {
 	const toggleOptionVisibility = () =>
 		setOptionsVisibility(!optionsVisibility);
 
-	const navigateToPage = (page: string) => {
+	const navigateToPage = (page: keyof ApplicationStackParamList) => {
 		setOptionsVisibility(false);
 
-		Alert.alert('Navigate to', page);
-
-		// eslint-disable-next-line no-console
-		console.log(navigation);
-
-		// TODO: Uncomment when screens are available
-		// navigation.navigate(page as keyof ApplicationStackParamList);
+		// TODO: Temporary only remove once screens are implemented
+		if (page === 'Main') {
+			navigation.navigate(page);
+		} else {
+			Alert.alert(`${page} coming soon!`);
+		}
 	};
 
 	return (
@@ -53,12 +55,18 @@ const LandingScreen = ({ navigation }: ApplicationScreenProps) => {
 						variant="darkgray"
 						// style={styles.buttonStyle}
 						// labelStyle={styles.buttonLabelStyle}
-						onPress={() => console.log('test')}
+						onPress={() => navigateToPage('Main')}
 					/>
 					<Spacer size="rg" />
 					<Button
 						title={t('landing:register')}
-						onPress={toggleOptionVisibility}
+						onPress={() =>
+							// TODO: Replace this with login feature
+							navigation.reset({
+								index: 0,
+								routes: [{ name: 'Main' }],
+							})
+						}
 					/>
 				</View>
 			</View>
@@ -107,7 +115,7 @@ const styles = StyleSheet.create({
 		paddingBottom: width * 0.3,
 	},
 	logoImage: {
-		top: width * 0.25,
+		top: width * 0.35,
 		resizeMode: 'contain',
 		width: width * 0.6,
 		height: width * 0.3,

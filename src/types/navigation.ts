@@ -6,6 +6,8 @@ export type ApplicationStackParamList = {
 	Startup: undefined;
 	Login: undefined;
 	Landing: undefined;
+	SignUp: undefined;
+	Invite: undefined;
 };
 
 export type MainTabParamList = {

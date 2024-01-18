@@ -3,17 +3,21 @@ import {
 	Dashboard,
 	Example,
 	Inbox,
+	Landing,
 	Menu,
 	Startup,
-	Landing,
 } from '@/screens';
 import { useTheme } from '@/theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+	CardStyleInterpolators,
+	createStackNavigator,
+} from '@react-navigation/stack';
 
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import { config } from '@/theme/_config';
 import type {
 	ApplicationStackParamList,
 	MainTabParamList,
@@ -55,7 +59,11 @@ const MainTabNavigator = () => {
 					backgroundColor: colors.gray800,
 				},
 				tabBarLabel: () => null,
-				headerShown: false,
+				headerShown: true,
+				headerStyle: {
+					backgroundColor: colors.brand,
+				},
+				headerTitleAlign: 'center',
 			})}
 		>
 			<Tab.Screen name="Dashboard" component={Dashboard} />
@@ -74,7 +82,12 @@ const ApplicationNavigator = () => {
 		<NavigationContainer theme={navigationTheme}>
 			<Stack.Navigator
 				key={variant}
-				screenOptions={{ headerShown: false }}
+				screenOptions={{
+					headerShown: false,
+					headerStyle: { backgroundColor: config.colors.brand },
+					cardStyleInterpolator:
+						CardStyleInterpolators.forScaleFromCenterAndroid,
+				}}
 			>
 				<Stack.Screen name="Startup" component={Startup} />
 				<Stack.Screen name="Landing" component={Landing} />

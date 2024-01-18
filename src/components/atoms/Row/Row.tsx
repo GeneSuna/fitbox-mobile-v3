@@ -1,8 +1,7 @@
-import { ComponentProps } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
 
-interface RowProps extends ComponentProps<typeof View> {
+interface RowProps {
 	spacing?:
 		| 'flex-start'
 		| 'flex-end'
@@ -11,6 +10,8 @@ interface RowProps extends ComponentProps<typeof View> {
 		| 'space-around'
 		| 'space-evenly';
 	onPress?: () => void;
+	children: React.ReactNode;
+	style?: StyleProp<ViewStyle>;
 }
 
 const Row = ({ spacing, children, onPress, style }: RowProps) => {
@@ -31,6 +32,7 @@ const Row = ({ spacing, children, onPress, style }: RowProps) => {
 Row.defaultProps = {
 	spacing: undefined,
 	onPress: undefined,
+	style: undefined,
 };
 
 export default Row;
