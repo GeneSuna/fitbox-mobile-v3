@@ -1,4 +1,6 @@
 {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+    "editor.formatOnType": false,
     "java.compile.nullAnalysis.mode": "disabled",
     "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit"

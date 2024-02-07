@@ -102,7 +102,7 @@ const Menu = () => {
 				changeTheme(variant === 'default' ? 'dark' : 'default');
 				break;
 			default:
-				Alert.alert('Error', 'Something went wrong');
+				Alert.alert('Oops!', 'Coming soon');
 				break;
 		}
 	};

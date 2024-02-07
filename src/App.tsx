@@ -5,22 +5,25 @@ import { Provider } from 'react-native-paper';
 import { ThemeProvider } from '@/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+import AuthProvider from './auth/AuthProvider/AuthProvider';
 import ApplicationNavigator from './navigators/Application';
 import './translations';
 
 const queryClient = new QueryClient();
 
-export const storage = new MMKV();
+const mmkvStorage = new MMKV();
 
 // eslint-disable-next-line react/function-component-definition
 function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
-			<ThemeProvider storage={storage}>
-				<Provider>
-					<ApplicationNavigator />
-				</Provider>
-			</ThemeProvider>
+			<AuthProvider storage={mmkvStorage}>
+				<ThemeProvider storage={mmkvStorage}>
+					<Provider>
+						<ApplicationNavigator />
+					</Provider>
+				</ThemeProvider>
+			</AuthProvider>
 		</QueryClientProvider>
 	);
 }

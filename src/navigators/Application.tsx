@@ -9,7 +9,7 @@ import {
 } from '@/screens';
 import { useTheme } from '@/theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
+import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import {
 	CardStyleInterpolators,
 	createStackNavigator,
@@ -22,6 +22,21 @@ import type {
 	ApplicationStackParamList,
 	MainTabParamList,
 } from '@/types/navigation';
+
+const linking: LinkingOptions<ApplicationStackParamList> = {
+	prefixes: ['fitbox://'],
+	config: {
+		initialRouteName: 'Main',
+		screens: {
+			Startup: {
+				path: 'home',
+			},
+			Main: {
+				path: 'main/:personId',
+			},
+		},
+	},
+};
 
 const icons: Record<keyof MainTabParamList, string> = {
 	Dashboard: 'home',
@@ -83,7 +98,7 @@ const ApplicationNavigator = () => {
 	const { variant, navigationTheme } = useTheme();
 
 	return (
-		<NavigationContainer theme={navigationTheme}>
+		<NavigationContainer theme={navigationTheme} linking={linking}>
 			<Stack.Navigator
 				key={variant}
 				screenOptions={{

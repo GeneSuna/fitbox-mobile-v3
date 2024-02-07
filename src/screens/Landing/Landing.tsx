@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import useAuth from '@/auth/hooks/useAuth';
 import { Button, ImageVariant, Row, Spacer, Text } from '@/components/atoms';
 import { Modal } from '@/components/molecules';
 import { config } from '@/theme/_config';
@@ -22,6 +23,7 @@ const { width } = Dimensions.get('window');
 
 const LandingScreen = ({ navigation }: ApplicationScreenProps) => {
 	const { t } = useTranslation(['landing']);
+	const { signIn, signOut } = useAuth();
 
 	const [optionsVisibility, setOptionsVisibility] = useState<boolean>(false);
 
@@ -37,6 +39,14 @@ const LandingScreen = ({ navigation }: ApplicationScreenProps) => {
 		} else {
 			Alert.alert(`${page} coming soon!`);
 		}
+	};
+
+	const handleLogin = () => {
+		signIn();
+	};
+
+	const handleLogout = () => {
+		signOut();
 	};
 
 	return (
@@ -55,18 +65,19 @@ const LandingScreen = ({ navigation }: ApplicationScreenProps) => {
 						variant="darkgray"
 						// style={styles.buttonStyle}
 						// labelStyle={styles.buttonLabelStyle}
-						onPress={() => navigateToPage('Main')}
+						onPress={handleLogin}
 					/>
 					<Spacer size="rg" />
 					<Button
 						title={t('landing:register')}
-						onPress={() =>
-							// TODO: Replace this with login feature
-							navigation.reset({
-								index: 0,
-								routes: [{ name: 'Main' }],
-							})
-						}
+						onPress={handleLogout}
+						// onPress={() =>
+						// 	// TODO: Replace this with login feature
+						// 	navigation.reset({
+						// 		index: 0,
+						// 		routes: [{ name: 'Main' }],
+						// 	})
+						// }
 					/>
 				</View>
 			</View>

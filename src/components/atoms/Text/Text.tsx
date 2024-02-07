@@ -47,7 +47,7 @@ const Text = ({
 
 Text.defaultProps = {
 	size: 'rg',
-	color: config.fonts.colors.gray800,
+	color: 'gray800',
 	bold: false,
 	center: false,
 };
