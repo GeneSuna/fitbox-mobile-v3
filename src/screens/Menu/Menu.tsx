@@ -1,5 +1,5 @@
 import { ScrollView, Spacer } from '@/components/atoms';
-import { MenuOption } from '@/components/molecules';
+import { MenuOption } from '@/components/organisms';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import { Alert, StyleSheet, Text, View } from 'react-native';
