@@ -10,8 +10,9 @@ import type { MMKV } from 'react-native-mmkv';
 import authConfig from '../_authConfig';
 
 type Context = {
-	signIn: () => void;
+	signIn: () => Promise<AuthorizeResult>;
 	signOut: () => void;
+	getToken: () => Promise<string | null>;
 };
 export const AuthContext = createContext<Context | undefined>(undefined);
 
@@ -40,7 +41,7 @@ const AuthProvider = ({ children, storage }: Props) => {
 	/**
 	 * signIn - Sign in using the Microsoft identity platform
 	 */
-	const signIn = async () => {
+	const signIn = async (): Promise<AuthorizeResult> => {
 		const result = await authorize(authConfig);
 
 		console.log(result.accessToken);
@@ -64,7 +65,7 @@ const AuthProvider = ({ children, storage }: Props) => {
 	/**
 	 * getToken -` Get the access token from storage
 	 */
-	const getToken = async () => {
+	const getToken = async (): Promise<string | null> => {
 		const expireTime = storage.getString('expireTime');
 
 		if (expireTime !== null && expireTime !== undefined) {

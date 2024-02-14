@@ -13,40 +13,39 @@ import { Button, ImageVariant, Row, Spacer, Text } from '@/components/atoms';
 import { Modal } from '@/components/molecules';
 import { config } from '@/theme/_config';
 import LogoImage from '@/theme/assets/images/logo_with_name.png';
-import {
-	ApplicationScreenProps,
-	ApplicationStackParamList,
-} from '@/types/navigation';
+import { ApplicationScreenProps } from '@/types/navigation';
 import { useTranslation } from 'react-i18next';
 
 const { width } = Dimensions.get('window');
 
 const LandingScreen = ({ navigation }: ApplicationScreenProps) => {
-	const { t } = useTranslation(['landing']);
-	const { signIn, signOut } = useAuth();
+	const { t } = useTranslation(['landing', 'common']);
+	const { signIn } = useAuth();
 
 	const [optionsVisibility, setOptionsVisibility] = useState<boolean>(false);
 
 	const toggleOptionVisibility = () =>
 		setOptionsVisibility(!optionsVisibility);
 
-	const navigateToPage = (page: keyof ApplicationStackParamList) => {
+	const navigateToPage = (page: string) => {
 		setOptionsVisibility(false);
 
 		// TODO: Temporary only remove once screens are implemented
 		if (page === 'Main') {
 			navigation.navigate(page);
 		} else {
-			Alert.alert(`${page} coming soon!`);
+			Alert.alert(`${page} page coming soon!`);
 		}
 	};
 
-	const handleLogin = () => {
-		signIn();
-	};
-
-	const handleLogout = () => {
-		signOut();
+	const handleLogin = async () => {
+		const res = await signIn();
+		if (res.accessToken) {
+			navigation.reset({
+				index: 0,
+				routes: [{ name: 'Main' }],
+			});
+		}
 	};
 
 	return (
@@ -63,26 +62,18 @@ const LandingScreen = ({ navigation }: ApplicationScreenProps) => {
 					<Button
 						title={t('landing:login')}
 						variant="darkgray"
-						// style={styles.buttonStyle}
-						// labelStyle={styles.buttonLabelStyle}
+						// eslint-disable-next-line @typescript-eslint/no-misused-promises
 						onPress={handleLogin}
 					/>
 					<Spacer size="rg" />
 					<Button
 						title={t('landing:register')}
-						onPress={handleLogout}
-						// onPress={() =>
-						// 	// TODO: Replace this with login feature
-						// 	navigation.reset({
-						// 		index: 0,
-						// 		routes: [{ name: 'Main' }],
-						// 	})
-						// }
+						onPress={toggleOptionVisibility}
 					/>
 				</View>
 			</View>
 
-			{/* TODO: Think about making an atom component for this bit */}
+			{/* TODO: Think about making an organism component for this bit, depending if its useful for other screens */}
 			<Modal
 				visible={optionsVisibility}
 				onDismiss={toggleOptionVisibility}

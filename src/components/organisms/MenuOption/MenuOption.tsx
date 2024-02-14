@@ -2,7 +2,7 @@ import { Row, Spacer, Text } from '@/components/atoms';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import { ColorValue, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Card } from 'react-native-paper';
 
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
@@ -25,7 +25,7 @@ const MenuOption = ({
 }: MenuOptionProps) => {
 	const { fonts } = useTheme();
 
-	const useColor = String(fonts.gray800) as ColorValue;
+	const useColor = String(fonts.gray800);
 	return (
 		<Card onPress={onPress} style={styles.optionContainer}>
 			<Row

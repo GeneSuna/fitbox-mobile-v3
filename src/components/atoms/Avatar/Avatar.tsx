@@ -15,9 +15,7 @@ type AvatarProps = {
 };
 
 const Avatar = ({ size, source, style }: AvatarProps) => {
-	const [src, setSrc] = useState<ImageSourcePropType>(
-		source as ImageSourcePropType,
-	);
+	const [src, setSrc] = useState<ImageSourcePropType | null>(null);
 
 	const width = Number(size);
 	const height = Number(size);
@@ -42,13 +40,13 @@ const Avatar = ({ size, source, style }: AvatarProps) => {
 
 	borderRadius = height > width ? height / 2 : width / 2;
 
-	return (
+	return src ? (
 		<Image
 			onError={() => setSrc(DefaultAvatar as ImageSourcePropType)}
 			style={[{ width, height, borderRadius }, style as ImageStyle]}
 			source={src}
 		/>
-	);
+	) : null;
 };
 
 Avatar.defaultProps = {

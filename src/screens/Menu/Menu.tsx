@@ -1,7 +1,9 @@
+import useAuth from '@/auth/hooks/useAuth';
 import { ScrollView, Spacer } from '@/components/atoms';
 import { MenuOption } from '@/components/organisms';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
+import { MainTabScreenProps } from '@/types/navigation';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 
 const menuOptions = [
@@ -93,14 +95,24 @@ const menuOptions = [
 	},
 ];
 
-const Menu = () => {
+const Menu = ({ navigation }: MainTabScreenProps) => {
 	const { variant, changeTheme } = useTheme();
+	const { signOut } = useAuth();
 
 	const onClick = (id: string) => {
 		switch (id) {
 			case 'theme':
 				changeTheme(variant === 'default' ? 'dark' : 'default');
 				break;
+			case 'logout': {
+				signOut();
+
+				navigation.reset({
+					index: 0,
+					routes: [{ name: 'Landing' }],
+				});
+				break;
+			}
 			default:
 				Alert.alert('Oops!', 'Coming soon');
 				break;

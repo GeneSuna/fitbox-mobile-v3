@@ -1,4 +1,5 @@
 import {
+	Auth,
 	Calendar,
 	Dashboard,
 	Example,
@@ -24,7 +25,7 @@ import type {
 } from '@/types/navigation';
 
 const linking: LinkingOptions<ApplicationStackParamList> = {
-	prefixes: ['fitbox://'],
+	prefixes: ['com.fitbox://', 'https://fitbox.iq', 'http://fitbox.iq'],
 	config: {
 		initialRouteName: 'Main',
 		screens: {
@@ -33,6 +34,9 @@ const linking: LinkingOptions<ApplicationStackParamList> = {
 			},
 			Main: {
 				path: 'main/:personId',
+			},
+			Auth: {
+				path: 'auth',
 			},
 		},
 	},
@@ -107,8 +111,10 @@ const ApplicationNavigator = () => {
 					cardStyleInterpolator:
 						CardStyleInterpolators.forScaleFromCenterAndroid,
 				}}
+				initialRouteName="Startup"
 			>
 				<Stack.Screen name="Startup" component={Startup} />
+				<Stack.Screen name="Auth" component={Auth} />
 				<Stack.Screen name="Landing" component={Landing} />
 				<Stack.Screen name="Example" component={Example} />
 				<Stack.Screen name="Main" component={MainTabNavigator} />
