@@ -1,3 +1,4 @@
+import { GiphySDK } from '@giphy/react-native-sdk';
 import 'react-native-gesture-handler';
 import { MMKV } from 'react-native-mmkv';
 import { Provider } from 'react-native-paper';
@@ -12,6 +13,8 @@ import './translations';
 const queryClient = new QueryClient();
 
 const mmkvStorage = new MMKV();
+
+GiphySDK.configure({ apiKey: 'KbWCrHUml16xfCfryN4omq8BBm2XVNuC' }); // Temporary API key
 
 // eslint-disable-next-line react/function-component-definition
 function App() {
