@@ -64,12 +64,12 @@ From `./src/screens/common`
 - InboxSettingsScreen
 - Landing - DONE
 - Login - 20% (waiting for API)
-- MenuScreen - 80% (needs to be updated)
+- MenuScreen - 80% (awaiting for other screens)
 - PaymentInformation
 - PaymentUpdate
 - PDFViewerScreen
 - PowerBIScreen
-- ProfileMenuScreen
+- ProfileMenuScreen - 80% (awaiting for other screens)
 - ProfileScreen
 - ScoreCommentsScreen
 - Screen

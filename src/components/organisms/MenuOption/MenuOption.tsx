@@ -25,7 +25,7 @@ const MenuOption = ({
 }: MenuOptionProps) => {
 	const { fonts } = useTheme();
 
-	const useColor = String(fonts.black.color);
+	const useColor = String(fonts.gray400.color);
 	return (
 		<Card
 			onPress={onPress}
@@ -45,14 +45,14 @@ const MenuOption = ({
 								name={icon}
 								color={useColor}
 								style={styles.optionIcon}
-								size={config.fonts.metrics.rg}
+								size={25}
 							/>
 						) : (
 							<Ionicons
 								name={icon}
 								color={useColor}
 								style={styles.optionIcon}
-								size={config.fonts.metrics.md}
+								size={30}
 							/>
 						)}
 					</View>
@@ -92,7 +92,9 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	optionIcon: {
-		width: config.fonts.metrics.lg,
+		width: 32,
+		height: 32,
 		textAlign: 'center',
+		verticalAlign: 'middle',
 	},
 });

@@ -101,6 +101,9 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 
 	const onClick = (id: string) => {
 		switch (id) {
+			case 'profile':
+				navigation.navigate('ProfileMenu');
+				break;
 			case 'theme':
 				changeTheme(variant === 'default' ? 'dark' : 'default');
 				break;

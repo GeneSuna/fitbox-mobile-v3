@@ -6,4 +6,5 @@ export { default as Inbox } from './Inbox/Inbox';
 export { default as Landing } from './Landing/Landing';
 export { default as Login } from './Login/Login';
 export { default as Menu } from './Menu/Menu';
+export { default as ProfileMenu } from './ProfileMenu/ProfileMenu';
 export { default as Startup } from './Startup/Startup';

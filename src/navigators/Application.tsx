@@ -5,7 +5,6 @@ import {
 	Example,
 	Inbox,
 	Landing,
-	Menu,
 	Startup,
 } from '@/screens';
 import { useTheme } from '@/theme';
@@ -18,11 +17,11 @@ import {
 
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { config } from '@/theme/_config';
 import type {
 	ApplicationStackParamList,
 	MainTabParamList,
 } from '@/types/navigation';
+import MenuStackNavigator from './MenuStack';
 
 const linking: LinkingOptions<ApplicationStackParamList> = {
 	prefixes: ['com.fitbox://', 'https://fitbox.iq', 'http://fitbox.iq'],
@@ -46,7 +45,7 @@ const icons: Record<keyof MainTabParamList, string> = {
 	Dashboard: 'home',
 	Calendar: 'calendar-month-outline',
 	Inbox: 'chat',
-	Menu: 'menu',
+	MenuTab: 'menu',
 };
 
 const tabBarIconRender = ({
@@ -92,7 +91,11 @@ const MainTabNavigator = () => {
 			/>
 			<Tab.Screen name="Calendar" component={Calendar} />
 			<Tab.Screen name="Inbox" component={Inbox} />
-			<Tab.Screen name="Menu" component={Menu} />
+			<Tab.Screen
+				name="MenuTab"
+				component={MenuStackNavigator}
+				options={{ headerShown: false }}
+			/>
 		</Tab.Navigator>
 	);
 };
@@ -107,7 +110,6 @@ const ApplicationNavigator = () => {
 				key={variant}
 				screenOptions={{
 					headerShown: false,
-					headerStyle: { backgroundColor: config.colors.brand },
 					cardStyleInterpolator:
 						CardStyleInterpolators.forScaleFromCenterAndroid,
 				}}

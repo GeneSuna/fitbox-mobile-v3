@@ -9,17 +9,27 @@ export type ApplicationStackParamList = {
 	SignUp: undefined;
 	Invite: undefined;
 };
+export type ApplicationScreenProps =
+	StackScreenProps<ApplicationStackParamList>;
+
+export type MenuStackParamList = {
+	Menu: undefined;
+	ProfileMenu: undefined;
+	GymSelect: undefined;
+	Performance: undefined;
+	Notifications: undefined;
+	AboutUs: undefined;
+	Waivers: undefined;
+	Help: undefined;
+};
+export type MenuStackNavigatorProps = StackScreenProps<MenuStackParamList>;
 
 export type MainTabParamList = {
 	Dashboard: undefined;
 	Calendar: undefined;
 	Inbox: undefined;
-	Menu: undefined;
+	MenuTab: undefined;
 };
-
-export type ApplicationScreenProps =
-	StackScreenProps<ApplicationStackParamList>;
-
 export type MainTabScreenProps = StackScreenProps<
-	MainTabParamList & ApplicationStackParamList
+	MainTabParamList & ApplicationStackParamList & MenuStackParamList
 >;
