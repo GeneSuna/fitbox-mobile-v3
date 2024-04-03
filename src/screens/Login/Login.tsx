@@ -133,7 +133,7 @@ const Login = ({ navigation }: ApplicationScreenProps) => {
 			// call auth service to sign in
 			signIn(useEmail, usePassword)
 				.then(res => {
-					if (res) navigation.navigate('Main');
+					if (res) navigation.navigate('Startup');
 				})
 				.finally(() => {
 					setProcessing(false);

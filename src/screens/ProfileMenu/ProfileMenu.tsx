@@ -1,5 +1,5 @@
 import { ScrollView } from '@/components/atoms';
-import { MenuOption } from '@/components/organisms';
+import { MenuOption } from '@/components/molecules';
 import { config } from '@/theme/_config';
 import { MenuStackNavigatorProps } from '@/types/navigation';
 import { Alert, StyleSheet } from 'react-native';

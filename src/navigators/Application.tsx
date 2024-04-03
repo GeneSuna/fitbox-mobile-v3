@@ -24,6 +24,7 @@ import type {
 	MainTabParamList,
 } from '@/types/navigation';
 import MenuStackNavigator from './MenuStack';
+import { navigationRef } from './NavigationRef';
 
 const linking: LinkingOptions<ApplicationStackParamList> = {
 	prefixes: ['com.fitbox://', 'https://fitbox.iq', 'http://fitbox.iq'],
@@ -108,7 +109,11 @@ const ApplicationNavigator = () => {
 	const { variant, navigationTheme } = useTheme();
 
 	return (
-		<NavigationContainer theme={navigationTheme} linking={linking}>
+		<NavigationContainer
+			linking={linking}
+			ref={navigationRef}
+			theme={navigationTheme}
+		>
 			<Stack.Navigator
 				key={variant}
 				screenOptions={{

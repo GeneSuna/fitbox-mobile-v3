@@ -1,7 +1,9 @@
 import { Avatar, Row, ScrollView, Spacer, Text } from '@/components/atoms';
 import { Loader } from '@/components/molecules';
+import getUserGymInfo from '@/services/users/getUserGymInfo';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
+import useStore from '@/zustand/Store';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -49,16 +51,72 @@ const Dashboard = () => {
 	const { t } = useTranslation(['dashboard']);
 	// const headerHeight = useHeaderHeight();
 
+	const { setAppState } = useStore(state => ({
+		setAppState: state.setAppState,
+	}));
+
 	const [loading, setLoading] = useState<boolean>(true);
 	const [refreshing, setRefreshing] = useState<boolean>(true);
 
 	const onRefresh = () => setTimeout(() => setRefreshing(false), 1000);
+
+	const initializeAppStates = async () => {
+		const res = await getUserGymInfo();
+
+		if (!res.error) {
+			setAppState('teamId', res.gym_info.gym_lookup);
+
+			/**
+			 * TODO: Below is reference for the initailizeAppStates function in previous code
+			 */
+			// allow leaderboards
+			// const allowLeaderboards =
+			// 	res?.gym_info?.allow_leaderboards || false;
+			// set leaderboard config
+			// setAllowLeaderboards(allowLeaderboards);
+			// const gymParams = {
+			// 	gym_id: res.gym_info.gym_lookup,
+			// 	gym_logo: res.gym_info.logo,
+			// 	gym_banner: res.gym_info.banner,
+			// 	gym_loaded: true,
+			// 	gym_refresh: this.componentDidMount, // pass this to refresh dashboard after gym switch
+			// };
+			// if (userData?.metaData?.onboarding_gym_ids?.length > 0) {
+			// 	// navigate to select gym
+			// 	this.props.navigation.navigate('SelectGym');
+			// } else {
+			// 	// simplify passed data
+			// 	this.props.navigation.setParams(gymParams);
+			// }
+			// // set unread messages
+			// this.props.setNumOfUnreadMessage(
+			// 	res.gym_info.num_of_unread_messages,
+			// );
+			// // set force update if true or false
+			// this.props.setForceUpdate(res.gym_info?.mobile_force_update);
+			// // set refresh unread cb
+			// this.props.setUnreadMsgCb(this.initializeAppStates);
+			// set global states
+			// this.props.setGlobalState({
+			// 	allow_comments: res.gym_info.allow_leaderboards_comment,
+			// 	online_store: res.gym_info.online_store,
+			// 	empty_required_fields: this.parseEmptyRequiredFields(
+			// 		res?.gym_info?.required_profile_fields ?? [],
+			// 		userData,
+			// 	),
+			// 	gym_params: gymParams,
+			// 	allow_leaderboards,
+			// });
+		}
+	};
 
 	useEffect(() => {
 		setTimeout(() => {
 			setRefreshing(false);
 			setLoading(false);
 		}, 2000);
+
+		void initializeAppStates();
 	}, []);
 
 	// TEMPORARY VARIABLES

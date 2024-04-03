@@ -27,10 +27,7 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 
 	useEffect(() => {
 		const checkToken = () => {
-			// const token = await getToken();
-			// if (token) {
-
-			if (isLoggedIn) {
+			if (isLoggedIn()) {
 				navigation.reset({
 					index: 0,
 					routes: [{ name: 'Main' }],

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { boolOrOneZero } from './common';
 
-export const userSchema = z.object({
+export const UserSchema = z.object({
 	user_id: z.number(),
 	first_name: z.string(),
 	last_name: z.string(),

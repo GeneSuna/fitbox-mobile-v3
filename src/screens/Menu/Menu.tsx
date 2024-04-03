@@ -1,6 +1,6 @@
 import useAuth from '@/auth/hooks/useAuth';
 import { ScrollView, Spacer } from '@/components/atoms';
-import { MenuOption } from '@/components/organisms';
+import { MenuOption } from '@/components/molecules';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import { MainTabScreenProps } from '@/types/navigation';

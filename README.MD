@@ -60,16 +60,16 @@ From `./src/screens/common`
 - ForgotPasswordScreen
 - GymWaiverScreen
 - HealthCaptureScreen
-- InboxScreen
+- InboxScreen - DONE
 - InboxSettingsScreen
 - Landing - DONE
-- Login - 20% (waiting for API)
-- MenuScreen - 80% (awaiting for other screens)
+- Login - DONE
+- MenuScreen - DONE
 - PaymentInformation
 - PaymentUpdate
 - PDFViewerScreen
 - PowerBIScreen
-- ProfileMenuScreen - 80% (awaiting for other screens)
+- ProfileMenuScreen - DONE
 - ProfileScreen
 - ScoreCommentsScreen
 - Screen

@@ -72,6 +72,7 @@ const fontMetrics = {
 	md: 16,
 	lg: 20,
 	xl: 24,
+	xxl: 28,
 	h4: 30,
 	h3: 40,
 	h2: 50,

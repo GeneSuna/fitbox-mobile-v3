@@ -1,5 +1,7 @@
 import { z } from 'zod';
-import { userSchema } from './user';
+import { GymInfoSchema, GymSchema } from './gym';
+import { MessageItemSchema } from './message';
+import { UserSchema } from './user';
 
 export const apiResponseSchema = <T>(dataSchema: z.ZodSchema<T>) =>
 	z.object({
@@ -9,9 +11,32 @@ export const apiResponseSchema = <T>(dataSchema: z.ZodSchema<T>) =>
 		error: z.boolean(),
 	});
 
-export const loginResponseSchema = z.object({
+export const LoginResponseSchema = z.object({
 	id: z.number(),
 	error: z.boolean(),
 	token: z.string(),
-	user_data: userSchema,
+	user_data: UserSchema,
 });
+
+export const GetConversationListResponseSchema = z.object({
+	data: z.array(MessageItemSchema),
+	message: z.string(),
+	error: z.boolean(),
+	total_items: z.number(),
+});
+
+export const GetUserGymInfoResponseSchema = z.object({
+	gym_info: GymInfoSchema,
+	message: z.string(),
+	error: z.boolean(),
+});
+
+export const GetUserGymResponseSchema = apiResponseSchema(z.array(GymSchema));
+
+export const CheckEmailResponseSchema = apiResponseSchema(
+	z.object({
+		exists: z.boolean().optional(),
+		isActive: z.boolean().optional(),
+		pendingInvite: z.boolean().optional(),
+	}),
+);

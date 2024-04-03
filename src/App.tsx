@@ -1,18 +1,14 @@
-import { GiphySDK } from '@giphy/react-native-sdk';
-import 'react-native-gesture-handler';
-import { MMKV } from 'react-native-mmkv';
-import { Provider } from 'react-native-paper';
-
 import { ThemeProvider } from '@/theme';
+import { GiphySDK } from '@giphy/react-native-sdk';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
+import 'react-native-gesture-handler';
+import { Provider } from 'react-native-paper';
 import AuthProvider from './auth/AuthProvider/AuthProvider';
 import ApplicationNavigator from './navigators/Application';
+import { mmkvStorage } from './storage';
 import './translations';
 
 const queryClient = new QueryClient();
-
-const mmkvStorage = new MMKV();
 
 GiphySDK.configure({ apiKey: 'KbWCrHUml16xfCfryN4omq8BBm2XVNuC' }); // Temporary API key
 

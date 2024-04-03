@@ -1,15 +1,16 @@
 import { deletePushToken, login } from '@/services/auth';
-import { loginResponseSchema } from '@/types/schemas/response';
+import { LoginResponseSchema } from '@/types/schemas/response';
 import { PropsWithChildren, createContext, useMemo } from 'react';
 import type { MMKV } from 'react-native-mmkv';
 import { z } from 'zod';
 
-type User = z.infer<typeof loginResponseSchema>;
+type User = z.infer<typeof LoginResponseSchema>;
 
 type Context = {
 	signIn: (email: string, password: string) => Promise<any>;
 	signOut: () => void;
-	isLoggedIn: boolean;
+	user: User | null;
+	isLoggedIn: () => boolean;
 };
 export const AuthContext = createContext<Context | undefined>(undefined);
 
@@ -60,11 +61,14 @@ const AuthProvider = ({ children, storage }: Props) => {
 		}
 	};
 
+	const isLoggedIn = () => !!storage.getString('apiToken');
+
 	const value = useMemo(() => {
 		return {
 			signIn,
 			signOut,
-			isLoggedIn: getUser() !== null,
+			user: getUser(),
+			isLoggedIn,
 		};
 	}, [storage]);
 
