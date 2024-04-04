@@ -4,7 +4,8 @@ import { MenuOption } from '@/components/molecules';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import { MainTabScreenProps } from '@/types/navigation';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import useStore from '@/zustand/Store';
+import { Alert, Linking, StyleSheet, Text, View } from 'react-native';
 
 const menuOptions = [
 	{
@@ -27,6 +28,13 @@ const menuOptions = [
 		name: 'Performance',
 		icon: 'chart-line',
 		fontAwesome: true,
+		context: 'member',
+		role: 'member',
+	},
+	{
+		id: 'shop',
+		name: 'Visit Shop',
+		icon: 'cart',
 		context: 'member',
 		role: 'member',
 	},
@@ -98,6 +106,7 @@ const menuOptions = [
 const Menu = ({ navigation }: MainTabScreenProps) => {
 	const { variant, changeTheme } = useTheme();
 	const { signOut } = useAuth();
+	const shopUrl = useStore(state => state.shopUrl);
 
 	const onClick = (id: string) => {
 		switch (id) {
@@ -109,6 +118,9 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 				break;
 			case 'theme':
 				changeTheme(variant === 'default' ? 'dark' : 'default');
+				break;
+			case 'shop':
+				void Linking.openURL(shopUrl);
 				break;
 			case 'logout': {
 				signOut();
@@ -136,6 +148,7 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 					icon={icon}
 					onPress={() => onClick(id)}
 					fontAwesome={fontAwesome}
+					hide={id === 'shop' && !shopUrl}
 				/>
 			))}
 

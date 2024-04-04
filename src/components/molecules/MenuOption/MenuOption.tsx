@@ -14,6 +14,7 @@ interface MenuOptionProps {
 	fontAwesome?: boolean;
 	onPress: () => void;
 	showOptionBadge?: boolean;
+	hide?: boolean;
 }
 
 const MenuOption = ({
@@ -22,6 +23,7 @@ const MenuOption = ({
 	onPress,
 	fontAwesome,
 	showOptionBadge,
+	hide,
 }: MenuOptionProps) => {
 	const { fonts } = useTheme();
 
@@ -32,6 +34,7 @@ const MenuOption = ({
 			style={[
 				styles.optionContainer,
 				{ backgroundColor: fonts.light.color },
+				hide && layout.hide,
 			]}
 		>
 			<Row
@@ -78,6 +81,7 @@ const MenuOption = ({
 MenuOption.defaultProps = {
 	fontAwesome: false,
 	showOptionBadge: false,
+	hide: false,
 };
 
 export default MenuOption;

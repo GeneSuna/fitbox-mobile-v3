@@ -72,9 +72,9 @@ From `./src/screens/common`
 - ProfileMenuScreen - DONE
 - ProfileScreen
 - ScoreCommentsScreen
-- Screen
 - SelectGymScreen
 - SelectUserScreen
+- Shop Screen - DONE
 - SignUp
 - SubscriptionDetails
 - Subscriptions

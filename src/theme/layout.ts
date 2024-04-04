@@ -1,6 +1,9 @@
 import { ViewStyle } from 'react-native';
 
 export default {
+	hide: {
+		display: 'none',
+	},
 	col: {
 		flexDirection: 'column',
 	},

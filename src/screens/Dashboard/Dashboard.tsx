@@ -64,16 +64,7 @@ const Dashboard = () => {
 		const res = await getUserGymInfo();
 
 		if (!res.error) {
-			setAppState('teamId', res.gym_info.gym_lookup);
-
-			/**
-			 * TODO: Below is reference for the initailizeAppStates function in previous code
-			 */
-			// allow leaderboards
-			// const allowLeaderboards =
-			// 	res?.gym_info?.allow_leaderboards || false;
-			// set leaderboard config
-			// setAllowLeaderboards(allowLeaderboards);
+			// TODO: Update the following once other functionalities are implemented
 			// const gymParams = {
 			// 	gym_id: res.gym_info.gym_lookup,
 			// 	gym_logo: res.gym_info.logo,
@@ -81,6 +72,7 @@ const Dashboard = () => {
 			// 	gym_loaded: true,
 			// 	gym_refresh: this.componentDidMount, // pass this to refresh dashboard after gym switch
 			// };
+
 			// if (userData?.metaData?.onboarding_gym_ids?.length > 0) {
 			// 	// navigate to select gym
 			// 	this.props.navigation.navigate('SelectGym');
@@ -88,25 +80,23 @@ const Dashboard = () => {
 			// 	// simplify passed data
 			// 	this.props.navigation.setParams(gymParams);
 			// }
-			// // set unread messages
-			// this.props.setNumOfUnreadMessage(
-			// 	res.gym_info.num_of_unread_messages,
-			// );
-			// // set force update if true or false
-			// this.props.setForceUpdate(res.gym_info?.mobile_force_update);
-			// // set refresh unread cb
+			// set unread messages
+
+			// set force update if true or false
+
+			// set refresh unread callback, this will be called when unread messages are updated
 			// this.props.setUnreadMsgCb(this.initializeAppStates);
-			// set global states
-			// this.props.setGlobalState({
-			// 	allow_comments: res.gym_info.allow_leaderboards_comment,
-			// 	online_store: res.gym_info.online_store,
-			// 	empty_required_fields: this.parseEmptyRequiredFields(
-			// 		res?.gym_info?.required_profile_fields ?? [],
-			// 		userData,
-			// 	),
-			// 	gym_params: gymParams,
-			// 	allow_leaderboards,
-			// });
+
+			const { gym_info: gymInfo } = res;
+
+			// setAppState('emptyRequiredFields', gymInfo.required_profile_fields);
+			// setAppState('gymParameters', gymInfo.gymParams);
+			setAppState('teamId', gymInfo.gym_lookup);
+			setAppState('shopUrl', gymInfo.online_store);
+			setAppState('unreadMessages', gymInfo.num_of_unread_messages);
+			setAppState('allowLeaderboards', !!gymInfo.allow_leaderboards);
+			setAppState('allowComments', !!gymInfo.allow_leaderboards_comment);
+			setAppState('appForceUpdate', !!gymInfo.mobile_force_update);
 		}
 	};
 

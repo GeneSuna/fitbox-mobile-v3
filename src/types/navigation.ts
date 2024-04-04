@@ -30,6 +30,7 @@ export type MainTabParamList = {
 	Dashboard: undefined;
 	Calendar: undefined;
 	Inbox: undefined;
+	Shop: undefined;
 	MenuTab: undefined;
 };
 export type MainTabScreenProps = StackScreenProps<

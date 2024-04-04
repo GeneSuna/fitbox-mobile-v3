@@ -8,7 +8,13 @@ const createApplicationSlice: StateCreator<
 	[],
 	ApplicationSlice
 > = (setState, getState) => ({
-	teamId: 0, // initial state
+	teamId: 0,
+	shopUrl: '',
+	unreadMessages: 0,
+	allowLeaderboards: false,
+	allowComments: false,
+	appForceUpdate: false,
+	emptyRequiredFields: [],
 
 	setAppState: (key: string, value: unknown) => {
 		const prevState = getState();

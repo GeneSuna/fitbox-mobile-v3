@@ -182,7 +182,7 @@ const Inbox = () => {
 					right={
 						<MIcon
 							name="chevron-down"
-							color={fonts.colors.darkgray}
+							color={fonts.colors.info}
 							size={fonts.metrics.xl}
 						/>
 					}

@@ -7,6 +7,7 @@ import {
 	Landing,
 	Login,
 	ResetPassword,
+	Shop,
 	Startup,
 } from '@/screens';
 import { useTheme } from '@/theme';
@@ -23,6 +24,7 @@ import type {
 	ApplicationStackParamList,
 	MainTabParamList,
 } from '@/types/navigation';
+import useStore from '@/zustand/Store';
 import MenuStackNavigator from './MenuStack';
 import { navigationRef } from './NavigationRef';
 
@@ -48,6 +50,7 @@ const icons: Record<keyof MainTabParamList, string> = {
 	Dashboard: 'home',
 	Calendar: 'calendar-month-outline',
 	Inbox: 'chat',
+	Shop: 'cart',
 	MenuTab: 'menu',
 };
 
@@ -64,6 +67,7 @@ const tabBarIconRender = ({
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const MainTabNavigator = () => {
 	const { variant, colors } = useTheme();
+	const shopUrl = useStore(state => state.shopUrl);
 
 	return (
 		<Tab.Navigator
@@ -95,6 +99,15 @@ const MainTabNavigator = () => {
 			/>
 			<Tab.Screen name="Calendar" component={Calendar} />
 			<Tab.Screen name="Inbox" component={Inbox} />
+			<Tab.Screen
+				name="Shop"
+				component={Shop}
+				options={{
+					tabBarButton: !shopUrl ? () => null : undefined,
+					headerLeft: () => null,
+					headerShown: false,
+				}}
+			/>
 			<Tab.Screen
 				name="MenuTab"
 				component={MenuStackNavigator}

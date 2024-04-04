@@ -8,4 +8,5 @@ export { default as Login } from './Login/Login';
 export { default as Menu } from './Menu/Menu';
 export { default as ProfileMenu } from './ProfileMenu/ProfileMenu';
 export { default as ResetPassword } from './ResetPassword/ResetPassword';
+export { default as Shop } from './Shop/Shop';
 export { default as Startup } from './Startup/Startup';
