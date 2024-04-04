@@ -77,11 +77,8 @@ const Inbox = () => {
 
 	const fetchMessages = async () => {
 		if (!hasMore) {
-			console.log('no');
-
 			return;
 		}
-		console.log('yes');
 
 		let finalList: MessageItemType[] = [];
 

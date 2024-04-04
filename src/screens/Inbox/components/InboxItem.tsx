@@ -10,12 +10,7 @@ import { Func } from '@/utils';
 import { isArray } from 'lodash';
 import moment from 'moment';
 import { memo } from 'react';
-import {
-	ImageSourcePropType,
-	StyleSheet,
-	TouchableOpacity,
-	View,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Badge } from 'react-native-paper';
 
 const { fonts } = config;
@@ -79,15 +74,26 @@ const InboxItem = ({ index, data, onPress }: InboxItemProps) => {
 	const othersNumber =
 		listOfUsers.length > 1 ? ` and ${listOfUsers.length - 1} others` : '';
 
+	// Check if last reply is sender
+	const lastReplyIsSender = data.sender_id === senderInfo.id;
+
 	return (
 		<View style={{ backgroundColor: fonts.colors.light }}>
 			<TouchableOpacity onPress={() => onPress(data, index)}>
 				<Row style={styles.itemStyle}>
 					<View>
-						<Avatar
-							source={data.profile_image as ImageSourcePropType}
-							size={60}
-						/>
+						<Avatar source={senderInfo.profile_image} size={60} />
+
+						{!lastReplyIsSender ? (
+							<View style={styles.lastReplyAvatarContainerStyle}>
+								<Avatar
+									size={30}
+									source={data.profile_image}
+									style={styles.lastReplyAvatarStyle}
+								/>
+							</View>
+						) : null}
+
 						{data.num_of_unread_messages > 0 && (
 							<Badge
 								size={fonts.metrics.md}
@@ -130,11 +136,22 @@ const styles = StyleSheet.create({
 		borderBottomWidth: StyleSheet.hairlineWidth,
 		borderColor: fonts.colors.gray,
 	},
+	lastReplyAvatarContainerStyle: {
+		position: 'absolute',
+		right: 0,
+		bottom: 0,
+	},
+	lastReplyAvatarStyle: {
+		backgroundColor: 'white',
+		borderColor: 'white',
+		borderWidth: 2,
+	},
 	badgeStyle: {
 		position: 'absolute',
 		right: 2,
 		top: 2,
-		backgroundColor: fonts.colors.info,
+		backgroundColor: fonts.colors.brand,
+		color: fonts.colors.light,
 	},
 	nameContainerStyle: {
 		flex: 1,

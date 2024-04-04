@@ -9,7 +9,7 @@ import {
 import DefaultAvatar from '@/theme/assets/images/default_avatar.png';
 
 type AvatarProps = {
-	source?: ImageSourcePropType;
+	source?: ImageSourcePropType | string;
 	size?: number;
 	style?: StyleProp<ImageStyle>;
 };
