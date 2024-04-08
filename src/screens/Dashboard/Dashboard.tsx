@@ -52,7 +52,7 @@ const actionButtons = [
 ];
 
 const { height } = Dimensions.get('window');
-const { metrics } = config;
+const { metrics, fonts } = config;
 
 // const isAndroid = Platform.OS === 'ios';
 
@@ -283,13 +283,15 @@ const Dashboard = () => {
 									</Text>
 								) : null}
 
-								{upcomingSessions.map((session, i) => (
-									<BookedSessionCard
-										key={i}
-										data={session}
-										onPress={() => {}}
-									/>
-								))}
+								<View style={styles.bookedSessionsContainer}>
+									{upcomingSessions.map((session, i) => (
+										<BookedSessionCard
+											key={i}
+											data={session}
+											onPress={() => {}}
+										/>
+									))}
+								</View>
 							</>
 						)}
 
@@ -314,6 +316,14 @@ const styles = StyleSheet.create({
 		paddingHorizontal: metrics.lg,
 		paddingVertical: metrics.xl,
 		justifyContent: 'space-between',
+	},
+	bookedSessionsContainer: {
+		borderRadius: metrics.rg,
+		overflow: 'hidden',
+		borderColor: '#F2F2F2',
+		borderWidth: 1,
+		gap: 1,
+		backgroundColor: fonts.colors.lightgrey,
 	},
 	rowButton: {
 		flexDirection: 'row',

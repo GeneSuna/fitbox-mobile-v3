@@ -1,9 +1,10 @@
-import { Button, Row, Spacer, Text } from '@/components/atoms';
+import { Row, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ParsedSessionSchemaType } from '@/types/schemas/session';
 import moment from 'moment';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { metrics, fonts } = config;
 
@@ -31,26 +32,21 @@ const BookedSessionCard = ({ data, onPress }: BookedSessionCardProps) => {
 					<Text bold size="md" numberOfLines={2}>
 						{data.name}
 					</Text>
-					{data.event && (
-						<Text size="sm">
-							{moment(data.start_time).format('h:mmA')} -{' '}
-							{moment(data.end_time).format('h:mmA')}
-						</Text>
-					)}
+					<Text size="sm">
+						{moment(data.start_time).format('h:mmA')} -{' '}
+						{moment(data.end_time).format('h:mmA')}
+					</Text>
 				</View>
 			</Row>
 
 			<Spacer horizontal size="xs" />
 
-			{data.is_attend && (
-				<Button
-					sm
-					title="View"
-					style={styles.btnOutline}
-					uppercase={false}
-					onPress={onPress}
-				/>
-			)}
+			<Icon
+				name="arrow-right"
+				color={fonts.colors.gray200}
+				size={fonts.metrics.md}
+				style={{ marginRight: metrics.sm }}
+			/>
 		</TouchableOpacity>
 	);
 };
@@ -59,15 +55,11 @@ export default BookedSessionCard;
 
 const styles = StyleSheet.create({
 	container: {
+		backgroundColor: fonts.colors.light,
 		flexDirection: 'row',
-		borderColor: '#F2F2F2',
-		borderWidth: 1,
-		borderRadius: metrics.sm,
 		paddingVertical: metrics.rg,
 		paddingHorizontal: metrics.rg,
-		marginBottom: metrics.md,
 		alignItems: 'center',
-		...layout.shadowLight,
 	},
 	warningTxt: {
 		color: '#595959',
