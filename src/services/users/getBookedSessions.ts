@@ -1,5 +1,5 @@
 import { ApiRoutes } from '@/constants';
-import { SessionSchema } from '@/types/schemas/session';
+import { BookedSessionResponseSchema } from '@/types/schemas/response';
 import { securedInstance } from '../instance';
 
 export default async () => {
@@ -7,5 +7,5 @@ export default async () => {
 		.get(ApiRoutes.bookedSessions)
 		.json();
 
-	return SessionSchema.parse(response);
+	return BookedSessionResponseSchema.parse(response);
 };

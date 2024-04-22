@@ -12,6 +12,7 @@ interface TextProps extends ComponentProps<typeof Txt> {
 	bold?: boolean;
 	center?: boolean;
 	children: React.ReactNode;
+	compact?: boolean;
 }
 
 const Text = ({
@@ -34,6 +35,11 @@ const Text = ({
 
 		// center text
 		...(center ? { textAlign: 'center' } : {}),
+
+		// compact
+		...(rest.compact
+			? { lineHeight: config.fonts.metrics[size as FontSizeMetrics] }
+			: {}),
 	};
 
 	// font color
@@ -61,6 +67,7 @@ Text.defaultProps = {
 	color: 'gray800',
 	bold: false,
 	center: false,
+	compact: false,
 };
 
 export type { FontColors, FontSizeMetrics };

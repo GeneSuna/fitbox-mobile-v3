@@ -1,7 +1,7 @@
 import { Row, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import { ParsedSessionSchemaType } from '@/types/schemas/session';
+import { ParsedBookedSessionSchemaType } from '@/types/schemas/session';
 import moment from 'moment';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const { metrics, fonts } = config;
 
 interface BookedSessionCardProps {
-	data: ParsedSessionSchemaType;
+	data: ParsedBookedSessionSchemaType;
 	onPress: () => void;
 }
 

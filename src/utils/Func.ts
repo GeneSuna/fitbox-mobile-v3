@@ -1,5 +1,7 @@
 /* eslint-disable quotes */
 
+import moment from 'moment';
+
 const decodeHtml = (str: string): string => {
 	const entityMap: Record<string, string> = {
 		amp: '&',
@@ -40,7 +42,12 @@ const stripHtmlTags = (str: string) => {
 		.replace(/&nbsp;/g, ' ');
 };
 
+const getDuration = (start: string, end: string) => {
+	return moment.duration(moment(end).diff(moment(start))).asMinutes();
+};
+
 export default {
 	decodeHtml,
 	stripHtmlTags,
+	getDuration,
 };

@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { boolOrOneZero } from './common';
-import { apiResponseSchema } from './response';
 
 export const BookableSchema = z.object({
 	group_class: z.string(),
@@ -73,35 +72,33 @@ export const CalendarEventSchema = z.object({
 	booking_MM: z.number(),
 });
 
-export const SessionSchema = apiResponseSchema(
-	z.array(
-		z.object({
-			id: z.number(),
-			context_id: z.number(),
-			leaderboard_id: z.number(),
-			user_id: z.number(),
-			program_wod_id: z.number(),
-			class_id: z.number(),
-			event_id: z.number(),
-			session_date: z.string(),
-			session_date_utc: z.string().nullable(),
-			ranking: z.string(),
-			created_at: z.string(),
-			updated_at: z.string(),
-			deleted_at: z.string().nullable(),
-			status: z.string(),
-			subscription_id: z.number(),
-			waitlist: z.array(z.any()).nullable(),
-			bookable: BookableSchema,
-			waitlist_info: WaitlistInfoSchema,
-			fb_class: FBClassSchema,
-			calendar_event: CalendarEventSchema,
-		}),
-	),
-);
+export const BookedSessionSchema = z.object({
+	id: z.number(),
+	context_id: z.number(),
+	leaderboard_id: z.number(),
+	user_id: z.number(),
+	program_wod_id: z.number(),
+	class_id: z.number(),
+	event_id: z.number(),
+	session_date: z.string(),
+	session_date_utc: z.string().nullable(),
+	ranking: z.string(),
+	created_at: z.string(),
+	updated_at: z.string(),
+	deleted_at: z.string().nullable(),
+	status: z.string(),
+	subscription_id: z.number(),
+	waitlist: z.array(z.any()).nullable(),
+	bookable: BookableSchema,
+	waitlist_info: WaitlistInfoSchema,
+	fb_class: FBClassSchema,
+	calendar_event: CalendarEventSchema,
+});
 
-export type ParsedSessionSchemaType = z.infer<typeof ParsedSessionSchema>;
-export const ParsedSessionSchema = z.object({
+export type ParsedBookedSessionSchemaType = z.infer<
+	typeof ParsedBookedSessionSchema
+>;
+export const ParsedBookedSessionSchema = z.object({
 	event_id: z.number(),
 	bookable: BookableSchema,
 	start_time: z.string(),
@@ -112,4 +109,70 @@ export const ParsedSessionSchema = z.object({
 	class_id: z.number(),
 	waitlistEnabled: z.boolean(),
 	waitlistTime: z.number(),
+});
+
+export const SessionClassSchema = z.object({
+	id: z.number(),
+	context_id: z.number(),
+	name: z.string(),
+	description: z.string(),
+	type_id: z.number(),
+	start_date: z.string(),
+	end_date: z.string().nullable(),
+	is_private: boolOrOneZero,
+	attendance_limit: z.number().nullable(),
+	class_colour_hex: z.string(),
+	class_visibility: z.number(),
+	is_free_class: boolOrOneZero,
+	class_waitlist: z.array(z.any()).nullable(),
+});
+
+export type SessionSchemaType = z.infer<typeof SessionSchema>;
+export const SessionSchema = z.object({
+	id: z.number(),
+	event_id: z.number(),
+	title: z.string(),
+	description: z.string(),
+	start: z.string(),
+	end: z.string(),
+	venue: z.string(),
+	venue_id: z.number().nullable(),
+	user_start_iso: z.string(),
+	user_end_iso: z.string(),
+	timezone: z.string(),
+	startTime: z.string(),
+	duration: z.number(),
+	allDay: z.boolean(),
+	bg_colour_hex: z.string(),
+	fg_colour_hex: z.string(),
+	attachments: z.array(z.any()).nullable(),
+	code: z.string(),
+	utc_start: z.string(),
+	utc_end: z.string(),
+	utc_startTime: z.string(),
+	event_type_id: z.number(),
+	sender: z.number(),
+	repeat: z.boolean(),
+	repeatUntil: z.string(),
+	alert: z.string(),
+	locktime_HH: z.number(),
+	locktime_MM: z.number(),
+	booking_HH: z.number(),
+	booking_MM: z.number(),
+	event_timezone: z.string(),
+	user_timezone: z.string(),
+	local_start: z.string(),
+	local_end: z.string(),
+	local_startTime: z.string(),
+	local_start_iso: z.string(),
+	local_end_iso: z.string(),
+	member_attendance: z.array(z.any()).nullable(),
+	member_waitlist: z.array(z.any()).nullable(),
+	attendance_limit: z.number().nullable(),
+	waitlist: WaitlistInfoSchema,
+	bookable: BookableSchema,
+	class: SessionClassSchema,
+	read_only: z.string(),
+	user_editable: z.boolean(),
+	variant: z.string().nullable(),
 });

@@ -97,7 +97,11 @@ const MainTabNavigator = () => {
 				component={Dashboard}
 				options={{ headerShown: false }}
 			/>
-			<Tab.Screen name="Calendar" component={Calendar} />
+			<Tab.Screen
+				name="Calendar"
+				component={Calendar}
+				options={{ headerShown: false }}
+			/>
 			<Tab.Screen name="Inbox" component={Inbox} />
 			<Tab.Screen
 				name="Shop"

@@ -5,10 +5,14 @@
 import { create } from 'zustand';
 
 import type ApplicationInterface from './interface/ApplicationInterface';
-import createApplicationSlice from './slice/ApplicationSlice';
+import type SessionInterface from './interface/SessionInterface';
 
-const useStore = create<ApplicationInterface>()((...a) => ({
+import createApplicationSlice from './slice/ApplicationSlice';
+import createSessionSlice from './slice/SessionSlice';
+
+const useStore = create<ApplicationInterface & SessionInterface>()((...a) => ({
 	...createApplicationSlice(...a),
+	...createSessionSlice(...a),
 }));
 
 export default useStore;

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { GymInfoSchema, GymSchema } from './gym';
 import { MessageItemSchema } from './message';
+import { BookedSessionSchema, SessionSchema } from './session';
 import { UserSchema } from './user';
 
 export const apiResponseSchema = <T>(dataSchema: z.ZodSchema<T>) =>
@@ -31,6 +32,10 @@ export const GetUserGymInfoResponseSchema = z.object({
 	error: z.boolean(),
 });
 
+export const GetScheduleListResponseSchema = apiResponseSchema(
+	z.array(SessionSchema),
+);
+
 export const GetUserGymResponseSchema = apiResponseSchema(z.array(GymSchema));
 
 export const CheckEmailResponseSchema = apiResponseSchema(
@@ -39,4 +44,8 @@ export const CheckEmailResponseSchema = apiResponseSchema(
 		isActive: z.boolean().optional(),
 		pendingInvite: z.boolean().optional(),
 	}),
+);
+
+export const BookedSessionResponseSchema = apiResponseSchema(
+	z.array(BookedSessionSchema),
 );

@@ -8,7 +8,7 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import {
 	CalendarEventSchema,
-	ParsedSessionSchemaType,
+	ParsedBookedSessionSchemaType,
 } from '@/types/schemas/session';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
@@ -72,7 +72,7 @@ const Dashboard = () => {
 	const [gymBanner, setGymBanner] = useState<string>('');
 	const [gymLogo, setGymLogo] = useState<string>('');
 	const [upcomingSessions, setUpcomingSessions] = useState<
-		ParsedSessionSchemaType[]
+		ParsedBookedSessionSchemaType[]
 	>([]);
 
 	const onRefresh = () => setTimeout(() => setRefreshing(false), 1000);
@@ -123,7 +123,7 @@ const Dashboard = () => {
 
 	const getUpcomingSessions = async () => {
 		setLoading(true);
-		let memberSessions: ParsedSessionSchemaType[] = [];
+		let memberSessions: ParsedBookedSessionSchemaType[] = [];
 
 		try {
 			// let res = await RestService.getNextSessions(selectedClassIds.length ? selectedClassIds.join() : null);
@@ -271,28 +271,16 @@ const Dashboard = () => {
 
 						<Spacer size="md" />
 
-						{!loading && (
-							<>
-								{upcomingSessions.length === 0 ? (
-									<Text
-										color="mute"
-										center
-										style={{ marginBottom: metrics.md }}
-									>
-										{t('dashboard:sessions.member.empty')}
-									</Text>
-								) : null}
-
-								<View style={styles.bookedSessionsContainer}>
-									{upcomingSessions.map((session, i) => (
-										<BookedSessionCard
-											key={i}
-											data={session}
-											onPress={() => {}}
-										/>
-									))}
-								</View>
-							</>
+						{!loading && upcomingSessions.length > 0 && (
+							<View style={styles.bookedSessionsContainer}>
+								{upcomingSessions.map((session, i) => (
+									<BookedSessionCard
+										key={i}
+										data={session}
+										onPress={() => {}}
+									/>
+								))}
+							</View>
 						)}
 
 						<Spacer size="xl" />
