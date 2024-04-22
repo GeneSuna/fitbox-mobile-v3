@@ -27,6 +27,7 @@ import type {
 import useStore from '@/zustand/Store';
 import MenuStackNavigator from './MenuStack';
 import { navigationRef } from './NavigationRef';
+import ShopRightComponent from './components/ShopRightComponent';
 
 const linking: LinkingOptions<ApplicationStackParamList> = {
 	prefixes: ['com.fitbox://', 'https://fitbox.iq', 'http://fitbox.iq'],
@@ -97,11 +98,7 @@ const MainTabNavigator = () => {
 				component={Dashboard}
 				options={{ headerShown: false }}
 			/>
-			<Tab.Screen
-				name="Calendar"
-				component={Calendar}
-				options={{ headerShown: false }}
-			/>
+			<Tab.Screen name="Calendar" component={Calendar} />
 			<Tab.Screen name="Inbox" component={Inbox} />
 			<Tab.Screen
 				name="Shop"
@@ -109,7 +106,8 @@ const MainTabNavigator = () => {
 				options={{
 					tabBarButton: !shopUrl ? () => null : undefined,
 					headerLeft: () => null,
-					headerShown: false,
+					headerRight: ShopRightComponent,
+					title: 'Gym Shop',
 				}}
 			/>
 			<Tab.Screen
