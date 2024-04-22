@@ -43,3 +43,52 @@ export const UserSchema = z.object({
 	emergency_contact_name: z.string(),
 	emergency_contact_number: z.string(),
 });
+
+export const UserProfileSchema = z.object({
+	address1: z.string(),
+	address2: z.string(),
+	city: z.string(),
+	contact_phone: z.string(),
+	current_weight: z.number(),
+	dob: z.object({
+		date: z.string(),
+		timezone: z.string(),
+		timezone_type: z.number(),
+	}),
+	email: z.string(),
+	emergency_contact_name: z.string(),
+	emergency_contact_number: z.string(),
+	eula_accepted: z.number(),
+	face_id: z.any().optional(),
+	first_name: z.string(),
+	gender: z.string(),
+	has_payment_details: z.number(),
+	height: z.number(),
+	last_name: z.string(),
+	postcode: z.string(),
+	profile_image: z.string(),
+	state: z.string(),
+	timezone: z.string(),
+	user_id: z.number(),
+	waiver_accepted: z.number(),
+});
+
+export const UserProfileUpdateSchema = z.object({
+	contact_phone: z.string(),
+	current_weight: z.number(),
+	dob: z.object({
+		date: z.string(),
+		timezone: z.string(),
+		timezone_type: z.number(),
+	}),
+	email: z.string(),
+	face_id: z.any().optional(),
+	first_name: z.string(),
+	gender: z.string(),
+	height: z.number(),
+	is_staff: z.number(),
+	last_name: z.string(),
+	profile_image: z.string(),
+	timezone: z.string(),
+	user_id: z.number(),
+});

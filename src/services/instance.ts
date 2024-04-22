@@ -21,6 +21,10 @@ export const securedInstance = () =>
 		searchParams: {
 			api_key: apiToken() || '',
 		},
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
 		hooks: {
 			beforeRequest: [
 				request => {

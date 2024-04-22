@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { GymInfoSchema, GymSchema } from './gym';
 import { MessageItemSchema } from './message';
 import { BookedSessionSchema, SessionSchema } from './session';
-import { UserSchema } from './user';
+import { UserProfileSchema, UserProfileUpdateSchema, UserSchema } from './user';
 
 export const apiResponseSchema = <T>(dataSchema: z.ZodSchema<T>) =>
 	z.object({
@@ -49,3 +49,14 @@ export const CheckEmailResponseSchema = apiResponseSchema(
 export const BookedSessionResponseSchema = apiResponseSchema(
 	z.array(BookedSessionSchema),
 );
+export const GetUserProfileResponseSchema = z.object({
+	error: z.boolean(),
+	message: z.string(),
+	user_data: UserProfileSchema,
+});
+
+export const UpdateUserProfileSchema = z.object({
+	error: z.boolean(),
+	message: z.string(),
+	user_data: UserProfileUpdateSchema,
+});

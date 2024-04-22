@@ -2,12 +2,13 @@ import { ScrollView } from '@/components/atoms';
 import { MenuOption } from '@/components/molecules';
 import { config } from '@/theme/_config';
 import { MenuStackNavigatorProps } from '@/types/navigation';
+import { useLayoutEffect } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
 const menuOptions = [
 	{
 		id: 'information',
-		name: 'My Information',
+		name: 'My Details',
 		icon: 'person',
 		context: 'any',
 		role: 'any',
@@ -37,13 +38,17 @@ const menuOptions = [
 ];
 
 const ProfileMenu = ({ navigation }: MenuStackNavigatorProps) => {
-	const onClick = (id: string) => {
-		console.log('id', navigation);
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			title: 'Profile',
+		});
+	}, []);
 
+	const onClick = (id: string) => {
 		switch (id) {
-			// case 'information':
-			// navigation.navigate('');
-			// 	break;
+			case 'information':
+				navigation.navigate('MyDetails');
+				break;
 			default:
 				Alert.alert('Oops!', 'Coming soon');
 				break;
