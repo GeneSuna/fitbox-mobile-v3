@@ -1,10 +1,11 @@
-import { Row, Spacer } from '@/components/atoms';
+import { Spacer } from '@/components/atoms';
+import HeaderButtonGroup from '@/components/template/Header/HeaderButtonGroup';
 import useStore from '@/zustand/Store';
 import moment from 'moment';
-import { Linking, StyleSheet } from 'react-native';
+import { Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/Octicons';
 
-const ShopRightComponent = () => {
+const ShopHeaderRightComponent = () => {
 	const { shopUrl, setState } = useStore(state => ({
 		shopUrl: state.shopUrl,
 		setState: state.setAppState,
@@ -15,7 +16,7 @@ const ShopRightComponent = () => {
 		setState('shopUrl', `${shopUrl}?v=${moment().unix()}`); // this is to force refresh
 
 	return (
-		<Row style={styles.container}>
+		<HeaderButtonGroup>
 			<Icon name="sync" size={20} color="white" onPress={onRefresh} />
 			<Spacer horizontal />
 			<Icon
@@ -24,15 +25,8 @@ const ShopRightComponent = () => {
 				color="white"
 				onPress={onOpenLink}
 			/>
-		</Row>
+		</HeaderButtonGroup>
 	);
 };
 
-// style
-const styles = StyleSheet.create({
-	container: {
-		marginRight: 15,
-	},
-});
-
-export default ShopRightComponent;
+export default ShopHeaderRightComponent;

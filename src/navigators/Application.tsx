@@ -20,6 +20,8 @@ import {
 
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import CalendarHeaderRightComponent from '@/screens/Calendar/components/CalendarHeaderRightComponent';
+import ShopHeaderRightComponent from '@/screens/Shop/components/ShopHeaderRightComponent';
 import type {
 	ApplicationStackParamList,
 	MainTabParamList,
@@ -27,7 +29,6 @@ import type {
 import useStore from '@/zustand/Store';
 import MenuStackNavigator from './MenuStack';
 import { navigationRef } from './NavigationRef';
-import ShopRightComponent from './components/ShopRightComponent';
 
 const linking: LinkingOptions<ApplicationStackParamList> = {
 	prefixes: ['com.fitbox://', 'https://fitbox.iq', 'http://fitbox.iq'],
@@ -98,7 +99,11 @@ const MainTabNavigator = () => {
 				component={Dashboard}
 				options={{ headerShown: false }}
 			/>
-			<Tab.Screen name="Calendar" component={Calendar} />
+			<Tab.Screen
+				name="Calendar"
+				component={Calendar}
+				options={{ headerRight: CalendarHeaderRightComponent }}
+			/>
 			<Tab.Screen name="Inbox" component={Inbox} />
 			<Tab.Screen
 				name="Shop"
@@ -106,7 +111,7 @@ const MainTabNavigator = () => {
 				options={{
 					tabBarButton: !shopUrl ? () => null : undefined,
 					headerLeft: () => null,
-					headerRight: ShopRightComponent,
+					headerRight: ShopHeaderRightComponent,
 					title: 'Gym Shop',
 				}}
 			/>

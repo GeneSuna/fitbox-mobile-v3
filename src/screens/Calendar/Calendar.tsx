@@ -103,7 +103,6 @@ const Calendar = () => {
 			<Text
 				center
 				bold
-				size="xxl"
 				style={{ paddingTop: metrics.md, paddingBottom: metrics.sm }}
 			>
 				{moment(currentDate).format('MMMM')}
