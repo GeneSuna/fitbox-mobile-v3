@@ -15,6 +15,7 @@ import getUserProfile from '@/services/users/getUserProfile';
 import updateUserProfile from '@/services/users/updateUserProfile';
 import { config } from '@/theme/_config';
 import { MenuStackNavigatorProps } from '@/types/navigation';
+import { UserProfileType } from '@/types/schemas/user';
 import { Say } from '@/utils';
 import moment from 'moment';
 import { useEffect, useLayoutEffect, useState } from 'react';
@@ -42,42 +43,13 @@ type GenderTypes = {
 	displayText: string;
 };
 
-type UserProfileTypes = {
-	address1: string;
-	address2: string;
-	city: string;
-	contact_phone: string;
-	current_weight: number;
-	dob: {
-		date: Date | string;
-		timezone: string;
-		timezone_type: number;
-	};
-	email: string;
-	emergency_contact_name: string;
-	emergency_contact_number: string;
-	eula_accepted: number;
-	face_id?: string;
-	first_name: string;
-	gender: string;
-	has_payment_details: number;
-	height: number;
-	last_name: string;
-	postcode: string;
-	profile_image: string;
-	state: string;
-	timezone: string;
-	user_id: number;
-	waiver_accepted: number;
-};
-
 type DataTypes = {
 	pictureOptions: boolean;
 	genderOptions: boolean;
 	genderObj?: GenderTypes;
 	datepicker: boolean;
 	date: string | Date;
-	user: UserProfileTypes;
+	user: UserProfileType;
 };
 
 const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
@@ -270,9 +242,7 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 
 	const setDOBFn = (date: string | Date) => {
 		const newDate: Date = new Date(date);
-		const formattedDate = `${newDate.getFullYear()}-${`0${
-			newDate.getMonth() + 1
-		}`.slice(-2)}-${`0${newDate.getDate()}`.slice(-2)}`;
+		const formattedDate = moment(newDate).format('YYYY-MM-DD');
 		setDob(formattedDate);
 		setData({
 			...data,

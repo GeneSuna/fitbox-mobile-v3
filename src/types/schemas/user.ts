@@ -45,9 +45,9 @@ export const UserSchema = z.object({
 });
 
 export const UserProfileSchema = z.object({
-	address1: z.string(),
-	address2: z.string(),
-	city: z.string(),
+	address1: z.string().optional(),
+	address2: z.string().optional(),
+	city: z.string().optional(),
 	contact_phone: z.string(),
 	current_weight: z.number(),
 	dob: z.object({
@@ -56,39 +56,21 @@ export const UserProfileSchema = z.object({
 		timezone_type: z.number(),
 	}),
 	email: z.string(),
-	emergency_contact_name: z.string(),
-	emergency_contact_number: z.string(),
-	eula_accepted: z.number(),
+	emergency_contact_name: z.string().optional(),
+	emergency_contact_number: z.string().optional(),
+	eula_accepted: z.number().optional(),
 	face_id: z.any().optional(),
 	first_name: z.string(),
 	gender: z.string(),
-	has_payment_details: z.number(),
+	has_payment_details: z.number().optional(),
 	height: z.number(),
 	last_name: z.string(),
-	postcode: z.string(),
+	postcode: z.string().optional(),
 	profile_image: z.string(),
-	state: z.string(),
+	state: z.string().optional(),
 	timezone: z.string(),
 	user_id: z.number(),
-	waiver_accepted: z.number(),
+	waiver_accepted: z.number().optional(),
 });
 
-export const UserProfileUpdateSchema = z.object({
-	contact_phone: z.string(),
-	current_weight: z.number(),
-	dob: z.object({
-		date: z.string(),
-		timezone: z.string(),
-		timezone_type: z.number(),
-	}),
-	email: z.string(),
-	face_id: z.any().optional(),
-	first_name: z.string(),
-	gender: z.string(),
-	height: z.number(),
-	is_staff: z.number(),
-	last_name: z.string(),
-	profile_image: z.string(),
-	timezone: z.string(),
-	user_id: z.number(),
-});
+export type UserProfileType = z.infer<typeof UserProfileSchema>;
