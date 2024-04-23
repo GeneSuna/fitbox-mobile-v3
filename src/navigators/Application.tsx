@@ -20,6 +20,8 @@ import {
 
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import CalendarHeaderRightComponent from '@/screens/Calendar/components/CalendarHeaderRightComponent';
+import ShopHeaderRightComponent from '@/screens/Shop/components/ShopHeaderRightComponent';
 import type {
 	ApplicationStackParamList,
 	MainTabParamList,
@@ -100,7 +102,7 @@ const MainTabNavigator = () => {
 			<Tab.Screen
 				name="Calendar"
 				component={Calendar}
-				options={{ headerShown: false }}
+				options={{ headerRight: CalendarHeaderRightComponent }}
 			/>
 			<Tab.Screen name="Inbox" component={Inbox} />
 			<Tab.Screen
@@ -109,7 +111,8 @@ const MainTabNavigator = () => {
 				options={{
 					tabBarButton: !shopUrl ? () => null : undefined,
 					headerLeft: () => null,
-					headerShown: false,
+					headerRight: ShopHeaderRightComponent,
+					title: 'Gym Shop',
 				}}
 			/>
 			<Tab.Screen
