@@ -43,3 +43,34 @@ export const UserSchema = z.object({
 	emergency_contact_name: z.string(),
 	emergency_contact_number: z.string(),
 });
+
+export const UserProfileSchema = z.object({
+	address1: z.string().optional(),
+	address2: z.string().optional(),
+	city: z.string().optional(),
+	contact_phone: z.string(),
+	current_weight: z.number(),
+	dob: z.object({
+		date: z.string(),
+		timezone: z.string(),
+		timezone_type: z.number(),
+	}),
+	email: z.string(),
+	emergency_contact_name: z.string().optional(),
+	emergency_contact_number: z.string().optional(),
+	eula_accepted: z.number().optional(),
+	face_id: z.any().optional(),
+	first_name: z.string(),
+	gender: z.string(),
+	has_payment_details: z.number().optional(),
+	height: z.number(),
+	last_name: z.string(),
+	postcode: z.string().optional(),
+	profile_image: z.string(),
+	state: z.string().optional(),
+	timezone: z.string(),
+	user_id: z.number(),
+	waiver_accepted: z.number().optional(),
+});
+
+export type UserProfileType = z.infer<typeof UserProfileSchema>;

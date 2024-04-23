@@ -23,6 +23,7 @@ export type MenuStackParamList = {
 	AboutUs: undefined;
 	Waivers: undefined;
 	Help: undefined;
+	MyDetails: undefined;
 };
 export type MenuStackNavigatorProps = StackScreenProps<MenuStackParamList>;
 

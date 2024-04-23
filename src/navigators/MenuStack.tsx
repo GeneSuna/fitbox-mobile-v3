@@ -1,4 +1,5 @@
 import { AboutUs, Menu, ProfileMenu } from '@/screens';
+import MyDetails from '@/screens/MyDetails/MyDetails';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import { MenuStackParamList } from '@/types/navigation';
@@ -26,6 +27,7 @@ const MenuStackNavigator = () => {
 			<Stack.Screen name="Menu" component={Menu} />
 			<Stack.Screen name="ProfileMenu" component={ProfileMenu} />
 			<Stack.Screen name="AboutUs" component={AboutUs} />
+			<Stack.Screen name="MyDetails" component={MyDetails} />
 		</Stack.Navigator>
 	);
 };
