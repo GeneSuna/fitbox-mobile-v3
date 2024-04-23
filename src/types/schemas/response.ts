@@ -60,3 +60,22 @@ export const UpdateUserProfileSchema = z.object({
 	message: z.string(),
 	user_data: UserProfileSchema,
 });
+
+export const UpdateUserProfilePayloadSchema = z.object({
+	id: z.number(),
+	firstname: z.string(),
+	lastname: z.string(),
+	dob: z.string(),
+	gender: z.string(),
+	email: z.string(),
+	contact_phone: z.string(),
+	height: z.number(),
+	current_weight: z.number(),
+	weight_unit: z.string(),
+	emergency_contact_name: z.string().optional(),
+	emergency_contact_number: z.string().optional(),
+});
+
+export type UpdateUserProfileTypes = z.infer<
+	typeof UpdateUserProfilePayloadSchema
+>;

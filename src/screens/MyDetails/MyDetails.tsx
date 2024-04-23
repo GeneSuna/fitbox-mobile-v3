@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import useAuth from '@/auth/hooks/useAuth';
 import {
 	Avatar,
@@ -205,7 +204,7 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 					const response = await updateUserProfile(payload);
 
 					if (response.error) {
-						throw response.message;
+						throw new Error(response.message);
 					} else {
 						Say.ok(response.message);
 					}
@@ -249,7 +248,7 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 			user: {
 				...data.user,
 				dob: {
-					date: newDate,
+					date: newDate.toString(),
 					timezone: data.user.dob.timezone,
 					timezone_type: data.user.dob.timezone_type,
 				},
@@ -282,7 +281,7 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 	) => {
 		const { email, first_name: firstName, last_name: lastName } = data.user;
 
-		const style: StyleProp<ViewStyle> = { ...currentStyle };
+		const style: StyleProp<ViewStyle> = { ...(currentStyle as ViewStyle) };
 
 		// Check if the default required fields are empty
 		switch (fieldName) {
