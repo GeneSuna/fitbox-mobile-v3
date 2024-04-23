@@ -21,6 +21,7 @@ import {
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import CalendarHeaderRightComponent from '@/screens/Calendar/components/CalendarHeaderRightComponent';
+import ShopHeaderLeftComponent from '@/screens/Calendar/components/ShopHeaderLeftComponent';
 import ShopHeaderRightComponent from '@/screens/Shop/components/ShopHeaderRightComponent';
 import type {
 	ApplicationStackParamList,
@@ -69,7 +70,10 @@ const tabBarIconRender = ({
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const MainTabNavigator = () => {
 	const { variant, colors } = useTheme();
-	const shopUrl = useStore(state => state.shopUrl);
+	const { shopUrl, activeMonth } = useStore(state => ({
+		shopUrl: state.shopUrl,
+		activeMonth: state.activeMonth,
+	}));
 
 	return (
 		<Tab.Navigator
@@ -102,7 +106,11 @@ const MainTabNavigator = () => {
 			<Tab.Screen
 				name="Calendar"
 				component={Calendar}
-				options={{ headerRight: CalendarHeaderRightComponent }}
+				options={{
+					headerLeft: ShopHeaderLeftComponent,
+					headerRight: CalendarHeaderRightComponent,
+					title: activeMonth ?? 'Calendar',
+				}}
 			/>
 			<Tab.Screen name="Inbox" component={Inbox} />
 			<Tab.Screen
@@ -110,7 +118,6 @@ const MainTabNavigator = () => {
 				component={Shop}
 				options={{
 					tabBarButton: !shopUrl ? () => null : undefined,
-					headerLeft: () => null,
 					headerRight: ShopHeaderRightComponent,
 					title: 'Gym Shop',
 				}}

@@ -1,16 +1,9 @@
+import TeamAvatar from '@/components/atoms/TeamAvatar/TeamAvatar';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import {
-	Dimensions,
-	Image,
-	ImageBackground,
-	StyleSheet,
-	TouchableOpacity,
-	View,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const headerRatio = 380 / 1440;
 const { fonts, colors } = config;
 
@@ -27,25 +20,7 @@ const DashboardHeader = ({
 }: DashboardHeaderProps) => {
 	const children = (
 		<View style={styles.headerImageContainer}>
-			<TouchableOpacity activeOpacity={0.8} onPress={onLogoPress}>
-				{logo ? (
-					<Image
-						style={styles.headerImageStyle}
-						source={{
-							uri: logo,
-							headers: {
-								Pragma: 'no-cache',
-							},
-						}}
-					/>
-				) : (
-					<Icon
-						onPress={onLogoPress}
-						name="store-alt"
-						style={styles.headerIconImage}
-					/>
-				)}
-			</TouchableOpacity>
+			<TeamAvatar logo={logo} onPress={onLogoPress} />
 		</View>
 	);
 
@@ -93,15 +68,5 @@ const styles = StyleSheet.create({
 	headerImageStyle: {
 		width: 74,
 		height: 74,
-	},
-	headerIconImage: {
-		height: 74,
-		width: 74,
-		textAlign: 'center',
-		paddingTop: '3%',
-		backgroundColor: 'white',
-		verticalAlign: 'middle',
-		fontSize: height / 25,
-		color: fonts.colors.darkgray,
 	},
 });

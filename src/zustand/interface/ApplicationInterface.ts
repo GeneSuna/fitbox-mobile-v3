@@ -3,6 +3,7 @@ interface ApplicationStateInterface {
 	allowLeaderboards: boolean;
 	teamId: number;
 	shopUrl: string;
+	logo: string;
 	unreadMessages: number;
 	allowComments: boolean;
 	emptyRequiredFields: string[];

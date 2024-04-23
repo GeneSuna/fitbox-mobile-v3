@@ -11,7 +11,12 @@ const createSessionSlice: StateCreator<
 	[],
 	SessionInterface
 > = (setState, getState) => ({
+	activeMonth: moment().format('YYYY-MM-DD'),
 	classes: [],
+
+	setActiveMonth: (date: string) => {
+		setState({ activeMonth: date });
+	},
 
 	setClasses: (date: string, data: ClassItemData[]) => {
 		// prepare new class item

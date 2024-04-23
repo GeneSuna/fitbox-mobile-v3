@@ -10,6 +10,7 @@ const createApplicationSlice: StateCreator<
 > = (setState, getState) => ({
 	teamId: 0,
 	shopUrl: '',
+	logo: '',
 	unreadMessages: 0,
 	allowLeaderboards: false,
 	allowComments: false,

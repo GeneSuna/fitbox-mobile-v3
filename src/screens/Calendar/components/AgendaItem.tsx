@@ -1,6 +1,7 @@
 import { Button, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
-import { Say } from '@/utils';
+import { BookableSchemaType } from '@/types/schemas/session';
+import { Func, Say } from '@/utils';
 import { isEmpty } from 'lodash';
 import { memo, useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -11,6 +12,7 @@ export interface ClassItemData {
 	start?: string;
 	duration?: string;
 	isLoading?: boolean;
+	bookable?: BookableSchemaType;
 }
 
 const { metrics, fonts } = config;
@@ -29,6 +31,10 @@ const AgendaItem = (props: { item: ClassItemData }) => {
 	if (isEmpty(item) || item.isLoading) {
 		return null;
 	}
+
+	const isSubscribed = Func.checkSubscription(
+		item.bookable as BookableSchemaType,
+	);
 
 	return (
 		<TouchableOpacity onPress={itemPressed} style={styles.item}>
@@ -53,6 +59,9 @@ const AgendaItem = (props: { item: ClassItemData }) => {
 				</Text>
 				{item.location ? <Text size="sm">{item.location}</Text> : null}
 			</View>
+
+			{isSubscribed ? <Text>Yes</Text> : null}
+
 			<View style={styles.itemButtonContainer}>
 				<Button
 					title="Book"

@@ -114,6 +114,7 @@ const Dashboard = () => {
 			setAppState('allowLeaderboards', !!gymInfo.allow_leaderboards);
 			setAppState('allowComments', !!gymInfo.allow_leaderboards_comment);
 			setAppState('appForceUpdate', !!gymInfo.mobile_force_update);
+			setAppState('logo', gymInfo.logo);
 
 			// set gym logo and banner
 			setGymLogo(gymInfo.logo);

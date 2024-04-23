@@ -7,10 +7,12 @@ type ClassItem = {
 
 interface SessionStateInterface {
 	classes: ClassItem[];
+	activeMonth: string;
 }
 
 interface SessionInterface extends SessionStateInterface {
 	setClasses: (date: string, data: ClassItemData[]) => void;
+	setActiveMonth: (date: string) => void;
 }
 
 export type { ClassItem, SessionStateInterface };

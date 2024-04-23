@@ -1,5 +1,6 @@
 /* eslint-disable quotes */
 
+import { BookableSchemaType } from '@/types/schemas/session';
 import moment from 'moment';
 
 const decodeHtml = (str: string): string => {
@@ -46,8 +47,24 @@ const getDuration = (start: string, end: string) => {
 	return moment.duration(moment(end).diff(moment(start))).asMinutes();
 };
 
+const checkSubscription = (bookable: BookableSchemaType) => {
+	let subscribed = true;
+
+	if (bookable?.group_class === 'True') {
+		if (
+			bookable?.payment_details === 'False' ||
+			bookable?.group_member === 'False'
+		) {
+			subscribed = false;
+		}
+	}
+
+	return subscribed;
+};
+
 export default {
 	decodeHtml,
 	stripHtmlTags,
 	getDuration,
+	checkSubscription,
 };

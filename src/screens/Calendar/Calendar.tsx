@@ -1,4 +1,3 @@
-import { Text } from '@/components/atoms';
 import { Loader } from '@/components/molecules';
 import { getScheduleList } from '@/services/session';
 import { config } from '@/theme/_config';
@@ -15,12 +14,13 @@ import {
 import AgendaItem, { ClassItemData } from './components/AgendaItem';
 
 const { height } = Dimensions.get('window');
-const { metrics, fonts } = config;
+const { fonts } = config;
 
 const Calendar = () => {
-	const { classes, setClasses } = useStore(state => ({
+	const { classes, setClasses, setActiveMonth } = useStore(state => ({
 		classes: state.classes,
 		setClasses: state.setClasses,
+		setActiveMonth: state.setActiveMonth,
 	}));
 
 	const [initialLoading, setInitialLoading] = useState<boolean>(true);
@@ -79,7 +79,10 @@ const Calendar = () => {
 			});
 	};
 
-	useEffect(() => void loadClasses(), [currentDate]);
+	useEffect(() => {
+		setActiveMonth(moment(currentDate).format('MMMM'));
+		void loadClasses();
+	}, [currentDate]);
 
 	const renderItem = useCallback(({ item }: any) => {
 		return <AgendaItem item={item as ClassItemData} />;
@@ -100,13 +103,6 @@ const Calendar = () => {
 			onDateChanged={date => setCurrentDate(date)}
 			todayBottomMargin={16}
 		>
-			<Text
-				center
-				bold
-				style={{ paddingTop: metrics.md, paddingBottom: metrics.sm }}
-			>
-				{moment(currentDate).format('MMMM')}
-			</Text>
 			<WeekCalendar firstDay={1} allowShadow={false} />
 			<AgendaList
 				sections={classes}

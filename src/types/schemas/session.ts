@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { boolOrOneZero } from './common';
 
+export type BookableSchemaType = z.infer<typeof BookableSchema>;
 export const BookableSchema = z.object({
 	group_class: z.string(),
 	payment_details: z.string(),
