@@ -10,8 +10,10 @@ import {
 	CalendarEventSchema,
 	ParsedBookedSessionSchemaType,
 } from '@/types/schemas/session';
+import { UserType } from '@/types/schemas/user';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
+import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -106,7 +108,13 @@ const Dashboard = () => {
 
 			const { gym_info: gymInfo } = res;
 
-			setAppState('emptyRequiredFields', gymInfo.required_profile_fields);
+			setAppState(
+				'emptyRequiredFields',
+				parseEmptyRequiredFields(
+					gymInfo.required_profile_fields,
+					user?.user_data as UserType,
+				),
+			);
 			// setAppState('gymParameters', gymInfo.gymParams);
 			setAppState('teamId', gymInfo.gym_lookup);
 			setAppState('shopUrl', gymInfo.online_store);
@@ -120,6 +128,30 @@ const Dashboard = () => {
 			setGymLogo(gymInfo.logo);
 			setGymBanner(gymInfo.banner);
 		}
+	};
+
+	const parseEmptyRequiredFields = (
+		requiredFields: string[],
+		userData: UserType,
+	) => {
+		const emptyRequiredFields: string[] = [];
+
+		requiredFields.forEach(field => {
+			if (userData) {
+				if (
+					field === 'dob' &&
+					!moment(userData[field]?.date).isValid()
+				) {
+					emptyRequiredFields.push(field);
+				}
+
+				if (isEmpty(userData[field as keyof UserType])) {
+					emptyRequiredFields.push(field);
+				}
+			}
+		});
+
+		return emptyRequiredFields;
 	};
 
 	const getUpcomingSessions = async () => {

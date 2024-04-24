@@ -481,10 +481,10 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 						<View style={styles.flexOne}>
 							<Text style={styles.textLabelStyle}>D.O.B</Text>
 							<TouchableOpacity
-								style={{
+								style={applyInputValidationStyle('dob', {
 									...styles.inputStyle,
 									...styles.inputWithIconStyle,
-								}}
+								})}
 								onPress={() => setDatePicker(!datePicker)}
 							>
 								<Text style={styles.textLabelStyle}>
@@ -500,10 +500,10 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 						<View style={styles.flexOne}>
 							<Text style={styles.textLabelStyle}>Gender</Text>
 							<TouchableOpacity
-								style={{
+								style={applyInputValidationStyle('gender', {
 									...styles.inputStyle,
 									...styles.inputWithIconStyle,
-								}}
+								})}
 								onPress={() =>
 									setData({
 										...data,
