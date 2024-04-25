@@ -10,12 +10,13 @@ import {
 	CalendarEventSchema,
 	ParsedBookedSessionSchemaType,
 } from '@/types/schemas/session';
-import { UserType } from '@/types/schemas/user';
+import { UserSchemaType } from '@/types/schemas/user';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
+import { useFocusEffect } from '@react-navigation/native';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
 	Alert,
@@ -112,7 +113,7 @@ const Dashboard = () => {
 				'emptyRequiredFields',
 				parseEmptyRequiredFields(
 					gymInfo.required_profile_fields,
-					user?.user_data as UserType,
+					user?.user_data as UserSchemaType,
 				),
 			);
 			// setAppState('gymParameters', gymInfo.gymParams);
@@ -132,7 +133,7 @@ const Dashboard = () => {
 
 	const parseEmptyRequiredFields = (
 		requiredFields: string[],
-		userData: UserType,
+		userData: UserSchemaType,
 	) => {
 		const emptyRequiredFields: string[] = [];
 
@@ -145,7 +146,7 @@ const Dashboard = () => {
 					emptyRequiredFields.push(field);
 				}
 
-				if (isEmpty(userData[field as keyof UserType])) {
+				if (isEmpty(userData[field as keyof UserSchemaType])) {
 					emptyRequiredFields.push(field);
 				}
 			}
@@ -222,15 +223,17 @@ const Dashboard = () => {
 		// );
 	};
 
-	useEffect(() => {
-		setTimeout(() => {
-			setRefreshing(false);
-			setLoading(false);
-		}, 2000);
+	useFocusEffect(
+		useCallback(() => {
+			setTimeout(() => {
+				setRefreshing(false);
+				setLoading(false);
+			}, 2000);
 
-		void initializeAppStates();
-		void getUpcomingSessions();
-	}, []);
+			void initializeAppStates();
+			void getUpcomingSessions();
+		}, []),
+	);
 
 	// TEMPORARY VARIABLES
 	const showSwitchBtn = true;

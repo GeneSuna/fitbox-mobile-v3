@@ -15,7 +15,7 @@ import getUserProfile from '@/services/users/getUserProfile';
 import updateUserProfile from '@/services/users/updateUserProfile';
 import { config } from '@/theme/_config';
 import { MenuStackNavigatorProps } from '@/types/navigation';
-import { UserProfileType } from '@/types/schemas/user';
+import { UserProfileType, UserSchemaType } from '@/types/schemas/user';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
 import { isEmpty } from 'lodash';
@@ -43,6 +43,8 @@ import ImageCropPicker, {
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
+const { width: DEVICE_WIDTH } = Dimensions.get('screen');
+
 type GenderTypes = {
 	value: string;
 	icon: string;
@@ -60,13 +62,16 @@ type DataTypes = {
 };
 
 const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
-	const emptyRequiredFields = useStore(state => state.emptyRequiredFields);
+	const { emptyRequiredFields, setAppState } = useStore(state => ({
+		emptyRequiredFields: state.emptyRequiredFields,
+		setAppState: state.setAppState,
+	}));
+	const { user, updateUser } = useAuth();
+
 	const scrollViewStyle: StyleProp<ViewStyle> = {
 		padding: 20,
 		marginBottom: isEmpty(emptyRequiredFields) ? 0 : 50,
 	};
-	const { width: DEVICE_WIDTH } = Dimensions.get('screen');
-	const { user } = useAuth();
 	const GENDER_OPTION_LIST = [
 		{ value: 'Male', displayText: 'Male', icon: 'mars' },
 		{ value: 'Female', displayText: 'Female', icon: 'venus' },
@@ -231,6 +236,12 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 
 				try {
 					const response = await updateUserProfile(payload);
+
+					// update state
+					updateUser(payload as unknown as UserSchemaType);
+
+					// clear the empty required fields
+					setAppState('emptyRequiredFields', []);
 
 					if (response.error) {
 						throw new Error(response.message);
