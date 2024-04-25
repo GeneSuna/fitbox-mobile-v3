@@ -4,7 +4,7 @@ import joinWaitlist from '@/services/session/joinWaitlist';
 import { config } from '@/theme/_config';
 import { Say } from '@/utils';
 import { ClassItemData } from '@/zustand/interface/SessionInterface';
-import { isNumber } from 'lodash';
+import { isEqual, isNumber } from 'lodash';
 import moment from 'moment';
 import { memo, useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -207,7 +207,9 @@ const AgendaItem = ({
 	);
 };
 
-export default memo(AgendaItem);
+export default memo(AgendaItem, (prevProps, nextProps) => {
+	return isEqual(prevProps.item, nextProps.item);
+});
 
 const styles = StyleSheet.create({
 	item: {
