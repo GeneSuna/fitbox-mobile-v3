@@ -170,7 +170,7 @@ const Inbox = () => {
 		const gymList = gyms.filter(g => g.id !== activeGymId);
 		gymList.unshift(activeGym);
 
-		if (!activeGym || !gymList.length) {
+		if (!activeGym || !gymList.length || gymList.length === 1) {
 			return null;
 		}
 
