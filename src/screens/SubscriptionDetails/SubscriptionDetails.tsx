@@ -1,45 +1,13 @@
-import { HR, Row, ScrollView, Spacer, Text } from '@/components/atoms';
+import { HR, ScrollView, Spacer, Text } from '@/components/atoms';
 import { goBack } from '@/navigators/NavigationRef';
 import { getSubscriptionDetails } from '@/services/subscription';
 import { config } from '@/theme/_config';
-import layout from '@/theme/layout';
 import { MenuStackNavigatorProps } from '@/types/navigation';
 import { SubscriptionDetailsType } from '@/types/schemas/subscription';
 import moment from 'moment';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, TextStyle, View } from 'react-native';
-
-type RowDetailTypes = {
-	title: string;
-	value: string | number;
-	lowercase?: boolean;
-};
-
-const RowDetail = ({ title, value, lowercase }: RowDetailTypes) => {
-	const valueStyles = {
-		flex: 1.5,
-		textTransform: lowercase ? 'lowercase' : 'capitalize',
-		marginLeft: 15,
-	};
-
-	return (
-		<Row
-			spacing="space-between"
-			style={{ marginVertical: config.metrics.rg }}
-		>
-			<Text size="md" color="darkgray" style={layout.flex_1}>
-				{title}:
-			</Text>
-			<Text size="md" color="darkgray" style={valueStyles as TextStyle}>
-				{value}
-			</Text>
-		</Row>
-	);
-};
-
-RowDetail.defaultProps = {
-	lowercase: false,
-};
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import SubscriptionRowDetail from './components/SubscriptionRowDetail';
 
 const SubscriptionDetails = ({
 	route,
@@ -109,42 +77,42 @@ const SubscriptionDetails = ({
 			<HR thickness={1} color="#F2F2F2" />
 
 			<View style={styles.mainDetailsStyle}>
-				<RowDetail title="Name" value={data?.name || ''} />
-				<RowDetail
+				<SubscriptionRowDetail title="Name" value={data?.name || ''} />
+				<SubscriptionRowDetail
 					title="Price"
 					value={`$${(Number(data?.price_in_cents) / 100).toFixed(
 						2,
 					)}`}
 				/>
-				<RowDetail
+				<SubscriptionRowDetail
 					title="1st Billing Date"
 					value={moment(data?.first_billing_date).format('DD/MM/YY')}
 				/>
-				<RowDetail
+				<SubscriptionRowDetail
 					title="Subscription Expires"
 					value={subscriptionExpiresValue}
 				/>
 				{data?.recurring_interval_unit !== '' && (
-					<RowDetail
+					<SubscriptionRowDetail
 						title="Billing Frequency"
 						value={billingFrequencyValue}
 					/>
 				)}
 
 				{data?.apply_transaction_fees_to_member === 1 && (
-					<RowDetail
+					<SubscriptionRowDetail
 						title="Transaction fees"
 						value="Added to invoice (in Stripe)"
 					/>
 				)}
 				{data?.sessions_count !== null && (
-					<RowDetail
+					<SubscriptionRowDetail
 						title="Sessions Remaining"
 						value={data?.sessions_count as number}
 					/>
 				)}
 				{data?.sessions_limit_frequency !== null && (
-					<RowDetail
+					<SubscriptionRowDetail
 						title="Resets"
 						value={data?.sessions_limit_frequency as string}
 					/>
@@ -157,19 +125,19 @@ const SubscriptionDetails = ({
 					</Text>
 
 					<View style={styles.suspendedDetailsStyle}>
-						<RowDetail
+						<SubscriptionRowDetail
 							title="Hold Start"
 							value={moment(data?.suspended_begin_date).format(
 								'DD/MM/YY',
 							)}
 						/>
-						<RowDetail
+						<SubscriptionRowDetail
 							title="Hold End"
 							value={moment(data?.suspended_until_date).format(
 								'DD/MM/YY',
 							)}
 						/>
-						<RowDetail
+						<SubscriptionRowDetail
 							title="Next Billing Date"
 							value={moment(data?.next_payment_date).format(
 								'DD/MM/YY',
