@@ -34,7 +34,13 @@ const MenuStackNavigator = () => {
 			<Stack.Screen name="ProfileMenu" component={ProfileMenu} />
 			<Stack.Screen name="AboutUs" component={AboutUs} />
 			<Stack.Screen name="MyDetails" component={MyDetails} />
-			<Stack.Screen name="Subscription" component={Subscription} />
+			<Stack.Screen
+				name="Subscription"
+				component={Subscription}
+				options={{
+					title: 'Subscription Information',
+				}}
+			/>
 			<Stack.Screen
 				name="SubscriptionDetails"
 				component={SubscriptionDetails}

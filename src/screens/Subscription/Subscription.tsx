@@ -6,7 +6,6 @@ import {
 } from '@/services/subscription';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import { MenuStackNavigatorProps } from '@/types/navigation';
 import { GetSubscriptionInfoType } from '@/types/schemas/response';
 import {
 	SubscriptionType,
@@ -15,17 +14,11 @@ import {
 import { Say } from '@/utils';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Switch } from 'react-native-paper';
 
-const Subscription = ({ navigation }: MenuStackNavigatorProps) => {
-	useLayoutEffect(() => {
-		navigation.setOptions({
-			title: 'Subscription Information',
-		});
-	}, []);
-
+const Subscription = () => {
 	// states
 	const [data, setData] = useState<GetSubscriptionInfoType>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
