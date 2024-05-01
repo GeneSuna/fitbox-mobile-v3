@@ -7,6 +7,8 @@ interface ApplicationStateInterface {
 	unreadMessages: number;
 	allowComments: boolean;
 	emptyRequiredFields: string[];
+	fromAcceptInvite: boolean;
+	setupSubscriptionId: null | number;
 }
 
 interface ApplicationInterface extends ApplicationStateInterface {

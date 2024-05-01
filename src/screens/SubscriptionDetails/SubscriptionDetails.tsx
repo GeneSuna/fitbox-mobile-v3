@@ -5,20 +5,11 @@ import { config } from '@/theme/_config';
 import { MenuStackNavigatorProps } from '@/types/navigation';
 import { SubscriptionDetailsType } from '@/types/schemas/subscription';
 import moment from 'moment';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import SubscriptionRowDetail from './components/SubscriptionRowDetail';
 
-const SubscriptionDetails = ({
-	route,
-	navigation,
-}: MenuStackNavigatorProps) => {
-	useLayoutEffect(() => {
-		navigation.setOptions({
-			title: 'Subscription Information',
-		});
-	}, []);
-
+const SubscriptionDetails = ({ route }: MenuStackNavigatorProps) => {
 	// states
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [data, setData] = useState<SubscriptionDetailsType>();

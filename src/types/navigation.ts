@@ -26,6 +26,7 @@ export type MenuStackParamList = {
 	MyDetails: undefined;
 	Subscription: undefined;
 	SubscriptionDetails: undefined;
+	SubscriptionSetup: undefined;
 };
 export type MenuStackNavigatorProps = StackScreenProps<MenuStackParamList>;
 
