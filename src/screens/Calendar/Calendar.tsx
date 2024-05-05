@@ -1,11 +1,19 @@
 import useAuth from '@/auth/hooks/useAuth';
 import { Loader } from '@/components/molecules';
+import { SafeScreen } from '@/components/template';
+import { getGymClasses, getGymVenues } from '@/services/gym';
 import { getScheduleList } from '@/services/session';
 import { config } from '@/theme/_config';
+import { GymVenueType } from '@/types/schemas/gym';
 import { Func } from '@/utils';
-import { VisibilityOptions } from '@/utils/Enum';
+import { FilterTypeEnum, VisibilityOptions } from '@/utils/Enum';
 import useStore from '@/zustand/Store';
-import { ClassItemData } from '@/zustand/interface/SessionInterface';
+import {
+	ClassFilter,
+	ClassItemData,
+	VenueFilter,
+} from '@/zustand/interface/SessionInterface';
+import { isArray } from 'lodash';
 import moment from 'moment';
 import { useCallback, useEffect, useState } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
@@ -15,6 +23,8 @@ import {
 	WeekCalendar,
 } from 'react-native-calendars';
 import AgendaItem from './components/AgendaItem';
+import CalendarFilterPanel from './components/CalendarFilterPanel';
+import CalendarFilterSelect from './components/CalendarFilterSelectPanel';
 
 const { height } = Dimensions.get('window');
 const { fonts } = config;
@@ -22,10 +32,22 @@ const { fonts } = config;
 const Calendar = () => {
 	const { user } = useAuth();
 
-	const { classes, setClasses, setActiveMonth } = useStore(state => ({
+	const {
+		classes,
+		classFilters,
+		venueFilters,
+		setClasses,
+		setActiveMonth,
+		setVenueFilters,
+		setClassFilters,
+	} = useStore(state => ({
 		classes: state.classes,
+		classFilters: state.classFilters,
+		venueFilters: state.venueFilters,
 		setClasses: state.setClasses,
 		setActiveMonth: state.setActiveMonth,
+		setVenueFilters: state.setVenueFilters,
+		setClassFilters: state.setClassFilters,
 	}));
 
 	const [initialLoading, setInitialLoading] = useState<boolean>(true);
@@ -35,7 +57,7 @@ const Calendar = () => {
 
 	const loadClasses = () => {
 		// loop through the whole week based on current date
-		const week = Array.from({ length: 8 }, (_, i) => {
+		const week = Array.from({ length: 9 }, (_, i) => {
 			return moment(currentDate)
 				.startOf('week')
 				.add(i, 'days')
@@ -112,7 +134,9 @@ const Calendar = () => {
 							start: moment(item.local_start).format('H:mm A'),
 							isSubscribed: Func.checkSubscription(item.bookable),
 							location: item.venue_id ? item.venue : undefined,
+							venueId: Number(item.venue_id),
 							startDate: item.local_start,
+							classId: item.class.id,
 							eventId: item.event_id,
 							isWaitlisted: false,
 							title: item.title,
@@ -133,8 +157,69 @@ const Calendar = () => {
 			});
 	};
 
+	const fetchFilterOptions = () => {
+		const selectedVenueIds = venueFilters
+			.filter(v => v.is_selected)
+			.map(v => v.id);
+		const selectedClassIds = classFilters
+			.filter(c => c.is_selected)
+			.map(c => c.id);
+
+		// fetch venues
+		getGymVenues()
+			.then(res => {
+				if (isArray(res)) {
+					const venueFilterList: VenueFilter[] = res.map(
+						(c: GymVenueType) => {
+							return {
+								...c,
+								is_selected:
+									selectedVenueIds.includes(c.id) || false,
+							};
+						},
+					);
+
+					// add "No location" filter
+					venueFilterList.unshift({
+						id: -1,
+						name: 'No location',
+						location: 'Show classes without a location',
+						is_selected: false,
+					});
+
+					// set venue filters
+					setVenueFilters(venueFilterList);
+				}
+			})
+			.catch(err => {
+				console.log(err);
+			});
+
+		getGymClasses()
+			.then(res => {
+				if (!res.error) {
+					const classFilterList: ClassFilter[] = res.data.map(c => {
+						return {
+							...c,
+							is_selected:
+								selectedClassIds.includes(c.id) || false,
+						};
+					});
+
+					// set class filters
+					setClassFilters(classFilterList);
+				} else {
+					throw new Error(res.message);
+				}
+			})
+			.catch(err => {
+				console.log('getGymClasses', err);
+			});
+	};
+
 	useEffect(() => {
 		setActiveMonth(moment(currentDate).format('MMMM'));
+		fetchFilterOptions();
 		void loadClasses();
 	}, [currentDate]);
 
@@ -151,24 +236,44 @@ const Calendar = () => {
 	}
 
 	return (
-		<CalendarProvider
-			date={moment().format('YYYY-MM-DD')}
-			showTodayButton
-			onDateChanged={date => setCurrentDate(date)}
-			todayBottomMargin={16}
-		>
-			<WeekCalendar firstDay={1} allowShadow={false} />
-			<AgendaList
-				sections={classes}
-				renderItem={renderItem}
-				sectionStyle={styles.section}
-				viewOffset={-90}
-				windowSize={100}
-				// infiniteListProps={{
-				// 	visibleIndicesChangedDebounce: 250,
-				// }}
-			/>
-		</CalendarProvider>
+		<SafeScreen>
+			<CalendarProvider
+				date={moment().format('YYYY-MM-DD')}
+				showTodayButton
+				onDateChanged={date => setCurrentDate(date)}
+				todayBottomMargin={16}
+				theme={{
+					todayButtonTextColor: fonts.colors.brand,
+					todayButtonFontWeight: 'bold',
+				}}
+			>
+				<WeekCalendar
+					firstDay={1}
+					allowShadow={false}
+					theme={{
+						selectedDayBackgroundColor: fonts.colors.brand,
+						todayTextColor: fonts.colors.brand,
+					}}
+				/>
+				<AgendaList
+					sections={classes}
+					renderItem={renderItem}
+					sectionStyle={styles.section}
+					viewOffset={-90}
+					windowSize={100}
+					removeClippedSubviews
+					keyExtractor={(item: ClassItemData) => String(item.eventId)}
+					// infiniteListProps={{
+					// 	visibleIndicesChangedDebounce: 250,
+					// }}
+				/>
+			</CalendarProvider>
+
+			{/* Modals */}
+			<CalendarFilterPanel />
+			<CalendarFilterSelect type={FilterTypeEnum.CLASS} />
+			<CalendarFilterSelect type={FilterTypeEnum.VENUE} />
+		</SafeScreen>
 	);
 };
 

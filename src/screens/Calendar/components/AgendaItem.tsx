@@ -3,10 +3,11 @@ import attendSession from '@/services/session/attendSession';
 import joinWaitlist from '@/services/session/joinWaitlist';
 import { config } from '@/theme/_config';
 import { Say } from '@/utils';
+import useStore from '@/zustand/Store';
 import { ClassItemData } from '@/zustand/interface/SessionInterface';
 import { isEqual, isNumber } from 'lodash';
 import moment from 'moment';
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 const { metrics, fonts } = config;
@@ -32,8 +33,14 @@ const AgendaItem = ({
 		eventId,
 		waitlistBtn,
 		classId,
+		venueId,
 	},
 }: AgendaItemProps) => {
+	const { classFilters, venueFilters } = useStore(e => ({
+		classFilters: e.classFilters,
+		venueFilters: e.venueFilters,
+	}));
+
 	const [isBooking, setIsBooking] = useState<boolean>(false);
 	const [isAttending, setIsAttending] = useState<boolean>(!!isAttendingProp);
 
@@ -175,7 +182,31 @@ const AgendaItem = ({
 		return null;
 	}, [isBooking]);
 
-	if (isLoading || hideSchedule) {
+	const isFiltered = useMemo(() => {
+		const useClassFilters = classFilters.filter(
+			filter => filter.is_selected,
+		);
+
+		const useVenueFilters = venueFilters.filter(
+			filter => filter.is_selected,
+		);
+
+		if (useClassFilters.length === 0 && useVenueFilters.length === 0) {
+			return false;
+		}
+
+		const classFilter = useClassFilters.some(
+			filter => filter.id !== classId,
+		);
+
+		const venueFilter = useVenueFilters.some(
+			filter => filter.id !== venueId && filter.id !== -1,
+		);
+
+		return classFilter || venueFilter;
+	}, [classFilters, venueFilters]);
+
+	if (isLoading || hideSchedule || isFiltered) {
 		return null;
 	}
 

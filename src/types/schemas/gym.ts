@@ -21,3 +21,16 @@ export const GymInfoSchema = z.object({
 	allow_leaderboards_comment: boolOrOneZero,
 	online_store: z.string(),
 });
+
+export type GymVenueType = z.infer<typeof GymVenueSchema>;
+export const GymVenueSchema = z.object({
+	id: z.number(),
+	name: z.string(),
+	location: z.string(),
+});
+
+export type GymClassType = z.infer<typeof GymClassSchema>;
+export const GymClassSchema = z.object({
+	id: z.number(),
+	name: z.string(),
+});
