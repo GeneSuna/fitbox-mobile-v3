@@ -4,6 +4,7 @@ import {
 	ProfileMenu,
 	Subscription,
 	SubscriptionDetails,
+	SubscriptionSetup,
 } from '@/screens';
 import MyDetails from '@/screens/MyDetails/MyDetails';
 import { useTheme } from '@/theme';
@@ -44,6 +45,13 @@ const MenuStackNavigator = () => {
 			<Stack.Screen
 				name="SubscriptionDetails"
 				component={SubscriptionDetails}
+				options={{
+					title: 'Subscription Information',
+				}}
+			/>
+			<Stack.Screen
+				name="SubscriptionSetup"
+				component={SubscriptionSetup}
 			/>
 		</Stack.Navigator>
 	);

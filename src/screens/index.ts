@@ -13,3 +13,4 @@ export { default as Shop } from './Shop/Shop';
 export { default as Startup } from './Startup/Startup';
 export { default as Subscription } from './Subscription/Subscription';
 export { default as SubscriptionDetails } from './SubscriptionDetails/SubscriptionDetails';
+export { default as SubscriptionSetup } from './SubscriptionSetup/SubscriptionSetup';

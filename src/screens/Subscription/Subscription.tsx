@@ -61,7 +61,9 @@ const Subscription = () => {
 			<Button
 				title="Add New Subscription"
 				labelStyle={styles.addSubscriptionButtonLabelStyle}
-				// to do: navigate to subscription setup
+				onPress={() =>
+					navigate('SubscriptionSetup', { fromSubscription: true })
+				}
 			/>
 		);
 	};

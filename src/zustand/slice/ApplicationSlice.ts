@@ -16,6 +16,8 @@ const createApplicationSlice: StateCreator<
 	allowComments: false,
 	appForceUpdate: false,
 	emptyRequiredFields: [],
+	fromAcceptInvite: false,
+	setupSubscriptionId: null,
 
 	setAppState: (key: string, value: unknown) => {
 		const prevState = getState();
