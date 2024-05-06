@@ -1,22 +1,56 @@
 import { Spacer } from '@/components/atoms';
 import HeaderButtonGroup from '@/components/template/Header/HeaderButtonGroup';
-import { Say } from '@/utils';
+import useStore from '@/zustand/Store';
+import { ModalEnum } from '@/zustand/interface/ModalInterface';
+import { useMemo } from 'react';
+import { StyleSheet } from 'react-native';
+import { Badge } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CalendarHeaderRightComponent = () => {
-	const toggleFilter = () => Say.ok('Coming soon!');
+	const { toggleModal, classFilters, venueFilters } = useStore(state => ({
+		classFilters: state.classFilters,
+		venueFilters: state.venueFilters,
+		toggleModal: state.toggleModal,
+	}));
+
+	const numberOfFilters = useMemo(() => {
+		const numOfClassFilters = classFilters.filter(
+			e => e.is_selected,
+		).length;
+		const numOfVenueFilters = venueFilters.filter(
+			e => e.is_selected,
+		).length;
+
+		return numOfClassFilters + numOfVenueFilters;
+	}, [classFilters, venueFilters]);
 
 	return (
 		<HeaderButtonGroup>
 			<Icon
 				name="filter-outline"
-				size={20}
+				size={25}
 				color="white"
-				onPress={toggleFilter}
+				onPress={() => toggleModal(ModalEnum.CALENDAR_FILTER)}
 			/>
+			<Badge
+				visible={numberOfFilters > 0}
+				style={styles.badgeStyle}
+				size={16}
+			>
+				{numberOfFilters}
+			</Badge>
 			<Spacer horizontal />
 		</HeaderButtonGroup>
 	);
 };
+
+const styles = StyleSheet.create({
+	badgeStyle: {
+		position: 'absolute',
+		top: -7,
+		right: 5,
+	},
+});
 
 export default CalendarHeaderRightComponent;

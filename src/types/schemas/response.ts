@@ -1,5 +1,10 @@
 import { z } from 'zod';
-import { GymInfoSchema, GymSchema } from './gym';
+import {
+	GymClassSchema,
+	GymInfoSchema,
+	GymSchema,
+	GymVenueSchema,
+} from './gym';
 import { MessageItemSchema } from './message';
 import { BookedSessionSchema, SessionSchema } from './session';
 import {
@@ -130,3 +135,7 @@ export const SaveSubscriptionSchema = z.object({
 		subscription: SubscriptionSaveSchema,
 	}),
 });
+export const GetGymVenuesResponseSchema = z.array(GymVenueSchema);
+export const GeyGymClassesResponseSchema = apiResponseSchema(
+	z.array(GymClassSchema),
+);

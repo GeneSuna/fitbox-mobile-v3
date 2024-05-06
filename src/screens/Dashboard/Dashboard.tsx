@@ -157,7 +157,7 @@ const Dashboard = () => {
 
 	const getUpcomingSessions = async () => {
 		setLoading(true);
-		let memberSessions: ParsedBookedSessionSchemaType[] = [];
+		const memberSessions: ParsedBookedSessionSchemaType[] = [];
 
 		try {
 			// let res = await RestService.getNextSessions(selectedClassIds.length ? selectedClassIds.join() : null);
@@ -195,9 +195,6 @@ const Dashboard = () => {
 					const startB = moment(sessionB.event.start_datetime);
 					return startA && startB && startA > startB ? 1 : -1;
 				});
-
-				// get only the first 3 upcoming sessions
-				memberSessions = memberSessions.splice(0, 3);
 			}
 		} catch (err) {
 			Say.err(String(err));
@@ -291,11 +288,6 @@ const Dashboard = () => {
 										name: user?.user_data.first_name ?? '',
 									})}
 								</Text>
-								<Text size="md" color="gray400">
-									{t('dashboard:sessions.member.subtitle', {
-										count: upcomingSessions.length,
-									})}
-								</Text>
 							</View>
 
 							{showSwitchBtn ? (
@@ -309,13 +301,28 @@ const Dashboard = () => {
 
 						{!loading && upcomingSessions.length > 0 && (
 							<View style={styles.bookedSessionsContainer}>
-								{upcomingSessions.map((session, i) => (
-									<BookedSessionCard
-										key={i}
-										data={session}
+								{upcomingSessions // show only 3
+									.slice(0, 3)
+									.map((session, i) => (
+										<BookedSessionCard
+											key={i}
+											data={session}
+											onPress={() => {}}
+										/>
+									))}
+
+								{upcomingSessions.length > 3 && (
+									<TouchableOpacity
+										style={styles.viewMoreButton}
 										onPress={() => {}}
-									/>
-								))}
+									>
+										<Text bold center>
+											{`View ${
+												upcomingSessions.length - 3
+											} more`}
+										</Text>
+									</TouchableOpacity>
+								)}
 							</View>
 						)}
 
@@ -416,6 +423,11 @@ const styles = StyleSheet.create({
 	headerImageStyle: {
 		width: 74,
 		height: 74,
+	},
+	viewMoreButton: {
+		alignItems: 'center',
+		padding: 15,
+		backgroundColor: 'white',
 	},
 });
 

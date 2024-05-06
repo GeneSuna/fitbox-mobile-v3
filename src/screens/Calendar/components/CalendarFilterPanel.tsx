@@ -1,0 +1,147 @@
+import { Button, Row, Spacer, Text } from '@/components/atoms';
+import { BottomPanel } from '@/components/molecules';
+import { config } from '@/theme/_config';
+import layout from '@/theme/layout';
+import { FilterTypeEnum, ModalEnum } from '@/utils/Enum';
+import useStore from '@/zustand/Store';
+import { capitalize } from 'lodash';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const { metrics, fonts } = config;
+
+const CalendarFilterPanel = () => {
+	const {
+		visible,
+		classFilters,
+		venueFilters,
+		onClose,
+		onReset,
+		toggleModal,
+		clearFilter,
+	} = useStore(state => ({
+		onClose: () => state.toggleModal(ModalEnum.CALENDAR_FILTER, false),
+		visible: state[ModalEnum.CALENDAR_FILTER],
+		toggleModal: state.toggleModal,
+		onReset: () => state.clearFilters(),
+		clearFilter: state.clearFilters,
+		classFilters: state.classFilters,
+		venueFilters: state.venueFilters,
+	}));
+
+	const getFilterTitle = (filterType: FilterTypeEnum) =>
+		capitalize(filterType === FilterTypeEnum.VENUE ? 'Location' : 'Class');
+
+	const renderFilterOptions = (filterType: FilterTypeEnum) => {
+		const iconName =
+			filterType === FilterTypeEnum.VENUE
+				? 'map-marker-outline'
+				: 'calendar-month-outline';
+		const optionTitle = getFilterTitle(filterType);
+
+		const filters = (
+			filterType === FilterTypeEnum.VENUE ? venueFilters : classFilters
+		).filter(item => item.is_selected);
+
+		const renderFilters =
+			filters.length > 0
+				? filters.map(
+						(c, cIndex) =>
+							c.name +
+							(cIndex !== filters.length - 1 ? ', ' : ''),
+				  )
+				: 'All';
+
+		const renderClearIcon = filters.length > 0 && (
+			<Icon
+				name="close"
+				size={fonts.metrics.xl}
+				color={fonts.colors.darkgray}
+				onPress={() => clearFilter(filterType)}
+			/>
+		);
+
+		return (
+			<TouchableOpacity
+				onPress={() => {
+					const useModal =
+						filterType === FilterTypeEnum.VENUE
+							? ModalEnum.VENUE_FILTER
+							: ModalEnum.CLASS_FILTER;
+
+					toggleModal(useModal);
+				}}
+			>
+				<Row align="center">
+					<Icon
+						name={iconName}
+						size={fonts.metrics.xl}
+						color={fonts.colors.darkgray}
+					/>
+					<Spacer horizontal size="rg" />
+					<View style={layout.flex_1}>
+						<Text size="md" transform="capitalize">
+							{optionTitle}
+						</Text>
+						<Text
+							size="sm"
+							style={{
+								color: filters.length
+									? fonts.colors.info
+									: fonts.colors.darkgray,
+							}}
+						>
+							{renderFilters}
+						</Text>
+					</View>
+					<Spacer horizontal size="rg" />
+					{renderClearIcon}
+				</Row>
+			</TouchableOpacity>
+		);
+	};
+
+	return (
+		<BottomPanel
+			title="Class Filter"
+			visible={visible}
+			onClose={onClose}
+			rightTitle={
+				<TouchableOpacity onPress={onReset}>
+					<Text size="md" color="darkgray">
+						Reset
+					</Text>
+				</TouchableOpacity>
+			}
+		>
+			<View style={styles.container}>
+				{renderFilterOptions(FilterTypeEnum.CLASS)}
+
+				<Spacer />
+
+				{venueFilters.length > 0
+					? renderFilterOptions(FilterTypeEnum.VENUE)
+					: null}
+
+				<Button
+					onPress={onClose}
+					style={styles.buttonStyle}
+					title="Apply Filter"
+					variant="info"
+				/>
+			</View>
+		</BottomPanel>
+	);
+};
+
+export { FilterTypeEnum };
+export default CalendarFilterPanel;
+
+const styles = StyleSheet.create({
+	container: {
+		padding: metrics.md,
+	},
+	buttonStyle: {
+		marginTop: metrics.md,
+	},
+});

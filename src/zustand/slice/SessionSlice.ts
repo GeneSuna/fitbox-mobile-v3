@@ -1,8 +1,8 @@
+import { FilterTypeEnum } from '@/utils/Enum';
 import { produce } from 'immer';
 import moment from 'moment';
 import type { StateCreator } from 'zustand';
 import type SessionInterface from '../interface/SessionInterface';
-import { ClassItemData } from '../interface/SessionInterface';
 
 const createSessionSlice: StateCreator<
 	SessionInterface,
@@ -12,12 +12,14 @@ const createSessionSlice: StateCreator<
 > = (setState, getState) => ({
 	activeMonth: moment().format('YYYY-MM-DD'),
 	classes: [],
+	venueFilters: [],
+	classFilters: [],
 
-	setActiveMonth: (date: string) => {
+	setActiveMonth: date => {
 		setState({ activeMonth: date });
 	},
 
-	setClasses: (date: string, data: ClassItemData[]) => {
+	setClasses: (date, data) => {
 		// prepare new class item
 		const newClassItem = {
 			title: date,
@@ -53,6 +55,37 @@ const createSessionSlice: StateCreator<
 					classes: [newClassItem, ...classes],
 				});
 			}
+		}
+	},
+
+	setVenueFilters: data => {
+		setState({ venueFilters: data });
+	},
+
+	setClassFilters: data => {
+		setState({ classFilters: data });
+	},
+
+	clearFilters: filterType => {
+		// cleared filters
+		const clearedClassFilters = getState().classFilters.map(item => ({
+			...item,
+			is_selected: false,
+		}));
+		const clearedVenueFilters = getState().venueFilters.map(item => ({
+			...item,
+			is_selected: false,
+		}));
+
+		if (filterType === FilterTypeEnum.VENUE) {
+			setState({ venueFilters: clearedVenueFilters });
+		} else if (filterType === FilterTypeEnum.CLASS) {
+			setState({ classFilters: clearedClassFilters });
+		} else {
+			setState({
+				venueFilters: clearedVenueFilters,
+				classFilters: clearedClassFilters,
+			});
 		}
 	},
 });

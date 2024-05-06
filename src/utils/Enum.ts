@@ -1,3 +1,16 @@
+enum ModalEnum {
+	CALENDAR_FILTER = 'calendarFilterModal',
+	NEW_MODAL = 'newModal',
+	CLASS_FILTER = 'classFilterModal',
+	VENUE_FILTER = 'venueFilterModal',
+	// add more modal names here
+}
+
+enum FilterTypeEnum {
+	CLASS = 'class',
+	VENUE = 'venue',
+}
+
 enum TeamAvatarSize {
 	sm = 35,
 	md = 74,
@@ -11,4 +24,4 @@ enum VisibilityOptions {
 	SUBSCRIBED = 2,
 }
 
-export { TeamAvatarSize, VisibilityOptions };
+export { FilterTypeEnum, ModalEnum, TeamAvatarSize, VisibilityOptions };

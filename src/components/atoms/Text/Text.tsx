@@ -13,6 +13,7 @@ interface TextProps extends ComponentProps<typeof Txt> {
 	center?: boolean;
 	children: React.ReactNode;
 	compact?: boolean;
+	transform?: 'capitalize' | 'uppercase' | 'lowercase';
 }
 
 const Text = ({
@@ -22,6 +23,7 @@ const Text = ({
 	center,
 	children,
 	style,
+	transform,
 	...rest
 }: TextProps) => {
 	const { fonts } = useTheme();
@@ -35,6 +37,9 @@ const Text = ({
 
 		// center text
 		...(center ? { textAlign: 'center' } : {}),
+
+		// text transform
+		...(transform ? { textTransform: transform } : {}),
 
 		// compact
 		...(rest.compact
@@ -68,6 +73,7 @@ Text.defaultProps = {
 	bold: false,
 	center: false,
 	compact: false,
+	transform: undefined,
 };
 
 export type { FontColors, FontSizeMetrics };
