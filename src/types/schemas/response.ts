@@ -118,23 +118,19 @@ export type GetSubscriptionDetailsType = z.infer<
 	typeof GetSubscriptionDetailsSchema
 >;
 
-export const GetUserSubscriptionProductsSchema = z.object({
-	error: z.boolean(),
-	message: z.string(),
-	data: z.array(UserSubscriptionProductsSchema),
-});
+export const GetUserSubscriptionProductsSchema = apiResponseSchema(
+	z.array(UserSubscriptionProductsSchema),
+);
 export type GetUserSubscriptionProductsType = z.infer<
 	typeof GetUserSubscriptionProductsSchema
 >;
 
-export const SaveSubscriptionSchema = z.object({
-	error: z.boolean(),
-	message: z.string(),
-	data: z.object({
+export const SaveSubscriptionSchema = apiResponseSchema(
+	z.object({
 		product: UserSubscriptionProductsSchema,
 		subscription: SubscriptionSaveSchema,
 	}),
-});
+);
 export const GetGymVenuesResponseSchema = z.array(GymVenueSchema);
 export const GeyGymClassesResponseSchema = apiResponseSchema(
 	z.array(GymClassSchema),
