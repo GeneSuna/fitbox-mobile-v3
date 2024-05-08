@@ -6,6 +6,12 @@ import {
 	GymVenueSchema,
 } from './gym';
 import { MessageItemSchema } from './message';
+import {
+	CardDetailsSchema,
+	PaymentInfoDataSchema,
+	PaymentIntentSchema,
+	PaymentMethodSchema,
+} from './payment';
 import { BookedSessionSchema, SessionSchema } from './session';
 import {
 	SubscriptionDetailsSchema,
@@ -135,3 +141,14 @@ export const GetGymVenuesResponseSchema = z.array(GymVenueSchema);
 export const GeyGymClassesResponseSchema = apiResponseSchema(
 	z.array(GymClassSchema),
 );
+
+export const GetPaymentInfoSchema = apiResponseSchema(PaymentInfoDataSchema);
+
+export const SetupPaymentIntentSchema = z.object({
+	message: z.string(),
+	success: z.boolean(),
+});
+
+export const GetPaymentMethodSchema = PaymentMethodSchema;
+export const StripeGetCardDetails = CardDetailsSchema;
+export const SetupPaymentIntent = PaymentIntentSchema;

@@ -1,3 +1,5 @@
+import { UserSchemaType } from '@/types/schemas/user';
+
 interface ApplicationStateInterface {
 	appForceUpdate: boolean;
 	allowLeaderboards: boolean;
@@ -9,6 +11,7 @@ interface ApplicationStateInterface {
 	emptyRequiredFields: string[];
 	fromAcceptInvite: boolean;
 	setupSubscriptionId: null | number;
+	user: UserSchemaType | null;
 }
 
 interface ApplicationInterface extends ApplicationStateInterface {

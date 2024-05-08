@@ -144,13 +144,13 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 		})();
 	}, []);
 
-	// include: isFree = false
 	const handleSkip = async (isFree = false) => {
 		if (fromSubscription) {
 			navigation.pop();
 			return false;
 		}
 
+		// TODO:
 		// below to be added once SwitchUserScreen will be created where we are initializing the stored value in Asyncstorage from the switchAccount endpoint
 		// get stored value from switchUser endpoint in AsyncStorage
 
@@ -160,6 +160,7 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 
 		setAppState('fromAcceptInvite', false);
 
+		// TODO:
 		// update the storage and navigate to AuthLoading
 	};
 
@@ -329,8 +330,8 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 														{
 															text: 'Add payment details',
 															onPress: () =>
-																console.log(
-																	'Navigate to payment Information',
+																navigation.navigate(
+																	'PaymentInformation',
 																),
 														},
 														{

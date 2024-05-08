@@ -29,7 +29,12 @@ export const UserSchema = z.object({
 	has_waived_subscriptions: boolOrOneZero,
 	has_paid_subscriptions: boolOrOneZero,
 	waiver_accepted: boolOrOneZero,
-	has_payment_details: boolOrOneZero,
+	has_payment_details: z.union([
+		z.boolean(),
+		z.string(),
+		z.literal(1),
+		z.literal(0),
+	]),
 	is_staff: boolOrOneZero,
 	notice: z.string(),
 	last_login: z.string(),

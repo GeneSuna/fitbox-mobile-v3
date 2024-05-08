@@ -52,6 +52,9 @@ const ProfileMenu = ({ navigation }: MenuStackNavigatorProps) => {
 			case 'subscription':
 				navigation.navigate('Subscription');
 				break;
+			case 'payments':
+				navigation.navigate('PaymentInformation');
+				break;
 			default:
 				Alert.alert('Oops!', 'Coming soon');
 				break;

@@ -7,6 +7,7 @@ export { default as Inbox } from './Inbox/Inbox';
 export { default as Landing } from './Landing/Landing';
 export { default as Login } from './Login/Login';
 export { default as Menu } from './Menu/Menu';
+export { default as PaymentInformation } from './PaymentInformation/PaymentInformation';
 export { default as ProfileMenu } from './ProfileMenu/ProfileMenu';
 export { default as ResetPassword } from './ResetPassword/ResetPassword';
 export { default as Shop } from './Shop/Shop';

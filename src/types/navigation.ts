@@ -27,6 +27,9 @@ export type MenuStackParamList = {
 	Subscription: undefined;
 	SubscriptionDetails: undefined;
 	SubscriptionSetup: undefined;
+	PaymentInformation: undefined;
+	PaymentUpdate: undefined;
+	StripeSuccess: undefined;
 };
 export type MenuStackNavigatorProps = StackScreenProps<MenuStackParamList>;
 
