@@ -125,42 +125,49 @@ const Subscription = () => {
 		const paddingHorizontal = id === 'transactions' ? 33 : 0;
 		const marginHorizontal = id === 'transactions' ? 33 : 0;
 		return (
-			<View>
-				<TouchableOpacity onPress={() => handleToggleSection(id)}>
-					<Row
-						spacing="space-between"
-						align="center"
-						style={{
-							paddingHorizontal,
-						}}
-					>
-						<Text size="md" color="darkgray">
-							{title}
-						</Text>
-						<Icon
-							name={
-								isSectionToggled ? 'chevron-up' : 'chevron-down'
-							}
-							size={config.metrics.md}
-							color={config.backgrounds.darkgray}
-						/>
-					</Row>
-				</TouchableOpacity>
-				{isSectionToggled && (
-					<>
-						<Spacer size={id === 'transactions' ? 'lg' : 'xs'} />
+			data &&
+			!isEmpty(data[id]) && (
+				<View>
+					<TouchableOpacity onPress={() => handleToggleSection(id)}>
+						<Row
+							spacing="space-between"
+							align="center"
+							style={{
+								paddingHorizontal,
+							}}
+						>
+							<Text size="md" color="darkgray">
+								{title}
+							</Text>
+							<Icon
+								name={
+									isSectionToggled
+										? 'chevron-up'
+										: 'chevron-down'
+								}
+								size={config.metrics.md}
+								color={config.backgrounds.darkgray}
+							/>
+						</Row>
+					</TouchableOpacity>
+					{isSectionToggled && (
+						<>
+							<Spacer
+								size={id === 'transactions' ? 'lg' : 'xs'}
+							/>
 
-						{renderCollapsibleSubscriptionsItemList(id)}
-					</>
-				)}
-				<HR
-					thickness={1}
-					color="#F2F2F2"
-					style={{
-						marginHorizontal,
-					}}
-				/>
-			</View>
+							{renderCollapsibleSubscriptionsItemList(id)}
+						</>
+					)}
+					<HR
+						thickness={1}
+						color="#F2F2F2"
+						style={{
+							marginHorizontal,
+						}}
+					/>
+				</View>
+			)
 		);
 	};
 
