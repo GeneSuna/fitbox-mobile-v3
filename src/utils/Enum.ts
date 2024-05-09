@@ -24,4 +24,15 @@ enum VisibilityOptions {
 	SUBSCRIBED = 2,
 }
 
-export { FilterTypeEnum, ModalEnum, TeamAvatarSize, VisibilityOptions };
+enum PaymentGateways {
+	CASH = 'cash',
+	BANK_TRANSFER = 'bank_transfer',
+}
+
+export {
+	FilterTypeEnum,
+	ModalEnum,
+	PaymentGateways,
+	TeamAvatarSize,
+	VisibilityOptions
+};

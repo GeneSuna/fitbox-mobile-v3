@@ -7,10 +7,9 @@ import getUserGymInfo from '@/services/users/getUserGymInfo';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { SubscriptionType } from '@/types/schemas/subscription';
-import { UserSchemaType } from '@/types/schemas/user';
 import { Say } from '@/utils';
+import { PaymentGateways } from '@/utils/Enum';
 import useStore from '@/zustand/Store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -33,9 +32,9 @@ type QueryParamsTypes = {
 };
 
 const CardInfoScreen = () => {
-	const { user } = useAuth();
+	const { user, updateUser } = useAuth();
+
 	const navigation = useNavigation();
-	const skipPaymentGateways = ['cash', 'bank_transfer'];
 	const { setAppState } = useStore(state => ({
 		setAppState: state.setAppState,
 	}));
@@ -77,7 +76,11 @@ const CardInfoScreen = () => {
 
 				const { payment_gateway: paymentGateway } = currentSubscription;
 
-				if (skipPaymentGateways.includes(paymentGateway as string)) {
+				if (
+					Object.values(PaymentGateways).includes(
+						paymentGateway as PaymentGateways,
+					)
+				) {
 					setState({ ...state, allowSkip: false });
 				}
 			}
@@ -111,49 +114,29 @@ const CardInfoScreen = () => {
 		}
 	};
 
-	const getUserInfo = async () => {
-		const session = await AsyncStorage.getItem('session');
+	const handleskip = () => {
+		const session = user?.user_data;
 
-		if (session === null) {
-			return null;
-		}
-		try {
-			const sessionFromStorage = JSON.parse(session) as UserSchemaType;
-			return sessionFromStorage;
-		} catch (e) {
-			console.log('error: ', e);
-			return null;
+		if (session) {
+			session.has_payment_details = 'skipped';
+
+			updateUser(session);
+			setAppState('user', session);
+			// TODO: create and navigate to AuthLoading
+			// navigate('AuthLoading')
 		}
 	};
 
-	const handleskip = async () => {
-		const userInStorage = (await getUserInfo()) as UserSchemaType;
-
-		userInStorage.has_payment_details = 'skipped';
-
-		await AsyncStorage.setItem('session', JSON.stringify(userInStorage));
-		setAppState('user', userInStorage);
-
-		// TODO: create and navigate to AuthLoading
-		// navigate('AuthLoading')
-	};
-
-	const onSuccessCallback = async () => {
+	const onSuccessCallback = () => {
 		setState({ ...state, isLoading: true });
 
-		const session = await AsyncStorage.getItem('session');
-
-		let sessionUser: UserSchemaType;
+		const session = user?.user_data;
 
 		try {
 			if (session) {
-				sessionUser = JSON.parse(session) as UserSchemaType;
-				sessionUser.has_payment_details = 'skipped';
-				await AsyncStorage.setItem(
-					'session',
-					JSON.stringify(sessionUser),
-				);
-				setAppState('user', sessionUser);
+				session.has_payment_details = 'skipped';
+				updateUser(session);
+				setAppState('user', session);
 			}
 		} catch (e) {
 			console.log('error: ', e);

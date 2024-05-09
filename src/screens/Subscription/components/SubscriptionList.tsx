@@ -25,7 +25,7 @@ const SubscriptionList = ({
 	const renderAddSubscriptionButton = () => {
 		return (
 			<Button
-				title="Add New Subscription"
+				title="Add New Membership"
 				labelStyle={styles.addSubscriptionButtonLabelStyle}
 				onPress={() =>
 					navigate('SubscriptionSetup', { fromSubscription: true })

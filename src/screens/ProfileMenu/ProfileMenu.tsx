@@ -22,7 +22,7 @@ const menuOptions = [
 	},
 	{
 		id: 'subscription',
-		name: 'Subscription',
+		name: 'Memberships',
 		icon: 'file-invoice-dollar',
 		context: 'any',
 		role: 'any',

@@ -17,6 +17,7 @@ import {
 	UserSubscriptionProductsType,
 } from '@/types/schemas/subscription';
 import { Say } from '@/utils';
+import { PaymentGateways } from '@/utils/Enum';
 import useStore from '@/zustand/Store';
 import { isEmpty, isNil } from 'lodash';
 import moment from 'moment';
@@ -56,7 +57,6 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 			setAppState: state.setAppState,
 		}),
 	);
-	const skipPaymentGateways = ['cash', 'bank_transfer'];
 	const initialStartDate = moment().format('YYYY-MM-DD');
 	const { user } = useAuth();
 	const { fromSubscription }: { fromSubscription?: boolean } =
@@ -314,8 +314,8 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 										!fromSubscription;
 
 									const isEnabled =
-										skipPaymentGateways.includes(
-											payment_gateway as string,
+										Object.values(PaymentGateways).includes(
+											payment_gateway as PaymentGateways,
 										) ||
 										isFreeType ||
 										hasValidPaymentDetails;

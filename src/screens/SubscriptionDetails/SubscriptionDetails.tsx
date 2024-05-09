@@ -63,7 +63,7 @@ const SubscriptionDetails = ({ route }: MenuStackNavigatorProps) => {
 		<ScrollView contentContainerStyle={{ padding: config.metrics.md }}>
 			<Spacer size="sm" />
 			<Text size="md" center bold color="darkgray">
-				Subscription Details:
+				Membership Details:
 			</Text>
 			<HR thickness={1} color="#F2F2F2" />
 
@@ -80,7 +80,7 @@ const SubscriptionDetails = ({ route }: MenuStackNavigatorProps) => {
 					value={moment(data?.first_billing_date).format('DD/MM/YY')}
 				/>
 				<SubscriptionRowDetail
-					title="Subscription Expires"
+					title="Membership Expires"
 					value={subscriptionExpiresValue}
 				/>
 				{data?.recurring_interval_unit !== '' && (

@@ -42,14 +42,14 @@ const MenuStackNavigator = () => {
 				name="Subscription"
 				component={Subscription}
 				options={{
-					title: 'Subscription Information',
+					title: 'Membership Information',
 				}}
 			/>
 			<Stack.Screen
 				name="SubscriptionDetails"
 				component={SubscriptionDetails}
 				options={{
-					title: 'Subscription Information',
+					title: 'Membership Information',
 				}}
 			/>
 			<Stack.Screen

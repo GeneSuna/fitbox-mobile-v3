@@ -179,7 +179,7 @@ const Subscription = () => {
 		<ScrollView contentContainerStyle={{ padding: config.metrics.md }}>
 			<Spacer size="sm" />
 			<Text size="md" center bold color="darkgray">
-				Your Subscription Details
+				Your Membership Details
 			</Text>
 			<HR thickness={1} color="#F2F2F2" />
 
