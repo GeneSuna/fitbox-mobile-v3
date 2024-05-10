@@ -17,6 +17,7 @@ import {
 	UserSubscriptionProductsType,
 } from '@/types/schemas/subscription';
 import { Say } from '@/utils';
+import { PaymentGateways } from '@/utils/Enum';
 import useStore from '@/zustand/Store';
 import { isEmpty, isNil } from 'lodash';
 import moment from 'moment';
@@ -56,7 +57,6 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 			setAppState: state.setAppState,
 		}),
 	);
-	const skipPaymentGateways = ['cash', 'bank_transfer'];
 	const initialStartDate = moment().format('YYYY-MM-DD');
 	const { user } = useAuth();
 	const { fromSubscription }: { fromSubscription?: boolean } =
@@ -144,13 +144,13 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 		})();
 	}, []);
 
-	// include: isFree = false
 	const handleSkip = async (isFree = false) => {
 		if (fromSubscription) {
 			navigation.pop();
 			return false;
 		}
 
+		// TODO:
 		// below to be added once SwitchUserScreen will be created where we are initializing the stored value in Asyncstorage from the switchAccount endpoint
 		// get stored value from switchUser endpoint in AsyncStorage
 
@@ -160,6 +160,7 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 
 		setAppState('fromAcceptInvite', false);
 
+		// TODO:
 		// update the storage and navigate to AuthLoading
 	};
 
@@ -313,8 +314,8 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 										!fromSubscription;
 
 									const isEnabled =
-										skipPaymentGateways.includes(
-											payment_gateway as string,
+										Object.values(PaymentGateways).includes(
+											payment_gateway as PaymentGateways,
 										) ||
 										isFreeType ||
 										hasValidPaymentDetails;
@@ -329,8 +330,8 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 														{
 															text: 'Add payment details',
 															onPress: () =>
-																console.log(
-																	'Navigate to payment Information',
+																navigation.navigate(
+																	'PaymentInformation',
 																),
 														},
 														{

@@ -22,7 +22,7 @@ const menuOptions = [
 	},
 	{
 		id: 'subscription',
-		name: 'Subscription',
+		name: 'Memberships',
 		icon: 'file-invoice-dollar',
 		context: 'any',
 		role: 'any',
@@ -51,6 +51,9 @@ const ProfileMenu = ({ navigation }: MenuStackNavigatorProps) => {
 				break;
 			case 'subscription':
 				navigation.navigate('Subscription');
+				break;
+			case 'payments':
+				navigation.navigate('PaymentInformation');
 				break;
 			default:
 				Alert.alert('Oops!', 'Coming soon');

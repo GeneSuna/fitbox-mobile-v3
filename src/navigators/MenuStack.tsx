@@ -1,12 +1,15 @@
 import {
 	AboutUs,
 	Menu,
+	PaymentInformation,
 	ProfileMenu,
 	Subscription,
 	SubscriptionDetails,
 	SubscriptionSetup,
 } from '@/screens';
 import MyDetails from '@/screens/MyDetails/MyDetails';
+import PaymentUpdate from '@/screens/PaymentUpdate/PaymentUpdate';
+import StripeSuccess from '@/screens/StripeSuccess/StripeSuccess';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import { MenuStackParamList } from '@/types/navigation';
@@ -39,19 +42,40 @@ const MenuStackNavigator = () => {
 				name="Subscription"
 				component={Subscription}
 				options={{
-					title: 'Subscription Information',
+					title: 'Membership Information',
 				}}
 			/>
 			<Stack.Screen
 				name="SubscriptionDetails"
 				component={SubscriptionDetails}
 				options={{
-					title: 'Subscription Information',
+					title: 'Membership Information',
 				}}
 			/>
 			<Stack.Screen
 				name="SubscriptionSetup"
 				component={SubscriptionSetup}
+			/>
+			<Stack.Screen
+				name="PaymentInformation"
+				component={PaymentInformation}
+				options={{
+					title: 'Payment Information',
+				}}
+			/>
+			<Stack.Screen
+				name="PaymentUpdate"
+				component={PaymentUpdate}
+				options={{
+					title: 'Add/Update Payment Details',
+				}}
+			/>
+			<Stack.Screen
+				name="StripeSuccess"
+				component={StripeSuccess}
+				options={{
+					title: 'Select User',
+				}}
 			/>
 		</Stack.Navigator>
 	);

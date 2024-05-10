@@ -1,5 +1,4 @@
-import { Button, HR, Row, ScrollView, Spacer, Text } from '@/components/atoms';
-import { navigate } from '@/navigators/NavigationRef';
+import { HR, Row, ScrollView, Spacer, Text } from '@/components/atoms';
 import {
 	getSubscriptionInfo,
 	toggleEmailNotifications,
@@ -7,22 +6,27 @@ import {
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { GetSubscriptionInfoType } from '@/types/schemas/response';
-import {
-	SubscriptionType,
-	TransactionsType,
-} from '@/types/schemas/subscription';
+import { TransactionsType } from '@/types/schemas/subscription';
 import { Say } from '@/utils';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import {
+	ActivityIndicator,
+	StyleSheet,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import { Switch } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import SubscriptionList from './components/SubscriptionList';
 
 const Subscription = () => {
 	// states
 	const [data, setData] = useState<GetSubscriptionInfoType>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [isToggleLoading, setIsToggleLoading] = useState<boolean>(false);
+	const [toggledSections, setToggledSections] = useState<string[]>([]);
 
 	useEffect(() => {
 		void (async () => {
@@ -39,9 +43,6 @@ const Subscription = () => {
 	}, []);
 
 	// functions
-	const goToSubscription = (id: number, type: string) => {
-		navigate('SubscriptionDetails', { id, type });
-	};
 	const onToggleSwitch = async () => {
 		setIsToggleLoading(true);
 		const toggleEmailNotificationsRes = await toggleEmailNotifications();
@@ -56,16 +57,15 @@ const Subscription = () => {
 		}
 	};
 
-	const renderAddSubscriptionButton = () => {
-		return (
-			<Button
-				title="Add New Subscription"
-				labelStyle={styles.addSubscriptionButtonLabelStyle}
-				onPress={() =>
-					navigate('SubscriptionSetup', { fromSubscription: true })
-				}
-			/>
-		);
+	const handleToggleSection = (id: keyof GetSubscriptionInfoType) => {
+		if (toggledSections.includes(id)) {
+			const removeToggledSection = toggledSections.filter(
+				item => item !== id,
+			);
+			setToggledSections(removeToggledSection);
+		} else {
+			setToggledSections([...toggledSections, id]);
+		}
 	};
 
 	const renderTransactions = (transactions: TransactionsType[]) => {
@@ -92,44 +92,80 @@ const Subscription = () => {
 		));
 	};
 
-	const renderSubscriptions = (
-		type: keyof GetSubscriptionInfoType,
+	const renderCollapsibleSubscriptionsItemList = (
+		id: keyof GetSubscriptionInfoType,
+	) => {
+		if (id === 'transactions') {
+			return data && !isEmpty(data.transactions) ? (
+				renderTransactions(data.transactions)
+			) : (
+				<Text
+					size="md"
+					color="darkgray"
+					center
+					style={{ marginTop: config.metrics.md }}
+				>
+					No transactions yet
+				</Text>
+			);
+		}
+		return (
+			<SubscriptionList
+				type={id}
+				data={data as GetSubscriptionInfoType}
+			/>
+		);
+	};
+
+	const renderCollapsibleSubscriptions = (
+		id: keyof GetSubscriptionInfoType,
 		title: string,
 	) => {
-		const reversedData: SubscriptionType[] = (
-			data?.[type] as SubscriptionType[]
-		).reverse();
-
+		const isSectionToggled = toggledSections.includes(id);
+		const paddingHorizontal = id === 'transactions' ? 33 : 0;
+		const marginHorizontal = id === 'transactions' ? 33 : 0;
 		return (
 			data &&
-			!isEmpty(data[type]) && (
+			!isEmpty(data[id]) && (
 				<View>
-					<Text size="md" color="darkgray">
-						{`${title}:`}
-					</Text>
-					<Spacer size="xs" />
-					{reversedData.map(
-						(item: SubscriptionType, index: number) => {
-							const { name } = item;
-							return (
-								<Button
-									key={index}
-									title={name}
-									dark
-									mode="outlined"
-									style={styles.subscriptionButtonStyle}
-									labelStyle={
-										styles.subscriptionButtonLabelStyle
-									}
-									onPress={() =>
-										goToSubscription(item.id, type)
-									}
-								/>
-							);
-						},
-					)}
+					<TouchableOpacity onPress={() => handleToggleSection(id)}>
+						<Row
+							spacing="space-between"
+							align="center"
+							style={{
+								paddingHorizontal,
+							}}
+						>
+							<Text size="md" color="darkgray">
+								{title}
+							</Text>
+							<Icon
+								name={
+									isSectionToggled
+										? 'chevron-up'
+										: 'chevron-down'
+								}
+								size={config.metrics.md}
+								color={config.backgrounds.darkgray}
+							/>
+						</Row>
+					</TouchableOpacity>
+					{isSectionToggled && (
+						<>
+							<Spacer
+								size={id === 'transactions' ? 'lg' : 'xs'}
+							/>
 
-					{type === 'current' && renderAddSubscriptionButton()}
+							{renderCollapsibleSubscriptionsItemList(id)}
+						</>
+					)}
+					<HR
+						thickness={1}
+						color="#F2F2F2"
+						style={{
+							marginHorizontal,
+						}}
+					/>
 				</View>
 			)
 		);
@@ -143,7 +179,7 @@ const Subscription = () => {
 		<ScrollView contentContainerStyle={{ padding: config.metrics.md }}>
 			<Spacer size="sm" />
 			<Text size="md" center bold color="darkgray">
-				Your Subscription Details
+				Your Membership Details
 			</Text>
 			<HR thickness={1} color="#F2F2F2" />
 
@@ -167,28 +203,27 @@ const Subscription = () => {
 				</Row>
 
 				<Spacer size="lg" />
-				{renderSubscriptions('current', 'Current')}
+				<SubscriptionList
+					type="current"
+					title="Current"
+					data={data as GetSubscriptionInfoType}
+				/>
+
 				<Spacer />
-				{renderSubscriptions('suspended', 'On-Hold')}
+				<SubscriptionList
+					type="suspended"
+					title="On-Hold"
+					data={data as GetSubscriptionInfoType}
+				/>
+
 				<Spacer />
-				{renderSubscriptions('past', 'Past')}
+				{renderCollapsibleSubscriptions('past', 'Past')}
+				<Spacer />
 			</View>
 
-			<Text size="md" center bold color="darkgray">
-				Your last 10 Transactions:
-			</Text>
-			<HR thickness={1} color="#F2F2F2" />
-			{data && !isEmpty(data.transactions) ? (
-				renderTransactions(data.transactions)
-			) : (
-				<Text
-					size="md"
-					color="darkgray"
-					center
-					style={{ marginTop: config.metrics.md }}
-				>
-					No transactions yet
-				</Text>
+			{renderCollapsibleSubscriptions(
+				'transactions',
+				'Your last 10 transactions',
 			)}
 		</ScrollView>
 	);
