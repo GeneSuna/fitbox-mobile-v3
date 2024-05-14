@@ -139,6 +139,10 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 				navigation.navigate('AcceptedWaivers');
 				break;
 			}
+			case 'help': {
+				navigation.navigate('HelpScreen');
+				break;
+			}
 			default:
 				Alert.alert('Oops!', 'Coming soon');
 				break;

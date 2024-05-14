@@ -8,6 +8,7 @@ import {
 	SubscriptionSetup,
 } from '@/screens';
 import AcceptedWaiversScreen from '@/screens/AcceptedWaiversScreen/AcceptedWaiversScreen';
+import HelpScreen from '@/screens/HelpScreen/HelpScreen';
 import MyDetails from '@/screens/MyDetails/MyDetails';
 import PDFViewerScreen from '@/screens/PDFViewerScreen/PDFViewerScreen';
 import PaymentUpdate from '@/screens/PaymentUpdate/PaymentUpdate';
@@ -85,6 +86,11 @@ const MenuStackNavigator = () => {
 				options={{ title: 'Accepted Waivers' }}
 			/>
 			<Stack.Screen name="PDFViewerScreen" component={PDFViewerScreen} />
+			<Stack.Screen
+				name="HelpScreen"
+				component={HelpScreen}
+				options={{ title: 'Help' }}
+			/>
 		</Stack.Navigator>
 	);
 };

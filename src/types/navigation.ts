@@ -46,6 +46,7 @@ export type MenuStackParamList = {
 	StripeSuccess: undefined;
 	AcceptedWaivers: undefined;
 	PDFViewerScreen: PDFViewerScreenParams;
+	HelpScreen: undefined;
 };
 export type MenuStackNavigatorProps = StackScreenProps<MenuStackParamList>;
 
