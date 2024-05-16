@@ -1,15 +1,14 @@
 import { resetRoot } from '@/navigators/NavigationRef';
 import { mmkvStorage } from '@/storage';
-import { Say } from '@/utils';
+import { Constant, Say } from '@/utils';
 import ky from 'ky';
 
-const prefixUrl = `${process.env.API_URL ? process.env.API_URL : ''}`;
 const xAppVersion = `${process.env.APP_VERSION ? process.env.APP_VERSION : ''}`;
 const apiToken = () => mmkvStorage.getString('apiToken');
 
 export const instance = () =>
 	ky.extend({
-		prefixUrl,
+		prefixUrl: Constant.API_URL,
 		headers: {
 			Accept: 'application/json',
 		},
@@ -18,7 +17,7 @@ export const instance = () =>
 
 export const securedInstance = () =>
 	ky.extend({
-		prefixUrl,
+		prefixUrl: Constant.API_URL,
 		searchParams: {
 			api_key: apiToken() || '',
 		},

@@ -3,6 +3,7 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ParsedBookedSessionSchemaType } from '@/types/schemas/session';
 import moment from 'moment';
+import { memo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -32,9 +33,13 @@ const BookedSessionCard = ({ data, onPress }: BookedSessionCardProps) => {
 					<Text bold size="md" numberOfLines={2}>
 						{data.name}
 					</Text>
-					<Text bold size="md" numberOfLines={2}>
-						{data.venue}
-					</Text>
+
+					{data.venue ? (
+						<Text bold color="info" size="rg" numberOfLines={2}>
+							{data.venue}
+						</Text>
+					) : null}
+
 					<Text size="sm">
 						{moment(data.start_time).format('h:mmA')} -{' '}
 						{moment(data.end_time).format('h:mmA')}
@@ -54,7 +59,7 @@ const BookedSessionCard = ({ data, onPress }: BookedSessionCardProps) => {
 	);
 };
 
-export default BookedSessionCard;
+export default memo(BookedSessionCard);
 
 const styles = StyleSheet.create({
 	container: {
