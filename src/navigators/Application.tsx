@@ -169,7 +169,14 @@ const ApplicationNavigator = () => {
 				<Stack.Screen name="Login" component={Login} />
 				<Stack.Screen name="ResetPassword" component={ResetPassword} />
 				<Stack.Screen name="Main" component={MainTabNavigator} />
-				<Stack.Screen name="Eula" component={EULAScreen} />
+				<Stack.Screen
+					name="Eula"
+					component={EULAScreen}
+					options={{
+						title: 'End User License Agreement',
+						...AgreementHeaderOptions,
+					}}
+				/>
 				<Stack.Screen
 					name="BillingAgreement"
 					component={BillingAgreementScreen}
