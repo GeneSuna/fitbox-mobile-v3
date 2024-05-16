@@ -22,6 +22,7 @@ import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import CalendarHeaderLeftComponent from '@/screens/Calendar/components/CalendarHeaderLeftComponent';
 import CalendarHeaderRightComponent from '@/screens/Calendar/components/CalendarHeaderRightComponent';
+import EULAScreen from '@/screens/EULAScreen/EULAScreen';
 import ShopHeaderRightComponent from '@/screens/Shop/components/ShopHeaderRightComponent';
 import type {
 	ApplicationStackParamList,
@@ -157,6 +158,7 @@ const ApplicationNavigator = () => {
 				<Stack.Screen name="Login" component={Login} />
 				<Stack.Screen name="ResetPassword" component={ResetPassword} />
 				<Stack.Screen name="Main" component={MainTabNavigator} />
+				<Stack.Screen name="Eula" component={EULAScreen} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

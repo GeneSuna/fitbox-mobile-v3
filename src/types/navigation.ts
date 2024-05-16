@@ -10,6 +10,7 @@ export type ApplicationStackParamList = {
 	ResetPassword: undefined;
 	SignUp: undefined;
 	Invite: undefined;
+	Eula: undefined;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
