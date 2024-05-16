@@ -15,6 +15,7 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 	const {
 		// getToken,
 		isLoggedIn,
+		user,
 	} = useAuth();
 	const { t } = useTranslation(['startup']);
 
@@ -28,10 +29,17 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 	useEffect(() => {
 		const checkToken = () => {
 			if (isLoggedIn()) {
-				navigation.reset({
-					index: 0,
-					routes: [{ name: 'Main' }],
-				});
+				if (!user?.user_data.eula_accepted) {
+					navigation.reset({
+						index: 0,
+						routes: [{ name: 'Eula' }],
+					});
+				} else {
+					navigation.reset({
+						index: 0,
+						routes: [{ name: 'Main' }],
+					});
+				}
 			} else {
 				navigation.reset({
 					index: 0,

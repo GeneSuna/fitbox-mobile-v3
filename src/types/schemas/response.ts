@@ -159,3 +159,13 @@ export const SetupPaymentIntent = PaymentIntentSchema;
 export const GetAcceptedWaiversSchema = apiResponseSchema(
 	z.array(WaiverSchema),
 );
+export const GetEulaSchema = z.object({
+	error: z.boolean(),
+	message: z.string(),
+	eula: z.string(),
+});
+
+export const AcceptEulaSchema = z.object({
+	error: z.boolean(),
+	message: z.string(),
+});
