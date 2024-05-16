@@ -6,10 +6,6 @@ import getBookedSessions from '@/services/users/getBookedSessions';
 import getUserGymInfo from '@/services/users/getUserGymInfo';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import {
-	CalendarEventSchema,
-	ParsedBookedSessionSchemaType,
-} from '@/types/schemas/session';
 import { UserSchemaType } from '@/types/schemas/user';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
@@ -25,8 +21,9 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
-import { z } from 'zod';
-import BookedSessionCard from './components/BookedSessionCard';
+import BookedSessionCard, {
+	BookedSessionCardProps,
+} from './components/BookedSessionCard';
 import DashboardActionButton from './components/DashboardActionButton';
 import DashboardHeader from './components/DashboardHeader';
 
@@ -75,7 +72,7 @@ const Dashboard = () => {
 	const [gymBanner, setGymBanner] = useState<string>('');
 	const [gymLogo, setGymLogo] = useState<string>('');
 	const [upcomingSessions, setUpcomingSessions] = useState<
-		ParsedBookedSessionSchemaType[]
+		BookedSessionCardProps[]
 	>([]);
 
 	const onRefresh = () => setTimeout(() => setRefreshing(false), 1000);
@@ -157,7 +154,7 @@ const Dashboard = () => {
 
 	const getUpcomingSessions = async () => {
 		setLoading(true);
-		const memberSessions: ParsedBookedSessionSchemaType[] = [];
+		const memberSessions: BookedSessionCardProps[] = [];
 
 		try {
 			// let res = await RestService.getNextSessions(selectedClassIds.length ? selectedClassIds.join() : null);
@@ -172,38 +169,47 @@ const Dashboard = () => {
 							.isAfter()
 					) {
 						memberSessions.push({
-							event_id: session.event_id,
-							bookable: session.bookable,
-							start_time: session.calendar_event.start_datetime,
-							end_time: session.calendar_event.end_datetime,
-							name: session.calendar_event.comment,
-							event: session.calendar_event as z.infer<
-								typeof CalendarEventSchema
-							>,
-							is_attend: true,
-							class_id: session.class_id,
-							waitlistEnabled:
-								session.waitlist_info.enable_waitlist === 1,
-							waitlistTime:
-								session.waitlist_info.waitlist_timelimit ?? 0,
-							venue: session.calendar_event.venue_name,
+							startTime: session.calendar_event.start_datetime,
+							endTime: session.calendar_event.end_datetime,
+							title: session.calendar_event.comment,
+							venue: session.calendar_event.venue_id
+								? session.calendar_event.venue_name
+								: undefined,
+							isCoach: false,
 						});
 					}
 				});
+			}
 
-				memberSessions.sort((sessionA, sessionB) => {
-					const startA = moment(sessionA.event.start_datetime);
-					const startB = moment(sessionB.event.start_datetime);
-					return startA && startB && startA > startB ? 1 : -1;
+			if (res.staffSessions && res.staffSessions.length > 0) {
+				res.staffSessions.forEach(session => {
+					if (moment(session.start).add(30, 'minutes').isAfter()) {
+						memberSessions.push({
+							startTime: session.start,
+							endTime: session.end,
+							title: session.title,
+							venue: session.venue_id
+								? String(session.venue_name)
+								: undefined,
+							isCoach: true,
+						});
+					}
 				});
 			}
 		} catch (err) {
 			Say.err(String(err));
-		}
+		} finally {
+			// sort sessions by start time
+			memberSessions.sort((sessionA, sessionB) => {
+				const startA = moment(sessionA.startTime);
+				const startB = moment(sessionB.startTime);
+				return startA && startB && startA > startB ? 1 : -1;
+			});
 
-		setUpcomingSessions(memberSessions);
-		setLoading(false);
-		setRefreshing(false);
+			setUpcomingSessions(memberSessions);
+			setLoading(false);
+			setRefreshing(false);
+		}
 
 		// TODO: Do the following once other functionalities are implemented
 		// 	() => {
@@ -304,11 +310,13 @@ const Dashboard = () => {
 							<View style={styles.bookedSessionsContainer}>
 								{upcomingSessions // show only 3
 									.slice(0, 3)
-									.map((session, i) => (
+									.map(({ ...rest }, i) => (
 										<BookedSessionCard
 											key={i}
-											data={session}
-											onPress={() => {}}
+											onPress={() => {
+												Say.ok('onpress');
+											}}
+											{...rest}
 										/>
 									))}
 							</View>

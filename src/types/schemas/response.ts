@@ -12,7 +12,11 @@ import {
 	PaymentIntentSchema,
 	PaymentMethodSchema,
 } from './payment';
-import { BookedSessionSchema, SessionSchema } from './session';
+import {
+	BookedSessionSchema,
+	SessionSchema,
+	StaffBookedSessionSchema,
+} from './session';
 import {
 	SubscriptionDetailsSchema,
 	SubscriptionSaveSchema,
@@ -65,11 +69,12 @@ export const CheckEmailResponseSchema = apiResponseSchema(
 	}),
 );
 
-export const BookedSessionResponseSchema = z
-	.object({
-		staffSessions: z.array(BookedSessionSchema),
-	})
-	.and(apiResponseSchema(z.array(BookedSessionSchema)));
+export const BookedSessionResponseSchema = z.object({
+	data: z.array(BookedSessionSchema),
+	staffSessions: z.array(StaffBookedSessionSchema),
+	message: z.string(),
+	error: z.boolean(),
+});
 
 export const GetUserProfileResponseSchema = z.object({
 	error: z.boolean(),

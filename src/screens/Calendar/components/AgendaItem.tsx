@@ -34,6 +34,7 @@ const AgendaItem = ({
 		waitlistBtn,
 		classId,
 		venueId,
+		isCoach,
 	},
 }: AgendaItemProps) => {
 	const { classFilters, venueFilters } = useStore(e => ({
@@ -89,6 +90,18 @@ const AgendaItem = ({
 	}, []);
 
 	const renderButton = useCallback(() => {
+		if (isCoach) {
+			return (
+				<Button
+					sm
+					compact
+					fullWidth
+					title="Coach"
+					onPress={handleViewSession}
+				/>
+			);
+		}
+
 		if (isAttending) {
 			return (
 				<Button
