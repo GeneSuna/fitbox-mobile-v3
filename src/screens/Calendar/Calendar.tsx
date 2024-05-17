@@ -139,6 +139,7 @@ const Calendar = () => {
 							startDate: item.local_start,
 							classId: item.class.id,
 							eventId: item.event_id,
+							isCoach: item.isCoach,
 							isWaitlisted: false,
 							title: item.title,
 							isBookingLocked,

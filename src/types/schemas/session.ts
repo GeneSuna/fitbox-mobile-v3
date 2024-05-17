@@ -9,7 +9,7 @@ export const BookableSchema = z.object({
 });
 
 export const WaitlistInfoSchema = z.object({
-	enable_waitlist: boolOrOneZero,
+	enable_waitlist: z.number().nullable(),
 	waitlist_timelimit: z.number().nullable(),
 });
 
@@ -98,12 +98,21 @@ export const StaffSessionSchema = z.object({
 	calendar_event: CalendarEventSchema,
 });
 
+export const StaffBookedSessionSchema = z.object({
+	id: z.number(),
+	title: z.string(),
+	start: z.string(),
+	end: z.string(),
+	venue_id: z.number().nullable(),
+	venue_name: z.string().nullable(),
+});
+
 export const BookedSessionSchema = z.object({
 	id: z.number(),
 	context_id: z.number(),
-	leaderboard_id: z.number(),
+	leaderboard_id: z.number().nullable(),
 	user_id: z.number(),
-	program_wod_id: z.number(),
+	program_wod_id: z.number().nullable(),
 	class_id: z.number(),
 	event_id: z.number(),
 	session_date: z.string(),
@@ -158,9 +167,9 @@ export const SessionClassSchema = z.object({
 export const AttendanceSchema = z.object({
 	id: z.number(),
 	context_id: z.number(),
-	leaderboard_id: z.number(),
+	leaderboard_id: z.number().nullable(),
 	user_id: z.number(),
-	program_wod_id: z.number(),
+	program_wod_id: z.number().nullable(),
 	class_id: z.number(),
 	event_id: z.number(),
 	session_date: z.string(),
@@ -222,4 +231,5 @@ export const SessionSchema = z.object({
 	read_only: z.string(),
 	user_editable: z.boolean(),
 	variant: z.string().nullable(),
+	isCoach: z.boolean(),
 });

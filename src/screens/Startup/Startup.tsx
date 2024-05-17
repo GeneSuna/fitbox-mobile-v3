@@ -28,32 +28,29 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 
 	useEffect(() => {
 		const checkToken = () => {
-			if (isLoggedIn()) {
-				if (!user?.user_data.eula_accepted) {
-					navigation.reset({
-						index: 0,
-						routes: [{ name: 'Eula' }],
-					});
-				} else if (
-					user.user_data.show_billing_form &&
-					!user.user_data.billing_agreement_accepted
-				) {
-					navigation.reset({
-						index: 0,
-						routes: [{ name: 'BillingAgreement' }],
-					});
-				} else {
-					navigation.reset({
-						index: 0,
-						routes: [{ name: 'Main' }],
-					});
+			if (isLoggedIn) {
+				if (user?.user_data) {
+					// check if user has accepted EULA
+					if (!user?.user_data.eula_accepted) {
+						return navigation.reset({
+							index: 0,
+							routes: [{ name: 'Eula' }],
+						});
+					}
+
+					// TODO: Additional conditions here.
 				}
-			} else {
-				navigation.reset({
+
+				return navigation.reset({
 					index: 0,
-					routes: [{ name: 'Landing' }],
+					routes: [{ name: 'Main' }],
 				});
 			}
+
+			return navigation.reset({
+				index: 0,
+				routes: [{ name: 'Landing' }],
+			});
 		};
 
 		void checkToken();

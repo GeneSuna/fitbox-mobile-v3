@@ -61,7 +61,7 @@ const Login = ({ navigation }: ApplicationScreenProps) => {
 		return new Error(err as string);
 	};
 
-	const handleCheckUserEmail = async () => {
+	const handleCheckUserEmail = () => {
 		// check if email is empty then don't continue
 		if (isEmpty(email)) return;
 
@@ -72,53 +72,57 @@ const Login = ({ navigation }: ApplicationScreenProps) => {
 			return;
 		}
 
-		try {
-			// show loading indicator
-			setFetching(true);
+		// show loading indicator
+		setFetching(true);
 
-			// check if email exist
-			const res = await checkEmail(email);
-			if (!res.error) {
-				// check if user is active
-				if (res.data.exists && res.data.isActive) {
-					setUserExist(true);
-				} else {
-					setUserExist(false);
-
-					if (res.data.pendingInvite) {
-						await Say.okThen(
-							'You have a pending invite. Please check your email for further instructions.',
-							'Oops!',
-						);
-
-						navigation.navigate('Invite');
-
-						// If pending invite, show alert sample
-						// Alert.alert(
-						//     'Oops!',
-						//     'You have a pending invite. Please check your email for further instructions',
-						//     [
-						//         {
-						//             text: 'Resend Invite BRO', onPress: () => {
-						//                 Say.ok("Invitation has been sent")
-						//             }
-						//         },
-						//         { text: 'Cancel', style: 'cancel' }
-						//     ],
-						//     { cancelable: true }
-						// )
+		// check if email exist
+		checkEmail(email)
+			.then(res => {
+				if (!res.error) {
+					// check if user is active
+					if (res.data.exists && res.data.isActive) {
+						setUserExist(true);
 					} else {
-						throw new Error('User does not exist or is not active');
+						setUserExist(false);
+
+						if (res.data.pendingInvite) {
+							void Say.okThen(
+								'You have a pending invite. Please check your email for further instructions.',
+								'Oops!',
+							).then(() => {
+								navigation.navigate('Invite');
+							});
+
+							// If pending invite, show alert sample
+							// Alert.alert(
+							//     'Oops!',
+							//     'You have a pending invite. Please check your email for further instructions',
+							//     [
+							//         {
+							//             text: 'Resend Invite BRO', onPress: () => {
+							//                 Say.ok("Invitation has been sent")
+							//             }
+							//         },
+							//         { text: 'Cancel', style: 'cancel' }
+							//     ],
+							//     { cancelable: true }
+							// )
+						} else {
+							throw new Error(
+								'User does not exist or is not active',
+							);
+						}
 					}
+				} else {
+					throw handleErrorMessage(res.message);
 				}
-			} else {
-				throw handleErrorMessage(res.message);
-			}
-		} catch (error) {
-			Say.err(error as Error);
-		} finally {
-			setFetching(false);
-		}
+			})
+			.catch(error => {
+				Say.err(error as Error);
+			})
+			.finally(() => {
+				setFetching(false);
+			});
 	};
 
 	const handleSignIn = () => {
@@ -137,12 +141,11 @@ const Login = ({ navigation }: ApplicationScreenProps) => {
 				.then(res => {
 					if (res) navigation.navigate('Startup');
 				})
+				.catch(() => {
+					Say.err('There was an error signing in. Please try again.');
+				})
 				.finally(() => {
 					setProcessing(false);
-				})
-				.catch(err => {
-					// eslint-disable-next-line no-console
-					console.log(err);
 				});
 		}
 	};

@@ -7,7 +7,7 @@ export const UserSchema = z.object({
 	last_name: z.string(),
 	face_id: z.null().optional(),
 	email: z.string().email(),
-	contact_phone: z.string(),
+	contact_phone: z.string().nullable(),
 	dob: z.object({
 		date: z.string(),
 		timezone_type: z.literal(3),
@@ -46,8 +46,8 @@ export const UserSchema = z.object({
 	is_child: boolOrOneZero,
 	parent_id: z.number(),
 	onboarding_gym_ids: z.array(z.number()),
-	emergency_contact_name: z.string(),
-	emergency_contact_number: z.string(),
+	emergency_contact_name: z.string().nullable(),
+	emergency_contact_number: z.string().nullable(),
 });
 
 export const UserProfileSchema = z.object({

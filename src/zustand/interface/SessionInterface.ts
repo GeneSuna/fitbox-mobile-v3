@@ -18,6 +18,7 @@ type ClassItemData = {
 	eventId?: number;
 	classId?: number;
 	venueId?: number;
+	isCoach?: boolean;
 };
 
 type ClassItem = {

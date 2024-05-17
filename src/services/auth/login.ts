@@ -12,6 +12,7 @@ export default async (email: string, password: string) => {
 			headers: {
 				authorization: `Basic ${encoded}`,
 			},
+			throwHttpErrors: false,
 		})
 		.json();
 
