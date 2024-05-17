@@ -20,6 +20,7 @@ import {
 
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import { SwitchGym } from '@/modals';
 import CalendarHeaderLeftComponent from '@/screens/Calendar/components/CalendarHeaderLeftComponent';
 import CalendarHeaderRightComponent from '@/screens/Calendar/components/CalendarHeaderRightComponent';
 import EULAScreen from '@/screens/EULAScreen/EULAScreen';
@@ -28,9 +29,11 @@ import type {
 	ApplicationStackParamList,
 	MainTabParamList,
 } from '@/types/navigation';
+import { Constant } from '@/utils';
 import useStore from '@/zustand/Store';
 import MenuStackNavigator from './MenuStack';
 import { navigationRef } from './NavigationRef';
+import HeaderCloseButton from './components/HeaderCloseButton';
 
 const linking: LinkingOptions<ApplicationStackParamList> = {
 	prefixes: ['com.fitbox://', 'https://fitbox.iq', 'http://fitbox.iq'],
@@ -134,7 +137,7 @@ const MainTabNavigator = () => {
 
 const Stack = createStackNavigator<ApplicationStackParamList>();
 const ApplicationNavigator = () => {
-	const { variant, navigationTheme } = useTheme();
+	const { variant, navigationTheme, colors } = useTheme();
 
 	return (
 		<NavigationContainer
@@ -144,21 +147,56 @@ const ApplicationNavigator = () => {
 		>
 			<Stack.Navigator
 				key={variant}
+				initialRouteName="Startup"
 				screenOptions={{
 					headerShown: false,
 					cardStyleInterpolator:
 						CardStyleInterpolators.forScaleFromCenterAndroid,
 				}}
-				initialRouteName="Startup"
 			>
-				<Stack.Screen name="Startup" component={Startup} />
-				<Stack.Screen name="Auth" component={Auth} />
-				<Stack.Screen name="Landing" component={Landing} />
-				<Stack.Screen name="Example" component={Example} />
-				<Stack.Screen name="Login" component={Login} />
-				<Stack.Screen name="ResetPassword" component={ResetPassword} />
-				<Stack.Screen name="Main" component={MainTabNavigator} />
-				<Stack.Screen name="Eula" component={EULAScreen} />
+				<Stack.Group>
+					<Stack.Screen name="Startup" component={Startup} />
+					<Stack.Screen name="Auth" component={Auth} />
+					<Stack.Screen name="Landing" component={Landing} />
+					<Stack.Screen name="Example" component={Example} />
+					<Stack.Screen
+						name="Login"
+						component={Login}
+						options={{
+							headerShown: true,
+							headerTitleAlign: 'center',
+							headerRight: () => null,
+							headerStyle: { backgroundColor: colors.brand },
+							cardStyleInterpolator:
+								CardStyleInterpolators.forHorizontalIOS,
+						}}
+					/>
+					<Stack.Screen
+						name="ResetPassword"
+						component={ResetPassword}
+					/>
+					<Stack.Screen name="Main" component={MainTabNavigator} />
+					<Stack.Screen name="Eula" component={EULAScreen} />
+				</Stack.Group>
+
+				<Stack.Group
+					screenOptions={{
+						headerTintColor: colors.darkgray,
+						headerRight: HeaderCloseButton,
+						headerLeft: () => null,
+						presentation: 'modal',
+						headerShown: true,
+
+						...(Constant.IS_ANDROID
+							? {
+									cardStyleInterpolator:
+										CardStyleInterpolators.forModalPresentationIOS,
+							  }
+							: {}),
+					}}
+				>
+					<Stack.Screen name="SwitchGym" component={SwitchGym} />
+				</Stack.Group>
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
