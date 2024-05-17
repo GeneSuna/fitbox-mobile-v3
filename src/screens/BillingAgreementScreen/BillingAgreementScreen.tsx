@@ -1,5 +1,5 @@
 import useAuth from '@/auth/hooks/useAuth';
-import { Button, Footer, Spacer, Text } from '@/components/atoms';
+import { Button, Spacer, Text } from '@/components/atoms';
 import acceptBillingAgreement from '@/services/billing/acceptBillingAgreement';
 import { config } from '@/theme/_config';
 import { ApplicationScreenProps } from '@/types/navigation';
@@ -72,7 +72,7 @@ const BillingAgreementScreen = ({ navigation }: ApplicationScreenProps) => {
 				</Text>
 			</View>
 			<Spacer />
-			<Footer>
+			<View style={styles.buttonContainer}>
 				<Button
 					title="Accept"
 					onPress={() => void handleAccept()}
@@ -84,7 +84,7 @@ const BillingAgreementScreen = ({ navigation }: ApplicationScreenProps) => {
 					style={{ backgroundColor: config.backgrounds.dark }}
 					onPress={handleCancel}
 				/>
-			</Footer>
+			</View>
 		</SafeAreaView>
 	);
 };
@@ -95,6 +95,11 @@ const styles = StyleSheet.create({
 	},
 	justifyText: {
 		textAlign: 'justify',
+	},
+	buttonContainer: {
+		paddingTop: config.metrics.xs,
+		paddingHorizontal: config.metrics.lg,
+		paddingBottom: config.metrics.lg,
 	},
 });
 
