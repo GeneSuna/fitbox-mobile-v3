@@ -1,7 +1,7 @@
 import { deletePushToken, login } from '@/services/auth';
 import { LoginResponseSchema } from '@/types/schemas/response';
 import { UserSchemaType } from '@/types/schemas/user';
-import { PropsWithChildren, createContext, useMemo } from 'react';
+import { PropsWithChildren, createContext, useMemo, useState } from 'react';
 import type { MMKV } from 'react-native-mmkv';
 import { z } from 'zod';
 
@@ -12,7 +12,7 @@ type Context = {
 	signOut: () => void;
 	user: User | null;
 	updateUser: (user: UserSchemaType) => boolean;
-	isLoggedIn: () => boolean;
+	isLoggedIn: boolean;
 };
 export const AuthContext = createContext<Context | undefined>(undefined);
 
@@ -21,10 +21,15 @@ type Props = PropsWithChildren<{
 }>;
 
 const AuthProvider = ({ children, storage }: Props) => {
+	const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+
 	const setStorageAuth = (data: User): void => {
 		// Store the access token, refresh token, and expiration time in storage
 		storage.set('apiToken', data.token);
 		storage.set('user', JSON.stringify(data));
+
+		// set the logged in user
+		setLoggedInUser(data);
 	};
 
 	const updateUser = (user: UserSchemaType): boolean => {
@@ -46,17 +51,10 @@ const AuthProvider = ({ children, storage }: Props) => {
 		// store the updated user data
 		storage.set('user', JSON.stringify(updatedUserData));
 
+		// update the logged in user
+		setLoggedInUser(updatedUserData);
+
 		return true;
-	};
-
-	const getUser = (): User | null => {
-		const userData = storage.getString('user');
-
-		if (!userData) {
-			return null;
-		}
-
-		return JSON.parse(userData) as User;
 	};
 
 	const signIn = async (email: string, password: string): Promise<User> => {
@@ -71,7 +69,7 @@ const AuthProvider = ({ children, storage }: Props) => {
 	};
 
 	const signOut = async () => {
-		const { id, token } = getUser() as User;
+		const { id, token } = loggedInUser as User;
 
 		// remove push token from server
 		try {
@@ -80,22 +78,23 @@ const AuthProvider = ({ children, storage }: Props) => {
 			// remove all tokens from storage
 			storage.delete('apiToken');
 			storage.delete('user');
+
+			// remove the logged in user
+			setLoggedInUser(null);
 		} catch (error) {
 			// console.error('@error', error);
 		}
 	};
 
-	const isLoggedIn = () => !!storage.getString('apiToken');
-
 	const value = useMemo(() => {
 		return {
 			signIn,
 			signOut,
-			user: getUser(),
 			updateUser,
-			isLoggedIn,
+			user: loggedInUser,
+			isLoggedIn: !!loggedInUser,
 		};
-	}, [storage]);
+	}, [storage, loggedInUser]);
 
 	return (
 		<AuthContext.Provider value={value}>{children}</AuthContext.Provider>

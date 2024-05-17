@@ -28,7 +28,7 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 
 	useEffect(() => {
 		const checkToken = () => {
-			if (isLoggedIn()) {
+			if (isLoggedIn) {
 				if (user?.user_data) {
 					// check if user has accepted EULA
 					if (!user?.user_data.eula_accepted) {
@@ -37,6 +37,8 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 							routes: [{ name: 'Eula' }],
 						});
 					}
+
+					// TODO: Additional conditions here.
 				}
 
 				return navigation.reset({

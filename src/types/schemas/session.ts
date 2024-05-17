@@ -110,9 +110,9 @@ export const StaffBookedSessionSchema = z.object({
 export const BookedSessionSchema = z.object({
 	id: z.number(),
 	context_id: z.number(),
-	leaderboard_id: z.number(),
+	leaderboard_id: z.number().nullable(),
 	user_id: z.number(),
-	program_wod_id: z.number(),
+	program_wod_id: z.number().nullable(),
 	class_id: z.number(),
 	event_id: z.number(),
 	session_date: z.string(),
@@ -167,9 +167,9 @@ export const SessionClassSchema = z.object({
 export const AttendanceSchema = z.object({
 	id: z.number(),
 	context_id: z.number(),
-	leaderboard_id: z.number(),
+	leaderboard_id: z.number().nullable(),
 	user_id: z.number(),
-	program_wod_id: z.number(),
+	program_wod_id: z.number().nullable(),
 	class_id: z.number(),
 	event_id: z.number(),
 	session_date: z.string(),
