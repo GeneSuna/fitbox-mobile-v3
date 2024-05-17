@@ -32,23 +32,23 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 				if (user?.user_data) {
 					// check if user has accepted EULA
 					if (!user?.user_data.eula_accepted) {
-						navigation.reset({
+						return navigation.reset({
 							index: 0,
 							routes: [{ name: 'Eula' }],
 						});
 					}
 				}
 
-				navigation.reset({
+				return navigation.reset({
 					index: 0,
 					routes: [{ name: 'Main' }],
 				});
-			} else {
-				navigation.reset({
-					index: 0,
-					routes: [{ name: 'Landing' }],
-				});
 			}
+
+			return navigation.reset({
+				index: 0,
+				routes: [{ name: 'Landing' }],
+			});
 		};
 
 		void checkToken();
