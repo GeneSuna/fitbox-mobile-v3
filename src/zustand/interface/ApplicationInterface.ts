@@ -1,5 +1,3 @@
-import { LoginResponseSchemaType } from '@/types/schemas/response';
-
 interface ApplicationStateInterface {
 	appForceUpdate: boolean;
 	allowLeaderboards: boolean;
@@ -11,7 +9,6 @@ interface ApplicationStateInterface {
 	emptyRequiredFields: string[];
 	fromAcceptInvite: boolean;
 	setupSubscriptionId: null | number;
-	loggedInUser: LoginResponseSchemaType | null;
 }
 
 interface ApplicationInterface extends ApplicationStateInterface {

@@ -20,14 +20,14 @@ type Props = PropsWithChildren<{
 
 const AuthProvider = ({ children, storage }: Props) => {
 	const loggedInUser = useStore(s => s.loggedInUser);
-	const setAppState = useStore(s => s.setAppState);
+	const setLoggedInUser = useStore(s => s.setLoggedInUser);
 
 	const setStorageAuth = (data: LoginResponseSchemaType): void => {
 		// Store the access token, refresh token, and expiration time in storage
 		storage.set('apiToken', data.token);
 
 		// set the logged in user
-		setAppState('loggedInUser', data);
+		setLoggedInUser(data);
 	};
 
 	const updateUser = (user: UserSchemaType): boolean => {
@@ -52,7 +52,7 @@ const AuthProvider = ({ children, storage }: Props) => {
 		storage.set('user', JSON.stringify(updatedUserData));
 
 		// update the logged in user
-		setAppState('loggedInUser', updatedUserData);
+		setLoggedInUser(updatedUserData);
 
 		return true;
 	};
@@ -83,7 +83,7 @@ const AuthProvider = ({ children, storage }: Props) => {
 			storage.delete('user');
 
 			// remove the logged in user
-			setAppState('loggedInUser', null);
+			setLoggedInUser(null);
 		} catch (error) {
 			// console.error('@error', error);
 		}

@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
 		padding: 12,
 		position: 'relative',
 		...layout.shadowLight,
+		backgroundColor: colors.brand,
 	},
 	headerImageContainer: {
 		position: 'absolute',

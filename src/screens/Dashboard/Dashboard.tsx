@@ -274,7 +274,7 @@ const Dashboard = () => {
 		<SafeScreen>
 			<DashboardHeader
 				banner={gymBanner + version}
-				logo={gymLogo + version}
+				logo={gymLogo ? gymLogo + version : ''}
 			/>
 
 			<Spacer />

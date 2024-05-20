@@ -1,7 +1,7 @@
 import { config } from '@/theme/_config';
 import { TeamAvatarSize } from '@/utils/Enum';
 import { Dimensions, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { fonts } = config;
 const { height } = Dimensions.get('window');
@@ -42,7 +42,7 @@ const TeamAvatar = ({
 				/>
 			) : (
 				<Icon
-					name="store-alt"
+					name="home"
 					style={[avatarSize, styles.headerIconImage]}
 				/>
 			)}
