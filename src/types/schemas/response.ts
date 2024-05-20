@@ -171,7 +171,7 @@ export const GetEulaSchema = z.object({
 	eula: z.string(),
 });
 
-export const AcceptEulaSchema = z.object({
+export const AcceptAgreementSchema = z.object({
 	error: z.boolean(),
 	message: z.string(),
 });
