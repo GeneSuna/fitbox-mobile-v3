@@ -123,11 +123,6 @@ export const GetSubscriptionInfoSchema = z.object({
 
 export type GetSubscriptionInfoType = z.infer<typeof GetSubscriptionInfoSchema>;
 
-export const ToggleEmailNotificationsSchema = z.object({
-	error: z.boolean(),
-	message: z.string(),
-});
-
 export const GetSubscriptionDetailsSchema = z.array(SubscriptionDetailsSchema);
 export type GetSubscriptionDetailsType = z.infer<
 	typeof GetSubscriptionDetailsSchema
@@ -170,7 +165,7 @@ export const GetEulaSchema = z.object({
 	eula: z.string(),
 });
 
-export const AcceptAgreementSchema = z.object({
+export const ErrorMessageResponse = z.object({
 	error: z.boolean(),
 	message: z.string(),
 });

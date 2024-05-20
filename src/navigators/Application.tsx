@@ -167,7 +167,15 @@ const ApplicationNavigator = () => {
 				<Stack.Screen name="Landing" component={Landing} />
 				<Stack.Screen name="Example" component={Example} />
 				<Stack.Screen name="Login" component={Login} />
-				<Stack.Screen name="ResetPassword" component={ResetPassword} />
+				<Stack.Screen
+					name="ResetPassword"
+					component={ResetPassword}
+					options={{
+						title: 'Forgot Password',
+						...AgreementHeaderOptions,
+						headerBackTitleVisible: false,
+					}}
+				/>
 				<Stack.Screen name="Main" component={MainTabNavigator} />
 				<Stack.Screen
 					name="Eula"
