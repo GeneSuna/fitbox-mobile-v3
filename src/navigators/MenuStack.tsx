@@ -1,18 +1,18 @@
 import {
 	AboutUs,
+	AcceptedWaiversScreen,
+	HelpScreen,
 	Menu,
+	MyDetails,
+	PDFViewerScreen,
 	PaymentInformation,
+	PaymentUpdate,
 	ProfileMenu,
+	StripeSuccess,
 	Subscription,
 	SubscriptionDetails,
 	SubscriptionSetup,
 } from '@/screens';
-import AcceptedWaiversScreen from '@/screens/AcceptedWaiversScreen/AcceptedWaiversScreen';
-import HelpScreen from '@/screens/HelpScreen/HelpScreen';
-import MyDetails from '@/screens/MyDetails/MyDetails';
-import PDFViewerScreen from '@/screens/PDFViewerScreen/PDFViewerScreen';
-import PaymentUpdate from '@/screens/PaymentUpdate/PaymentUpdate';
-import StripeSuccess from '@/screens/StripeSuccess/StripeSuccess';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import { MenuStackParamList } from '@/types/navigation';

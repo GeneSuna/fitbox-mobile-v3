@@ -1,12 +1,15 @@
 import {
 	Auth,
+	BillingAgreementScreen,
 	Calendar,
 	Dashboard,
+	EULAScreen,
 	Example,
 	Inbox,
 	Landing,
 	Login,
 	ResetPassword,
+	Session,
 	Shop,
 	Startup,
 } from '@/screens';
@@ -22,11 +25,11 @@ import {
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { SwitchGym } from '@/modals';
-import BillingAgreementScreen from '@/screens/BillingAgreementScreen/BillingAgreementScreen';
+
 import CalendarHeaderLeftComponent from '@/screens/Calendar/components/CalendarHeaderLeftComponent';
 import CalendarHeaderRightComponent from '@/screens/Calendar/components/CalendarHeaderRightComponent';
-import EULAScreen from '@/screens/EULAScreen/EULAScreen';
 import ShopHeaderRightComponent from '@/screens/Shop/components/ShopHeaderRightComponent';
+
 import { config } from '@/theme/_config';
 import type {
 	ApplicationStackParamList,
@@ -185,6 +188,7 @@ const ApplicationNavigator = () => {
 						}}
 					/>
 					<Stack.Screen name="Main" component={MainTabNavigator} />
+					<Stack.Screen name="Session" component={Session} />
 					<Stack.Screen
 						name="Eula"
 						component={EULAScreen}
