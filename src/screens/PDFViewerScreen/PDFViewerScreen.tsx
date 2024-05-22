@@ -1,5 +1,6 @@
 import layout from '@/theme/layout';
 import {
+	ApplicationScreenProps,
 	MenuStackNavigatorProps,
 	PDFViewerScreenParams,
 } from '@/types/navigation';
@@ -7,7 +8,10 @@ import { useLayoutEffect } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import Pdf from 'react-native-pdf';
 
-const PDFViewerScreen = ({ route, navigation }: MenuStackNavigatorProps) => {
+const PDFViewerScreen = ({
+	route,
+	navigation,
+}: MenuStackNavigatorProps | ApplicationScreenProps) => {
 	const { title, waiverUrl } = route.params as PDFViewerScreenParams;
 
 	useLayoutEffect(() => {

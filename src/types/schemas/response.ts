@@ -171,3 +171,9 @@ export const ErrorMessageResponse = z.object({
 	error: z.boolean(),
 	message: z.string(),
 });
+
+export const GetWaiverSchema = z.object({
+	error: z.boolean(),
+	message: z.string(),
+	url: z.string(),
+});

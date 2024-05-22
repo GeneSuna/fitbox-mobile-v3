@@ -94,7 +94,7 @@ const AcceptedWaiversScreen = ({ navigation }: MenuStackNavigatorProps) => {
 				addAndroidDownloads: {
 					useDownloadManager: true,
 					notification: true,
-					path: `${PictureDir}/waiver${ext as string}`,
+					path: `${PictureDir}/waiver.${ext as string}`,
 				},
 			};
 
