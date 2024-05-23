@@ -5,9 +5,11 @@ import {
 	Dashboard,
 	EULAScreen,
 	Example,
+	GymWaiverScreen,
 	Inbox,
 	Landing,
 	Login,
+	PDFViewerScreen,
 	ResetPassword,
 	Session,
 	Shop,
@@ -206,6 +208,22 @@ const ApplicationNavigator = () => {
 						options={{
 							title: 'Billing Agreement',
 							...CommonHeaderOptions,
+						}}
+					/>
+					<Stack.Screen
+						name="GymWaiver"
+						component={GymWaiverScreen}
+						options={{
+							title: 'Gym Waiver',
+							...CommonHeaderOptions,
+						}}
+					/>
+					<Stack.Screen
+						name="PDFViewer"
+						component={PDFViewerScreen}
+						options={{
+							...CommonHeaderOptions,
+							headerBackTitleVisible: false,
 						}}
 					/>
 				</Stack.Group>
