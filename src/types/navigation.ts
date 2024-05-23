@@ -14,6 +14,7 @@ export type ApplicationStackParamList = {
 	SwitchGym: undefined;
 	Session: undefined;
 	BillingAgreement: undefined;
+	SwitchUser: undefined;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;

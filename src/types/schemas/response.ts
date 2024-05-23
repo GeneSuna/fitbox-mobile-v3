@@ -24,7 +24,12 @@ import {
 	TransactionsSchema,
 	UserSubscriptionProductsSchema,
 } from './subscription';
-import { UserProfileSchema, UserSchema } from './user';
+import {
+	ChildDataSchema,
+	ParentInfoSchema,
+	UserProfileSchema,
+	UserSchema,
+} from './user';
 import { WaiverSchema } from './waivers';
 
 export const apiResponseSchema = <T>(dataSchema: z.ZodSchema<T>) =>
@@ -170,4 +175,27 @@ export const GetEulaSchema = z.object({
 export const ErrorMessageResponse = z.object({
 	error: z.boolean(),
 	message: z.string(),
+});
+
+export const GetChildInfoSchema = z.object({
+	error: z.boolean(),
+	message: z.string(),
+	child_data: z.array(ChildDataSchema),
+});
+
+export const GetParentInfoSchema = z.object({
+	error: z.boolean(),
+	message: z.string(),
+	parent_data: z.array(ParentInfoSchema),
+});
+
+export type GetChildInfoType = z.infer<typeof GetChildInfoSchema>;
+export type GetParentInfoType = z.infer<typeof GetParentInfoSchema>;
+
+export const SwitchAccountSchema = z.object({
+	error: z.boolean(),
+	id: z.number(),
+	message: z.string(),
+	token: z.string(),
+	user_data: UserSchema,
 });

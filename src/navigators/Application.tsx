@@ -24,7 +24,7 @@ import {
 
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { SwitchGym } from '@/modals';
+import { SwitchGym, SwitchUser } from '@/modals';
 
 import CalendarHeaderLeftComponent from '@/screens/Calendar/components/CalendarHeaderLeftComponent';
 import CalendarHeaderRightComponent from '@/screens/Calendar/components/CalendarHeaderRightComponent';
@@ -176,7 +176,10 @@ const ApplicationNavigator = () => {
 					<Stack.Screen
 						name="Login"
 						component={Login}
-						options={CommonHeaderOptions}
+						options={{
+							...CommonHeaderOptions,
+							headerBackTitleVisible: false,
+						}}
 					/>
 					<Stack.Screen
 						name="ResetPassword"
@@ -223,7 +226,16 @@ const ApplicationNavigator = () => {
 							: {}),
 					}}
 				>
-					<Stack.Screen name="SwitchGym" component={SwitchGym} />
+					<Stack.Screen
+						name="SwitchGym"
+						component={SwitchGym}
+						options={{ title: 'Switch Gym' }}
+					/>
+					<Stack.Screen
+						name="SwitchUser"
+						component={SwitchUser}
+						options={{ title: 'Switch User' }}
+					/>
 				</Stack.Group>
 			</Stack.Navigator>
 		</NavigationContainer>
