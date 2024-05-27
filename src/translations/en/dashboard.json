@@ -4,7 +4,7 @@
             "greeting": "Hi {{name}}!",
             "empty": "You don't have any upcoming sessions scheduled, check the Gym Schedule for your next session.",
             "schedule": "Upcoming Schedule",
-            "viewAll": "View All"
+            "viewAll": "See All"
         }
     }
 }

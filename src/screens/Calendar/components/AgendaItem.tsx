@@ -1,10 +1,12 @@
 import { Button, Text } from '@/components/atoms';
 import { attendSession, joinWaitlist } from '@/services/session';
 import { config } from '@/theme/_config';
+import { ApplicationStackParamList } from '@/types/navigation';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
 import { ClassItemData } from '@/zustand/interface/SessionInterface';
-import { isEqual, isNumber } from 'lodash';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { isNumber } from 'lodash';
 import moment from 'moment';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -27,6 +29,7 @@ const AgendaItem = ({
 		isSubscribed,
 		hideSchedule,
 		isWaitlisted,
+		waitlistTime,
 		startDate,
 		isBookingLocked,
 		eventId,
@@ -34,8 +37,12 @@ const AgendaItem = ({
 		classId,
 		venueId,
 		isCoach,
+		color,
 	},
 }: AgendaItemProps) => {
+	const navigation =
+		useNavigation<NavigationProp<ApplicationStackParamList>>();
+
 	const { classFilters, venueFilters } = useStore(e => ({
 		classFilters: e.classFilters,
 		venueFilters: e.venueFilters,
@@ -84,8 +91,12 @@ const AgendaItem = ({
 	};
 
 	const handleViewSession = useCallback(() => {
-		// TODO: view session
-		Say.ok('Coming soon!');
+		navigation.navigate('Session', {
+			id: Number(eventId),
+			title: title || 'Session',
+			waitlistEnabled: !!isWaitlisted,
+			waitlistTime: Number(waitlistTime),
+		});
 	}, []);
 
 	const renderButton = useCallback(() => {
@@ -230,7 +241,12 @@ const AgendaItem = ({
 				</Text>
 				<Text size="xs">{duration}</Text>
 			</View>
-			<View style={styles.divider} />
+			<View
+				style={[
+					styles.divider,
+					{ backgroundColor: color || fonts.colors.brand },
+				]}
+			/>
 			<View style={styles.contentContainer}>
 				<Text bold size="md">
 					{title}
@@ -250,9 +266,7 @@ const AgendaItem = ({
 	);
 };
 
-export default memo(AgendaItem, (prevProps, nextProps) => {
-	return isEqual(prevProps.item, nextProps.item);
-});
+export default memo(AgendaItem);
 
 const styles = StyleSheet.create({
 	item: {

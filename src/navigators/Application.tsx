@@ -149,10 +149,7 @@ const ApplicationNavigator = () => {
 
 	const CommonHeaderOptions: StackNavigationOptions = {
 		headerShown: true,
-		headerStyle: { backgroundColor: config.colors.brand },
-		headerTitleAlign: 'center',
 		cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-		headerTintColor: 'white',
 	};
 
 	return (
@@ -161,16 +158,18 @@ const ApplicationNavigator = () => {
 			ref={navigationRef}
 			theme={navigationTheme}
 		>
-			<Stack.Navigator
-				key={variant}
-				initialRouteName="Startup"
-				screenOptions={{
-					headerShown: false,
-					cardStyleInterpolator:
-						CardStyleInterpolators.forScaleFromCenterAndroid,
-				}}
-			>
-				<Stack.Group>
+			<Stack.Navigator key={variant} initialRouteName="Startup">
+				<Stack.Group
+					screenOptions={{
+						headerShown: false, // hide header by default but when screen needs it, it will be shown with corresponding options below
+						headerTintColor: 'white',
+						headerTitleAlign: 'center',
+						headerStyle: { backgroundColor: config.colors.brand },
+
+						cardStyleInterpolator:
+							CardStyleInterpolators.forScaleFromCenterAndroid,
+					}}
+				>
 					<Stack.Screen name="Startup" component={Startup} />
 					<Stack.Screen name="Auth" component={Auth} />
 					<Stack.Screen name="Landing" component={Landing} />
@@ -193,7 +192,14 @@ const ApplicationNavigator = () => {
 						}}
 					/>
 					<Stack.Screen name="Main" component={MainTabNavigator} />
-					<Stack.Screen name="Session" component={Session} />
+					<Stack.Screen
+						name="Session"
+						component={Session}
+						options={({ route }) => ({
+							title: route.params.title,
+							...CommonHeaderOptions,
+						})}
+					/>
 					<Stack.Screen
 						name="Eula"
 						component={EULAScreen}

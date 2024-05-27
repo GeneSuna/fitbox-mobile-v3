@@ -42,12 +42,14 @@ const Button = ({
 	const isOutlined = mode === 'outlined';
 
 	const customStyle: StyleProp<ViewStyle> = {
+		// default border width
+		borderWidth: 1,
+
 		// outlined
 		...(!isOutlined
 			? { backgroundColor: colors[variant as ButtonVariant].color }
 			: { borderColor: colors[variant as ButtonVariant].color }),
 
-		// rounded
 		...(!rounded ? { borderRadius: 6 } : {}),
 
 		// fullWidth

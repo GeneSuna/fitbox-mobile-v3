@@ -9,8 +9,8 @@ export const BookableSchema = z.object({
 });
 
 export const WaitlistInfoSchema = z.object({
-	enable_waitlist: z.number().nullable(),
-	waitlist_timelimit: z.number().nullable(),
+	enable_waitlist: z.number().nullish(),
+	waitlist_timelimit: z.number().nullish(),
 });
 
 export type FBClassSchemaType = z.infer<typeof FBClassSchema>;
@@ -20,13 +20,13 @@ export const FBClassSchema = z.object({
 	name: z.string(),
 	description: z.string(),
 	start_date: z.string(),
-	end_date: z.string().nullable(),
-	deleted_at: z.string().nullable(),
+	end_date: z.string().nullish(),
+	deleted_at: z.string().nullish(),
 	created_at: z.string(),
 	updated_at: z.string(),
 	type_id: z.number(),
 	is_private: boolOrOneZero,
-	attendance_limit: z.number().nullable(),
+	attendance_limit: z.number().nullish(),
 	created_by: z.number(),
 	locktime_HH: z.number(),
 	locktime_MM: z.number(),
@@ -42,11 +42,11 @@ export const CalendarEventSchema = z.object({
 	event_type_id: z.number(),
 	code: z.string(),
 	ref_id: z.number(),
-	variant: z.string().nullable(),
+	variant: z.string().nullish(),
 	sender_user_id: z.number(),
-	updated_by: z.number().nullable(),
+	updated_by: z.number().nullish(),
 	context_id: z.number(),
-	attendance_limit: z.number().nullable(),
+	attendance_limit: z.number().nullish(),
 	created_at: z.string(),
 	updated_at: z.string(),
 	venue_id: z.number().nullable(),
@@ -68,7 +68,7 @@ export const CalendarEventSchema = z.object({
 	enabled_saturday: boolOrOneZero,
 	record_timezone: z.string(),
 	event_timezone: z.string(),
-	video_link: z.string().nullable(),
+	video_link: z.string().nullish(),
 	locktime_HH: z.number(),
 	locktime_MM: z.number(),
 	booking_HH: z.number(),
@@ -84,14 +84,14 @@ export const StaffSessionSchema = z.object({
 	class_id: z.number(),
 	event_id: z.number(),
 	session_date: z.string(),
-	session_date_utc: z.string().nullable(),
+	session_date_utc: z.string().nullish(),
 	ranking: z.string(),
 	created_at: z.string(),
 	updated_at: z.string(),
-	deleted_at: z.string().nullable(),
+	deleted_at: z.string().nullish(),
 	status: z.string(),
 	subscription_id: z.number(),
-	waitlist: z.array(z.any()).nullable(),
+	waitlist: z.array(z.any()).nullish(),
 	bookable: BookableSchema,
 	waitlist_info: WaitlistInfoSchema,
 	fb_class: FBClassSchema,
@@ -103,27 +103,27 @@ export const StaffBookedSessionSchema = z.object({
 	title: z.string(),
 	start: z.string(),
 	end: z.string(),
-	venue_id: z.number().nullable(),
-	venue_name: z.string().nullable(),
+	venue_id: z.number().nullish(),
+	venue_name: z.string().nullish(),
 });
 
 export const BookedSessionSchema = z.object({
 	id: z.number(),
 	context_id: z.number(),
-	leaderboard_id: z.number().nullable(),
+	leaderboard_id: z.number().nullish(),
 	user_id: z.number(),
-	program_wod_id: z.number().nullable(),
+	program_wod_id: z.number().nullish(),
 	class_id: z.number(),
 	event_id: z.number(),
 	session_date: z.string(),
-	session_date_utc: z.string().nullable(),
+	session_date_utc: z.string().nullish(),
 	ranking: z.string(),
 	created_at: z.string(),
 	updated_at: z.string(),
-	deleted_at: z.string().nullable(),
+	deleted_at: z.string().nullish(),
 	status: z.string(),
 	subscription_id: z.number(),
-	waitlist: z.array(z.any()).nullable(),
+	waitlist: z.array(z.any()).nullish(),
 	bookable: BookableSchema,
 	waitlist_info: WaitlistInfoSchema,
 	fb_class: FBClassSchema,
@@ -144,7 +144,7 @@ export const ParsedBookedSessionSchema = z.object({
 	class_id: z.number(),
 	waitlistEnabled: z.boolean(),
 	waitlistTime: z.number(),
-	venue: z.string().optional(),
+	venue: z.string().nullish(),
 });
 
 export type SessionClassSchemaType = z.infer<typeof SessionClassSchema>;
@@ -155,31 +155,36 @@ export const SessionClassSchema = z.object({
 	description: z.string(),
 	type_id: z.number(),
 	start_date: z.string(),
-	end_date: z.string().nullable(),
+	end_date: z.string().nullish(),
 	is_private: boolOrOneZero,
-	attendance_limit: z.number().nullable(),
+	attendance_limit: z.number().nullish(),
 	class_colour_hex: z.string(),
 	class_visibility: z.number(),
 	is_free_class: boolOrOneZero,
-	class_waitlist: z.array(z.any()).nullable(),
+	class_waitlist: z.array(z.any()).nullish(),
 });
 
 export const AttendanceSchema = z.object({
 	id: z.number(),
 	context_id: z.number(),
-	leaderboard_id: z.number().nullable(),
+	leaderboard_id: z.number().nullish(),
 	user_id: z.number(),
-	program_wod_id: z.number().nullable(),
+	program_wod_id: z.number().nullish(),
 	class_id: z.number(),
 	event_id: z.number(),
 	session_date: z.string(),
-	session_date_utc: z.string().nullable(),
+	session_date_utc: z.string().nullish(),
 	ranking: z.string(),
 	created_at: z.string(),
 	updated_at: z.string(),
-	deleted_at: z.string().nullable(),
+	deleted_at: z.string().nullish(),
 	status: z.string(),
 	subscription_id: z.number(),
+});
+
+export const SessionWaitlistSchema = z.object({
+	calendar_event_id: z.number(),
+	user_id: z.number(),
 });
 
 export type SessionSchemaType = z.infer<typeof SessionSchema>;
@@ -191,7 +196,7 @@ export const SessionSchema = z.object({
 	start: z.string(),
 	end: z.string(),
 	venue: z.string(),
-	venue_id: z.number().nullable(),
+	venue_id: z.number().nullish(),
 	user_start_iso: z.string(),
 	user_end_iso: z.string(),
 	timezone: z.string(),
@@ -200,7 +205,7 @@ export const SessionSchema = z.object({
 	allDay: z.boolean(),
 	bg_colour_hex: z.string(),
 	fg_colour_hex: z.string(),
-	attachments: z.array(z.any()).nullable(),
+	attachments: z.array(z.any()).nullish(),
 	code: z.string(),
 	utc_start: z.string(),
 	utc_end: z.string(),
@@ -221,15 +226,196 @@ export const SessionSchema = z.object({
 	local_startTime: z.string(),
 	local_start_iso: z.string(),
 	local_end_iso: z.string(),
-	member_attendance: z.array(AttendanceSchema).nullable(),
-	member_waitlist: z.array(z.any()).nullable(),
-	attendance_limit: z.number().nullable(),
+	member_attendance: z.array(AttendanceSchema).nullish(),
+	member_waitlist: z.array(SessionWaitlistSchema),
+	attendance_limit: z.number().nullish(),
 	waitlist: WaitlistInfoSchema,
 	bookable: BookableSchema,
 	class: SessionClassSchema,
-	fb_class: FBClassSchema.optional(),
+	fb_class: FBClassSchema.nullish(),
 	read_only: z.string(),
 	user_editable: z.boolean(),
-	variant: z.string().nullable(),
+	variant: z.string().nullish(),
 	isCoach: z.boolean(),
+});
+
+export const ClassEventSchema = z.object({
+	class_id: z.number(),
+	event_id: z.number(),
+	workout_id: z.number(),
+	coaches: z.array(z.array(z.union([z.number(), z.string()]))),
+	created_at: z.string(),
+	updated_at: z.string(),
+	id: z.number(),
+});
+
+export const WODMovementSchema = z.object({
+	notes: z.string().nullish(),
+	reps: z.string().nullish(),
+	movement: z.object({
+		name: z.string(),
+	}),
+	video: z.string().nullish(),
+});
+
+export const FBWODSectionSchema = z.object({
+	wod_section: z.object({
+		text_section: z.string().nullish(),
+		summary: z.string().nullish(),
+		wod_movements: z.array(WODMovementSchema).nullish(),
+	}),
+	notes: z.string().nullish(),
+});
+
+export type SessionSectionSchemaType = z.infer<typeof SessionSectionSchema>;
+export const SessionSectionSchema = z.object({
+	default_collapse_state: boolOrOneZero,
+	video: z.string().nullish(),
+	id: z.number(),
+	sessionId: z.string().nullish(),
+	fb_wod: FBWODSectionSchema.nullish(),
+	text_section: z.string().nullish(),
+	name: z.string(),
+	leaderboard_section_id: z.string().nullish(),
+	scoring_type: z
+		.object({
+			name: z.string(),
+		})
+		.nullish(),
+	scoring_by: z.string().nullish(),
+	sets: z.number().nullish(),
+	rounds: z.number().nullish(),
+	reps: z.string().nullish(),
+	duration: z.number().nullish(),
+	coach_notes: z.string().nullish(),
+	member_notes: z.string().nullish(),
+	scored: z.boolean().nullish(),
+	staff_only: boolOrOneZero,
+});
+
+const paymentSchema = z.object({
+	id: z.number(),
+	user_id: z.number(),
+	context_id: z.number(),
+	user_type: z.string(),
+	gateway: z.string(),
+	method: z.string(),
+	source_id: z.nullable(z.string()),
+	account_id: z.string(),
+	default: z.number(),
+	is_active: z.number(),
+	created_at: z.string(),
+	updated_at: z.string(),
+	payment_method_id: z.string(),
+});
+
+const attendanceSchema = z.object({
+	id: z.number(),
+	context_id: z.number(),
+	leaderboard_id: z.number(),
+	user_id: z.number(),
+	program_wod_id: z.number(),
+	class_id: z.number(),
+	event_id: z.number(),
+	session_date: z.string(),
+	session_date_utc: z.nullable(z.string()),
+	ranking: z.string(),
+	created_at: z.string(),
+	updated_at: z.string(),
+	deleted_at: z.nullable(z.string()),
+	status: z.string(),
+	subscription_id: z.number(),
+});
+
+export const SessionMemberAttendanceSchema = z.object({
+	team_id: z.number(),
+	user_id: z.number(),
+	status: z.string(),
+	role: z.string(),
+	position_id: z.number(),
+	created_at: z.string(),
+	updated_at: z.string(),
+	member_active_subscription: z.object({
+		product_id: z.number(),
+		customer_id: z.number(),
+		free_membership: z.nullable(z.unknown()),
+	}),
+	user: z.object({
+		id: z.number(),
+		firstname: z.string(),
+		lastname: z.string(),
+		profile_image: z.string().url(),
+		email: z.string().email(),
+		payments: z.array(paymentSchema),
+	}),
+	attendance: attendanceSchema,
+});
+
+export const NotBookedMemberSchema = z.object({
+	user_id: z.number(),
+	// other fields
+});
+
+export type SessionSectionDataSchemaType = z.infer<
+	typeof SessionSectionDataSchema
+>;
+export const SessionSectionDataSchema = z.union([
+	z.array(SessionSectionSchema),
+	z.string(),
+]);
+
+export type SessionDetailSchemaType = z.infer<typeof SessionDetailSchema>;
+export const SessionDetailSchema = z.object({
+	alert: z.string(),
+	all_day: boolOrOneZero,
+	assigned_groups: z.array(z.any()),
+	assigned_members: z.array(z.any()),
+	attendance_limit: z.number().nullish(),
+	attendance_view: z.boolean(),
+	bookable: BookableSchema,
+	booking_HH: z.number(),
+	booking_MM: z.number(),
+	class: FBClassSchema.nullish(),
+	class_event: ClassEventSchema,
+	code: z.string(),
+	comment: z.string(),
+	context_id: z.number(),
+	created_at: z.string(),
+	description: z.string(),
+	display_after: z.string(),
+	duration: z.number(),
+	enabled_friday: boolOrOneZero,
+	enabled_monday: boolOrOneZero,
+	enabled_saturday: boolOrOneZero,
+	enabled_sunday: boolOrOneZero,
+	enabled_thursday: boolOrOneZero,
+	enabled_tuesday: boolOrOneZero,
+	enabled_wednesday: boolOrOneZero,
+	end_datetime: z.string(),
+	event_timezone: z.string(),
+	event_type_id: z.number(),
+	fb_class: FBClassSchema,
+	id: z.number(),
+	large_logo: z.string(),
+	locktime_HH: z.number(),
+	locktime_MM: z.number(),
+	member_attendance: z.array(SessionMemberAttendanceSchema),
+	members_attendance: z.array(z.any()),
+	not_book_members: z.array(NotBookedMemberSchema),
+	record_timezone: z.string(),
+	ref_id: z.number(),
+	repeat: z.string(),
+	sections: SessionSectionDataSchema,
+	sender_user_id: z.number(),
+	small_logo: z.string(),
+	start_datetime: z.string(),
+	until_end_date: z.string(),
+	updated_at: z.string(),
+	updated_by: z.number().nullish(),
+	variant: z.string().nullish(),
+	venue_id: z.number().nullish(),
+	venue_location: z.string().nullish(),
+	venue_name: z.string().nullish(),
+	video_link: z.string().nullish(),
+	waitlist: z.array(SessionWaitlistSchema),
 });

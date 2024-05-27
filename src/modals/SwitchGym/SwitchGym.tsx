@@ -16,8 +16,8 @@ const SwitchGym = () => {
 	const clearStates = useStore(state => state.clearAppState);
 	const [switching, setSwitching] = useState(false);
 
-	const { data, isFetching, refetch } = useQuery({
-		queryKey: ['startup'],
+	const { data, isFetching, refetch, isSuccess } = useQuery({
+		queryKey: ['getUserGyms'],
 		queryFn: () => {
 			return getUserGyms();
 		},
@@ -69,8 +69,8 @@ const SwitchGym = () => {
 	const sortedData = useMemo(() => {
 		let useSortedData: Gym[] = [];
 
-		if (data?.data) {
-			useSortedData = data?.data.sort((a: Gym, b: Gym) => {
+		if (isSuccess && data?.data) {
+			useSortedData = data?.data?.sort((a: Gym, b: Gym) => {
 				if (a.name < b.name) {
 					return -1;
 				}

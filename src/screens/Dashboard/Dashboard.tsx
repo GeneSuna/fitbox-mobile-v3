@@ -1,6 +1,5 @@
 import useAuth from '@/auth/hooks/useAuth';
 import { Avatar, Row, ScrollView, Spacer, Text } from '@/components/atoms';
-import { Loader } from '@/components/molecules';
 import { SafeScreen } from '@/components/template';
 import { navigate } from '@/navigators/NavigationRef';
 import { getBookedSessions, getUserGymInfo } from '@/services/users';
@@ -25,6 +24,7 @@ import BookedSessionCard, {
 	BookedSessionCardProps,
 } from './components/BookedSessionCard';
 import DashboardActionButton from './components/DashboardActionButton';
+import DashboardAnnouncements from './components/DashboardAnnouncements';
 import DashboardHeader from './components/DashboardHeader';
 
 // List of action buttons to be displayed on the dashboard screen
@@ -32,12 +32,7 @@ const actionButtons = [
 	{
 		id: 'calendar',
 		icon: 'calendar-alt',
-		text: 'Gym Schedule',
-	},
-	{
-		id: 'bookings',
-		icon: 'calendar-check',
-		text: 'My Bookings',
+		text: 'Book Class',
 	},
 	{
 		id: 'wellness',
@@ -47,7 +42,7 @@ const actionButtons = [
 	{
 		id: 'results',
 		icon: 'trophy',
-		text: 'Results',
+		text: 'Leaderboard',
 	},
 ];
 
@@ -75,7 +70,10 @@ const Dashboard = () => {
 		BookedSessionCardProps[]
 	>([]);
 
-	const onRefresh = () => setTimeout(() => setRefreshing(false), 1000);
+	const onRefresh = () => {
+		void initializeAppStates();
+		void getUpcomingSessions();
+	};
 
 	const initializeAppStates = async () => {
 		const res = await getUserGymInfo();
@@ -169,6 +167,7 @@ const Dashboard = () => {
 							.isAfter()
 					) {
 						memberSessions.push({
+							id: session.event_id,
 							startTime: session.calendar_event.start_datetime,
 							endTime: session.calendar_event.end_datetime,
 							title: session.calendar_event.comment,
@@ -176,6 +175,11 @@ const Dashboard = () => {
 								? session.calendar_event.venue_name
 								: undefined,
 							isCoach: false,
+							waitlistEnabled:
+								!!session.waitlist_info.enable_waitlist,
+							waitlistTime: Number(
+								session.waitlist_info.waitlist_timelimit,
+							),
 						});
 					}
 				});
@@ -185,6 +189,7 @@ const Dashboard = () => {
 				res.staffSessions.forEach(session => {
 					if (moment(session.start).add(30, 'minutes').isAfter()) {
 						memberSessions.push({
+							id: session.id,
 							startTime: session.start,
 							endTime: session.end,
 							title: session.title,
@@ -192,6 +197,8 @@ const Dashboard = () => {
 								? String(session.venue_name)
 								: undefined,
 							isCoach: true,
+							waitlistEnabled: false,
+							waitlistTime: 0,
 						});
 					}
 				});
@@ -245,8 +252,12 @@ const Dashboard = () => {
 
 	// TEMPORARY FUNCTIONS
 	const onSwitchUserClick = () => navigate('SwitchUser');
-	const onActionButtonClick = (navigation: string) => {
-		Alert.alert('Coming soon', `${navigation} screen`);
+	const onActionButtonClick = (navTo: string) => {
+		if (navTo === 'calendar') {
+			navigate('Calendar');
+		} else {
+			Alert.alert('Coming soon', `${navTo} screen`);
+		}
 	};
 
 	const renderActionButtons = useMemo(
@@ -260,7 +271,7 @@ const Dashboard = () => {
 						key={id}
 						text={text}
 						icon={icon}
-						onPress={() => onActionButtonClick(text)}
+						onPress={() => onActionButtonClick(id)}
 						// onPress={() => onActionButtonClick(id)} // TODO: use this once screens are implemented
 					/>
 				) : null;
@@ -268,13 +279,10 @@ const Dashboard = () => {
 		[actionButtons],
 	);
 
-	const version = `?v=${moment().toISOString()}`; // WORKAROUND: Add version to the image URL to force refresh
 	return (
 		<SafeScreen>
-			<DashboardHeader
-				banner={gymBanner + version}
-				logo={gymLogo ? gymLogo + version : ''}
-			/>
+			{/* TODO: If banner doesn't update include versioning of image to apply changes */}
+			<DashboardHeader banner={gymBanner} logo={gymLogo} />
 
 			<Spacer />
 
@@ -302,22 +310,20 @@ const Dashboard = () => {
 							) : null}
 						</Row>
 
-						<Spacer size="md" />
-
-						{!loading && upcomingSessions.length > 0 && (
-							<View style={styles.bookedSessionsContainer}>
-								{upcomingSessions // show only 3
-									.slice(0, 3)
-									.map(({ ...rest }, i) => (
-										<BookedSessionCard
-											key={i}
-											onPress={() => {
-												Say.ok('onpress');
-											}}
-											{...rest}
-										/>
-									))}
-							</View>
+						{upcomingSessions.length > 0 && (
+							<>
+								<Spacer size="md" />
+								<View style={styles.bookedSessionsContainer}>
+									{upcomingSessions // show only 3
+										.slice(0, 3)
+										.map(({ ...rest }, i) => (
+											<BookedSessionCard
+												key={i}
+												{...rest}
+											/>
+										))}
+								</View>
+							</>
 						)}
 
 						{!loading && upcomingSessions.length > 3 && (
@@ -333,13 +339,17 @@ const Dashboard = () => {
 							</TouchableOpacity>
 						)}
 
-						{loading && <Loader />}
-
 						<Spacer size="xl" />
 
 						<Row spacing="space-between" style={layout.wrap}>
 							{renderActionButtons}
 						</Row>
+
+						<Spacer size="xl" />
+
+						<Text size="lg">Announcements</Text>
+						<Spacer />
+						<DashboardAnnouncements />
 					</View>
 				</View>
 			</ScrollView>

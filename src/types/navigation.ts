@@ -1,5 +1,12 @@
 import type { StackScreenProps } from '@react-navigation/stack';
 
+export type SessionParams = {
+	id: number;
+	title: string;
+	waitlistTime: number;
+	waitlistEnabled: boolean;
+};
+
 export type ApplicationStackParamList = {
 	Example: undefined;
 	Main: undefined;
@@ -12,7 +19,7 @@ export type ApplicationStackParamList = {
 	Invite: undefined;
 	Eula: undefined;
 	SwitchGym: undefined;
-	Session: undefined;
+	Session: SessionParams;
 	BillingAgreement: undefined;
 	GymWaiver: undefined;
 	PDFViewer: PDFViewerScreenParams;

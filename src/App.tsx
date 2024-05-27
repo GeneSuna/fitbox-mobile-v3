@@ -1,7 +1,9 @@
+import 'react-native-gesture-handler';
+import 'react-native-reanimated';
+
 import { ThemeProvider } from '@/theme';
 import { GiphySDK } from '@giphy/react-native-sdk';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import 'react-native-gesture-handler';
 import { Provider } from 'react-native-paper';
 import AuthProvider from './auth/AuthProvider/AuthProvider';
 import ApplicationNavigator from './navigators/Application';

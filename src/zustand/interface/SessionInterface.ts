@@ -13,12 +13,14 @@ type ClassItemData = {
 	isBookingLocked?: boolean;
 	isAttending?: boolean;
 	isWaitlisted?: boolean;
+	waitlistTime?: number | null;
 	waitlistBtn?: boolean;
 	spotsLeft?: number | null;
 	eventId?: number;
 	classId?: number;
 	venueId?: number;
 	isCoach?: boolean;
+	color?: string;
 };
 
 type ClassItem = {

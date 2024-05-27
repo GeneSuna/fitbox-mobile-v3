@@ -1,6 +1,9 @@
 /* eslint-disable quotes */
 
-import { BookableSchemaType } from '@/types/schemas/session';
+import {
+	BookableSchemaType,
+	SessionSectionSchemaType,
+} from '@/types/schemas/session';
 import moment from 'moment';
 import { VisibilityOptions } from './Enum';
 
@@ -48,7 +51,7 @@ const getDuration = (start: string, end: string) => {
 	return moment.duration(moment(end).diff(moment(start))).asMinutes();
 };
 
-const checkSubscription = (bookable: BookableSchemaType) => {
+const checkSubscription = (bookable?: BookableSchemaType) => {
 	let subscribed = true;
 
 	if (bookable?.group_class === 'True') {
@@ -132,6 +135,17 @@ const getSpotLeft = (attendance_limit: number, number_of_attendees: number) => {
 	return spotsLeft;
 };
 
+const checkSectionsIfAvailable = (
+	sections: SessionSectionSchemaType[] | string,
+) => typeof sections !== 'string' && sections.length !== 0;
+
+const validURL = (s: string) => {
+	const res = s.match(
+		/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g,
+	);
+	return res !== null;
+};
+
 export default {
 	decodeHtml,
 	stripHtmlTags,
@@ -140,4 +154,6 @@ export default {
 	isSessionVisible,
 	checkSessionLock,
 	getSpotLeft,
+	checkSectionsIfAvailable,
+	validURL,
 };

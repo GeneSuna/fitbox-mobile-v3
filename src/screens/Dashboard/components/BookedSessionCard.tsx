@@ -1,6 +1,8 @@
 import { Row, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
+import { ApplicationStackParamList } from '@/types/navigation';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import { memo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -9,24 +11,39 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const { metrics, fonts } = config;
 
 export interface BookedSessionCardProps {
+	id: number;
 	startTime: string;
 	endTime: string;
 	title: string;
 	venue?: string;
 	isCoach: boolean;
-	onPress?: () => void;
+	waitlistEnabled: boolean;
+	waitlistTime: number;
 }
 
 const BookedSessionCard = ({
+	id,
 	startTime,
 	endTime,
 	title,
 	venue,
 	isCoach,
-	onPress,
+	waitlistEnabled,
+	waitlistTime,
 }: BookedSessionCardProps) => {
+	const navigation =
+		useNavigation<NavigationProp<ApplicationStackParamList>>();
+
+	const handlePress = () =>
+		navigation.navigate('Session', {
+			id,
+			title,
+			waitlistEnabled,
+			waitlistTime,
+		});
+
 	return (
-		<TouchableOpacity style={styles.container} onPress={onPress}>
+		<TouchableOpacity style={styles.container} onPress={handlePress}>
 			<Row style={layout.flex_1}>
 				<View style={layout.justifyCenter}>
 					<Text bold size="sm" color="mute" center>
@@ -73,7 +90,6 @@ export default memo(BookedSessionCard);
 
 BookedSessionCard.defaultProps = {
 	venue: undefined,
-	onPress: undefined,
 };
 
 const styles = StyleSheet.create({

@@ -41,7 +41,7 @@ export default DashboardActionButton;
 const styles = StyleSheet.create({
 	container: {
 		paddingVertical: metrics.md,
-		minWidth: width / 2.4,
+		minWidth: width / 3.4,
 		marginBottom: metrics.md,
 		gap: 8,
 		justifyContent: 'center',

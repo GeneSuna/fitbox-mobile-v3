@@ -130,20 +130,29 @@ const Calendar = () => {
 							moment(item.local_start).diff(moment(), 'minutes') >
 								Number(item.waitlist.waitlist_timelimit) * 60;
 
+						// isWaitlisted
+						const isWaitlisted = item.member_waitlist.some(
+							w =>
+								w.calendar_event_id === item.id &&
+								w.user_id === user?.id,
+						);
+
 						// return data
 						return {
 							start: moment(item.local_start).format('H:mm A'),
 							isSubscribed: Func.checkSubscription(item.bookable),
 							location: item.venue_id ? item.venue : undefined,
 							venueId: Number(item.venue_id),
+							waitlistTime: item.waitlist.waitlist_timelimit,
 							startDate: item.local_start,
+							color: item.class.class_colour_hex,
 							classId: item.class.id,
 							eventId: item.event_id,
 							isCoach: item.isCoach,
-							isWaitlisted: false,
 							title: item.title,
 							isBookingLocked,
 							hideSchedule,
+							isWaitlisted,
 							waitlistBtn,
 							isAttending,
 							spotsLeft,
@@ -221,9 +230,12 @@ const Calendar = () => {
 
 	useEffect(() => {
 		setActiveMonth(moment(currentDate).format('MMMM'));
-		fetchFilterOptions();
 		void loadClasses();
 	}, [currentDate]);
+
+	useEffect(() => {
+		void fetchFilterOptions();
+	}, []);
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const renderItem = useCallback(({ item }: any) => {

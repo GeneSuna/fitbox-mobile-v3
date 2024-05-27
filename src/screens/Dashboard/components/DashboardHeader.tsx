@@ -3,6 +3,7 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ApplicationStackParamList } from '@/types/navigation';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { memo } from 'react';
 import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -47,7 +48,7 @@ DashboardHeader.defaultProps = {
 	logo: '',
 };
 
-export default DashboardHeader;
+export default memo(DashboardHeader);
 
 const styles = StyleSheet.create({
 	container: {

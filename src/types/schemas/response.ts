@@ -14,6 +14,7 @@ import {
 } from './payment';
 import {
 	BookedSessionSchema,
+	SessionDetailSchema,
 	SessionSchema,
 	StaffBookedSessionSchema,
 } from './session';
@@ -64,6 +65,9 @@ export const GetUserGymInfoResponseSchema = z.object({
 export const GetScheduleListResponseSchema = apiResponseSchema(
 	z.array(SessionSchema),
 );
+
+export const GetScheduleDetailResponseSchema =
+	apiResponseSchema(SessionDetailSchema);
 
 export const GetUserGymResponseSchema = apiResponseSchema(z.array(GymSchema));
 
