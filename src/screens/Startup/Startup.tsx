@@ -53,6 +53,16 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 						});
 					}
 
+					// if (
+					// 	user.user_data.last_login &&
+					// 	!user.user_data.is_health_captured
+					// ) {
+					// 	return navigation.reset({
+					// 		index: 0,
+					// 		routes: [{ name: 'HealthCapture' }],
+					// 	});
+					// }
+
 					// TODO: Additional conditions here.
 				}
 
