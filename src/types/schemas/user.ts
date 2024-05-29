@@ -38,7 +38,7 @@ export const UserSchema = z.object({
 	]),
 	is_staff: boolOrOneZero,
 	notice: z.string(),
-	last_login: z.boolean(),
+	last_login: z.union([z.boolean(), z.string()]),
 	is_health_captured: boolOrOneZero,
 	allow_leaderboards: boolOrOneZero,
 	allow_leaderboards_comment: boolOrOneZero,
