@@ -5,7 +5,7 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ApplicationScreenProps } from '@/types/navigation';
 import { UserSchemaType } from '@/types/schemas/user';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import {
 	ActivityIndicator,
 	Alert,
@@ -13,9 +13,11 @@ import {
 	PermissionsAndroid,
 	Platform,
 	StyleSheet,
+	TouchableOpacity,
 	View,
 } from 'react-native';
 import ReactNativeBlobUtil from 'react-native-blob-util';
+import Pdf from 'react-native-pdf';
 import SimpleToast from 'react-native-simple-toast';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -34,6 +36,7 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 		loading: true,
 		downloading: false,
 	});
+	const [errorPdf, setErrorPdf] = useState(false);
 
 	useEffect(() => {
 		void (async () => {
@@ -48,16 +51,40 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 		})();
 	}, []);
 
+	const renderDownloadPDF = () => (
+		<View
+			style={{
+				padding: config.metrics.rg,
+				marginRight: config.metrics.rg,
+			}}
+		>
+			<TouchableOpacity onPress={() => void handleDownload()}>
+				<Icon
+					name="download"
+					size={18}
+					color={config.backgrounds.lightgrey}
+				/>
+			</TouchableOpacity>
+		</View>
+	);
+
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight:
+				Platform.OS === 'android' ? renderDownloadPDF : () => null,
+		});
+	}, []);
+
 	const handleDownload = async () => {
 		if (!state.waiver || state.waiver === '') {
 			Alert.alert('No waiver to download');
 			return false;
 		}
 
-		navigation.navigate('PDFViewer', {
-			title: 'Gym Waiver',
-			waiverUrl: state.waiver,
-		});
+		// navigation.navigate('PDFViewer', {
+		// 	title: 'Gym Waiver',
+		// 	waiverUrl: state.waiver,
+		// });
 
 		if (Platform.OS === 'android') {
 			const granted = await PermissionsAndroid.check(
@@ -145,27 +172,28 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 		</View>
 	) : (
 		<View style={styles.container}>
-			<View style={styles.headline}>
-				<Icon
-					name="file-alt"
-					size={150}
-					color={config.backgrounds.mute}
-				/>
-				<Text size="h3" bold center color="brand">
-					Gym Waiver
-				</Text>
-				<Text size="md" center color="mute">
-					Tap the &quot;Accept&quot; button to proceed
-				</Text>
-				<Spacer size="lg" />
-				<Button
-					title="Read Waiver"
-					onPress={() => void handleDownload()}
-				/>
-				<Spacer />
-				<Text center color="mute">
-					Please read the waiver carefully
-				</Text>
+			<View style={layout.flex_1}>
+				{errorPdf ? (
+					<View style={styles.errorPdf}>
+						<Icon
+							name="exclamation-triangle"
+							color={config.colors.danger}
+							size={config.metrics.xl}
+						/>
+						<Spacer />
+						<Text size="md">Error loading PDF</Text>
+					</View>
+				) : (
+					<Pdf
+						source={{
+							uri: state.waiver,
+							cache: true,
+						}}
+						style={styles.pdfStyle}
+						onError={() => setErrorPdf(true)}
+						trustAllCerts={Platform.OS !== 'android'}
+					/>
+				)}
 			</View>
 			<Spacer size="lg" />
 
@@ -211,6 +239,16 @@ const styles = StyleSheet.create({
 	loader: {
 		flex: 1,
 		justifyContent: 'center',
+	},
+	pdfStyle: {
+		width: '100%',
+		height: '100%',
+		backgroundColor: 'white',
+	},
+	errorPdf: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		flex: 1,
 	},
 });
 
