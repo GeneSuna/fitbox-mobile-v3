@@ -5,13 +5,20 @@ import { getConversationList } from '@/services/message';
 import { getUserGyms } from '@/services/users';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
+import { MainTabScreenProps } from '@/types/navigation';
 import { Gym } from '@/types/schemas/gym';
 import { MessageItemType } from '@/types/schemas/message';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import {
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useMemo,
+	useState,
+} from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import GymItem from './components/GymItem';
@@ -20,7 +27,7 @@ import InboxSelectGymModal from './modals/InboxSelectGymModal';
 
 const { fonts } = config;
 
-const Inbox = () => {
+const Inbox = ({ navigation }: MainTabScreenProps) => {
 	const { user } = useAuth();
 
 	const userId = user?.id;
@@ -29,6 +36,29 @@ const Inbox = () => {
 		teamId: state.teamId,
 		setAppState: state.setAppState,
 	}));
+
+	const renderCreateButton = () => (
+		<TouchableOpacity onPress={() => navigation.navigate('Contacts')}>
+			<View
+				style={{
+					paddingHorizontal: config.metrics.rg,
+				}}
+			>
+				<Icon
+					name="create-outline"
+					size={25}
+					color="white"
+					style={{ paddingBottom: config.metrics.sm }}
+				/>
+			</View>
+		</TouchableOpacity>
+	);
+
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: renderCreateButton,
+		});
+	}, []);
 
 	const [view] = useState('');
 	const [list, setList] = useState<MessageItemType[]>([]);
@@ -145,6 +175,12 @@ const Inbox = () => {
 		handleRefresh(false);
 		setAppState('teamId', activeGymId);
 	}, [activeGymId]);
+
+	useFocusEffect(
+		useCallback(() => {
+			handleRefresh();
+		}, []),
+	);
 
 	const renderInboxItem = (item: MessageItemType, index: number) => {
 		// const { sender_id: senderId, convo_id } = item;

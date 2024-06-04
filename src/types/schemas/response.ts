@@ -5,7 +5,11 @@ import {
 	GymSchema,
 	GymVenueSchema,
 } from './gym';
-import { MessageItemSchema } from './message';
+import {
+	ContactDataSchema,
+	MessageItemSchema,
+	SendMessageDataSchema,
+} from './message';
 import {
 	CardDetailsSchema,
 	PaymentInfoDataSchema,
@@ -210,3 +214,8 @@ export const SwitchAccountSchema = z.object({
 	user_data: UserSchema,
 });
 export const GetUserHealthInfo = UserHealthInfoSchema;
+
+export const GetContacts = apiResponseSchema(ContactDataSchema);
+export const SendConversationMessageSchema = apiResponseSchema(
+	SendMessageDataSchema,
+);

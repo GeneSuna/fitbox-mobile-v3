@@ -1,10 +1,15 @@
 import type { StackScreenProps } from '@react-navigation/stack';
+import { ContactMembersType } from './schemas/message';
 
 export type SessionParams = {
 	id: number;
 	title: string;
 	waitlistTime: number;
 	waitlistEnabled: boolean;
+};
+
+export type ComposeParams = {
+	contacts: ContactMembersType[];
 };
 
 export type ApplicationStackParamList = {
@@ -24,6 +29,8 @@ export type ApplicationStackParamList = {
 	GymWaiver: undefined;
 	PDFViewer: PDFViewerScreenParams;
 	SwitchUser: undefined;
+	Compose: ComposeParams;
+	Contacts: undefined;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;

@@ -2,6 +2,8 @@ import {
 	Auth,
 	BillingAgreementScreen,
 	Calendar,
+	ComposeScreen,
+	ContactsScreen,
 	Dashboard,
 	EULAScreen,
 	Example,
@@ -144,6 +146,7 @@ const MainTabNavigator = () => {
 };
 
 const Stack = createStackNavigator<ApplicationStackParamList>();
+
 const ApplicationNavigator = () => {
 	const { variant, navigationTheme, colors } = useTheme();
 
@@ -259,6 +262,20 @@ const ApplicationNavigator = () => {
 						name="SwitchUser"
 						component={SwitchUser}
 						options={{ title: 'Switch User' }}
+					/>
+
+					<Stack.Screen
+						name="Compose"
+						component={ComposeScreen}
+						options={{ title: 'Compose', headerRight: () => null }}
+					/>
+					<Stack.Screen
+						name="Contacts"
+						component={ContactsScreen}
+						options={{
+							title: 'Recipients',
+							headerLeft: HeaderCloseButton,
+						}}
 					/>
 				</Stack.Group>
 			</Stack.Navigator>

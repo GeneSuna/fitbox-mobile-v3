@@ -9,6 +9,8 @@ interface ApplicationStateInterface {
 	emptyRequiredFields: string[];
 	fromAcceptInvite: boolean;
 	setupSubscriptionId: null | number;
+	message: string;
+	subject: string;
 }
 
 interface ApplicationInterface extends ApplicationStateInterface {
