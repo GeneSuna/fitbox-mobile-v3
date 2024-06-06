@@ -22,6 +22,11 @@ const BODY_PARTS = [
 	{ label: 'Ankle', value: 'Ankle' },
 	{ label: 'Foot', value: 'Foot' },
 ];
+const SORT_OPTIONS = [
+	{ name: 'Members', value: 'player' },
+	{ name: 'Staff', value: 'staff' },
+	{ name: 'Groups', value: 'group' },
+];
 
 const QUESTIONS_LIST = [
 	{
@@ -162,4 +167,5 @@ export default {
 	IS_ANDROID: Platform.OS === 'android',
 	BODY_PARTS,
 	QUESTIONS_LIST,
+	SORT_OPTIONS,
 };

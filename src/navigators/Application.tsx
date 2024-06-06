@@ -2,6 +2,8 @@ import {
 	Auth,
 	BillingAgreementScreen,
 	Calendar,
+	ComposeScreen,
+	ContactsScreen,
 	Dashboard,
 	EULAScreen,
 	Example,
@@ -35,6 +37,7 @@ import ShopHeaderRightComponent from '@/screens/Shop/components/ShopHeaderRightC
 import { config } from '@/theme/_config';
 import type {
 	ApplicationStackParamList,
+	ComposeStackParamsList,
 	MainTabParamList,
 } from '@/types/navigation';
 import { Constant } from '@/utils';
@@ -140,6 +143,31 @@ const MainTabNavigator = () => {
 				options={{ headerShown: false }}
 			/>
 		</Tab.Navigator>
+	);
+};
+
+const ComposeStack = createStackNavigator<ComposeStackParamsList>();
+
+const ComposeStackNavigator = () => {
+	const { colors } = useTheme();
+	return (
+		<ComposeStack.Navigator
+			initialRouteName="Contacts"
+			screenOptions={{
+				headerTintColor: colors.darkgray,
+				cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+				headerMode: 'float',
+				headerShadowVisible: false,
+				headerLeft: () => null,
+			}}
+		>
+			<ComposeStack.Screen
+				name="Compose"
+				component={ComposeScreen}
+				options={{ title: 'Compose Message' }}
+			/>
+			<ComposeStack.Screen name="Contacts" component={ContactsScreen} />
+		</ComposeStack.Navigator>
 	);
 };
 
@@ -259,6 +287,12 @@ const ApplicationNavigator = () => {
 						name="SwitchUser"
 						component={SwitchUser}
 						options={{ title: 'Switch User' }}
+					/>
+
+					<Stack.Screen
+						name="ComposeStack"
+						component={ComposeStackNavigator}
+						options={{ headerShown: false }}
 					/>
 				</Stack.Group>
 			</Stack.Navigator>
