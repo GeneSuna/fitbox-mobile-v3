@@ -3,7 +3,7 @@ import { Row, Spacer, Text } from '@/components/atoms';
 import { sendConversationMessage } from '@/services/message';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import { ApplicationScreenProps, ComposeParams } from '@/types/navigation';
+import { ComposeParams, ComposeScreenProps } from '@/types/navigation';
 import { ContactMembersType } from '@/types/schemas/message';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
@@ -29,7 +29,7 @@ type State = {
 	to: string;
 };
 
-const ComposeScreen = ({ navigation, route }: ApplicationScreenProps) => {
+const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 	// TODO: Navigate to BrowseMedia. Attachment Icon not yet working
 
 	const { setAppState, storeMessage, storeSubject } = useStore(state => ({

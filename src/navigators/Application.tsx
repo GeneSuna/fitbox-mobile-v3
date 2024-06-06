@@ -37,6 +37,7 @@ import ShopHeaderRightComponent from '@/screens/Shop/components/ShopHeaderRightC
 import { config } from '@/theme/_config';
 import type {
 	ApplicationStackParamList,
+	ComposeStackParamsList,
 	MainTabParamList,
 } from '@/types/navigation';
 import { Constant } from '@/utils';
@@ -145,8 +146,26 @@ const MainTabNavigator = () => {
 	);
 };
 
-const Stack = createStackNavigator<ApplicationStackParamList>();
+const ComposeStack = createStackNavigator<ComposeStackParamsList>();
 
+const ComposeStackNavigator = () => {
+	const { colors } = useTheme();
+	return (
+		<ComposeStack.Navigator
+			initialRouteName="Contacts"
+			screenOptions={{
+				headerTintColor: colors.darkgray,
+				presentation: 'card',
+				headerLeft: HeaderCloseButton,
+			}}
+		>
+			<ComposeStack.Screen name="Compose" component={ComposeScreen} />
+			<ComposeStack.Screen name="Contacts" component={ContactsScreen} />
+		</ComposeStack.Navigator>
+	);
+};
+
+const Stack = createStackNavigator<ApplicationStackParamList>();
 const ApplicationNavigator = () => {
 	const { variant, navigationTheme, colors } = useTheme();
 
@@ -265,16 +284,10 @@ const ApplicationNavigator = () => {
 					/>
 
 					<Stack.Screen
-						name="Compose"
-						component={ComposeScreen}
-						options={{ title: 'Compose', headerRight: () => null }}
-					/>
-					<Stack.Screen
-						name="Contacts"
-						component={ContactsScreen}
+						name="ComposeStack"
+						component={ComposeStackNavigator}
 						options={{
-							title: 'Recipients',
-							headerLeft: HeaderCloseButton,
+							headerShown: false,
 						}}
 					/>
 				</Stack.Group>

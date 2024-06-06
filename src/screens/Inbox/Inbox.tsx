@@ -38,7 +38,7 @@ const Inbox = ({ navigation }: MainTabScreenProps) => {
 	}));
 
 	const renderCreateButton = () => (
-		<TouchableOpacity onPress={() => navigation.navigate('Contacts')}>
+		<TouchableOpacity onPress={() => navigation.navigate('ComposeStack')}>
 			<View
 				style={{
 					paddingHorizontal: config.metrics.rg,

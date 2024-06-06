@@ -1,15 +1,18 @@
 import useAuth from '@/auth/hooks/useAuth';
 import { Row, Text } from '@/components/atoms';
+import HeaderButtonGroup from '@/components/template/Header/HeaderButtonGroup';
+import { goBack } from '@/navigators/NavigationRef';
 import { getContacts } from '@/services/message';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import { ApplicationScreenProps } from '@/types/navigation';
+import { ComposeScreenProps } from '@/types/navigation';
 import {
 	ContactGroupMembersType,
 	ContactGroupType,
 	ContactMembersType,
 } from '@/types/schemas/message';
 import { Constant, Say } from '@/utils';
+import useStore from '@/zustand/Store';
 import { sortBy as _sortBy } from 'lodash';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
@@ -20,6 +23,7 @@ import {
 	View,
 } from 'react-native';
 import { List, Searchbar } from 'react-native-paper';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type State = {
 	list: ContactMembersType[];
@@ -29,13 +33,11 @@ type State = {
 	sortBy: string;
 	searchQuery: string;
 };
-const ContactsScreen = ({ navigation }: ApplicationScreenProps) => {
-	// const { setAppState, selectedContacts } = useStore(state => ({
-	// 	setAppState: state.setAppState,
-	// 	selectedContacts: state.selectedContacts,
-	// }));
-
+const ContactsScreen = ({ navigation }: ComposeScreenProps) => {
 	const { user } = useAuth();
+	const { setAppState } = useStore(state => ({
+		setAppState: state.setAppState,
+	}));
 	const [state, setState] = useState<State>({
 		list: [],
 		groups: [],
@@ -57,9 +59,25 @@ const ContactsScreen = ({ navigation }: ApplicationScreenProps) => {
 		</TouchableOpacity>
 	);
 
+	const renderCloseButton = () => {
+		return (
+			<HeaderButtonGroup>
+				<Ionicons name="close" size={24} onPress={handleCloseButton} />
+			</HeaderButtonGroup>
+		);
+	};
+
+	const handleCloseButton = () => {
+		setAppState('message', '');
+		setAppState('subject', '');
+		goBack();
+	};
+
 	useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: renderHeaderComposeButton,
+			headerLeft: renderCloseButton,
+			title: 'Recipients',
 		});
 	}, []);
 
@@ -67,8 +85,6 @@ const ContactsScreen = ({ navigation }: ApplicationScreenProps) => {
 		void (async () => {
 			await getData();
 		})();
-
-		// return () => saveContactsUnmount();
 	}, []);
 
 	const saveContacts = () => {
@@ -96,7 +112,6 @@ const ContactsScreen = ({ navigation }: ApplicationScreenProps) => {
 		navigation.navigate('Compose', {
 			contacts,
 		});
-		// setAppState('selectedContacts', contacts);
 	};
 
 	const getData = async (sortByRefresh?: string) => {
@@ -109,12 +124,6 @@ const ContactsScreen = ({ navigation }: ApplicationScreenProps) => {
 			const res = await getContacts();
 			groups = res.data.groups;
 			list = res.data.members;
-			// list.forEach(c => {
-			// 	if (selectedContacts.some(item => item.id === c.id)) {
-			// 		c.is_selected = true;
-			// 		sort = c.role;
-			// 	}
-			// });
 		} catch (e) {
 			Say.err(e as string);
 		}

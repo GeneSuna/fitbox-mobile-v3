@@ -29,11 +29,19 @@ export type ApplicationStackParamList = {
 	GymWaiver: undefined;
 	PDFViewer: PDFViewerScreenParams;
 	SwitchUser: undefined;
-	Compose: ComposeParams;
-	Contacts: undefined;
+	ComposeStack: undefined;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
+
+export type ComposeScreenProps = StackScreenProps<
+	ComposeStackParamsList & ApplicationStackParamList
+>;
+
+export type ComposeStackParamsList = {
+	Compose: ComposeParams;
+	Contacts: undefined;
+};
 
 export type PDFViewerScreenParams = {
 	title: string;
