@@ -6,8 +6,9 @@ import layout from '@/theme/layout';
 import { ComposeParams, ComposeScreenProps } from '@/types/navigation';
 import { ContactMembersType, GIFItemType } from '@/types/schemas/message';
 import { SearchGIFResponseType } from '@/types/schemas/response';
-import { Say } from '@/utils';
+import { Constant, Say } from '@/utils';
 import useStore from '@/zustand/Store';
+import { debounce } from 'lodash';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import {
 	ActivityIndicator,
@@ -60,12 +61,12 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 	const [searchQuery, setSearchQuery] = useState<string>('');
 
 	useEffect(() => {
-		// TODO: transfer apiKey somewhere or get from BE
-		const apikey = 'AIzaSyCe3wcxBWD8Oe5SBfBz7qhR2680gYvIqEA';
-		const searchUrl = `https://tenor.googleapis.com/v2/search?q=${
-			searchQuery || 'trending'
-		}&key=${apikey}&client_key=${user?.token as string}&limit=30`;
-		void (async () => {
+		const debouncedEffect = debounce(async (query: string) => {
+			const searchUrl = `https://tenor.googleapis.com/v2/search?q=${
+				query || 'trending'
+			}&key=${Constant.TENOR_API_KEY}&client_key=${
+				user?.token as string
+			}&limit=30`;
 			try {
 				const searchRes = await fetch(searchUrl);
 				const data: SearchGIFResponseType =
@@ -74,7 +75,13 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 			} catch (e) {
 				Say.err(e as string);
 			}
-		})();
+		}, 500);
+
+		void debouncedEffect(searchQuery);
+
+		return () => {
+			debouncedEffect.cancel();
+		};
 	}, [searchQuery]);
 
 	const renderHeaderCancelButton = () => (
@@ -146,11 +153,10 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 
 				// TODO: add attachedFiles.length logic here
 
-				try {
-					await sendConversationMessage(payload);
-				} catch (e) {
-					Say.err(e as string);
-				}
+				await sendConversationMessage(payload).catch(e =>
+					Say.err(e as string),
+				);
+
 				setState(prevState => ({ ...prevState, message: '' }));
 				navigation.navigate('Main');
 			}
@@ -198,11 +204,10 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 
 				// TODO: add attachedFiles.length logic here
 
-				try {
-					await sendConversationMessage(payload);
-				} catch (e) {
-					Say.err(e as string);
-				}
+				await sendConversationMessage(payload).catch(e =>
+					Say.err(e as string),
+				);
+
 				setState(prevState => ({ ...prevState, message: '' }));
 				navigation.navigate('Main');
 			}
