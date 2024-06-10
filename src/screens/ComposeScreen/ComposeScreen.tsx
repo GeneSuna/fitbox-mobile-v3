@@ -63,7 +63,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 	const handleCancelButton = () => {
 		setAppState('message', '');
 		setAppState('subject', '');
-		navigation.navigate('Main');
+		navigation.navigate('Inbox');
 	};
 
 	useLayoutEffect(() => {
@@ -126,7 +126,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 					Say.err(e as string);
 				}
 				setState(prevState => ({ ...prevState, message: '' }));
-				navigation.navigate('Main');
+				navigation.navigate('Inbox');
 			}
 		} catch (e) {
 			return Alert.alert('Something went wrong');
