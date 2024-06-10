@@ -176,6 +176,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 					onChangeText={handleEnterSubject}
 					placeholder="Subject"
 					underlineColorAndroid="transparent"
+					style={layout.fontMontserratRegular}
 				/>
 			</View>
 			<View style={styles.footerContainer}>
@@ -244,7 +245,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 					<TextInput
 						value={state.message}
 						onChangeText={handleEnterMessage}
-						style={styles.msgInput}
+						style={[styles.msgInput, layout.fontMontserratRegular]}
 						placeholder="Type your message here..."
 						underlineColorAndroid="transparent"
 						multiline

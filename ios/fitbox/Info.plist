@@ -23,7 +23,8 @@
 		<string>Octicons.ttf</string>
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
-		<string>Alata-Regular.ttf</string>
+		<string>Montserrat-Regular.ttf</string>
+		<string>Montserrat-Bold.ttf</string>
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>To be able to change your avatar and attach files to messaging</string>

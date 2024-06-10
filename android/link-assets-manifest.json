@@ -1,9 +1,13 @@
 {
-  "migIndex": 1,
-  "data": [
-    {
-      "path": "src/theme/assets/fonts/Alata-Regular.ttf",
-      "sha1": "05f7d2017cc9baf92e8aaf8d3ab77f9ba2911af2"
-    }
-  ]
+    "migIndex": 1,
+    "data": [
+        {
+            "path": "src/theme/assets/fonts/Montserrat-Bold.ttf",
+            "sha1": "98c66622226025f539568865af96df5175e2979c"
+        },
+        {
+            "path": "src/theme/assets/fonts/Montserrat-Regular.ttf",
+            "sha1": "bb895d19b8a1fbe1c57fc89cac5da82fdc8fdef4"
+        }
+    ]
 }
