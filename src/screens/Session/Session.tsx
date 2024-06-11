@@ -38,7 +38,7 @@ const Session = ({ route }: ApplicationScreenProps) => {
 		error,
 		// refetch,
 	} = useQuery({
-		queryKey: ['getUserGyms'],
+		queryKey: ['sessionGetScheduleDetail'],
 		queryFn: () => getScheduleDetail(eventId),
 		select: res => res.data,
 		enabled: !!eventId,
