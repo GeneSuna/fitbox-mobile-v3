@@ -1,105 +1,129 @@
 import useAuth from '@/auth/hooks/useAuth';
-import { ScrollView, Spacer } from '@/components/atoms';
-import { MenuOption } from '@/components/molecules';
+import { ScrollView } from '@/components/atoms';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import { MainTabScreenProps } from '@/types/navigation';
 import useStore from '@/zustand/Store';
 import { Alert, Linking, StyleSheet, Text, View } from 'react-native';
+import { List } from 'react-native-paper';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const menuOptions = [
 	{
-		id: 'profile',
-		name: 'My Profile',
-		icon: 'person',
-		context: 'any',
-		role: 'any',
+		title: 'Account',
+		items: [
+			{
+				id: 'information',
+				name: 'My Details',
+				icon: 'person',
+				context: 'any',
+				role: 'any',
+			},
+			{
+				id: 'health-info',
+				name: 'Update Health Info',
+				icon: 'medkit',
+				context: 'any',
+				role: 'any',
+			},
+			{
+				id: 'performance',
+				name: 'Performance',
+				icon: 'chart-line',
+				fontAwesome: true,
+				context: 'member',
+				role: 'member',
+			},
+		],
 	},
 	{
-		id: 'gym',
-		name: 'My Gyms',
-		icon: 'dumbbell',
-		fontAwesome: true,
-		context: 'any',
-		role: 'any',
+		title: 'Gym',
+		items: [
+			{
+				id: 'shop',
+				name: 'Visit Shop',
+				icon: 'cart',
+				context: 'member',
+				role: 'member',
+			},
+			{
+				id: 'subscription',
+				name: 'Memberships',
+				icon: 'file-invoice-dollar',
+				context: 'any',
+				role: 'any',
+				fontAwesome: true,
+			},
+			{
+				id: 'payments',
+				name: 'Payments',
+				icon: 'card-outline',
+				context: 'any',
+				role: 'any',
+			},
+			{
+				id: 'waivers',
+				name: 'Accepted Waivers',
+				icon: 'document-text-outline',
+				context: 'any',
+				role: 'any',
+			},
+			{
+				id: 'gym',
+				name: 'My Gyms',
+				icon: 'dumbbell',
+				fontAwesome: true,
+				context: 'any',
+				role: 'any',
+			},
+		],
 	},
 	{
-		id: 'performance',
-		name: 'Performance',
-		icon: 'chart-line',
-		fontAwesome: true,
-		context: 'member',
-		role: 'member',
+		title: 'App',
+		items: [
+			{
+				id: 'notification',
+				name: 'Notifications',
+				icon: 'notifications',
+				context: 'any',
+				role: 'any',
+			},
+			{
+				id: 'about',
+				name: 'About fitbox',
+				icon: 'information-circle-outline',
+				context: 'any',
+				role: 'any',
+			},
+			{
+				id: 'help',
+				name: 'Help',
+				icon: 'help-circle-outline',
+				context: 'any',
+				role: 'any',
+			},
+			{
+				id: 'clear-cache',
+				name: 'Clear Cache',
+				icon: 'trash',
+				context: 'any',
+				role: 'any',
+			},
+		],
 	},
 	{
-		id: 'shop',
-		name: 'Visit Shop',
-		icon: 'cart',
-		context: 'member',
-		role: 'member',
-	},
-	{
-		id: 'notification',
-		name: 'Notifications',
-		icon: 'notifications',
-		context: 'any',
-		role: 'any',
-	},
-	// {
-	// 	id: 'member',
-	// 	name: 'Member Account',
-	// 	icon: 'swap',
-	// 	context: 'member',
-	// 	role: 'coach',
-	// },
-	// {
-	// 	id: 'coach',
-	// 	name: 'Coach Account',
-	// 	icon: 'swap',
-	// 	context: 'coach',
-	// 	role: 'coach',
-	// },
-	{
-		id: 'about',
-		name: 'About fitbox',
-		icon: 'information-circle-outline',
-		context: 'any',
-		role: 'any',
-	},
-	{
-		id: 'waivers',
-		name: 'Waivers',
-		icon: 'document-text-outline',
-		context: 'any',
-		role: 'any',
-	},
-	{
-		id: 'help',
-		name: 'Help',
-		icon: 'help-circle-outline',
-		context: 'any',
-		role: 'any',
-	},
-	{
-		id: 'clear-cache',
-		name: 'Clear Cache',
-		icon: 'trash',
-		context: 'any',
-		role: 'any',
-	},
-	{
-		id: 'theme',
-		name: 'Dark Mode',
-		icon: 'moon',
-		context: 'any',
-		role: 'any',
-	},
-	{
-		id: 'logout',
-		name: 'Logout',
-		icon: 'log-out',
-		context: 'any',
-		role: 'any',
+		title: 'Others',
+		hideTitle: true,
+		items: [
+			{
+				id: 'logout',
+				name: 'Logout',
+				icon: 'log-out',
+				context: 'any',
+				role: 'any',
+			},
+		],
 	},
 ];
 
@@ -110,8 +134,17 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 
 	const onClick = (id: string) => {
 		switch (id) {
-			case 'profile':
-				navigation.navigate('ProfileMenu');
+			case 'information':
+				navigation.navigate('MyDetails');
+				break;
+			case 'subscription':
+				navigation.navigate('Subscription');
+				break;
+			case 'payments':
+				navigation.navigate('PaymentInformation');
+				break;
+			case 'health-info':
+				navigation.navigate('HealthCapture', { fromMenu: true });
 				break;
 			case 'gym':
 				navigation.navigate('Example');
@@ -149,20 +182,68 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 		}
 	};
 
-	return (
-		<ScrollView>
-			<Spacer />
-
-			{menuOptions.map(({ id, name, icon, fontAwesome }) => (
-				<MenuOption
-					key={id}
-					name={name}
-					icon={icon}
-					onPress={() => onClick(id)}
-					fontAwesome={fontAwesome}
-					hide={id === 'shop' && !shopUrl}
+	const renderLeftIcon = (item: {
+		id: string;
+		icon: string;
+		fontAwesome?: boolean;
+	}) => {
+		if (item.fontAwesome) {
+			return (
+				<FontAwesomeIcon
+					name={item.icon}
+					style={styles.menuOptionIcon}
+					color="#777"
+					size={15}
 				/>
-			))}
+			);
+		}
+
+		return (
+			<Ionicons
+				name={item.icon}
+				style={styles.menuOptionIcon}
+				color="#777"
+				size={20}
+			/>
+		);
+	};
+
+	const renderRightIcon = () => (
+		<List.Icon
+			icon="chevron-right"
+			color="#777"
+			style={styles.menuOptionRightIcon}
+		/>
+	);
+
+	return (
+		<ScrollView contentContainerStyle={styles.container}>
+			{menuOptions.map((op, i) => {
+				const options = op.items.map(item => (
+					<List.Item
+						key={item.id}
+						style={styles.menuOption}
+						title={item.name}
+						onPress={() => onClick(item.id)}
+						left={() => renderLeftIcon(item)}
+						right={renderRightIcon}
+					/>
+				));
+
+				if (!op.hideTitle) {
+					return (
+						<List.Section
+							key={i}
+							style={styles.menuOptionContainer}
+						>
+							<List.Subheader>{op.title}</List.Subheader>
+							{options}
+						</List.Section>
+					);
+				}
+
+				return options;
+			})}
 
 			<View style={styles.versionContainer}>
 				<Text>{`App Version ${menuOptions ? '3.2' : ''}`}</Text>
@@ -179,6 +260,25 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 export default Menu;
 
 const styles = StyleSheet.create({
+	container: {
+		backgroundColor: '#F4F4F4',
+	},
+	menuOptionContainer: {
+		gap: 1,
+	},
+	menuOption: {
+		backgroundColor: 'white',
+	},
+	menuOptionIcon: {
+		width: 23,
+		height: 23,
+		textAlign: 'center',
+		verticalAlign: 'middle',
+		marginLeft: 13,
+	},
+	menuOptionRightIcon: {
+		marginRight: -config.metrics.md,
+	},
 	versionContainer: {
 		width: '100%',
 		alignItems: 'center',

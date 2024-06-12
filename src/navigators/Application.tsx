@@ -16,6 +16,7 @@ import {
 	Session,
 	Shop,
 	Startup,
+	WebView,
 } from '@/screens';
 import { useTheme } from '@/theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -299,6 +300,18 @@ const ApplicationNavigator = () => {
 						options={{ title: 'Add Attendance' }}
 					/>
 				</Stack.Group>
+
+				<Stack.Screen
+					name="Webview"
+					component={WebView}
+					options={({ route }) => ({
+						title: route.params.title,
+						headerTintColor: colors.darkgray,
+						presentation: 'modal',
+						headerRight: HeaderCloseButton,
+						headerLeft: () => null,
+					})}
+				/>
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

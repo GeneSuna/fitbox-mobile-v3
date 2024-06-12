@@ -32,6 +32,7 @@ export type ApplicationStackParamList = {
 	SwitchUser: undefined;
 	ComposeStack: undefined;
 	AddAttendance: AddAttendanceParams;
+	Webview: WebViewParams;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
@@ -58,6 +59,11 @@ export type AddAttendanceParams = {
 	session: SessionDetailSchemaType;
 };
 
+export type WebViewParams = {
+	title: string;
+	content: string;
+};
+
 export type SubscriptionDetailsParams = {
 	id: number;
 	type: string;
@@ -73,7 +79,6 @@ export type HealthCaptureParams = {
 
 export type MenuStackParamList = {
 	Menu: undefined;
-	ProfileMenu: undefined;
 	GymSelect: undefined;
 	Performance: undefined;
 	Notifications: undefined;

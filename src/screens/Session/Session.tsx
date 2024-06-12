@@ -2,15 +2,19 @@ import { ScrollView, Text } from '@/components/atoms';
 import { getScheduleDetail } from '@/services/session';
 import layout from '@/theme/layout';
 import { ApplicationScreenProps, SessionParams } from '@/types/navigation';
-import { SessionDetailSchemaType } from '@/types/schemas/session';
+import {
+	SessionDetailSchemaType,
+	SessionMemberAttendanceSchemaType,
+} from '@/types/schemas/session';
 import { Func } from '@/utils';
-import { SessionTabsEnum } from '@/utils/Enum';
+import { SessionTabsEnum, VisibilityOptions } from '@/utils/Enum';
 import useStore from '@/zustand/Store';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { isArray } from 'lodash';
 import {
 	SessionActionButtons,
 	SessionAttendanceTab,
@@ -22,6 +26,8 @@ import {
 
 const Session = ({ route }: ApplicationScreenProps) => {
 	const loggedInUser = useStore(state => state.loggedInUser);
+	const allowLeaderboards = useStore(state => state.allowLeaderboards);
+
 	const [activeTab, setActiveTab] = useState<SessionTabsEnum>(
 		SessionTabsEnum.INFO,
 	);
@@ -49,21 +55,33 @@ const Session = ({ route }: ApplicationScreenProps) => {
 	const startTime = moment(session?.start_datetime);
 
 	// const sections = useMemo(() => session?.sections, [session]);
-	// const attendanceView = useMemo(
-	// 	() =>
-	// 		session?.attendance_view !== undefined
-	// 			? session?.attendance_view
-	// 			: true,
-	// 	[session],
-	// );
+	const attendanceView = session?.attendance_view ?? false;
+	const attendanceLimit = session?.attendance_limit ?? null;
 
-	// const notBookedMembers = useMemo(
-	// 	() => session?.not_book_members ?? [],
-	// 	[session],
-	// );
+	const hasLeaderboard = useMemo(() => {
+		if (session?.sections && isArray(session.sections)) {
+			return session?.sections?.some(e => !!e.is_leaderboard);
+		}
+
+		return false;
+	}, [session?.sections]);
 
 	const subscribed = useMemo(
 		() => Func.checkSubscription(session?.bookable),
+		[session],
+	);
+
+	const isLimited = useMemo(
+		() =>
+			!!session &&
+			Func.isSessionVisible(
+				session.bookable,
+				Number(
+					session.fb_class.class_visibility ||
+						session.class?.class_visibility,
+				),
+				VisibilityOptions.LIMITED,
+			),
 		[session],
 	);
 
@@ -143,6 +161,16 @@ const Session = ({ route }: ApplicationScreenProps) => {
 			<SessionTabButtons
 				activeTab={activeTab}
 				handleTabChange={handleTabChange}
+				subscribed={subscribed}
+				isLimited={isLimited}
+				allowLeaderboards={allowLeaderboards}
+				attendanceView={attendanceView}
+				attendanceLimit={attendanceLimit}
+				bookedMembers={
+					bookedMembers as SessionMemberAttendanceSchemaType[]
+				}
+				hasLeaderboard={hasLeaderboard}
+				isStaff={!!loggedInUser?.user_data.is_staff}
 			/>
 
 			{activeTab === SessionTabsEnum.INFO ? (

@@ -1,12 +1,15 @@
 import { Button, Row, ScrollView, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
+import { ApplicationStackParamList } from '@/types/navigation';
 import {
 	SessionDetailSchemaType,
 	SessionSectionSchemaType,
 	SessionWODMovementSchemaType,
 } from '@/types/schemas/session';
 import { Func, Say } from '@/utils';
+import useStore from '@/zustand/Store';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { isArray, isEmpty, parseInt } from 'lodash';
 import { useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -42,7 +45,16 @@ interface SessionsSectionsTabProps {
 }
 
 const SessionsSectionsTab = ({ session }: SessionsSectionsTabProps) => {
-	const isAttend = true;
+	const navigation =
+		useNavigation<NavigationProp<ApplicationStackParamList>>();
+
+	const loggedInUser = useStore(s => s.loggedInUser);
+
+	// check if user is already booked
+	const isAttend = !!session.member_attendance.some(
+		member => member.user_id === loggedInUser?.id,
+	);
+
 	const [refreshing, setRefreshing] = useState(false);
 	const [isVideoLoading, setIsVideoLoading] = useState(true);
 	const [videoModalActive, setVideoModalActive] = useState(false);
@@ -114,14 +126,12 @@ const SessionsSectionsTab = ({ session }: SessionsSectionsTabProps) => {
 		Say.err('Error in loading video');
 		setVideoModalActive(false);
 	};
-	const handleNotesClick = (title: string, content: string) => {
-		// TODO: Implement this once the WebView screen is available
-		// navigate('WebView', {
-		// 	title: title,
-		// 	html: content + '<br/><br/>', // workaround for scrolling issues
-		// });
 
-		Say.ok(content, `${title} coming soon!`);
+	const handleNotesClick = (title: string, content: string) => {
+		navigation.navigate('Webview', {
+			title,
+			content: `${content}<br/><br/>`, // workaround for scrolling issues
+		});
 	};
 
 	const submitScore = () => {

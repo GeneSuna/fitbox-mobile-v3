@@ -292,7 +292,7 @@ const HealthCaptureScreen = ({
 		updateUser(newUserInfo);
 
 		if (fromMenu) {
-			navigation.navigate('ProfileMenu');
+			navigation.navigate('Menu');
 		} else {
 			navigation.dispatch(
 				CommonActions.reset({
@@ -304,7 +304,7 @@ const HealthCaptureScreen = ({
 	};
 
 	const goToMainMenu = () => {
-		navigation.navigate('ProfileMenu');
+		navigation.navigate('Menu');
 	};
 
 	const handleSelectRow = (focusedRow: number) => {

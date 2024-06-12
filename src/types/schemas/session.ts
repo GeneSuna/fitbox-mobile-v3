@@ -371,6 +371,7 @@ export const SessionSectionSchema = z.object({
 	member_notes: z.string().nullish(),
 	scored: z.boolean().nullish(),
 	staff_only: boolOrOneZero,
+	is_leaderboard: boolOrOneZero,
 });
 
 const paymentSchema = z.object({

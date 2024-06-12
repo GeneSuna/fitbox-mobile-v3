@@ -8,7 +8,6 @@ import {
 	PDFViewerScreen,
 	PaymentInformation,
 	PaymentUpdate,
-	ProfileMenu,
 	StripeSuccess,
 	Subscription,
 	SubscriptionDetails,
@@ -39,7 +38,6 @@ const MenuStackNavigator = () => {
 			initialRouteName="Menu"
 		>
 			<Stack.Screen name="Menu" component={Menu} />
-			<Stack.Screen name="ProfileMenu" component={ProfileMenu} />
 			<Stack.Screen name="AboutUs" component={AboutUs} />
 			<Stack.Screen name="MyDetails" component={MyDetails} />
 			<Stack.Screen

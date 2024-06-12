@@ -6,6 +6,7 @@
 import { Row, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
+import { SessionMemberAttendanceSchemaType } from '@/types/schemas/session';
 import { SessionTabsEnum } from '@/utils/Enum';
 import { memo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -19,23 +20,28 @@ const { metrics } = config;
 interface SessionTabButtonsProps {
 	activeTab: SessionTabsEnum;
 	handleTabChange: (tab: SessionTabsEnum) => void;
+	subscribed: boolean;
+	isLimited: boolean;
+	hasLeaderboard: boolean;
+	allowLeaderboards: boolean;
+	isStaff: boolean;
+	attendanceView: boolean;
+	bookedMembers: SessionMemberAttendanceSchemaType[];
+	attendanceLimit: number | null;
 }
 
 const SessionTabButtons = ({
 	activeTab,
 	handleTabChange,
+	subscribed,
+	isLimited,
+	hasLeaderboard,
+	allowLeaderboards,
+	isStaff,
+	attendanceView,
+	bookedMembers,
+	attendanceLimit,
 }: SessionTabButtonsProps) => {
-	const subscribed = true;
-	const isLimited = false;
-	const hasLeaderboard = true;
-	const allowLeaderboards = true;
-	const isStaff = true;
-	const attendanceView = true;
-	const bookedMembers = [];
-	const session = {
-		attendance_limit: 10,
-	};
-
 	// const showLeaderBoardButton = (s: unknown) => {
 	// 	setActiveTab(0);
 
@@ -117,9 +123,9 @@ const SessionTabButtons = ({
 							/
 						</Text>
 						<Spacer size="xs" horizontal />
-						{session.attendance_limit != null ? (
+						{attendanceLimit != null ? (
 							<Text color="darkgray" size="lg" bold>
-								{session.attendance_limit}
+								{attendanceLimit}
 							</Text>
 						) : (
 							<Text color="darkgray" size="lg" bold>

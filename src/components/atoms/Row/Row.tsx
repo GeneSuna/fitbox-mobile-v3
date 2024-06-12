@@ -1,5 +1,10 @@
-import { FlexAlignType, StyleProp, View, ViewStyle } from 'react-native';
-import { TouchableRipple } from 'react-native-paper';
+import {
+	FlexAlignType,
+	StyleProp,
+	TouchableOpacity,
+	View,
+	ViewStyle,
+} from 'react-native';
 
 interface RowProps {
 	spacing?:
@@ -31,7 +36,9 @@ const Row = ({
 	const component = <View style={[viewStyle, style]}>{children}</View>;
 
 	if (onPress) {
-		return <TouchableRipple onPress={onPress}>{component}</TouchableRipple>;
+		return (
+			<TouchableOpacity onPress={onPress}>{component}</TouchableOpacity>
+		);
 	}
 
 	return component;
