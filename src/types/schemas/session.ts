@@ -407,6 +407,54 @@ const attendanceSchema = z.object({
 	subscription_id: z.number(),
 });
 
+const MemberActiveSubscriptionSchema = z.object({
+	product_id: z.number(),
+	customer_id: z.number(),
+	free_membership: z
+		.object({
+			id: z.number(),
+			payment_gateway: z.string(),
+			context_id: z.number(),
+			remote_id: z.string(),
+			name: z.string(),
+			description: z.string(),
+			reference: z.string(),
+			set_up_price_in_cents: z.number(),
+			trial_type: z.string(),
+			trial_price_in_cents: z.number(),
+			trial_interval: z.number(),
+			trial_interval_unit: z.string(),
+			price_in_cents: z.number(),
+			type: z.string(),
+			recurring_interval: z.number(),
+			recurring_interval_unit: z.string(),
+			expiration_interval: z.number(),
+			expiration_interval_unit: z.string(),
+			sessions_limit: z.any(),
+			sessions_limit_frequency: z.any(),
+			return_url: z.string(),
+			return_params: z.string(),
+			subscription_available_on_mobile: boolOrOneZero,
+			archived: boolOrOneZero,
+			notify_on_low_count: z.number(),
+			apply_transaction_fees_to_member: boolOrOneZero,
+			created_at: z.string(),
+			updated_at: z.string(),
+			show_after_signup: boolOrOneZero,
+			show_existing_users: boolOrOneZero,
+		})
+		.nullable(),
+});
+
+const SessionMemberAttendanceUseSchema = z.object({
+	id: z.number(),
+	firstname: z.string(),
+	lastname: z.string(),
+	profile_image: z.string().url(),
+	email: z.string().email(),
+	payments: z.array(paymentSchema),
+});
+
 export type SessionMemberAttendanceSchemaType = z.infer<
 	typeof SessionMemberAttendanceSchema
 >;
@@ -418,25 +466,16 @@ export const SessionMemberAttendanceSchema = z.object({
 	position_id: z.number(),
 	created_at: z.string(),
 	updated_at: z.string(),
-	member_active_subscription: z.object({
-		product_id: z.number(),
-		customer_id: z.number(),
-		free_membership: z.nullable(z.unknown()),
-	}),
-	user: z.object({
-		id: z.number(),
-		firstname: z.string(),
-		lastname: z.string(),
-		profile_image: z.string().url(),
-		email: z.string().email(),
-		payments: z.array(paymentSchema),
-	}),
+	member_active_subscription: MemberActiveSubscriptionSchema.nullable(),
+	user: SessionMemberAttendanceUseSchema,
 	attendance: attendanceSchema,
 });
 
+export type NotBookedMemberSchemaType = z.infer<typeof NotBookedMemberSchema>;
 export const NotBookedMemberSchema = z.object({
 	user_id: z.number(),
-	// other fields
+	member_active_subscription: MemberActiveSubscriptionSchema.nullable(),
+	user: SessionMemberAttendanceUseSchema,
 });
 
 export type SessionSectionDataSchemaType = z.infer<

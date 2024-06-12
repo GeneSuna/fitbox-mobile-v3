@@ -44,13 +44,38 @@ interface SessionsSectionsTabProps {
 const SessionsSectionsTab = ({ session }: SessionsSectionsTabProps) => {
 	const isAttend = true;
 	const [refreshing, setRefreshing] = useState(false);
-	const [toggledSections, setToggledSections] = useState<number[]>([]);
 	const [isVideoLoading, setIsVideoLoading] = useState(true);
 	const [videoModalActive, setVideoModalActive] = useState(false);
 	const [videoUrlCode, setVideoUrlCode] = useState('');
+	const [toggledSections, setToggledSections] = useState<number[]>(() => {
+		let openSections: number[] = [];
+
+		// check sections if its an array
+		if (isArray(session?.sections) && session?.sections.length > 0) {
+			const sections = session?.sections;
+
+			// Collapse all by default
+			openSections = sections.map((_, sIndex) => sIndex);
+
+			// check if one of sections has default_collapse_state = 1
+			const hasCollapse = sections.some(
+				section => section.default_collapse_state,
+			);
+			if (hasCollapse) {
+				// get all indexes of sections that has default_collapse_state = 1
+				openSections = sections
+					.map((section, index) =>
+						section.default_collapse_state ? index : -1,
+					)
+					.filter(index => index !== -1);
+			}
+		}
+
+		return openSections;
+	});
 
 	// eslint-disable-next-line no-console
-	console.log('justatest', {
+	console.log('testing', {
 		setRefreshing,
 		isVideoLoading,
 		videoModalActive,

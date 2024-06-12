@@ -28,7 +28,7 @@ import {
 
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { SwitchGym, SwitchUser } from '@/modals';
+import { SwitchGym, SwitchUser, WODAddAttendance } from '@/modals';
 
 import CalendarHeaderLeftComponent from '@/screens/Calendar/components/CalendarHeaderLeftComponent';
 import CalendarHeaderRightComponent from '@/screens/Calendar/components/CalendarHeaderRightComponent';
@@ -291,11 +291,15 @@ const ApplicationNavigator = () => {
 						component={SwitchUser}
 						options={{ title: 'Switch User' }}
 					/>
-
 					<Stack.Screen
 						name="ComposeStack"
 						component={ComposeStackNavigator}
 						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="AddAttendance"
+						component={WODAddAttendance}
+						options={{ title: 'Add Attendance' }}
 					/>
 				</Stack.Group>
 			</Stack.Navigator>
