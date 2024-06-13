@@ -229,6 +229,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 					onChangeText={handleEnterSubject}
 					placeholder="Subject"
 					underlineColorAndroid="transparent"
+					style={layout.fontMontserratRegular}
 					keyboardType="twitter"
 				/>
 			</View>

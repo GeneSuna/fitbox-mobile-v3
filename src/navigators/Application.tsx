@@ -29,13 +29,14 @@ import {
 
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { SwitchGym, SwitchUser } from '@/modals';
+import { SwitchGym, SwitchUser, WODAddAttendance } from '@/modals';
 
 import CalendarHeaderLeftComponent from '@/screens/Calendar/components/CalendarHeaderLeftComponent';
 import CalendarHeaderRightComponent from '@/screens/Calendar/components/CalendarHeaderRightComponent';
 import ShopHeaderRightComponent from '@/screens/Shop/components/ShopHeaderRightComponent';
 
 import { config } from '@/theme/_config';
+import layout from '@/theme/layout';
 import type {
 	ApplicationStackParamList,
 	ComposeStackParamsList,
@@ -113,6 +114,7 @@ const MainTabNavigator = () => {
 					backgroundColor: colors.brand,
 				},
 				headerTitleAlign: 'center',
+				headerTitleStyle: layout.fontMontserratRegular,
 			})}
 		>
 			<Tab.Screen
@@ -211,6 +213,7 @@ const ComposeStackNavigator = () => {
 				headerMode: 'float',
 				headerShadowVisible: false,
 				headerLeft: () => null,
+				headerTitleStyle: layout.fontMontserratRegular,
 			}}
 		>
 			<ComposeStack.Screen
@@ -245,7 +248,7 @@ const ApplicationNavigator = () => {
 						headerTintColor: 'white',
 						headerTitleAlign: 'center',
 						headerStyle: { backgroundColor: config.colors.brand },
-
+						headerTitleStyle: layout.fontMontserratRegular,
 						cardStyleInterpolator:
 							CardStyleInterpolators.forScaleFromCenterAndroid,
 					}}
@@ -339,6 +342,11 @@ const ApplicationNavigator = () => {
 						name="SwitchUser"
 						component={SwitchUser}
 						options={{ title: 'Switch User' }}
+					/>
+					<Stack.Screen
+						name="AddAttendance"
+						component={WODAddAttendance}
+						options={{ title: 'Add Attendance' }}
 					/>
 				</Stack.Group>
 			</Stack.Navigator>

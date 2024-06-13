@@ -59,6 +59,7 @@
         "index.js",
         "commitlint.config.js",
         "next.config.js",
-        "lint-staged.config.js"
+        "lint-staged.config.js",
+        "react-native.config.js"
     ]
 }

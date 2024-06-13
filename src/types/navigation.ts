@@ -1,5 +1,6 @@
 import type { StackScreenProps } from '@react-navigation/stack';
 import { ContactMembersType, MessageItemType } from './schemas/message';
+import { SessionDetailSchemaType } from './schemas/session';
 
 export type SessionParams = {
 	id: number;
@@ -29,6 +30,7 @@ export type ApplicationStackParamList = {
 	GymWaiver: undefined;
 	PDFViewer: PDFViewerScreenParams;
 	SwitchUser: undefined;
+	AddAttendance: AddAttendanceParams;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
@@ -45,6 +47,14 @@ export type ComposeStackParamsList = {
 export type PDFViewerScreenParams = {
 	title: string;
 	waiverUrl: string;
+};
+
+export type AddAttendanceProps = StackScreenProps<
+	AddAttendanceParams & ApplicationStackParamList
+>;
+
+export type AddAttendanceParams = {
+	session: SessionDetailSchemaType;
 };
 
 export type SubscriptionDetailsParams = {

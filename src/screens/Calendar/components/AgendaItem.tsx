@@ -54,7 +54,10 @@ const AgendaItem = ({
 	const handleBook = () => {
 		setIsBooking(true);
 
-		attendSession(Number(eventId), true)
+		attendSession({
+			event_id: Number(eventId),
+			is_attend: true,
+		})
 			.then(res => {
 				if (res.error) {
 					Say.warn(res.message, 'Oops!');
