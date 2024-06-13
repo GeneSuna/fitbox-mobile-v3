@@ -15,6 +15,7 @@ import {
 } from '@/screens';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
+import layout from '@/theme/layout';
 import { MenuStackParamList } from '@/types/navigation';
 import {
 	CardStyleInterpolators,
@@ -34,6 +35,7 @@ const MenuStackNavigator = () => {
 				cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
 				headerTintColor: 'white',
 				headerBackTitleVisible: false,
+				headerTitleStyle: layout.fontMontserratRegular,
 			}}
 			initialRouteName="Menu"
 		>
