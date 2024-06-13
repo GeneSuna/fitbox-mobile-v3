@@ -30,7 +30,7 @@ const menuOptions = [
 			},
 			{
 				id: 'performance',
-				name: 'Performance',
+				name: 'Past Performance',
 				icon: 'chart-line',
 				fontAwesome: true,
 				context: 'member',
@@ -41,13 +41,13 @@ const menuOptions = [
 	{
 		title: 'Gym',
 		items: [
-			{
-				id: 'shop',
-				name: 'Visit Shop',
-				icon: 'cart',
-				context: 'member',
-				role: 'member',
-			},
+			// {
+			// 	id: 'shop',
+			// 	name: 'Visit Shop',
+			// 	icon: 'cart',
+			// 	context: 'member',
+			// 	role: 'member',
+			// },
 			{
 				id: 'subscription',
 				name: 'Memberships',
@@ -58,7 +58,7 @@ const menuOptions = [
 			},
 			{
 				id: 'payments',
-				name: 'Payments',
+				name: 'Payment Details',
 				icon: 'card-outline',
 				context: 'any',
 				role: 'any',
@@ -111,12 +111,6 @@ const menuOptions = [
 				context: 'any',
 				role: 'any',
 			},
-		],
-	},
-	{
-		title: 'Others',
-		hideTitle: true,
-		items: [
 			{
 				id: 'logout',
 				name: 'Logout',
@@ -124,6 +118,13 @@ const menuOptions = [
 				context: 'any',
 				role: 'any',
 			},
+		],
+	},
+	{
+		title: 'Others',
+		hideTitle: true,
+		items: [
+			// add in more items here to hide the title header
 		],
 	},
 ];
@@ -148,7 +149,7 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 				navigation.navigate('HealthCapture', { fromMenu: true });
 				break;
 			case 'gym':
-				navigation.navigate('Example');
+				navigation.navigate('SwitchGym');
 				break;
 			case 'theme':
 				changeTheme(variant === 'default' ? 'dark' : 'default');
@@ -232,7 +233,7 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 					/>
 				));
 
-				if (!op.hideTitle) {
+				if (!op?.hideTitle) {
 					return (
 						<List.Section
 							key={i}
