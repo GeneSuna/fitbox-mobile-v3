@@ -11,7 +11,7 @@ import { SessionTabsEnum, VisibilityOptions } from '@/utils/Enum';
 import useStore from '@/zustand/Store';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { isArray } from 'lodash';
@@ -28,6 +28,7 @@ const Session = ({ route }: ApplicationScreenProps) => {
 	const loggedInUser = useStore(state => state.loggedInUser);
 	const allowLeaderboards = useStore(state => state.allowLeaderboards);
 
+	const [firstLoad, setFirstLoad] = useState<boolean>(true);
 	const [activeTab, setActiveTab] = useState<SessionTabsEnum>(
 		SessionTabsEnum.INFO,
 	);
@@ -42,7 +43,7 @@ const Session = ({ route }: ApplicationScreenProps) => {
 		data,
 		isFetching: refreshing,
 		error,
-		// refetch,
+		isSuccess,
 	} = useQuery({
 		queryKey: ['sessionGetScheduleDetail'],
 		queryFn: () => getScheduleDetail(eventId),
@@ -130,6 +131,15 @@ const Session = ({ route }: ApplicationScreenProps) => {
 	const handleTabChange = (tab: SessionTabsEnum) => {
 		setActiveTab(tab);
 	};
+
+	useEffect(() => {
+		if (isSuccess) {
+			if (data.sections && data.sections.length > 0 && firstLoad) {
+				setActiveTab(SessionTabsEnum.SECTIONS);
+				setFirstLoad(false);
+			}
+		}
+	}, [isSuccess, data]);
 
 	if (error) {
 		return (
