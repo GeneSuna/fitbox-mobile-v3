@@ -1,0 +1,58 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [builddev]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Use Java 17 temurin
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Install dependencies
+        run: |
+          yarn install --frozen-lockfile
+
+      - name: Build Android Release
+        run: |
+          cd android && chmod +x ./gradlew && ./gradlew assembleRelease
+
+      - name: Set dynamic output folder
+        id: vars
+        run: echo "output_folder=$(date +'%m%d%Y%H%M%S')" >> $GITHUB_ENV
+        
+      - uses: azure/login@v1
+        with:
+            creds: ${{ secrets.AZURE_CREDENTIALS_STG }}
+
+      - name: Upload to blob storage
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+              az storage blob upload-batch --account-name fitboxprodbuilds --auth-mode key -d "dev/${{ env.output_folder }}" -s android/app/build/outputs/apk/release/ --overwrite
+
+      - name: Send message to Teams
+        run: |
+              APK_URL="https://fitboxprodbuilds.blob.core.windows.net/dev/${{ env.output_folder }}/app-release.apk"
+              MESSAGE="A new APK has been built and uploaded. You can download it from the following URL: $APK_URL"
+              curl -H 'Content-Type: application/json' -d "{\"text\": \"${MESSAGE}\"}" ${{ secrets.TEAMS_WEBHOOK_URL }}
+
+
+      # - name: Upload Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: app-release.apk
+      #     path: android/app/build/outputs/apk/release/
+          
