@@ -76,6 +76,12 @@ jobs:
           pod repo update
           pod install  
 
+      - name: Increment Xcode Build Number and Commit
+        run: |
+          PROJECT_DIR="$GITHUB_WORKSPACE/ios"
+          bash scripts/increment_xcode_build_number.sh "$PROJECT_DIR"
+        id: build_number
+
       - name: build archive
         run: |
           cd ios
