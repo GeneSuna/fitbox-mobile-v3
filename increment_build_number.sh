@@ -26,6 +26,10 @@ echo "New Project Version (1): $NEW_PROJECT_VERSION"
 # Update Info.plist with new build number
 # /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_PROJECT_VERSION" "$INFO_PLIST_PATH"
 
+sed -i '' -e "s/CURRENT_PROJECT_VERSION = [0-9]*;/CURRENT_PROJECT_VERSION = $NEW_PROJECT_VERSION;/g" "ios/fitbox/xcodeproj"
+
+echo "Updated CURRENT_PROJECT_VERSION to $CURRENT_PROJECT_VERSION in THIS"
+
 # Print and export the new build number for subsequent steps to use
 echo "New Project Version: $NEW_PROJECT_VERSION"
 echo "::set-output name=new_project_version::$NEW_PROJECT_VERSION"
