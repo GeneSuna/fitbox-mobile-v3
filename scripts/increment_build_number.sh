@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Assuming your Xcode project (fitbox.xcworkspace) is located in 'ios' directory relative to the root
-PROJECT_DIR="../ios"  # Pass the PROJECT_DIR as an argument
+PROJECT_DIR="$(dirname "$0")/../ios"  # Pass the PROJECT_DIR as an argument
+
+echo  THIS IS THE PROJECT_DIR: "$PROJECT_DR"
 
 if [ -z "$PROJECT_DIR" ]; then
     echo "PROJECT_DIR is not provided. Exiting."
