@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Assuming your Xcode project (fitbox.xcworkspace) is located in 'ios' directory relative to the root
-PROJECT_DIR="ios"  # Pass the PROJECT_DIR as an argument
+PROJECT_DIR="../ios"  # Pass the PROJECT_DIR as an argument
 
 if [ -z "$PROJECT_DIR" ]; then
     echo "PROJECT_DIR is not provided. Exiting."
@@ -11,10 +11,10 @@ fi
 PLIST_FILE="$PROJECT_DIR/fitbox/Info.plist"  # Adjust this path based on your project structure
 
 # Read current build number
-CURRENT_BUILD_NUMBER=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$PLIST_FILE")
+CURRENT_PROJECT_VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$PLIST_FILE")
 
 # Increment build number
-NEW_BUILD_NUMBER=$((CURRENT_BUILD_NUMBER + 1))
+NEW_BUILD_NUMBER=$((CURRENT_PROJECT_VERSION + 1))
 
 # Update Info.plist with new build number
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD_NUMBER" "$PLIST_FILE"
