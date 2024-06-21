@@ -12,7 +12,7 @@ fi
 # Read current build number
 # CURRENT_PROJECT_VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$INFO_PLIST_PATH")
 # Extract current version placeholder value
-CURRENT_PROJECT_VERSION=$(sed -n 's/.*<key>CFBundleVersion<\/key><string>\$(CURRENT_PROJECT_VERSION)<\/string>/\1/p' "$INFO_PLIST_PATH")
+CURRENT_PROJECT_VERSION=$(sed -n 's/.*<key>CFBundleVersion<\/key><string>\${CURRENT_PROJECT_VERSION}<\/string>/\1/p' "$INFO_PLIST_PATH")
 
 echo "Current Project Version: $CURRENT_PROJECT_VERSION"
 if [ -z "$CURRENT_PROJECT_VERSION" ]; then
