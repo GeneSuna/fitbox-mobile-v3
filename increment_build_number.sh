@@ -16,12 +16,12 @@ echo "New Project Version (1): $NEW_PROJECT_VERSION"
 
 
 # update value to new build version
-sed -i '' -e "s/CURRENT_PROJECT_VERSION = [0-9]*;/CURRENT_PROJECT_VERSION = $NEW_PROJECT_VERSION;/g" $PROJECT_PATH
+sed -i '' -e "s/CURRENT_PROJECT_VERSION = [0-9]*;/CURRENT_PROJECT_VERSION = $NEW_PROJECT_VERSION;/g" $PROJECT_PATH/project.pbxproj
 
 echo "Updated CURRENT_PROJECT_VERSION to $NEW_PROJECT_VERSION in XCODEPROJ"
 
 
-# Commit the updated Info.plist if there are changes
+# Commit the updated file if there are changes
 if [ -n "$(git status --porcelain "$PROJECT_PATH")" ]; then
     git add "$PROJECT_PATH"
     git commit -m "build: increment project version to $NEW_PROJECT_VERSION" --author="GitHub Actions <actions@github.com>"
