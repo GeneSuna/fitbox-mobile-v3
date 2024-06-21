@@ -12,7 +12,7 @@ fi
 # Read current build number
 # CURRENT_PROJECT_VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$INFO_PLIST_PATH")
 # Extract current version placeholder value
-CURRENT_PROJECT_VERSION=$(sed -n 's/.*<key>CFBundleVersion<\/key><string>\${CURRENT_PROJECT_VERSION}<\/string>/\1/p' "$INFO_PLIST_PATH")
+CURRENT_PROJECT_VERSION=$(xcodebuild -project "ios/fitbox.xcodeproj" -showBuildSettings | grep "CURRENT_PROJECT_VERSION" | uniq | awk '{print $3}')
 
 echo "Current Project Version: $CURRENT_PROJECT_VERSION"
 if [ -z "$CURRENT_PROJECT_VERSION" ]; then
@@ -24,7 +24,7 @@ fi
 NEW_PROJECT_VERSION=$((CURRENT_PROJECT_VERSION + 1))
 echo "New Project Version (1): $NEW_PROJECT_VERSION"
 # Update Info.plist with new build number
-/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_PROJECT_VERSION" "$INFO_PLIST_PATH"
+# /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_PROJECT_VERSION" "$INFO_PLIST_PATH"
 
 # Print and export the new build number for subsequent steps to use
 echo "New Project Version: $NEW_PROJECT_VERSION"
