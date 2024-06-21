@@ -4,7 +4,6 @@
 PROJECT_PATH="ios/fitbox.xcodeproj"  # Adjust path as per your project structure
 
 # Read current build number
-# CURRENT_PROJECT_VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$INFO_PLIST_PATH")
 # Extract current version placeholder value
 CURRENT_PROJECT_VERSION=$(xcodebuild -project $PROJECT_PATH -showBuildSettings | grep "CURRENT_PROJECT_VERSION" | uniq | awk '{print $3}')
 
