@@ -78,7 +78,7 @@ jobs:
 
             - name: Increment Xcode Build Number and Commit
               run: |
-                  bash scripts/increment_build_number.sh
+                  bash increment_build_number.sh
               id: build_number
 
             - name: build archive
