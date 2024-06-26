@@ -241,7 +241,8 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 					/>
 				</View>
 				<View style={styles.footerContainer}>
-					<Row
+					{/* TODO: Add this component once add attachment is implemented */}
+					{/* <Row
 						spacing="space-between"
 						style={{
 							padding: config.metrics.rg,
@@ -268,7 +269,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 								style={styles.closeAttachmentIcon}
 							/>
 						</TouchableOpacity>
-					</Row>
+					</Row> */}
 					{user?.user_data.is_staff && (
 						<TouchableOpacity
 							style={styles.disableReplyButtonStyle}
