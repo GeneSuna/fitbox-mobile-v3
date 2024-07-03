@@ -5,7 +5,7 @@ import { SafeScreen } from '@/components/template';
 import { checkEmail } from '@/services/auth';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import { ApplicationScreenProps } from '@/types/navigation';
+import { ApplicationScreenProps, LoginParams } from '@/types/navigation';
 import { Say } from '@/utils';
 
 import { isArray, isEmpty } from 'lodash';
@@ -30,13 +30,13 @@ const inputCustomTheme = {
 	},
 };
 
-// interface LoginProps { }
-
-const Login = ({ navigation }: ApplicationScreenProps) => {
+const Login = ({ navigation, route }: ApplicationScreenProps) => {
 	const { t } = useTranslation(['login']);
 	const { signIn } = useAuth();
 
-	const [email, setEmail] = useState<string>('');
+	const [email, setEmail] = useState<string>(
+		(route.params as LoginParams)?.emailFromSignin || '',
+	);
 	const [password, setPassword] = useState<string>('');
 	const [passwordHide, setPasswordHide] = useState<boolean>(true);
 	const [fetching, setFetching] = useState<boolean>(false);
@@ -282,7 +282,7 @@ const Login = ({ navigation }: ApplicationScreenProps) => {
 
 					<Spacer size="sm" />
 
-					<Row align="center" style={{ paddingVertical: metrics.md }}>
+					<Row align="center" style={style.registerButton}>
 						<Text
 							color="brand"
 							style={style.mdText}
@@ -313,11 +313,9 @@ const style = StyleSheet.create({
 	},
 	header: {
 		fontSize: width / 10,
-		// ...AppStyles.fontAlata,
 	},
 	mdText: {
 		fontSize: config.fonts.metrics.md,
-		// ...AppStyles.fontAlata,
 	},
 	inputContainer: {
 		justifyContent: 'center',
@@ -340,13 +338,15 @@ const style = StyleSheet.create({
 		fontSize: config.fonts.sizes[1],
 		textTransform: 'capitalize',
 		paddingVertical: config.metrics.rg,
-		// ...AppStyles.fontAlata,
 	},
 	showPasswordBtn: {
 		color: config.colors.brand,
 		position: 'absolute',
 		right: '2%',
 		padding: 10,
-		// ...AppStyles.fontAlata,
+	},
+	registerButton: {
+		paddingVertical: metrics.md,
+		justifyContent: 'center',
 	},
 });

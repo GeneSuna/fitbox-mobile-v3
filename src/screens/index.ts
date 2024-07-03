@@ -23,6 +23,7 @@ export { default as PaymentUpdate } from './PaymentUpdate/PaymentUpdate';
 export { default as ResetPassword } from './ResetPassword/ResetPassword';
 export { default as Session } from './Session/Session';
 export { default as Shop } from './Shop/Shop';
+export { default as SignUp } from './SignUp/SignUp';
 export { default as Startup } from './Startup/Startup';
 export { default as StripeSuccess } from './StripeSuccess/StripeSuccess';
 export { default as Subscription } from './Subscription/Subscription';

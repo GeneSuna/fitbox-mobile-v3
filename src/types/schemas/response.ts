@@ -33,6 +33,7 @@ import {
 import {
 	ChildDataSchema,
 	ParentInfoSchema,
+	RegisterUserDataSchema,
 	UserHealthInfoSchema,
 	UserProfileSchema,
 	UserSchema,
@@ -64,6 +65,12 @@ export const GetConversationListResponseSchema = z.object({
 
 export const GetUserGymInfoResponseSchema = z.object({
 	gym_info: GymInfoSchema,
+	message: z.string(),
+	error: z.boolean(),
+});
+
+export const GetUserGymInfoV2ResponseSchema = z.object({
+	gym_info: GymInfoSchema.optional(),
 	message: z.string(),
 	error: z.boolean(),
 });
@@ -241,3 +248,5 @@ export const CheckConversationReplyStatusSchema = apiResponseSchema(
 		disable_reply: z.number(),
 	}),
 );
+
+export const RegisterUserSchema = apiResponseSchema(RegisterUserDataSchema);

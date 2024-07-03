@@ -44,6 +44,7 @@
         "react-native-calendars": "^1.1304.1",
         "react-native-dropdown-picker": "^5.4.6",
         "react-native-gesture-handler": "^2.14.0",
+        "react-native-google-recaptcha": "^1.0.8",
         "react-native-htmlview": "^0.17.0",
         "react-native-image-crop-picker": "^0.40.3",
         "react-native-mmkv": "^3.0.0-beta.6",
@@ -55,7 +56,7 @@
         "react-native-screens": "^3.32.0",
         "react-native-simple-toast": "^3.3.1",
         "react-native-vector-icons": "^10.0.3",
-        "react-native-webview": "^13.8.4",
+        "react-native-webview": "13.8.4",
         "zod": "^3.22.4",
         "zustand": "^4.5.2"
     },

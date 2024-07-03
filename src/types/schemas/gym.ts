@@ -8,13 +8,19 @@ export const GymSchema = z.object({
 	name: z.string(),
 });
 
+export const MemberRolesSchema = z.object({
+	description: z.string(),
+	id: z.number(),
+	name: z.string(),
+});
+
 export const GymInfoSchema = z.object({
-	member_roles: z.array(z.any()),
+	member_roles: z.array(MemberRolesSchema),
 	required_profile_fields: z.array(z.string()),
 	allow_leaderboards: boolOrOneZero,
 	mobile_force_update: boolOrOneZero,
 	country: z.optional(z.string()),
-	gym_lookup: z.number(),
+	gym_lookup: z.union([z.number(), z.string()]),
 	logo: z.string(),
 	banner: z.string().nullable(),
 	num_of_unread_messages: z.number(),
@@ -25,6 +31,7 @@ export const GymInfoSchema = z.object({
 });
 
 export type GymInfoType = z.infer<typeof GymInfoSchema>;
+export type MemberRolesType = z.infer<typeof MemberRolesSchema>;
 
 export type GymVenueType = z.infer<typeof GymVenueSchema>;
 export const GymVenueSchema = z.object({

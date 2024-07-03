@@ -7,5 +7,6 @@ export default async (id?: number) => {
 	const url = id ? `${ApiRoutes.getGymInfo}?id=${id}` : ApiRoutes.getGymInfo;
 
 	const response = await securedInstance().get(url).json();
+
 	return GetUserGymInfoResponseSchema.parse(response);
 };

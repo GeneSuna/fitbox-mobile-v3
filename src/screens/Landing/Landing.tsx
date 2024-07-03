@@ -36,13 +36,15 @@ const LandingScreen = ({ navigation }: ApplicationScreenProps) => {
 		// TODO: Temporary only remove once screens are implemented
 		if (page === 'Main') {
 			navigation.navigate(page);
+		} else if (page === 'SignUp') {
+			navigation.navigate(page);
 		} else {
 			Alert.alert(`${page} page coming soon!`);
 		}
 	};
 
 	const handleLogin = () => {
-		navigation.push('Login');
+		navigation.push('Login', {});
 
 		// Identity implementation
 		// const res = await signIn();

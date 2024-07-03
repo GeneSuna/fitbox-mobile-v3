@@ -38,7 +38,7 @@ export const UserSchema = z.object({
 	]),
 	is_staff: boolOrOneZero,
 	notice: z.string(),
-	last_login: z.union([z.boolean(), z.string()]),
+	last_login: z.union([z.boolean().nullable(), z.string().nullable()]),
 	is_health_captured: boolOrOneZero,
 	allow_leaderboards: boolOrOneZero,
 	allow_leaderboards_comment: boolOrOneZero,
@@ -105,6 +105,27 @@ export const ChildDataSchema = z.object({
 	context_id: z.number(),
 	parent_id: z.number(),
 });
+
+export const RegisterUserDataSchema = z.object({
+	completed_profile: z.number().optional(),
+	contact_phone: z.string().optional(),
+	created_at: z.string().optional(),
+	created_by: z.number().optional(),
+	default_team_id: z.number().optional(),
+	email: z.string().optional(),
+	emergency_contact_name: z.string().optional(),
+	emergency_contact_number: z.string().optional(),
+	firstname: z.string().optional(),
+	id: z.number().optional(),
+	lastname: z.string().optional(),
+	timezone: z.string().optional(),
+	updated_at: z.string().optional(),
+	updated_by: z.number().optional(),
+	password: z.array(z.string()).optional(),
+	password_confirmation: z.array(z.string()).optional(),
+});
+
+export type RegisterUserDataType = z.infer<typeof RegisterUserDataSchema>;
 
 export type ChildrenType = z.infer<typeof ChildrenInfoSchema>;
 export type ParentType = z.infer<typeof ParentInfoSchema>;

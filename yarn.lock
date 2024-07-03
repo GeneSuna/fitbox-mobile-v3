@@ -7382,6 +7382,13 @@ react-native-gesture-handler@^2.14.0:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+react-native-google-recaptcha@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/react-native-google-recaptcha/-/react-native-google-recaptcha-1.0.8.tgz#5edda61826cc1ed54d32b40992bba6acfdf52143"
+  integrity sha512-+b+CV+PQlgxMH61ieDoSk9Ck6czCZqsm7FGZhNURTVcISaPYv+bUqGotUKz24cKI0606KhlGQrpPwtspLZJ3rg==
+  dependencies:
+    use-latest-callback "^0.1.9"
+
 react-native-htmlview@^0.17.0:
   version "0.17.0"
   resolved "https://registry.yarnpkg.com/react-native-htmlview/-/react-native-htmlview-0.17.0.tgz#232c36a7ce9e4e297523c516b5822df5a1494436"
@@ -7470,10 +7477,10 @@ react-native-vector-icons@^10.0.3:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native-webview@^13.8.4:
-  version "13.10.4"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-13.10.4.tgz#9b84d9ebc07f55d9e19d4e42074a77e33005fa0b"
-  integrity sha512-kRn70M7vyBS3IDaX2KqyF66ovUkrBS6LiHOgrEmRdZFO0i3hYY0wldEv1fJuKvgQIPMfo7GtGAjozFrk2vQdBw==
+react-native-webview@13.8.4:
+  version "13.8.4"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-13.8.4.tgz#03b2870090ad6c326a6460ba2f50e5243eb65a94"
+  integrity sha512-dFoM9EfkAb++ZzycZyKRnjZtNUn85cf6bWp1iBlkgyNml7ULzR1gfaPT3qESoA3K1RfTmf5Xhw0M2In2A3a3wg==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"

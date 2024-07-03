@@ -18,6 +18,7 @@ import {
 	Session,
 	// SessionScoringScreen,
 	Shop,
+	SignUp,
 	Startup,
 	WebView,
 } from '@/screens';
@@ -327,6 +328,15 @@ const ApplicationNavigator = () => {
 						options={{
 							...CommonHeaderOptions,
 							headerBackTitleVisible: false,
+						}}
+					/>
+					<Stack.Screen
+						name="SignUp"
+						component={SignUp}
+						options={{
+							...CommonHeaderOptions,
+							headerBackTitleVisible: false,
+							title: 'Sign Up',
 						}}
 					/>
 				</Stack.Group>

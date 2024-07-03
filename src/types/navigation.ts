@@ -13,13 +13,17 @@ export type ComposeParams = {
 	contacts: ContactMembersType[];
 };
 
+export type LoginParams = {
+	emailFromSignin?: string;
+};
+
 export type ApplicationStackParamList = {
 	Example: undefined;
 	Main: undefined;
 	Startup: undefined;
 	Auth: undefined;
 	Landing: undefined;
-	Login: undefined;
+	Login: LoginParams;
 	ResetPassword: undefined;
 	SignUp: undefined;
 	Invite: undefined;

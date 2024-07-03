@@ -34,6 +34,11 @@ const API_BASE_URLS = {
 	PROD: 'https://fitbox.iq',
 };
 
+const RECAPTCHA = {
+	siteKey: '6Ldez1UdAAAAAI_K-Fz1pDkcbQCLHN3JZ6b8hXE1',
+	baseURL: 'http://fitboxcorp.com/',
+};
+
 // TODO: transfer apiKey or retrieve somewhere
 const TENOR_API_KEY = 'AIzaSyCe3wcxBWD8Oe5SBfBz7qhR2680gYvIqEA';
 
@@ -179,4 +184,5 @@ export default {
 	SORT_OPTIONS,
 	TENOR_API_KEY,
 	API_BASE_URLS,
+	RECAPTCHA,
 };

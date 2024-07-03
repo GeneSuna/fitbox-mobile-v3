@@ -4,6 +4,7 @@ export { default as getBookedSessions } from './getBookedSessions';
 export { default as getChildInfo } from './getChildInfo';
 export { default as getParentInfo } from './getParentInfo';
 export { default as getUserGymInfo } from './getUserGymInfo';
+export { default as getUserGymInfoV2 } from './getUserGymInfoV2';
 export { default as getUserGyms } from './getUserGyms';
 export { default as getUserHealthInfo } from './getUserHealthInfo';
 export { default as getUserProfile } from './getUserProfile';
