@@ -1,0 +1,6 @@
+export { default as applauseScore } from './applauseScore';
+export { default as commentScore } from './commentScore';
+export { default as getClassLeaderboard } from './getClassLeaderboards';
+export { default as getScoreApplauses } from './getScoreApplauses';
+export { default as getScoreComments } from './getScoreComments';
+export { default as getScoreDetails } from './getScoreDetails';

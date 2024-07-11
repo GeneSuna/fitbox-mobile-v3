@@ -109,15 +109,33 @@ export type InboxParamList = {
 	ComposeStack: undefined;
 };
 
+export type DashboardParamList = {
+	Dashboard: undefined;
+	ClassResults: ClassResultsParams;
+	ScoreComments: ScoreCommentsParams;
+};
+export type ClassResultsParams = {
+	selectClass?: number;
+	date?: string;
+};
+
+export type ScoreCommentsParams = {
+	score_id: number;
+	type: string;
+	showComments: boolean;
+};
+
+export type DashboardStackNavigatorProps = StackScreenProps<DashboardParamList>;
+
 export type ConversationParams = {
 	conversation: MessageItemType;
-	index: number;
+	index: number | boolean;
 };
 
 export type InboxScreenProps = StackScreenProps<InboxParamList>;
 
 export type MainTabParamList = {
-	Dashboard: undefined;
+	DashboardStack: undefined;
 	Calendar: undefined;
 	InboxStack: undefined;
 	Shop: undefined;

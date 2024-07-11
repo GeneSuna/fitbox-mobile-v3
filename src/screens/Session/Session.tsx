@@ -196,6 +196,7 @@ const Session = ({ route }: ApplicationScreenProps) => {
 			) : null}
 
 			{activeTab === SessionTabsEnum.RESULTS ? (
+				// TODO: render Class Results screen
 				<Text center>Coming soon..</Text>
 			) : null}
 

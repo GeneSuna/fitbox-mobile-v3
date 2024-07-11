@@ -5,7 +5,6 @@ import {
 	ComposeScreen,
 	ContactsScreen,
 	ConversationScreen,
-	Dashboard,
 	EULAScreen,
 	Example,
 	GymWaiverScreen,
@@ -49,6 +48,7 @@ import type {
 } from '@/types/navigation';
 import { Constant } from '@/utils';
 import useStore from '@/zustand/Store';
+import DashboardStackNavigator from './DashboardStack';
 import MenuStackNavigator from './MenuStack';
 import { navigationRef } from './NavigationRef';
 import HeaderCloseButton from './components/HeaderCloseButton';
@@ -72,7 +72,7 @@ const linking: LinkingOptions<ApplicationStackParamList> = {
 };
 
 const icons: Record<keyof MainTabParamList, string> = {
-	Dashboard: 'home',
+	DashboardStack: 'home',
 	Calendar: 'calendar-month-outline',
 	InboxStack: 'chat',
 	Shop: 'cart',
@@ -127,8 +127,8 @@ const MainTabNavigator = () => {
 			})}
 		>
 			<Tab.Screen
-				name="Dashboard"
-				component={Dashboard}
+				name="DashboardStack"
+				component={DashboardStackNavigator}
 				options={{ headerShown: false }}
 			/>
 			<Tab.Screen

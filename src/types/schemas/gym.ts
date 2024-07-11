@@ -35,13 +35,16 @@ export type MemberRolesType = z.infer<typeof MemberRolesSchema>;
 
 export type GymVenueType = z.infer<typeof GymVenueSchema>;
 export const GymVenueSchema = z.object({
-	id: z.number(),
+	id: z.number().nullable(),
 	name: z.string(),
 	location: z.string(),
+	is_selected: z.boolean().optional(),
 });
 
 export type GymClassType = z.infer<typeof GymClassSchema>;
 export const GymClassSchema = z.object({
-	id: z.number(),
+	id: z.number().nullable(),
 	name: z.string(),
+	location: z.string().optional(),
+	is_selected: z.boolean().optional(),
 });

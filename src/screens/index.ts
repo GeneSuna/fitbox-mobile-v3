@@ -3,6 +3,7 @@ export { default as AcceptedWaiversScreen } from './AcceptedWaiversScreen/Accept
 export { default as Auth } from './Auth/Auth';
 export { default as BillingAgreementScreen } from './BillingAgreementScreen/BillingAgreementScreen';
 export { default as Calendar } from './Calendar/Calendar';
+export { default as ClassResultsScreen } from './ClassResultsScreen/ClassResultsScreen';
 export { default as ComposeScreen } from './ComposeScreen/ComposeScreen';
 export { default as ContactsScreen } from './ContactsScreen/ContactsScreen';
 export { default as ConversationScreen } from './ConversationScreen/ConversationScreen';
@@ -21,6 +22,7 @@ export { default as PDFViewerScreen } from './PDFViewerScreen/PDFViewerScreen';
 export { default as PaymentInformation } from './PaymentInformation/PaymentInformation';
 export { default as PaymentUpdate } from './PaymentUpdate/PaymentUpdate';
 export { default as ResetPassword } from './ResetPassword/ResetPassword';
+export { default as ScoreCommentsScreen } from './ScoreCommentsScreen/ScoreCommentsScreen';
 export { default as Session } from './Session/Session';
 export { default as Shop } from './Shop/Shop';
 export { default as SignUp } from './SignUp/SignUp';

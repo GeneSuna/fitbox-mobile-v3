@@ -2,8 +2,10 @@ import { Button, Row, Spacer, Text } from '@/components/atoms';
 import { BottomPanel } from '@/components/molecules';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
+import { GymClassType } from '@/types/schemas/gym';
 import { FilterTypeEnum, ModalEnum } from '@/utils/Enum';
 import useStore from '@/zustand/Store';
+import { ClassFilter } from '@/zustand/interface/SessionInterface';
 import { capitalize } from 'lodash';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -39,9 +41,9 @@ const CalendarFilterPanel = () => {
 				: 'calendar-month-outline';
 		const optionTitle = getFilterTitle(filterType);
 
-		const filters = (
+		const filters: ClassFilter[] = (
 			filterType === FilterTypeEnum.VENUE ? venueFilters : classFilters
-		).filter(item => item.is_selected);
+		).filter((item: GymClassType) => item.is_selected);
 
 		const renderFilters =
 			filters.length > 0

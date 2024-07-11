@@ -79,9 +79,7 @@ const BottomPanel = ({
 											/>
 										</TouchableOpacity>
 									)}
-									<Text size="lg" style={styles.title}>
-										{title}
-									</Text>
+									<Text size="lg">{title}</Text>
 								</Row>
 								{rightTitle}
 							</Row>
@@ -112,9 +110,6 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.3,
 		shadowRadius: 4.65,
 		elevation: 8,
-	},
-	title: {
-		fontFamily: 'Alata-Regular',
 	},
 	backgroundView: {
 		flex: 1,

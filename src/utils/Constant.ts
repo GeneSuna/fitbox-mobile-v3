@@ -4,9 +4,11 @@
  * Must be CAPITALIZED and use underscore (_) to separate words.
  */
 
-import { Platform } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 
 const CONSTANT_SAMPLE = 'just a test';
+const DEVICEHEIGHT = Dimensions.get('screen').height;
+const DEVICEWIDTH = Dimensions.get('screen').width;
 const BODY_PARTS = [
 	{ label: 'Neck', value: 'Neck' },
 	{ label: 'Shoulder', value: 'Shoulder' },
@@ -184,5 +186,7 @@ export default {
 	SORT_OPTIONS,
 	TENOR_API_KEY,
 	API_BASE_URLS,
+	DEVICEHEIGHT,
+	DEVICEWIDTH,
 	RECAPTCHA,
 };

@@ -1095,7 +1095,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - Toast (~> 4)
     - Yoga
-  - react-native-webview (13.10.4):
+  - react-native-webview (13.8.4):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1770,7 +1770,7 @@ SPEC CHECKSUMS:
   react-native-pdf: 5aa4735f8874ff679b67801576554524cd40e63c
   react-native-safe-area-context: afa5d614d6b1b73b743c9261985876606560d128
   react-native-simple-toast: 9109970a65fc36a8752f107c0775204abc4bc2db
-  react-native-webview: ee1c4ea01b5bf63f26271674d4f8c5b6e84041b4
+  react-native-webview: 100110d55ec4c12190470dd9c47a0eff6d7aca53
   React-nativeconfig: 9f223cd321823afdecf59ed00861ab2d69ee0fc1
   React-NativeModulesApple: ff7efaff7098639db5631236cfd91d60abff04c0
   React-perflogger: 32ed45d9cee02cf6639acae34251590dccd30994

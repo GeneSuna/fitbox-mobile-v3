@@ -255,6 +255,8 @@ const Dashboard = () => {
 	const onActionButtonClick = (navTo: string) => {
 		if (navTo === 'calendar') {
 			navigate('Calendar');
+		} else if (navTo === 'results') {
+			navigate('ClassResults');
 		} else {
 			Alert.alert('Coming soon', `${navTo} screen`);
 		}

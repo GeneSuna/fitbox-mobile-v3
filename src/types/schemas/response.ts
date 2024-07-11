@@ -6,6 +6,12 @@ import {
 	GymVenueSchema,
 } from './gym';
 import {
+	ApplausesDataSchema,
+	LeaderboardsDataSchema,
+	ScoreCommentsDataSchema,
+	ScoreDetailsDataSchema,
+} from './leaderboards';
+import {
 	ContactDataSchema,
 	MessageItemSchema,
 	SearchGIFResultsSchema,
@@ -249,4 +255,15 @@ export const CheckConversationReplyStatusSchema = apiResponseSchema(
 	}),
 );
 
+export const GetClassLeaderboardsSchema = apiResponseSchema(
+	z.array(LeaderboardsDataSchema),
+);
+
+export const GetScoreDetailsSchema = apiResponseSchema(ScoreDetailsDataSchema);
+export const GetScoreApplausesSchema = apiResponseSchema(
+	z.array(ApplausesDataSchema),
+);
+export const GetScoreCommentsSchema = apiResponseSchema(
+	z.array(ScoreCommentsDataSchema),
+);
 export const RegisterUserSchema = apiResponseSchema(RegisterUserDataSchema);
