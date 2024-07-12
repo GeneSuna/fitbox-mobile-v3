@@ -49,19 +49,23 @@ const CommentItem = ({
 	};
 
 	const lines = comment.split('\n');
-	const hasGIF = isGifUrl(lines[1] as string);
+	const hasGIF = isGifUrl(lines[lines.length - 1] as string);
+	const combinedString =
+		lines.length > 1 && hasGIF
+			? lines.slice(0, -1).join('\n')
+			: lines.join('\n');
 
 	return (
 		<View style={{ marginBottom: config.metrics.rg }}>
 			<View style={[styles.boxStyle, alignSelf]}>
-				{!isEmpty(lines[0]) && (
+				{!isEmpty(combinedString) && (
 					<Text size="rg" color="darkgray">
-						{lines[0]}
+						{combinedString}
 					</Text>
 				)}
 				{hasGIF && (
 					<Image
-						source={{ uri: lines[1] }}
+						source={{ uri: lines[lines.length - 1] }}
 						style={styles.gifPreviewStyle}
 					/>
 				)}

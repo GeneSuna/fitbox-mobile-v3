@@ -8,6 +8,7 @@ import { ComposeParams, ComposeScreenProps } from '@/types/navigation';
 import { ContactMembersType } from '@/types/schemas/message';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
+import { isEmpty } from 'lodash';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import {
 	Alert,
@@ -52,6 +53,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 		sending: false,
 		isStaff: !!user?.user_data.is_staff,
 	});
+	const [gifUrl, setGIFUrl] = useState<string>('');
 
 	const renderHeaderCancelButton = () => (
 		<TouchableOpacity
@@ -106,6 +108,9 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 
 			subject = subject.trim();
 			message = message.trim();
+			const composeMessage = !isEmpty(gifUrl)
+				? `${message}\n${gifUrl}`
+				: message;
 
 			if (!recipients) {
 				return Alert.alert('Please add a recipient');
@@ -115,12 +120,12 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 				return Alert.alert('Subject is required');
 			}
 			// TODO: add attachedfiles.length > 0 in condition
-			if (message) {
+			if (composeMessage) {
 				setState(prevState => ({ ...prevState, sending: true }));
 
 				const payload = {
 					subject,
-					message,
+					message: composeMessage,
 					recipients: recipientIds.join(','),
 					disable_reply: !!disableReply,
 				};
@@ -132,6 +137,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 				);
 
 				setState(prevState => ({ ...prevState, message: '' }));
+				setGIFUrl('');
 				navigation.navigate('Inbox');
 			}
 		} catch (e) {
@@ -145,55 +151,6 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 		setAppState('message', state.message);
 		setAppState('subject', state.subject);
 		navigation.navigate('Contacts');
-	};
-
-	const handleSendGIF = async (url: string) => {
-		try {
-			let { subject } = state;
-
-			const {
-				recipients,
-				recipientIds,
-				disable_reply: disableReply,
-				sending,
-			} = state;
-			// TODO: get attachedfiles from props
-
-			if (sending) return false;
-
-			subject = subject.trim();
-
-			if (!recipients) {
-				return Alert.alert('Please add a recipient');
-			}
-			if (!subject) {
-				return Alert.alert('Subject is required');
-			}
-			// TODO: add attachedfiles.length > 0 in condition
-			if (url) {
-				setState(prevState => ({ ...prevState, sending: true }));
-
-				const payload = {
-					subject,
-					message: url,
-					recipients: recipientIds.join(','),
-					disable_reply: !!disableReply,
-				};
-
-				// TODO: add attachedFiles.length logic here
-
-				await sendConversationMessage(payload).catch(e =>
-					Say.err(e as string),
-				);
-
-				setState(prevState => ({ ...prevState, message: '' }));
-				navigation.navigate('Inbox');
-			}
-		} catch (e) {
-			return Alert.alert('Something went wrong');
-		}
-
-		return setState(prevState => ({ ...prevState, sending: false }));
 	};
 
 	return (
@@ -298,8 +255,8 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 						message={state.message}
 						handleEnterMessage={handleEnterMessage}
 						sending={state.sending}
-						handleSendGIF={handleSendGIF}
 						handleSendMessage={handleSendMessage}
+						setGIFUrl={setGIFUrl}
 					/>
 					<View style={styles.extraFooterStyle} />
 				</View>

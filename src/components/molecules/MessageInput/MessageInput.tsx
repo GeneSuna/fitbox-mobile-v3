@@ -1,23 +1,15 @@
-import useAuth from '@/auth/hooks/useAuth';
 import { Row } from '@/components/atoms';
+import { GIFList } from '@/screens/ScoreCommentsScreen/components';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import { GIFItemType } from '@/types/schemas/message';
-import { SearchGIFResponseType } from '@/types/schemas/response';
-import { Constant, Say } from '@/utils';
-import { debounce } from 'lodash';
-import { useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import {
 	ActivityIndicator,
-	FlatList,
-	Image,
 	Platform,
 	StyleSheet,
 	TextInput,
 	TouchableOpacity,
-	View,
 } from 'react-native';
-import { Searchbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -25,100 +17,24 @@ type MessageInputProps = {
 	message: string;
 	handleEnterMessage: (message: string) => void;
 	sending: boolean;
-	handleSendGIF: (url: string) => Promise<false | void>;
 	handleSendMessage: () => Promise<false | void>;
+	setGIFUrl: Dispatch<SetStateAction<string>>;
 };
 
 const MessageInput = (props: MessageInputProps) => {
-	const { user } = useAuth();
 	const {
 		message,
 		handleEnterMessage,
 		sending,
-		handleSendGIF,
 		handleSendMessage,
+		setGIFUrl,
 	} = props;
 	const [toggleGif, setToggleGif] = useState<boolean>(false);
-	const [searchQuery, setSearchQuery] = useState<string>('');
-	const gifRef = useRef<FlatList | null>(null);
-	const [gifList, setGifList] = useState<GIFItemType[]>([]);
-
-	useEffect(() => {
-		const debouncedEffect = debounce(async (query: string) => {
-			const searchUrl = `https://tenor.googleapis.com/v2/search?q=${
-				query || 'trending'
-			}&key=${Constant.TENOR_API_KEY}&client_key=${
-				user?.token as string
-			}&limit=30`;
-			try {
-				const searchRes = await fetch(searchUrl);
-				const data: SearchGIFResponseType =
-					(await searchRes.json()) as SearchGIFResponseType;
-				setGifList(data.results);
-				gifRef.current?.scrollToIndex({ animated: true, index: 0 });
-			} catch (e) {
-				Say.err(e as string);
-			}
-		}, 500);
-
-		void debouncedEffect(searchQuery);
-
-		return () => {
-			debouncedEffect.cancel();
-		};
-	}, [searchQuery]);
-
-	const renderGIFTile = ({ item }: { item: GIFItemType }) => {
-		const tinyGIF = item.media_formats.tinygif;
-
-		return (
-			<TouchableOpacity
-				style={styles.gifContainer}
-				// TODO: change url if GIF is too large to display in the Conversation component
-				onPress={() =>
-					void handleSendGIF(item.media_formats.mediumgif.url)
-				}
-			>
-				<Image
-					source={{
-						uri: tinyGIF.url,
-					}}
-					style={styles.gifStyle}
-				/>
-			</TouchableOpacity>
-		);
-	};
 
 	return (
 		<>
 			{toggleGif && (
-				<View style={styles.searchGIFContainer}>
-					<TouchableOpacity
-						style={styles.closeGIF}
-						onPress={() => setToggleGif(false)}
-					>
-						<Icon
-							name="close-outline"
-							size={config.metrics.lg}
-							color={config.backgrounds.darkgray}
-							style={styles.closeAttachmentIcon}
-						/>
-					</TouchableOpacity>
-					<Searchbar
-						placeholder="Search Tenor"
-						style={styles.searchGIF}
-						value={searchQuery}
-						onChangeText={text => setSearchQuery(text)}
-						inputStyle={styles.searchInputGIF}
-					/>
-					<FlatList
-						horizontal
-						data={gifList}
-						renderItem={renderGIFTile}
-						showsHorizontalScrollIndicator={false}
-						ref={gifRef}
-					/>
-				</View>
+				<GIFList setGIFUrl={setGIFUrl} setToggleGIF={setToggleGif} />
 			)}
 
 			<Row style={styles.footerInnerWrapper} align="center">
@@ -148,7 +64,12 @@ const MessageInput = (props: MessageInputProps) => {
 				/>
 
 				{!sending && (
-					<TouchableOpacity onPress={() => void handleSendMessage()}>
+					<TouchableOpacity
+						onPress={() => {
+							void handleSendMessage();
+							setToggleGif(false);
+						}}
+					>
 						<Icon
 							name="send"
 							size={config.metrics.lg}

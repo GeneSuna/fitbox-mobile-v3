@@ -3,6 +3,7 @@ import { Avatar, Row, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { SendMessageDataType } from '@/types/schemas/message';
+import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -24,19 +25,25 @@ const ChatMessage = (props: ChatMessageProps) => {
 		return /\.(gif)$/i.test(url);
 	};
 
+	const lines = data.message.split('\n');
+	const hasGIF = isGifUrl(lines[lines.length - 1] as string);
+	const combinedString =
+		lines.length > 1 && hasGIF
+			? lines.slice(0, -1).join('\n')
+			: lines.join('\n');
+
 	const flexDirection = isFromUser ? 'row-reverse' : 'row';
 	const alignItems = isFromUser ? 'flex-end' : 'flex-start';
 	const textColor = isFromUser ? 'white' : 'black';
 	const messageBubble = isFromUser
 		? { borderBottomRightRadius: 0 }
 		: { borderBottomLeftRadius: 0 };
-	const messageBackground = isGifUrl(data.message)
-		? { padding: 0 }
-		: {
-				backgroundColor: isFromUser
-					? config.colors.info
-					: config.backgrounds.gray,
-		  };
+	const messageBackground = {
+		paddingHorizontal: hasGIF ? config.metrics.md : config.metrics.rg,
+		backgroundColor: isFromUser
+			? config.colors.info
+			: config.backgrounds.gray,
+	};
 	const messageContainer = {
 		marginTop: dontDisplayTime ? 0 : config.metrics.rg,
 	};
@@ -92,17 +99,18 @@ const ChatMessage = (props: ChatMessageProps) => {
 						messageMarginTop,
 					]}
 				>
-					{isGifUrl(data.message) ? (
+					{!isEmpty(combinedString) && (
+						<Text size="md" style={{ color: textColor }}>
+							{combinedString}
+						</Text>
+					)}
+					{hasGIF && (
 						<Image
 							source={{
-								uri: data.message,
+								uri: lines[lines.length - 1],
 							}}
 							style={styles.gif}
 						/>
-					) : (
-						<Text size="md" style={{ color: textColor }}>
-							{data.message}
-						</Text>
 					)}
 				</View>
 			</View>

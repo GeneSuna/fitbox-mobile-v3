@@ -328,7 +328,7 @@ const ScoreCommentsScreen = ({ route }: DashboardStackNavigatorProps) => {
 				color="darkgray"
 				style={{ marginTop: config.metrics.xl }}
 			>
-				No applause yet
+				No reactions yet
 			</Text>
 		);
 
@@ -366,40 +366,45 @@ const ScoreCommentsScreen = ({ route }: DashboardStackNavigatorProps) => {
 						{state.score_info?.score_type})
 					</Text>
 				</Row>
-				<Row>
+				<Row style={{ paddingTop: config.metrics.rg }}>
 					<View style={layout.flex_1}>
-						<TouchableOpacity
-							onPress={() => setShowReactions(true)}
-						>
-							<Row style={styles.applauseTypes}>
-								{Object.entries(state.reactions).map(
-									([key, value]) => (
-										<View key={key}>
-											{value > 0 && (
-												<Row
-													align="flex-end"
-													style={{
-														marginRight:
-															config.metrics.rg,
-													}}
-												>
-													<Text size="lg">
-														{
-															resources.react[
-																key as keyof Reactions
-															]
-														}
-													</Text>
-													<Text size="sm">
-														{value}
-													</Text>
-												</Row>
-											)}
-										</View>
-									),
-								)}
-							</Row>
-						</TouchableOpacity>
+						{state.applause.length > 0 ? (
+							<TouchableOpacity
+								onPress={() => setShowReactions(true)}
+							>
+								<Row style={styles.applauseTypes}>
+									{Object.entries(state.reactions).map(
+										([key, value]) => (
+											<View key={key}>
+												{value > 0 && (
+													<Row
+														align="flex-end"
+														style={{
+															marginRight:
+																config.metrics
+																	.xs,
+														}}
+													>
+														<Text size="lg">
+															{
+																resources.react[
+																	key as keyof Reactions
+																]
+															}
+														</Text>
+														<Text size="sm">
+															{value}
+														</Text>
+													</Row>
+												)}
+											</View>
+										),
+									)}
+								</Row>
+							</TouchableOpacity>
+						) : (
+							<Text size="md">No reactions yet</Text>
+						)}
 					</View>
 					<View style={styles.commentsLabel}>
 						<Text size="md">

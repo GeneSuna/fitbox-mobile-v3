@@ -17,7 +17,7 @@ import {
 } from '@/types/schemas/message';
 import { Say } from '@/utils';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { sortBy } from 'lodash';
+import { isEmpty, sortBy } from 'lodash';
 import moment from 'moment';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import {
@@ -81,6 +81,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 		selectedMessage: null,
 		sending: false,
 	});
+	const [gifUrl, setGIFUrl] = useState<string>('');
 
 	const handleEnterMessage = (message: string) =>
 		setState(prevState => ({ ...prevState, message }));
@@ -92,15 +93,18 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 
 			if (sending) return false;
 			message = message.trim();
+			const conversationMessage = !isEmpty(gifUrl)
+				? `${message}\n${gifUrl}`
+				: message;
 
 			/// TODO: include length of attachedFiles
-			if (message) {
+			if (conversationMessage) {
 				setState(prevState => ({ ...prevState, sending: true }));
 				list = list.slice();
 
 				const payload = {
 					subject,
-					message,
+					message: conversationMessage,
 					convo_id: convoId,
 					mediaAttachments: [],
 				};
@@ -121,48 +125,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 				// TODO: clear attached files
 
 				setState(prevState => ({ ...prevState, message: '', list }));
-			}
-		} catch (e) {
-			Say.err(e as string);
-		}
-		return setState(prevState => ({ ...prevState, sending: false }));
-	};
-
-	const handleSendGIF = async (url: string) => {
-		try {
-			let { list } = state;
-			const { subject, convoId, sending } = state;
-
-			if (sending) return false;
-
-			/// TODO: include length of attachedFiles
-			if (url) {
-				setState(prevState => ({ ...prevState, sending: true }));
-				list = list.slice();
-
-				const payload = {
-					subject,
-					message: url,
-					convo_id: convoId,
-					mediaAttachments: [],
-				};
-
-				const res = await sendConversationMessage(payload);
-
-				list.unshift({
-					id: res.data.id,
-					sender_id: user?.user_data.user_id || 0,
-					message: payload.message,
-					firstname: res.data.firstname,
-					lastname: res.data.lastname,
-					profile_image: res.data.profile_image,
-					attached_files: res.data.attached_files,
-					created_at: moment.utc().format('YYYY-MM-DD HH:mm'),
-				});
-
-				// TODO: clear attached files
-
-				setState(prevState => ({ ...prevState, message: '', list }));
+				setGIFUrl('');
 			}
 		} catch (e) {
 			Say.err(e as string);
@@ -386,12 +349,10 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 		if (msg) {
 			const isFromUser = msg.sender_id === user?.user_data.user_id;
 			const isAttachment = msg.attached_files.length;
-			const isGifUrl = /\.(gif)$/i.test(msg.message);
 
 			return longPressOptions.map((item, index) => {
 				if (!isFromUser && item.id === 'delete') return null;
 				if (isAttachment && item.id === 'copy') return null;
-				if (isGifUrl && item.id === 'copy') return null;
 
 				return (
 					<TouchableOpacity
@@ -439,7 +400,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 					sending={state.sending}
 					handleEnterMessage={handleEnterMessage}
 					handleSendMessage={handleSendMessage}
-					handleSendGIF={handleSendGIF}
+					setGIFUrl={setGIFUrl}
 				/>
 			)}
 
