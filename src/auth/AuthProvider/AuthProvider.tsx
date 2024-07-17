@@ -23,8 +23,19 @@ type Props = PropsWithChildren<{
 }>;
 
 const AuthProvider = ({ children, storage }: Props) => {
-	const loggedInUser = useStore(s => s.loggedInUser);
-	const setLoggedInUser = useStore(s => s.setLoggedInUser);
+	const {
+		loggedInUser,
+		setLoggedInUser,
+		clearClasses,
+		clearStates,
+		clearFilters,
+	} = useStore(state => ({
+		loggedInUser: state.loggedInUser,
+		setLoggedInUser: state.setLoggedInUser,
+		clearClasses: state.clearClasses,
+		clearStates: state.clearAppState,
+		clearFilters: state.clearFilters,
+	}));
 
 	const setStorageAuth = (data: LoginResponseSchemaType): void => {
 		// Store the access token, refresh token, and expiration time in storage
@@ -80,6 +91,15 @@ const AuthProvider = ({ children, storage }: Props) => {
 
 		// remove push token from server
 		try {
+			// clear calendar state
+			clearClasses();
+
+			// clear global state
+			clearStates();
+
+			// clear filter state
+			clearFilters();
+
 			await deletePushToken(token, id);
 
 			// remove all tokens from storage
