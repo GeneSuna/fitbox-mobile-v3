@@ -50,6 +50,7 @@ const ContactsScreen = ({ navigation }: ComposeScreenProps) => {
 	stateRef.current = state;
 	contactListRef.current = contactList;
 	const [selectAll, setSelectAll] = useState<boolean>(false);
+	const [isContactsNotEmpty, setIsContactsNotEmpty] = useState<boolean>();
 
 	const renderHeaderComposeButton = () => (
 		<TouchableOpacity
@@ -341,6 +342,12 @@ const ContactsScreen = ({ navigation }: ComposeScreenProps) => {
 		);
 	};
 
+	useEffect(() => {
+		const exists = contactList.some(item => item.role === state.sortBy);
+
+		setIsContactsNotEmpty(exists);
+	}, [state.sortBy]);
+
 	const renderContacts = () => {
 		if (state.loading) {
 			return (
@@ -353,14 +360,14 @@ const ContactsScreen = ({ navigation }: ComposeScreenProps) => {
 			);
 		}
 		if (state.sortBy !== 'group') {
-			return (
+			return isContactsNotEmpty ? (
 				<FlatList
 					data={contactList}
 					renderItem={renderList}
 					refreshing={state.refreshing}
 					onRefresh={() => void getData(state.sortBy)}
 				/>
-			);
+			) : null;
 		}
 		return (
 			<FlatList
@@ -369,6 +376,14 @@ const ContactsScreen = ({ navigation }: ComposeScreenProps) => {
 				refreshing={state.refreshing}
 				onRefresh={() => void getData(state.sortBy)}
 			/>
+		);
+	};
+
+	const renderNothingToDisplay = () => {
+		return state.loading ? null : (
+			<View style={styles.emptyContacts}>
+				<Text>Your list is currently empty.</Text>
+			</View>
 		);
 	};
 
@@ -394,7 +409,9 @@ const ContactsScreen = ({ navigation }: ComposeScreenProps) => {
 					);
 				})}
 			</Row>
-			{!state.refreshing && state.sortBy !== 'group' && (
+			{!state.refreshing &&
+			state.sortBy !== 'group' &&
+			isContactsNotEmpty ? (
 				<Searchbar
 					placeholder="Search"
 					onChangeText={search =>
@@ -407,10 +424,12 @@ const ContactsScreen = ({ navigation }: ComposeScreenProps) => {
 					style={styles.searchBar}
 					inputStyle={styles.searchBarInput}
 				/>
+			) : (
+				renderNothingToDisplay()
 			)}
-
 			{renderContacts()}
-			{state.sortBy !== 'group' && (
+
+			{state.sortBy !== 'group' && isContactsNotEmpty && (
 				<TouchableOpacity
 					style={styles.selectAllFloatBtn}
 					activeOpacity={1}
@@ -454,6 +473,7 @@ const styles = StyleSheet.create({
 	loader: { justifyContent: 'center', flex: 1 },
 	groupTitleStyle: { color: '#222' },
 	groupAccordionStyle: { padding: 0 },
+	emptyContacts: { justifyContent: 'center', alignItems: 'center', flex: 1 },
 });
 
 export default ContactsScreen;
