@@ -2,9 +2,11 @@ import useAuth from '@/auth/hooks/useAuth';
 import { Avatar, Row, ScrollView, Spacer, Text } from '@/components/atoms';
 import { SafeScreen } from '@/components/template';
 import { navigate } from '@/navigators/NavigationRef';
+import { getClassFilters } from '@/services/session';
 import { getBookedSessions, getUserGymInfo } from '@/services/users';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
+import { ClassFiltersDataType } from '@/types/schemas/session';
 import { UserSchemaType } from '@/types/schemas/user';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
@@ -24,21 +26,20 @@ import BookedSessionCard, {
 	BookedSessionCardProps,
 } from './components/BookedSessionCard';
 import DashboardActionButton from './components/DashboardActionButton';
-import DashboardAnnouncements from './components/DashboardAnnouncements';
 import DashboardHeader from './components/DashboardHeader';
 
 // List of action buttons to be displayed on the dashboard screen
 const actionButtons = [
-	{
-		id: 'calendar',
-		icon: 'calendar-alt',
-		text: 'Book Class',
-	},
-	{
-		id: 'wellness',
-		icon: 'heart',
-		text: 'Wellness',
-	},
+	// {
+	// 	id: 'calendar',
+	// 	icon: 'calendar-alt',
+	// 	text: 'Book Class',
+	// },
+	// {
+	// 	id: 'wellness',
+	// 	icon: 'heart',
+	// 	text: 'Wellness',
+	// },
 	{
 		id: 'results',
 		icon: 'trophy',
@@ -58,8 +59,20 @@ const Dashboard = () => {
 	const { user } = useAuth();
 	// const headerHeight = useHeaderHeight();
 
-	const { setAppState } = useStore(state => ({
+	const {
+		setAppState,
+		classFilters,
+		venueFilters,
+		setVenueFilters,
+		setClassFilters,
+		setHeaderTitle,
+	} = useStore(state => ({
 		setAppState: state.setAppState,
+		classFilters: state.classFilters,
+		venueFilters: state.venueFilters,
+		setClassFilters: state.setClassFilters,
+		setVenueFilters: state.setVenueFilters,
+		setHeaderTitle: state.setHeaderTitle,
 	}));
 
 	const [loading, setLoading] = useState<boolean>(true);
@@ -69,10 +82,14 @@ const Dashboard = () => {
 	const [upcomingSessions, setUpcomingSessions] = useState<
 		BookedSessionCardProps[]
 	>([]);
+	const [classFiltersData, setClassFiltersData] = useState<
+		ClassFiltersDataType[]
+	>([]);
 
 	const onRefresh = () => {
 		void initializeAppStates();
 		void getUpcomingSessions();
+		void getClassFiltersFn();
 	};
 
 	const initializeAppStates = async () => {
@@ -243,8 +260,18 @@ const Dashboard = () => {
 
 			void initializeAppStates();
 			void getUpcomingSessions();
+			void getClassFiltersFn();
 		}, []),
 	);
+
+	const getClassFiltersFn = async () => {
+		try {
+			const res = await getClassFilters();
+			setClassFiltersData(res.data);
+		} catch (e) {
+			Say.err(e as string);
+		}
+	};
 
 	// TEMPORARY VARIABLES
 	const showSwitchBtn = true;
@@ -280,6 +307,40 @@ const Dashboard = () => {
 			}),
 		[actionButtons],
 	);
+
+	const onPresetFilterClick = (data: ClassFiltersDataType) => {
+		let updatedClassFilter = [];
+		let updatedVenueFilter = [];
+
+		const classIdsSet = new Set(data.classIds);
+		const locationIdsSet = new Set(data.locationIds);
+
+		updatedClassFilter = classFilters.map(item => ({
+			...item,
+			is_selected: !!classIdsSet.has(item.id as number),
+		}));
+
+		updatedVenueFilter = venueFilters.map(item => ({
+			...item,
+			is_selected: !!locationIdsSet.has(item.id as number),
+		}));
+
+		setClassFilters(updatedClassFilter);
+		setVenueFilters(updatedVenueFilter);
+		setHeaderTitle(data.name);
+		navigate('Calendar');
+	};
+
+	const renderPresetFilters = (item: ClassFiltersDataType) => {
+		return (
+			<DashboardActionButton
+				key={item.id}
+				text={item.name}
+				icon="calendar-alt"
+				onPress={() => onPresetFilterClick(item)}
+			/>
+		);
+	};
 
 	return (
 		<SafeScreen>
@@ -345,13 +406,17 @@ const Dashboard = () => {
 
 						<Row spacing="space-between" style={layout.wrap}>
 							{renderActionButtons}
+							{classFiltersData.map(item =>
+								renderPresetFilters(item),
+							)}
 						</Row>
 
 						<Spacer size="xl" />
 
-						<Text size="lg">Announcements</Text>
+						{/* Hide Announcements for now */}
+						{/* <Text size="lg">Announcements</Text>
 						<Spacer />
-						<DashboardAnnouncements />
+						<DashboardAnnouncements /> */}
 					</View>
 				</View>
 			</ScrollView>

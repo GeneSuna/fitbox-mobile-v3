@@ -66,7 +66,12 @@ const CalendarFilterSelect = ({ type }: CalendarFilterSelectProps) => {
 			visible={visible}
 			onClose={() => toggleModal(modal, false)}
 			rightTitle={
-				<TouchableOpacity onPress={() => toggleModal(modal, false)}>
+				<TouchableOpacity
+					onPress={() => {
+						toggleModal(modal, false);
+						toggleModal(ModalEnum.CALENDAR_FILTER, true);
+					}}
+				>
 					<Text color="info" size="md">
 						Accept
 					</Text>

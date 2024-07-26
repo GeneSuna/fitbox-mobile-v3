@@ -1,11 +1,10 @@
 import { Text } from '@/components/atoms';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
-import { Dimensions, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const { width } = Dimensions.get('window');
 const { metrics } = config;
 
 interface DashboardActionButtonProps {
@@ -41,7 +40,7 @@ export default DashboardActionButton;
 const styles = StyleSheet.create({
 	container: {
 		paddingVertical: metrics.md,
-		minWidth: width / 3.4,
+		width: '48%',
 		marginBottom: metrics.md,
 		gap: 8,
 		justifyContent: 'center',

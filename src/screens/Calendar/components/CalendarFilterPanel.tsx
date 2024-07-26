@@ -70,7 +70,7 @@ const CalendarFilterPanel = () => {
 						filterType === FilterTypeEnum.VENUE
 							? ModalEnum.VENUE_FILTER
 							: ModalEnum.CLASS_FILTER;
-
+					onClose();
 					toggleModal(useModal);
 				}}
 			>

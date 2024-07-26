@@ -14,6 +14,11 @@ const createSessionSlice: StateCreator<
 	classes: [],
 	venueFilters: [],
 	classFilters: [],
+	headerTitle: null,
+
+	setHeaderTitle(title) {
+		setState({ headerTitle: title });
+	},
 
 	setActiveMonth: date => {
 		setState({ activeMonth: date });

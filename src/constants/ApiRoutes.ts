@@ -89,6 +89,7 @@ export default {
 	childInfo: `${v1}user/child`,
 	parentInfo: `${v1}user/parent`,
 	switchAccount: `${v1}user/switch`,
+	classFilters: `${v1}classFilters`,
 	PushNotificationService:
 		'https://fitbox-stg-microservices.azurewebsites.net/api/NotificationService?code=/W0YnAVNdmeGd/gcnAbvIMQqhcpTpiKIs0Qk696AfcAG5EeD5Bg5/Q==',
 	// 'https://fitbox-dev-microservices.azurewebsites.net/api/NotificationService?code=sYC9PuVtRl8udPnN8LQTzF/gX2YtX0OltS6xX3bQCAp1ZH0Mg3FknQ==',

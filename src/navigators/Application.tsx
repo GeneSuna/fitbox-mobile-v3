@@ -102,9 +102,10 @@ const CommonHeaderOptions: StackNavigationOptions = {
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const MainTabNavigator = () => {
 	const { variant, colors } = useTheme();
-	const { shopUrl, activeMonth } = useStore(state => ({
+	const { shopUrl, activeMonth, headerTitle } = useStore(state => ({
 		shopUrl: state.shopUrl,
 		activeMonth: state.activeMonth,
+		headerTitle: state.headerTitle,
 	}));
 
 	return (
@@ -142,7 +143,7 @@ const MainTabNavigator = () => {
 				options={{
 					headerLeft: CalendarHeaderLeftComponent,
 					headerRight: CalendarHeaderRightComponent,
-					title: activeMonth ?? 'Calendar',
+					title: headerTitle || activeMonth || 'Calendar',
 				}}
 			/>
 			<Tab.Screen

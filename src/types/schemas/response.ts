@@ -26,6 +26,7 @@ import {
 } from './payment';
 import {
 	BookedSessionSchema,
+	ClassFiltersDataSchema,
 	SessionDetailSchema,
 	SessionSchema,
 	StaffBookedSessionSchema,
@@ -270,6 +271,10 @@ export const GetScoreCommentsSchema = apiResponseSchema(
 	z.array(ScoreCommentsDataSchema),
 );
 export const RegisterUserSchema = apiResponseSchema(RegisterUserDataSchema);
+export const GetClassFiltersSchema = apiResponseSchema(
+	z.array(ClassFiltersDataSchema),
+);
+
 export const GetFitboxGallerySchema = apiResponseSchema(
 	FitboxGalleryDataSchema,
 );

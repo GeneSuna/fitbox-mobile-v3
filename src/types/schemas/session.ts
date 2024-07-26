@@ -542,3 +542,17 @@ export const SessionDetailSchema = z.object({
 	video_link: z.string().nullish(),
 	waitlist: z.array(SessionWaitlistSchema),
 });
+
+export const ClassFiltersDataSchema = z.object({
+	classIds: z.array(z.number()),
+	context_id: z.number(),
+	created_at: z.string(),
+	id: z.number(),
+	isDefault: z.number(),
+	locationIds: z.array(z.number()),
+	name: z.string(),
+	sequence: z.number(),
+	updated_at: z.string(),
+});
+
+export type ClassFiltersDataType = z.infer<typeof ClassFiltersDataSchema>;

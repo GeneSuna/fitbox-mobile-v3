@@ -35,6 +35,7 @@ interface SessionStateInterface {
 	venueFilters: VenueFilter[];
 	classFilters: ClassFilter[];
 	activeMonth: string;
+	headerTitle: string | null;
 }
 
 interface SessionInterface extends SessionStateInterface {
@@ -44,6 +45,7 @@ interface SessionInterface extends SessionStateInterface {
 	setVenueFilters: (data: VenueFilter[]) => void;
 	setClassFilters: (data: ClassFilter[]) => void;
 	clearFilters: (filterType?: FilterTypeEnum) => void;
+	setHeaderTitle: (title: string) => void;
 }
 
 export type {
