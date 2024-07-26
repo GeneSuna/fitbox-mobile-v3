@@ -176,7 +176,9 @@ export const GeyGymClassesResponseSchema = apiResponseSchema(
 	z.array(GymClassSchema),
 );
 
-export const GetPaymentInfoSchema = apiResponseSchema(PaymentInfoDataSchema);
+export const GetPaymentInfoSchema = apiResponseSchema(
+	z.union([PaymentInfoDataSchema, z.array(z.unknown())]),
+);
 
 export const SetupPaymentIntentSchema = z.object({
 	message: z.string(),

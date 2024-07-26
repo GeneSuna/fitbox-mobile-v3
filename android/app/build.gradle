@@ -134,6 +134,9 @@ dependencies {
     // For WebP support, without animations
     implementation 'com.facebook.fresco:webpsupport:2.5.0'
 
+    // For Google Play - Stripe
+    implementation 'com.stripe:stripe-android:20.48.0'
+
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {

@@ -41,6 +41,11 @@ const RECAPTCHA = {
 	baseURL: 'http://fitboxcorp.com/',
 };
 
+const STRIPE_PUBLISHABLE_KEY = {
+	TEST: 'pk_test_FXdNftSfeoWHolUG1cwGCLxK00gUIDUAec',
+	LIVE: 'pk_live_o1GIALVbZwAltbmrw1rXaOyf00T1zjQ3RU',
+};
+
 // TODO: transfer apiKey or retrieve somewhere
 const TENOR_API_KEY = 'AIzaSyCe3wcxBWD8Oe5SBfBz7qhR2680gYvIqEA';
 
@@ -189,4 +194,5 @@ export default {
 	DEVICEHEIGHT,
 	DEVICEWIDTH,
 	RECAPTCHA,
+	STRIPE_PUBLISHABLE_KEY,
 };

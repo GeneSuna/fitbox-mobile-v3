@@ -29,10 +29,7 @@ const Avatar = ({
 		if (source) {
 			setSrc({
 				// workaround for the image server issues
-				uri: String(source).replace(
-					'https://fitbox.iq',
-					'http://13.72.224.232',
-				),
+				uri: String(source),
 				headers: {
 					Pragma: 'no-cache',
 				},

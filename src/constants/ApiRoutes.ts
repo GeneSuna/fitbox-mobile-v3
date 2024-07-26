@@ -67,6 +67,7 @@ export default {
 	setupPaymentIntent: `${v1}stripe/setupIntent`,
 	getPaymentInfo: `${v1}user/payment/details`,
 	getPaymentMethod: `${v1}stripe/getPaymentMethod`,
+	confirmSetupIntent: `${v1}stripe/confirmSetupIntent`,
 	joinWaitlist: `${v1}waitlist/join`,
 	cancelWaitlist: `${v1}waitlist/cancel`,
 	getScoreDetails: `${v1}get-score-details`,

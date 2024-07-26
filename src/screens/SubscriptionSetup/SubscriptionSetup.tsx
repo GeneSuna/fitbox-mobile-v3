@@ -42,7 +42,6 @@ import SubscriptionItem from './components/SubscriptionItem';
 
 type StateProps = {
 	currentSubscription: SubscriptionType | null;
-	hasPaymentDetails: boolean;
 	loadingPaymentDetails: boolean;
 	selectedProductId: number | null;
 	startDate: string;
@@ -68,12 +67,12 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 	const [state, setState] = useState<StateProps>({
 		currentSubscription: null,
 		loadingPaymentDetails: true,
-		hasPaymentDetails: false,
 		selectedProductId: null,
 		startDate: initialStartDate,
 		showDatePicker: false,
 		processing: false,
 	});
+	const [hasPaymentDetails, setHasPaymentDetails] = useState<boolean>(false);
 
 	useLayoutEffect(() => {
 		navigation.setOptions(
@@ -134,12 +133,9 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 
 			const userProfileRes = await getUserProfile();
 			if (userProfileRes.user_data.has_payment_details) {
-				const hasPaymentDetails =
-					!!userProfileRes.user_data.has_payment_details;
-				setState({
-					...state,
-					hasPaymentDetails,
-				});
+				setHasPaymentDetails(
+					!!userProfileRes.user_data.has_payment_details,
+				);
 			}
 
 			setState({ ...state, loadingPaymentDetails: false });
@@ -309,8 +305,7 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 
 									const isFreeType = type === 'free';
 									const hasValidPaymentDetails =
-										state.hasPaymentDetails ||
-										!fromSubscription;
+										hasPaymentDetails || !fromSubscription;
 
 									const isEnabled =
 										Object.values(PaymentGateways).includes(

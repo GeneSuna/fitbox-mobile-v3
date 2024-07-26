@@ -38,6 +38,7 @@ import CalendarHeaderLeftComponent from '@/screens/Calendar/components/CalendarH
 import CalendarHeaderRightComponent from '@/screens/Calendar/components/CalendarHeaderRightComponent';
 import ShopHeaderRightComponent from '@/screens/Shop/components/ShopHeaderRightComponent';
 
+import useAuth from '@/auth/hooks/useAuth';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import type {
@@ -48,6 +49,7 @@ import type {
 } from '@/types/navigation';
 import { Constant } from '@/utils';
 import useStore from '@/zustand/Store';
+import { StripeProvider } from '@stripe/stripe-react-native';
 import DashboardStackNavigator from './DashboardStack';
 import MenuStackNavigator from './MenuStack';
 import { navigationRef } from './NavigationRef';
@@ -241,139 +243,163 @@ const ComposeStackNavigator = () => {
 const Stack = createStackNavigator<ApplicationStackParamList>();
 const ApplicationNavigator = () => {
 	const { variant, navigationTheme, colors } = useTheme();
+	const { getApiUrl } = useAuth();
+
+	const url = getApiUrl();
+	const getKeyBasedOnEnv = () => {
+		if (url.includes('dev.fitbox.iq')) {
+			return Constant.STRIPE_PUBLISHABLE_KEY.TEST;
+		}
+		if (url.includes('staging.fitbox.iq')) {
+			return Constant.STRIPE_PUBLISHABLE_KEY.TEST;
+		}
+		if (url.includes('fitbox.iq')) {
+			return Constant.STRIPE_PUBLISHABLE_KEY.LIVE;
+		}
+		return '';
+	};
 
 	return (
-		<NavigationContainer
-			linking={linking}
-			ref={navigationRef}
-			theme={navigationTheme}
+		<StripeProvider
+			publishableKey={getKeyBasedOnEnv()}
+			merchantIdentifier="merchant.com.af.fitbox"
 		>
-			<Stack.Navigator key={variant} initialRouteName="Startup">
-				<Stack.Group
-					screenOptions={{
-						headerShown: false, // hide header by default but when screen needs it, it will be shown with corresponding options below
-						headerTintColor: 'white',
-						headerTitleAlign: 'center',
-						headerStyle: { backgroundColor: config.colors.brand },
-						headerTitleStyle: layout.fontMontserratRegular,
-						cardStyleInterpolator:
-							CardStyleInterpolators.forScaleFromCenterAndroid,
-					}}
-				>
-					<Stack.Screen name="Startup" component={Startup} />
-					<Stack.Screen name="Auth" component={Auth} />
-					<Stack.Screen name="Landing" component={Landing} />
-					<Stack.Screen name="Example" component={Example} />
-					<Stack.Screen
-						name="Login"
-						component={Login}
-						options={{
-							...CommonHeaderOptions,
-							headerBackTitleVisible: false,
+			<NavigationContainer
+				linking={linking}
+				ref={navigationRef}
+				theme={navigationTheme}
+			>
+				<Stack.Navigator key={variant} initialRouteName="Startup">
+					<Stack.Group
+						screenOptions={{
+							headerShown: false, // hide header by default but when screen needs it, it will be shown with corresponding options below
+							headerTintColor: 'white',
+							headerTitleAlign: 'center',
+							headerStyle: {
+								backgroundColor: config.colors.brand,
+							},
+							headerTitleStyle: layout.fontMontserratRegular,
+							cardStyleInterpolator:
+								CardStyleInterpolators.forScaleFromCenterAndroid,
 						}}
-					/>
-					<Stack.Screen
-						name="ResetPassword"
-						component={ResetPassword}
-						options={{
-							title: 'Forgot Password',
-							...CommonHeaderOptions,
-							headerBackTitleVisible: false,
-						}}
-					/>
-					<Stack.Screen name="Main" component={MainTabNavigator} />
-					<Stack.Screen
-						name="Session"
-						component={Session}
-						options={({ route }) => ({
-							title: route.params.title,
-							...CommonHeaderOptions,
-						})}
-					/>
-					<Stack.Screen
-						name="Eula"
-						component={EULAScreen}
-						options={{
-							title: 'End User License Agreement',
-							...CommonHeaderOptions,
-						}}
-					/>
-					<Stack.Screen
-						name="BillingAgreement"
-						component={BillingAgreementScreen}
-						options={{
-							title: 'Billing Agreement',
-							...CommonHeaderOptions,
-						}}
-					/>
-					<Stack.Screen
-						name="GymWaiver"
-						component={GymWaiverScreen}
-						options={{
-							title: 'Gym Waiver',
-							...CommonHeaderOptions,
-						}}
-					/>
-					<Stack.Screen
-						name="PDFViewer"
-						component={PDFViewerScreen}
-						options={{
-							...CommonHeaderOptions,
-							headerBackTitleVisible: false,
-						}}
-					/>
-					<Stack.Screen
-						name="HealthCapture"
-						component={HealthCaptureScreen}
-						options={{
-							...CommonHeaderOptions,
-							headerBackTitleVisible: false,
-						}}
-					/>
-					<Stack.Screen
-						name="SignUp"
-						component={SignUp}
-						options={{
-							...CommonHeaderOptions,
-							headerBackTitleVisible: false,
-							title: 'Sign Up',
-						}}
-					/>
-				</Stack.Group>
+					>
+						<Stack.Screen name="Startup" component={Startup} />
+						<Stack.Screen name="Auth" component={Auth} />
+						<Stack.Screen name="Landing" component={Landing} />
+						<Stack.Screen name="Example" component={Example} />
+						<Stack.Screen
+							name="Login"
+							component={Login}
+							options={{
+								...CommonHeaderOptions,
+								headerBackTitleVisible: false,
+							}}
+						/>
+						<Stack.Screen
+							name="ResetPassword"
+							component={ResetPassword}
+							options={{
+								title: 'Forgot Password',
+								...CommonHeaderOptions,
+								headerBackTitleVisible: false,
+							}}
+						/>
+						<Stack.Screen
+							name="Main"
+							component={MainTabNavigator}
+						/>
+						<Stack.Screen
+							name="Session"
+							component={Session}
+							options={({ route }) => ({
+								title: route.params.title,
+								...CommonHeaderOptions,
+							})}
+						/>
+						<Stack.Screen
+							name="Eula"
+							component={EULAScreen}
+							options={{
+								title: 'End User License Agreement',
+								...CommonHeaderOptions,
+							}}
+						/>
+						<Stack.Screen
+							name="BillingAgreement"
+							component={BillingAgreementScreen}
+							options={{
+								title: 'Billing Agreement',
+								...CommonHeaderOptions,
+							}}
+						/>
+						<Stack.Screen
+							name="GymWaiver"
+							component={GymWaiverScreen}
+							options={{
+								title: 'Gym Waiver',
+								...CommonHeaderOptions,
+							}}
+						/>
+						<Stack.Screen
+							name="PDFViewer"
+							component={PDFViewerScreen}
+							options={{
+								...CommonHeaderOptions,
+								headerBackTitleVisible: false,
+							}}
+						/>
+						<Stack.Screen
+							name="HealthCapture"
+							component={HealthCaptureScreen}
+							options={{
+								...CommonHeaderOptions,
+								headerBackTitleVisible: false,
+							}}
+						/>
+						<Stack.Screen
+							name="SignUp"
+							component={SignUp}
+							options={{
+								...CommonHeaderOptions,
+								headerBackTitleVisible: false,
+								title: 'Sign Up',
+							}}
+						/>
+					</Stack.Group>
 
-				<Stack.Group
-					screenOptions={{
-						headerTintColor: colors.darkgray,
-						headerRight: HeaderCloseButton,
-						headerLeft: () => null,
-						presentation: 'modal',
-						headerShown: true,
+					<Stack.Group
+						screenOptions={{
+							headerTintColor: colors.darkgray,
+							headerRight: HeaderCloseButton,
+							headerLeft: () => null,
+							presentation: 'modal',
+							headerShown: true,
 
-						...(Constant.IS_ANDROID
-							? {
-									cardStyleInterpolator:
-										CardStyleInterpolators.forModalPresentationIOS,
-							  }
-							: {}),
-					}}
-				>
-					<Stack.Screen
-						name="SwitchGym"
-						component={SwitchGym}
-						options={{ title: 'Switch Gym' }}
-					/>
-					<Stack.Screen
-						name="SwitchUser"
-						component={SwitchUser}
-						options={{ title: 'Switch User' }}
-					/>
-					<Stack.Screen
-						name="AddAttendance"
-						component={WODAddAttendance}
-						options={{ title: 'Add Attendance' }}
-					/>
-				</Stack.Group>
-				{/*
+							...(Constant.IS_ANDROID
+								? {
+										cardStyleInterpolator:
+											CardStyleInterpolators.forModalPresentationIOS,
+								  }
+								: {}),
+						}}
+					>
+						<Stack.Screen
+							name="SwitchGym"
+							component={SwitchGym}
+							options={{ title: 'Switch Gym' }}
+						/>
+						<Stack.Screen
+							name="SwitchUser"
+							component={SwitchUser}
+							options={{ title: 'Switch User' }}
+						/>
+						<Stack.Screen
+							name="AddAttendance"
+							component={WODAddAttendance}
+							options={{ title: 'Add Attendance' }}
+						/>
+					</Stack.Group>
+					{/*
 				<Stack.Screen
 					name="Scoring"
 					component={SessionScoringScreen}
@@ -383,19 +409,20 @@ const ApplicationNavigator = () => {
 					})}
 				/> */}
 
-				<Stack.Screen
-					name="Webview"
-					component={WebView}
-					options={({ route }) => ({
-						title: route.params.title,
-						headerTintColor: colors.darkgray,
-						presentation: 'modal',
-						headerRight: HeaderCloseButton,
-						headerLeft: () => null,
-					})}
-				/>
-			</Stack.Navigator>
-		</NavigationContainer>
+					<Stack.Screen
+						name="Webview"
+						component={WebView}
+						options={({ route }) => ({
+							title: route.params.title,
+							headerTintColor: colors.darkgray,
+							presentation: 'modal',
+							headerRight: HeaderCloseButton,
+							headerLeft: () => null,
+						})}
+					/>
+				</Stack.Navigator>
+			</NavigationContainer>
+		</StripeProvider>
 	);
 };
 

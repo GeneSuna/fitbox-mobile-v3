@@ -15,12 +15,20 @@ export const PaymentInfoDataSchema = z.object({
 });
 export type PaymetInfoDatatype = z.infer<typeof PaymentInfoDataSchema>;
 
+export const ApplePayWalletSchema = z.object({
+	apple_pay: z.object({
+		type: z.string(),
+	}),
+	dynamic_last4: z.string(),
+	type: z.string(),
+});
+
 export const CardSchema = z.object({
 	brand: z.string(),
 	checks: z.object({
 		address_line1_check: z.string().nullable(),
 		address_postal_code_check: z.string().nullable(),
-		cvc_check: z.string(),
+		cvc_check: z.string().nullable(),
 	}),
 	country: z.string(),
 	display_brand: z.string(),
@@ -37,7 +45,7 @@ export const CardSchema = z.object({
 	three_d_secure_usage: z.object({
 		supported: z.boolean(),
 	}),
-	wallet: z.string().nullable(),
+	wallet: z.union([z.string(), ApplePayWalletSchema]).nullable(),
 });
 
 export const PaymentMethodSchema = z.object({
@@ -64,6 +72,8 @@ export const PaymentMethodSchema = z.object({
 	object: z.string(),
 	type: z.string(),
 });
+
+export type PaymentMethodType = z.infer<typeof PaymentMethodSchema>;
 
 export const CardDetailsSchema = z
 	.object({
@@ -105,8 +115,11 @@ export const CardDetailsSchema = z
 	})
 	.nullable();
 
+export type CardDetailsType = z.infer<typeof CardDetailsSchema>;
+
 export const PaymentIntentSchema = z.object({
 	clientSecret: z.string(),
 	paymentMethodType: z.array(z.string()),
+	id: z.string(),
 	success: z.boolean(),
 });
