@@ -3,4 +3,5 @@ export { default as deleteConversationMessage } from './deleteConversationMessag
 export { default as getContacts } from './getContacts';
 export { default as getConversationList } from './getConversationList';
 export { default as getConversationMessages } from './getConversationMessages';
+export { default as getFitboxGallery } from './getFitboxGallery';
 export { default as sendConversationMessage } from './sendConversationMessage';

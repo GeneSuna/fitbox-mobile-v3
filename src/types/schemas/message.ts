@@ -73,8 +73,16 @@ export const RecipientsSchema = z.object({
 	profile_image: z.string(),
 });
 
+export const AttachedFilesSchema = z.object({
+	id: z.number(),
+	name: z.string(),
+	public_url: z.string(),
+	size: z.number(),
+	type: z.string(),
+});
+
 export const SendMessageDataSchema = z.object({
-	attached_files: z.array(z.any()),
+	attached_files: z.array(AttachedFilesSchema),
 	convo_id: z.number().optional(),
 	created_at: z.string(),
 	firstname: z.string(),
@@ -131,3 +139,31 @@ export type MediaFormatType = z.infer<typeof MediaFormatSchema>;
 export type GIFItemType = z.infer<typeof GIFItemSchema>;
 export type SearchGIFResultsType = z.infer<typeof SearchGIFResultsSchema>;
 export type SendMessageDataType = z.infer<typeof SendMessageDataSchema>;
+
+export const FitboxGalleryFilesSchema = z.object({
+	bucket: z.string().nullable(),
+	bucket_key: z.string().nullable(),
+	created_at: z.string(),
+	deleted_at: z.string().nullable(),
+	folder_id: z.number(),
+	id: z.number(),
+	mime_type: z.string(),
+	name: z.string(),
+	public_url: z.string(),
+	reference_id: z.number().nullable(),
+	reference_type: z.string().nullable(),
+	size: z.number(),
+	slug: z.string(),
+	type: z.string(),
+	updated_at: z.string(),
+	user_id: z.number(),
+});
+
+export const FitboxGalleryDataSchema = z.object({
+	files: z.array(FitboxGalleryFilesSchema),
+	folders: z.array(z.unknown()),
+	parentFolder: z.number().optional(),
+	response_code: z.number().optional(),
+});
+
+export type FitboxGalleryFilesType = z.infer<typeof FitboxGalleryFilesSchema>;

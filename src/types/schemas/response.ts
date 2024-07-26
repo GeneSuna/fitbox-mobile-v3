@@ -13,6 +13,7 @@ import {
 } from './leaderboards';
 import {
 	ContactDataSchema,
+	FitboxGalleryDataSchema,
 	MessageItemSchema,
 	SearchGIFResultsSchema,
 	SendMessageDataSchema,
@@ -269,3 +270,6 @@ export const GetScoreCommentsSchema = apiResponseSchema(
 	z.array(ScoreCommentsDataSchema),
 );
 export const RegisterUserSchema = apiResponseSchema(RegisterUserDataSchema);
+export const GetFitboxGallerySchema = apiResponseSchema(
+	FitboxGalleryDataSchema,
+);

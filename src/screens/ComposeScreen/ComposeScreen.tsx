@@ -32,13 +32,14 @@ type State = {
 };
 
 const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
-	// TODO: Navigate to BrowseMedia. Attachment Icon not yet working
-
-	const { setAppState, storeMessage, storeSubject } = useStore(state => ({
-		setAppState: state.setAppState,
-		storeMessage: state.message,
-		storeSubject: state.subject,
-	}));
+	const { setAppState, storeMessage, storeSubject, attachedFiles } = useStore(
+		state => ({
+			setAppState: state.setAppState,
+			storeMessage: state.message,
+			storeSubject: state.subject,
+			attachedFiles: state.attachedFiles,
+		}),
+	);
 	const { user } = useAuth();
 	const { contacts } = route.params as ComposeParams;
 	const [replyDisabled, setDisableReply] = useState(false);
@@ -66,7 +67,12 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 	const handleCancelButton = () => {
 		setAppState('message', '');
 		setAppState('subject', '');
+		setAppState('attachedFiles', []);
 		navigation.navigate('Inbox');
+	};
+
+	const handleClearFiles = () => {
+		setAppState('attachedFiles', []);
 	};
 
 	useLayoutEffect(() => {
@@ -91,6 +97,8 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 	const handleEnterSubject = (subject: string) =>
 		setState(prevState => ({ ...prevState, subject }));
 
+	const handleBrowseFiles = () => navigation.navigate('BrowseMedia');
+
 	const handleSendMessage = async () => {
 		try {
 			let { subject, message } = state;
@@ -101,7 +109,6 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 				disable_reply: disableReply,
 				sending,
 			} = state;
-			// TODO: get attachedfiles from props
 
 			if (sending) return false;
 
@@ -118,18 +125,36 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 			if (!subject) {
 				return Alert.alert('Subject is required');
 			}
-			// TODO: add attachedfiles.length > 0 in condition
-			if (composeMessage) {
+
+			if (composeMessage || attachedFiles.length > 0) {
 				setState(prevState => ({ ...prevState, sending: true }));
 
-				const payload = {
+				let payload: {
+					subject: string;
+					message: string;
+					recipients?: string;
+					disable_reply?: boolean;
+					convo_id?: number;
+					mediaAttachments?: string[];
+				} = {
 					subject,
 					message: composeMessage,
 					recipients: recipientIds.join(','),
 					disable_reply: !!disableReply,
 				};
 
-				// TODO: add attachedFiles.length logic here
+				if (attachedFiles.length > 0) {
+					if (attachedFiles[0]?.from === 'fitbox_gallery') {
+						payload.message = `${attachedFiles[0].url} ${payload.message}`;
+					} else {
+						payload = {
+							...payload,
+							mediaAttachments: [
+								attachedFiles[0]?.base64 as string,
+							],
+						};
+					}
+				}
 
 				await sendConversationMessage(payload).catch(e =>
 					Say.err(e as string),
@@ -137,6 +162,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 
 				setState(prevState => ({ ...prevState, message: '' }));
 				setGIFUrl('');
+				setAppState('attachedFiles', []);
 				navigation.navigate('Inbox');
 			}
 		} catch (e) {
@@ -192,8 +218,8 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 				/>
 			</View>
 			<View style={styles.footerContainer}>
-				{/* TODO: Add this component once add attachment is implemented */}
-				{/* <Row
+				{attachedFiles.length > 0 && (
+					<Row
 						spacing="space-between"
 						style={{
 							padding: config.metrics.rg,
@@ -209,10 +235,10 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 								style={{ marginRight: config.metrics.md }}
 							/>
 							<Text color="light" numberOfLines={1}>
-								File Name
+								{attachedFiles[0]?.fileName}
 							</Text>
 						</Row>
-						<TouchableOpacity>
+						<TouchableOpacity onPress={handleClearFiles}>
 							<Icon
 								name="close-outline"
 								size={config.metrics.lg}
@@ -220,7 +246,8 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 								style={styles.closeAttachmentIcon}
 							/>
 						</TouchableOpacity>
-					</Row> */}
+					</Row>
+				)}
 				{user?.user_data.is_staff && (
 					<TouchableOpacity
 						style={styles.disableReplyButtonStyle}
@@ -251,6 +278,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 					sending={state.sending}
 					handleSendMessage={handleSendMessage}
 					setGIFUrl={setGIFUrl}
+					handleBrowseFiles={handleBrowseFiles}
 				/>
 			</View>
 			{Platform.OS === 'ios' && <KeyboardSpacer />}

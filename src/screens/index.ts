@@ -2,7 +2,9 @@ export { default as AboutUs } from './AboutUs/AboutUs';
 export { default as AcceptedWaiversScreen } from './AcceptedWaiversScreen/AcceptedWaiversScreen';
 export { default as Auth } from './Auth/Auth';
 export { default as BillingAgreementScreen } from './BillingAgreementScreen/BillingAgreementScreen';
+export { default as BrowseMediaScreen } from './BrowseMediaScreen/BrowseMediaScreen';
 export { default as Calendar } from './Calendar/Calendar';
+export { default as Camera } from './Camera/Camera';
 export { default as ClassResultsScreen } from './ClassResultsScreen/ClassResultsScreen';
 export { default as ComposeScreen } from './ComposeScreen/ComposeScreen';
 export { default as ContactsScreen } from './ContactsScreen/ContactsScreen';
@@ -10,6 +12,7 @@ export { default as ConversationScreen } from './ConversationScreen/Conversation
 export { default as Dashboard } from './Dashboard/Dashboard';
 export { default as EULAScreen } from './EULAScreen/EULAScreen';
 export { default as Example } from './Example/Example';
+export { default as FitboxGalleryScreen } from './FitboxGalleryScreen/FitboxGalleryScreen';
 export { default as GymWaiverScreen } from './GymWaiverScreen/GymWaiverScreen';
 export { default as HealthCaptureScreen } from './HealthCaptureScreen/HealthCaptureScreen';
 export { default as HelpScreen } from './HelpScreen/HelpScreen';

@@ -48,6 +48,9 @@ export type ComposeScreenProps = StackScreenProps<
 export type ComposeStackParamsList = {
 	Compose: ComposeParams;
 	Contacts: undefined;
+	BrowseMedia: undefined;
+	Camera: undefined;
+	fitboxGallery: undefined;
 };
 
 export type PDFViewerScreenParams = {
@@ -64,8 +67,9 @@ export type AddAttendanceParams = {
 };
 
 export type WebViewParams = {
-	title: string;
-	content: string;
+	title?: string;
+	content?: string;
+	uri?: string;
 };
 
 export type SubscriptionDetailsParams = {
@@ -107,6 +111,9 @@ export type InboxParamList = {
 	Inbox: undefined;
 	Conversation: ConversationParams;
 	ComposeStack: undefined;
+	BrowseMedia: undefined;
+	fitboxGallery: undefined;
+	Camera: undefined;
 };
 
 export type DashboardParamList = {

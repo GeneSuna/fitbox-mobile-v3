@@ -5,6 +5,7 @@ export { default as HR } from './HR/HR';
 export { default as HTMLView } from './HTMLView/HTMLView';
 export { default as ImageVariant } from './ImageVariant/ImageVariant';
 export { default as KeyboardSpacer } from './KeyboardSpacer/KeyboardSpacer';
+export { default as LinkPreview } from './LinkPreview/LinkPreview';
 export { default as Row } from './Row/Row';
 export { default as RowSelectItem } from './RowSelectItem/RowSelectItem';
 export { default as ScrollView } from './ScrollView/ScrollView';

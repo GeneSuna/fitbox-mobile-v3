@@ -1,12 +1,15 @@
 import {
 	Auth,
 	BillingAgreementScreen,
+	BrowseMediaScreen,
 	Calendar,
+	Camera,
 	ComposeScreen,
 	ContactsScreen,
 	ConversationScreen,
 	EULAScreen,
 	Example,
+	FitboxGalleryScreen,
 	GymWaiverScreen,
 	HealthCaptureScreen,
 	Inbox,
@@ -188,6 +191,15 @@ const InboxStackNavigator = () => {
 					name="Conversation"
 					component={ConversationScreen}
 				/>
+				<InboxStack.Screen
+					name="BrowseMedia"
+					component={BrowseMediaScreen}
+				/>
+				<InboxStack.Screen
+					name="fitboxGallery"
+					component={FitboxGalleryScreen}
+				/>
+				<InboxStack.Screen name="Camera" component={Camera} />
 			</InboxStack.Group>
 			<InboxStack.Group
 				screenOptions={{
@@ -226,16 +238,40 @@ const ComposeStackNavigator = () => {
 				cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
 				headerMode: 'float',
 				headerShadowVisible: false,
-				headerLeft: () => null,
 				headerTitleStyle: layout.fontMontserratRegular,
 			}}
 		>
 			<ComposeStack.Screen
 				name="Compose"
 				component={ComposeScreen}
-				options={{ title: 'Compose Message' }}
+				options={{ title: 'Compose Message', headerLeft: () => null }}
 			/>
-			<ComposeStack.Screen name="Contacts" component={ContactsScreen} />
+			<ComposeStack.Screen
+				name="Contacts"
+				component={ContactsScreen}
+				options={{ headerLeft: () => null }}
+			/>
+			<ComposeStack.Screen
+				name="BrowseMedia"
+				component={BrowseMediaScreen}
+				options={{
+					title: 'Browse Media',
+					headerLeftLabelVisible: false,
+				}}
+			/>
+			<ComposeStack.Screen
+				name="Camera"
+				component={Camera}
+				options={{ title: 'Camera', headerLeftLabelVisible: false }}
+			/>
+			<ComposeStack.Screen
+				name="fitboxGallery"
+				component={FitboxGalleryScreen}
+				options={{
+					title: 'fitbox Gallery',
+					headerLeftLabelVisible: false,
+				}}
+			/>
 		</ComposeStack.Navigator>
 	);
 };

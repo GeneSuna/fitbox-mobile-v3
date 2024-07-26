@@ -2,6 +2,7 @@ import { Row } from '@/components/atoms';
 import { GIFList } from '@/screens/ScoreCommentsScreen/components';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
+import useStore from '@/zustand/Store';
 import { Dispatch, SetStateAction, useState } from 'react';
 import {
 	ActivityIndicator,
@@ -19,6 +20,7 @@ type MessageInputProps = {
 	sending: boolean;
 	handleSendMessage: () => Promise<false | void>;
 	setGIFUrl: Dispatch<SetStateAction<string>>;
+	handleBrowseFiles?: () => void;
 };
 
 const MessageInput = (props: MessageInputProps) => {
@@ -28,8 +30,13 @@ const MessageInput = (props: MessageInputProps) => {
 		sending,
 		handleSendMessage,
 		setGIFUrl,
+		handleBrowseFiles,
 	} = props;
 	const [toggleGif, setToggleGif] = useState<boolean>(false);
+
+	const { attachedFiles } = useStore(state => ({
+		attachedFiles: state.attachedFiles,
+	}));
 
 	return (
 		<>
@@ -38,14 +45,15 @@ const MessageInput = (props: MessageInputProps) => {
 			)}
 
 			<Row style={styles.footerInnerWrapper} align="center">
-				{/* TODO: if attachedfiles === 0 */}
-				<TouchableOpacity>
-					<Icon
-						name="attach-outline"
-						size={config.metrics.xl}
-						color={config.colors.brand}
-					/>
-				</TouchableOpacity>
+				{attachedFiles.length === 0 && (
+					<TouchableOpacity onPress={handleBrowseFiles}>
+						<Icon
+							name="attach-outline"
+							size={config.metrics.xl}
+							color={config.colors.brand}
+						/>
+					</TouchableOpacity>
+				)}
 				<TouchableOpacity onPress={() => setToggleGif(true)}>
 					<MIcon
 						name="file-gif-box"

@@ -16,6 +16,7 @@ const defaultState: ApplicationStateInterface = {
 	setupSubscriptionId: null,
 	message: '',
 	subject: '',
+	attachedFiles: [],
 };
 
 const createApplicationSlice: StateCreator<

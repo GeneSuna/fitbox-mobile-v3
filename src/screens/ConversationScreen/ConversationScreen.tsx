@@ -16,6 +16,7 @@ import {
 	SendMessageDataType,
 } from '@/types/schemas/message';
 import { Say } from '@/utils';
+import useStore from '@/zustand/Store';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { isEmpty, sortBy } from 'lodash';
 import moment from 'moment';
@@ -29,6 +30,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type State = {
@@ -46,6 +48,13 @@ type State = {
 	showList: boolean;
 	selectedMessage: unknown;
 	sending: boolean;
+};
+
+type AttachedFilesType = {
+	fileName: string;
+	base64?: string;
+	from?: string;
+	url?: string;
 };
 
 const longPressOptions = [
@@ -84,6 +93,11 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 	});
 	const [gifUrl, setGIFUrl] = useState<string>('');
 
+	const { attachedFiles, setAppState } = useStore(store => ({
+		attachedFiles: store.attachedFiles,
+		setAppState: store.setAppState,
+	}));
+
 	const handleEnterMessage = (message: string) =>
 		setState(prevState => ({ ...prevState, message }));
 
@@ -98,17 +112,32 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 				? `${message}\n${gifUrl}`
 				: message;
 
-			/// TODO: include length of attachedFiles
-			if (conversationMessage) {
+			if (conversationMessage || attachedFiles.length > 0) {
 				setState(prevState => ({ ...prevState, sending: true }));
 				list = list.slice();
 
-				const payload = {
+				const payload: {
+					subject: string;
+					message: string;
+					convo_id?: number;
+					mediaAttachments: string[];
+				} = {
 					subject,
 					message: conversationMessage,
 					convo_id: convoId,
 					mediaAttachments: [],
 				};
+
+				if (attachedFiles.length > 0) {
+					if (attachedFiles[0]?.from === 'fitbox_gallery')
+						payload.message = `${attachedFiles[0].url} ${payload.message}`;
+					else {
+						attachedFiles.forEach((file, index) => {
+							payload.mediaAttachments[index] =
+								file.base64 as string;
+						});
+					}
+				}
 
 				const res = await sendConversationMessage(payload);
 
@@ -123,8 +152,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 					created_at: moment.utc().format('YYYY-MM-DD HH:mm'),
 				});
 
-				// TODO: clear attached files
-
+				setAppState('attachedFiles', []);
 				setState(prevState => ({ ...prevState, message: '', list }));
 				setGIFUrl('');
 			}
@@ -261,6 +289,8 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 				inputReady: true,
 			}));
 		})();
+
+		return () => setAppState('attachedFiles', []);
 	}, []);
 
 	const getData = async (page?: number) => {
@@ -283,6 +313,20 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 			loading: false,
 			refreshing: false,
 		}));
+	};
+
+	const handleBrowseFiles = () => navigation.navigate('BrowseMedia');
+
+	const handleRemoveFile = (removeIndex: number) => {
+		const setFiles: AttachedFilesType[] = [];
+
+		attachedFiles.forEach((file, index) => {
+			if (removeIndex !== index) {
+				setFiles.push(file);
+			}
+		});
+
+		setAppState('attachedFiles', setFiles);
 	};
 
 	const renderItem = ({
@@ -395,7 +439,50 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 			<View style={styles.conversationContainer}>
 				{renderConversation()}
 			</View>
-			{/* TODO: render attached files */}
+			<View>
+				{attachedFiles.length > 0 &&
+					attachedFiles.map((fileInfo, index) => {
+						return (
+							<Row
+								key={index}
+								spacing="space-between"
+								style={{
+									padding: config.metrics.rg,
+									backgroundColor: config.backgrounds.dark,
+								}}
+								align="center"
+							>
+								<Row style={layout.flex_1} align="center">
+									<Icon
+										name="attach-outline"
+										size={config.metrics.lg}
+										color={config.backgrounds.light}
+										style={{
+											marginRight: config.metrics.md,
+										}}
+									/>
+									<Text
+										color="light"
+										numberOfLines={1}
+										style={layout.flex_1}
+									>
+										{fileInfo.fileName}
+									</Text>
+									<TouchableOpacity
+										onPress={() => handleRemoveFile(index)}
+									>
+										<Icon
+											name="close-outline"
+											size={config.metrics.lg}
+											color={config.backgrounds.light}
+											style={styles.closeAttachmentIcon}
+										/>
+									</TouchableOpacity>
+								</Row>
+							</Row>
+						);
+					})}
+			</View>
 			{state.allowReply && state.inputReady && (
 				<MessageInput
 					message={state.message}
@@ -403,6 +490,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 					handleEnterMessage={handleEnterMessage}
 					handleSendMessage={handleSendMessage}
 					setGIFUrl={setGIFUrl}
+					handleBrowseFiles={handleBrowseFiles}
 				/>
 			)}
 
@@ -448,6 +536,10 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingVertical: 15,
 		width: '100%',
+	},
+	closeAttachmentIcon: {
+		marginLeft: config.metrics.md,
+		alignSelf: 'center',
 	},
 });
 

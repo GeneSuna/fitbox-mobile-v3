@@ -11,6 +11,14 @@ interface ApplicationStateInterface {
 	setupSubscriptionId: null | number;
 	message: string;
 	subject: string;
+	attachedFiles: AttachedFilesInterface[];
+}
+
+interface AttachedFilesInterface {
+	fileName: string;
+	base64?: string;
+	from?: string;
+	url?: string;
 }
 
 interface ApplicationInterface extends ApplicationStateInterface {

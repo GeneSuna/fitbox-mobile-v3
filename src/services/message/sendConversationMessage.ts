@@ -8,7 +8,7 @@ export default async (payload: {
 	recipients?: string;
 	disable_reply?: boolean;
 	convo_id?: number;
-	mediaAttachments?: unknown[];
+	mediaAttachments?: string[];
 }) => {
 	const response = await securedInstance()
 		.post(`${ApiRoutes.sendConversationMessage}`, {

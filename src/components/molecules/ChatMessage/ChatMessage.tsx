@@ -1,11 +1,12 @@
 import useAuth from '@/auth/hooks/useAuth';
-import { Avatar, Row, Spacer, Text } from '@/components/atoms';
+import { Avatar, LinkPreview, Row, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { SendMessageDataType } from '@/types/schemas/message';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import ImagePop from '../ImagePop/ImagePop';
 
 type ChatMessageProps = {
 	data: SendMessageDataType;
@@ -27,10 +28,17 @@ const ChatMessage = (props: ChatMessageProps) => {
 
 	const lines = data.message.split('\n');
 	const hasGIF = isGifUrl(lines[lines.length - 1] as string);
-	const combinedString =
+	let combinedString =
 		lines.length > 1 && hasGIF
 			? lines.slice(0, -1).join('\n')
 			: lines.join('\n');
+
+	let link: string | null = null;
+	if (combinedString.substring(0, 4).toLowerCase() === 'http') {
+		const splitString = combinedString.split(' ');
+		link = splitString.shift() as string;
+		combinedString = splitString.join(' ');
+	}
 
 	const flexDirection = isFromUser ? 'row-reverse' : 'row';
 	const alignItems = isFromUser ? 'flex-end' : 'flex-start';
@@ -112,6 +120,28 @@ const ChatMessage = (props: ChatMessageProps) => {
 							style={styles.gif}
 						/>
 					)}
+					{data.attached_files.length > 0 && (
+						<>
+							{data.attached_files.map(f => {
+								if (f.type === 'image')
+									return (
+										<ImagePop
+											key={f.id}
+											source={f.public_url}
+										/>
+									);
+								return (
+									<LinkPreview
+										key={f.id}
+										link={f.public_url}
+										filename={f.name}
+									/>
+								);
+							})}
+						</>
+					)}
+
+					{link && <LinkPreview link={link} />}
 				</View>
 			</View>
 		</Row>
