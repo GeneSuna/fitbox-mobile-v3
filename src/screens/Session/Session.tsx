@@ -15,6 +15,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { isArray } from 'lodash';
+import ClassResultsScreen from '../ClassResultsScreen/ClassResultsScreen';
 import {
 	SessionActionButtons,
 	SessionAttendanceTab,
@@ -196,8 +197,12 @@ const Session = ({ route }: ApplicationScreenProps) => {
 			) : null}
 
 			{activeTab === SessionTabsEnum.RESULTS ? (
-				// TODO: render Class Results screen
-				<Text center>Coming soon..</Text>
+				<ClassResultsScreen
+					selectClass={session?.class_event.class_id}
+					dateFromParams={moment(session?.start_datetime).format(
+						'YYYY-MM-DD',
+					)}
+				/>
 			) : null}
 
 			{activeTab === SessionTabsEnum.ATTENDANCE ? (

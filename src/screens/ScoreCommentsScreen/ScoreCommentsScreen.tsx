@@ -17,6 +17,7 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import resources from '@/theme/resources';
 import {
+	ApplicationScreenProps,
 	DashboardStackNavigatorProps,
 	ScoreCommentsParams,
 } from '@/types/navigation';
@@ -63,7 +64,10 @@ type State = {
 	currentReaction: string | null;
 };
 
-const ScoreCommentsScreen = ({ route }: DashboardStackNavigatorProps) => {
+const ScoreCommentsScreen = ({
+	route,
+	navigation,
+}: DashboardStackNavigatorProps | ApplicationScreenProps) => {
 	const [state, setState] = useState<State>({
 		loading: true,
 		tab: 'likes',
@@ -435,7 +439,15 @@ const ScoreCommentsScreen = ({ route }: DashboardStackNavigatorProps) => {
 				</View>
 			</Modal>
 			{renderCommentsTab()}
-			{Platform.OS === 'ios' && <KeyboardSpacer />}
+			{Platform.OS === 'ios' && (
+				<KeyboardSpacer
+					heightDeduction={
+						navigation.getState().routes[0]?.name === 'Main'
+							? 0
+							: 70
+					}
+				/>
+			)}
 		</View>
 	);
 };

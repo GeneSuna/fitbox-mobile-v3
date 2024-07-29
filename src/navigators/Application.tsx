@@ -17,6 +17,7 @@ import {
 	Login,
 	PDFViewerScreen,
 	ResetPassword,
+	ScoreCommentsScreen,
 	Session,
 	// SessionScoringScreen,
 	Shop,
@@ -97,6 +98,7 @@ const tabBarIconRender = ({
 const CommonHeaderOptions: StackNavigationOptions = {
 	headerShown: true,
 	cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+	headerBackTitleVisible: false,
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -352,6 +354,14 @@ const ApplicationNavigator = () => {
 								title: route.params.title,
 								...CommonHeaderOptions,
 							})}
+						/>
+						<Stack.Screen
+							name="ScoreComments"
+							component={ScoreCommentsScreen}
+							options={{
+								title: 'Class Results',
+								...CommonHeaderOptions,
+							}}
 						/>
 						<Stack.Screen
 							name="Eula"

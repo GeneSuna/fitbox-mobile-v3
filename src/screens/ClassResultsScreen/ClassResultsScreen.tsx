@@ -5,14 +5,11 @@ import { applauseScore } from '@/services/leaderboards';
 import getClassLeaderboards from '@/services/leaderboards/getClassLeaderboards';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import {
-	ClassResultsParams,
-	DashboardStackNavigatorProps,
-} from '@/types/navigation';
+import { ClassResultsParams } from '@/types/navigation';
 import { LeaderboardsDataType } from '@/types/schemas/leaderboards';
 import { Constant, Say } from '@/utils';
 import useStore from '@/zustand/Store';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { isArray } from 'lodash';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
@@ -79,12 +76,13 @@ const genderOptions = [
 ];
 
 const ClassResultsScreen = ({
-	navigation,
-	route,
-}: DashboardStackNavigatorProps) => {
+	selectClass,
+	dateFromParams,
+}: ClassResultsParams) => {
 	const { allowCommentsState } = useStore(state => ({
 		allowCommentsState: state.allowComments,
 	}));
+
 	const [state, setState] = useState<State>({
 		allow_comments:
 			typeof allowCommentsState === 'number' ? allowCommentsState : true, // TODO: get initial value from global state,
@@ -113,6 +111,7 @@ const ClassResultsScreen = ({
 	stateRef.current = state;
 	const [hasFilter, setHasFilter] = useState<boolean>();
 	const isOnFocus = useIsFocused();
+	const navigation = useNavigation();
 
 	useEffect(() => {
 		fetchClasses();
@@ -163,14 +162,11 @@ const ClassResultsScreen = ({
 				setClasses(res.data);
 				if (res.data.length) {
 					const classIndex = res.data.findIndex(
-						c =>
-							c.id ===
-							(route.params as ClassResultsParams)?.selectClass,
+						c => c.id === selectClass,
 					);
 
 					if (classIndex > -1) {
-						const selectDate = (route.params as ClassResultsParams)
-							?.date as string;
+						const selectDate = dateFromParams as string;
 						setState(prevState => ({
 							...prevState,
 							showHeader: false,
@@ -183,7 +179,7 @@ const ClassResultsScreen = ({
 					void Say.okThen(
 						'There are no classes available at the moment.',
 						'Error',
-					).then(() => navigation.pop());
+					).then(() => navigation.goBack());
 				}
 			})
 			.catch(() => Say.err('Something went wrong'));

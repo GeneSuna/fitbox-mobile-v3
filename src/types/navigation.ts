@@ -37,6 +37,7 @@ export type ApplicationStackParamList = {
 	AddAttendance: AddAttendanceParams;
 	Webview: WebViewParams;
 	HealthCapture: HealthCaptureParams;
+	ScoreComments: ScoreCommentsParams;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
@@ -123,7 +124,7 @@ export type DashboardParamList = {
 };
 export type ClassResultsParams = {
 	selectClass?: number;
-	date?: string;
+	dateFromParams?: string;
 };
 
 export type ScoreCommentsParams = {

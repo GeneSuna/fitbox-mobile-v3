@@ -380,6 +380,9 @@ const ContactsScreen = ({ navigation }: ComposeScreenProps) => {
 	};
 
 	const renderNothingToDisplay = () => {
+		if (state.sortBy === 'group') {
+			return null;
+		}
 		return state.loading ? null : (
 			<View style={styles.emptyContacts}>
 				<Text>Your list is currently empty.</Text>
