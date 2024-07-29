@@ -1,5 +1,6 @@
 import useAuth from '@/auth/hooks/useAuth';
 import { ScrollView, Text } from '@/components/atoms';
+import { resetRoot } from '@/navigators/NavigationRef';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
@@ -8,6 +9,7 @@ import { Constant } from '@/utils';
 import useStore from '@/zustand/Store';
 import { Alert, Linking, StyleSheet, View } from 'react-native';
 import { List } from 'react-native-paper';
+import SimpleToast from 'react-native-simple-toast';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -133,7 +135,14 @@ const menuOptions = [
 const Menu = ({ navigation }: MainTabScreenProps) => {
 	const { variant, changeTheme } = useTheme();
 	const { signOut, getApiUrl } = useAuth();
-	const shopUrl = useStore(state => state.shopUrl);
+	const { shopUrl, clearStates } = useStore(state => ({
+		shopUrl: state.shopUrl,
+		clearStates: () => {
+			state.clearClasses();
+			state.clearAppState();
+			state.clearFilters();
+		},
+	}));
 
 	const onClick = (id: string) => {
 		switch (id) {
@@ -177,6 +186,35 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 			}
 			case 'help': {
 				navigation.navigate('HelpScreen');
+				break;
+			}
+			case 'clear-cache': {
+				// Show success message
+				Alert.alert(
+					'Clear Cache',
+					'Are you sure to clear data?',
+					[
+						{
+							text: 'Ok',
+							onPress: () => {
+								// trigger clear states
+								clearStates();
+
+								// say success alert
+								SimpleToast.show(
+									'Succesfully cleared cache',
+									SimpleToast.SHORT,
+								);
+
+								// navigate to dashboard and reset navigation stack
+								// if the user has calendar active, it will reset to dashboard
+								resetRoot();
+							},
+						},
+						{ text: 'Cancel', style: 'cancel' },
+					],
+					{ cancelable: true },
+				);
 				break;
 			}
 			default:

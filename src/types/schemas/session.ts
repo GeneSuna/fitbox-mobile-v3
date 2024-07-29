@@ -249,6 +249,36 @@ export const ClassEventSchema = z.object({
 	id: z.number(),
 });
 
+export type SessionWODMovementDetailsSchemaType = z.infer<
+	typeof SessionWODMovementDetailsSchema
+>;
+
+export const SessionWODMovementDetailsSchema = z.object({
+	id: z.number(),
+	context_id: z.number(),
+	name: z.string(),
+	description: z.string(),
+	gymnastics: z.boolean(),
+	weightlifting: z.boolean(),
+	monostructural: z.boolean(),
+	weight: z.boolean(),
+	height: z.boolean(),
+	bodyweight: z.boolean(),
+	distance: z.boolean(),
+	calories: z.boolean(),
+	time: z.boolean(),
+	other: z.string(),
+	w_distance: z.string(),
+	bw_weight1: z.string(),
+	bw_distance1: z.string(),
+	bw_weight2: z.string(),
+	bw_distance2: z.string(),
+	video_template: z.string().nullish(),
+	created_at: z.string().nullish(),
+	updated_at: z.string().nullish(),
+	deleted_at: z.string().nullish(),
+});
+
 export type SessionWODMovementSchemaType = z.infer<
 	typeof SessionWODMovementSchema
 >;
@@ -279,31 +309,7 @@ export const SessionWODMovementSchema = z.object({
 	created_at: z.string(),
 	updated_at: z.string(),
 	deleted_at: z.string().nullish(),
-	movement: z.object({
-		id: z.number(),
-		context_id: z.number(),
-		name: z.string(),
-		description: z.string(),
-		gymnastics: z.boolean(),
-		weightlifting: z.boolean(),
-		monostructural: z.boolean(),
-		weight: z.boolean(),
-		height: z.boolean(),
-		bodyweight: z.boolean(),
-		distance: z.boolean(),
-		calories: z.boolean(),
-		time: z.boolean(),
-		other: z.string(),
-		w_distance: z.string(),
-		bw_weight1: z.string(),
-		bw_distance1: z.string(),
-		bw_weight2: z.string(),
-		bw_distance2: z.string(),
-		video_template: z.string().nullish(),
-		created_at: z.string().nullish(),
-		updated_at: z.string().nullish(),
-		deleted_at: z.string().nullish(),
-	}),
+	movement: SessionWODMovementDetailsSchema,
 });
 
 export const SessionFBWODSchema = z.object({
@@ -324,7 +330,7 @@ export const SessionFBWODSchema = z.object({
 		name: z.string(),
 		scored: z.boolean(),
 		scoring_by: z.string(),
-		scoring_type_id: z.number(),
+		scoring_type_id: z.number().nullable(),
 		rounds: z.number(),
 		sets: z.number().nullish(),
 		reps: z.string(),
@@ -351,7 +357,6 @@ export const SessionSectionSchema = z.object({
 	default_collapse_state: boolOrOneZero,
 	video: z.string().nullish(),
 	id: z.number(),
-	sessionId: z.string().nullish(),
 	fb_wod: SessionFBWODSchema.nullish(),
 	wod_movements: z.array(SessionWODMovementSchema).nullish(),
 	text_section: z.string().nullish(),
@@ -359,9 +364,13 @@ export const SessionSectionSchema = z.object({
 	leaderboard_section_id: z.number().nullish(),
 	scoring_type: z
 		.object({
+			id: z.number(),
 			name: z.string(),
+			unit_type: z.string(),
+			method: z.string(),
 		})
 		.nullish(),
+	scoring_type_id: z.number().nullable(),
 	scoring_by: z.string().nullish(),
 	sets: z.number().nullish(),
 	rounds: z.number().nullish(),
@@ -372,6 +381,7 @@ export const SessionSectionSchema = z.object({
 	scored: z.boolean().nullish(),
 	staff_only: boolOrOneZero,
 	is_leaderboard: boolOrOneZero,
+	isRx: boolOrOneZero,
 });
 
 const paymentSchema = z.object({
@@ -452,7 +462,7 @@ const SessionMemberAttendanceUseSchema = z.object({
 	firstname: z.string(),
 	lastname: z.string(),
 	profile_image: z.string().url(),
-	email: z.string().email(),
+	email: z.string(),
 	payments: z.array(paymentSchema),
 });
 
@@ -482,10 +492,9 @@ export const NotBookedMemberSchema = z.object({
 export type SessionSectionDataSchemaType = z.infer<
 	typeof SessionSectionDataSchema
 >;
-export const SessionSectionDataSchema = z.union([
-	z.array(SessionSectionSchema),
-	z.string(),
-]);
+export const SessionSectionDataSchema = z
+	.array(SessionSectionSchema)
+	.or(z.string());
 
 export type SessionDetailSchemaType = z.infer<typeof SessionDetailSchema>;
 export const SessionDetailSchema = z.object({

@@ -19,7 +19,7 @@ import {
 	ResetPassword,
 	ScoreCommentsScreen,
 	Session,
-	// SessionScoringScreen,
+	SessionScoringScreen,
 	Shop,
 	SignUp,
 	Startup,
@@ -411,6 +411,14 @@ const ApplicationNavigator = () => {
 								headerBackTitleVisible: false,
 								title: 'Sign Up',
 							}}
+						/>
+						<Stack.Screen
+							name="Scoring"
+							component={SessionScoringScreen}
+							options={() => ({
+								...CommonHeaderOptions,
+								title: 'Log Result',
+							})}
 						/>
 					</Stack.Group>
 

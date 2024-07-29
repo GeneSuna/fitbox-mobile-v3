@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { boolOrOneZero } from './common';
 
 export const SectionSchema = z.object({
 	id: z.number(),
@@ -78,8 +79,61 @@ export const ScoreCommentsDataSchema = z.object({
 	profile_image: z.string(),
 });
 
+export const PrResultSchema = z.object({
+	isPR: z.boolean().optional(),
+	resultCount: z.number().optional(),
+	prMessage: z.string().optional(),
+});
+
+export const PastPerformanceResultSchema = z.object({
+	isResult: boolOrOneZero,
+	scored: boolOrOneZero,
+	comments: z.string().nullish(),
+	date_input: z.string().nullish(),
+	notes: z.string().nullish(),
+	created_at: z.string().nullish(),
+	scoring_type_id: z.number().nullish(),
+	completed: boolOrOneZero,
+	wod_score_id: boolOrOneZero,
+	value: z.string().nullish(),
+	time: z.string().nullish(),
+	reps: z.string().nullish(),
+	wod_score_reps: z.number().nullish(),
+	rounds: z.string().nullish(),
+	sets: z.number().nullish(),
+	weight: z.string().nullish(),
+	weight_unit: z.string().nullish(),
+	distance: z.string().nullish(),
+	distance_unit: z.string().nullish(),
+	calories: z.string().nullish(),
+	movement_name: z.string().nullish(),
+});
+
+export const GetPastPerformanceResultSchema = z.object({
+	section_scores: z.array(PastPerformanceResultSchema).optional(),
+	user_movement: z.array(PastPerformanceResultSchema).optional(),
+});
+
+export const ScoreResultSchema = z.object({
+	value: z.string(),
+	reps: z.number(),
+	comments: z.string(),
+	comment_leaderboard_visible: boolOrOneZero,
+	score_type: z.string(),
+	wod_movement_id: z.number().nullish(),
+	wod_section_id: z.number().nullish(),
+});
+
 export type SectionType = z.infer<typeof SectionSchema>;
 export type LeaderboardsDataType = z.infer<typeof LeaderboardsDataSchema>;
 export type ScoreDetailsDataType = z.infer<typeof ScoreDetailsDataSchema>;
 export type ApplauseDataType = z.infer<typeof ApplausesDataSchema>;
 export type ScoreCommentsDataType = z.infer<typeof ScoreCommentsDataSchema>;
+export type PrResultSchemaType = z.infer<typeof PrResultSchema>;
+export type PastPerformanceResultType = z.infer<
+	typeof PastPerformanceResultSchema
+>;
+export type GetPastPerformanceResultType = z.infer<
+	typeof GetPastPerformanceResultSchema
+>;
+export type ScoreResultType = z.infer<typeof ScoreResultSchema>;

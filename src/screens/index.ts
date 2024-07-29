@@ -27,6 +27,7 @@ export { default as PaymentUpdate } from './PaymentUpdate/PaymentUpdate';
 export { default as ResetPassword } from './ResetPassword/ResetPassword';
 export { default as ScoreCommentsScreen } from './ScoreCommentsScreen/ScoreCommentsScreen';
 export { default as Session } from './Session/Session';
+export { default as SessionScoringScreen } from './SessionScoringScreen/SessionScoringScreen';
 export { default as Shop } from './Shop/Shop';
 export { default as SignUp } from './SignUp/SignUp';
 export { default as Startup } from './Startup/Startup';

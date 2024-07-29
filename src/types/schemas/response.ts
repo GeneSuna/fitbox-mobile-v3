@@ -7,9 +7,12 @@ import {
 } from './gym';
 import {
 	ApplausesDataSchema,
+	GetPastPerformanceResultSchema,
 	LeaderboardsDataSchema,
+	PrResultSchema,
 	ScoreCommentsDataSchema,
 	ScoreDetailsDataSchema,
+	ScoreResultSchema,
 } from './leaderboards';
 import {
 	ContactDataSchema,
@@ -271,6 +274,31 @@ export const GetScoreCommentsSchema = apiResponseSchema(
 	z.array(ScoreCommentsDataSchema),
 );
 export const RegisterUserSchema = apiResponseSchema(RegisterUserDataSchema);
+
+export type PrResultDataType = z.infer<typeof PrResultData>;
+export const PrResultData = z
+	.union([PrResultSchema, z.array(PrResultSchema)])
+	.optional();
+
+export const AddScoreResponseSchema = z.object({
+	error: z.boolean(),
+	message: z.string(),
+	prResult: PrResultData,
+	data: z
+		.object({
+			prResult: PrResultData,
+		})
+		.optional(),
+});
+
+export const GetPastPerformanceResponseSchema = apiResponseSchema(
+	GetPastPerformanceResultSchema,
+);
+
+export const GetScoreResultResponseSchema = apiResponseSchema(
+	z.array(ScoreResultSchema),
+);
+
 export const GetClassFiltersSchema = apiResponseSchema(
 	z.array(ClassFiltersDataSchema),
 );

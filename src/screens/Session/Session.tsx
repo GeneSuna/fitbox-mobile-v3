@@ -10,11 +10,10 @@ import { Func } from '@/utils';
 import { SessionTabsEnum, VisibilityOptions } from '@/utils/Enum';
 import useStore from '@/zustand/Store';
 import { useQuery } from '@tanstack/react-query';
+import { isArray } from 'lodash';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-
-import { isArray } from 'lodash';
 import ClassResultsScreen from '../ClassResultsScreen/ClassResultsScreen';
 import {
 	SessionActionButtons,

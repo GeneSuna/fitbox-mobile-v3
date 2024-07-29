@@ -3,6 +3,7 @@ export { default as fetchOne } from './fetchOne';
 export { default as getBookedSessions } from './getBookedSessions';
 export { default as getChildInfo } from './getChildInfo';
 export { default as getParentInfo } from './getParentInfo';
+export { default as getPastPerformance } from './getPastPerformance';
 export { default as getUserGymInfo } from './getUserGymInfo';
 export { default as getUserGymInfoV2 } from './getUserGymInfoV2';
 export { default as getUserGyms } from './getUserGyms';

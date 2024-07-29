@@ -11,6 +11,8 @@ interface ApplicationStateInterface {
 	setupSubscriptionId: null | number;
 	message: string;
 	subject: string;
+	lastRxValue: boolean; // is_rx_value
+	showConfetti: boolean;
 	attachedFiles: AttachedFilesInterface[];
 }
 

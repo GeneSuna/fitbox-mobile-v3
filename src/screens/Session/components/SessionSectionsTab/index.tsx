@@ -134,9 +134,11 @@ const SessionsSectionsTab = ({ session }: SessionsSectionsTabProps) => {
 		});
 	};
 
-	const submitScore = () => {
-		Say.ok('submitScore coming soon!');
-		// TODO: Implement this
+	const submitScore = (section: SessionSectionSchemaType) => {
+		navigation.navigate('Scoring', {
+			section,
+			sessionId: session.id,
+		});
 	};
 
 	const renderSections = useCallback(() => {
@@ -512,7 +514,7 @@ const SessionsSectionsTab = ({ session }: SessionsSectionsTabProps) => {
 										<Button
 											variant="info"
 											title="Log Result"
-											onPress={() => submitScore()}
+											onPress={() => submitScore(section)}
 											labelStyle={styles.logResultBtn}
 										/>
 									</>

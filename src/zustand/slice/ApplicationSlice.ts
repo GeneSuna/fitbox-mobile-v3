@@ -16,6 +16,8 @@ const defaultState: ApplicationStateInterface = {
 	setupSubscriptionId: null,
 	message: '',
 	subject: '',
+	lastRxValue: false,
+	showConfetti: false,
 	attachedFiles: [],
 };
 

@@ -1,6 +1,9 @@
 import type { StackScreenProps } from '@react-navigation/stack';
 import { ContactMembersType, MessageItemType } from './schemas/message';
-import { SessionDetailSchemaType } from './schemas/session';
+import {
+	SessionDetailSchemaType,
+	SessionSectionSchemaType,
+} from './schemas/session';
 
 export type SessionParams = {
 	id: number;
@@ -37,6 +40,7 @@ export type ApplicationStackParamList = {
 	AddAttendance: AddAttendanceParams;
 	Webview: WebViewParams;
 	HealthCapture: HealthCaptureParams;
+	Scoring: ScoringParams;
 	ScoreComments: ScoreCommentsParams;
 };
 export type ApplicationScreenProps =
@@ -71,6 +75,11 @@ export type WebViewParams = {
 	title?: string;
 	content?: string;
 	uri?: string;
+};
+
+export type ScoringParams = {
+	section: SessionSectionSchemaType;
+	sessionId: number;
 };
 
 export type SubscriptionDetailsParams = {
