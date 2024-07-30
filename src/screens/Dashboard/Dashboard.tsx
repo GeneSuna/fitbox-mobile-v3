@@ -392,9 +392,7 @@ const Dashboard = () => {
 						{!loading && upcomingSessions.length > 3 && (
 							<TouchableOpacity
 								style={styles.viewMoreButton}
-								onPress={() => {
-									// TODO: Navigate to the My Bookings screen
-								}}
+								onPress={() => navigate('Calendar')}
 							>
 								<Text bold color="info">
 									{t('dashboard:sessions.member.viewAll')}
