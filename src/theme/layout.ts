@@ -19,6 +19,18 @@ export default {
 	rowReverse: {
 		flexDirection: 'row-reverse',
 	},
+	selfCenter: {
+		alignSelf: 'center',
+	},
+	selfStart: {
+		alignSelf: 'flex-start',
+	},
+	selfEnd: {
+		alignSelf: 'flex-end',
+	},
+	selfStretch: {
+		alignSelf: 'stretch',
+	},
 	itemsCenter: {
 		alignItems: 'center',
 	},

@@ -1,5 +1,6 @@
-import { Row, Spacer, Text } from '@/components/atoms';
+import { KeyboardSpacer, Row, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
+import { Constant } from '@/utils';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import BottomPanel from '../../BottomPanel/BottomPanel';
@@ -72,8 +73,7 @@ const ScoreComment = ({
 				/>
 			</View>
 
-			{/* TODO: Implement this when keyboard spacer merged */}
-			{/* {!Constant.IS_ANDROID && <KeyboardSpacer topSpacing={-50} />} */}
+			{!Constant.IS_ANDROID && <KeyboardSpacer heightDeduction={50} />}
 		</View>
 	</BottomPanel>
 );

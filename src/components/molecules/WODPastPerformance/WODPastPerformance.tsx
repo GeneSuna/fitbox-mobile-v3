@@ -11,6 +11,7 @@ import { SessionSectionSchemaType } from '@/types/schemas/session';
 import moment from 'moment';
 import { Key, useCallback } from 'react';
 import Loader from '../Loader/Loader';
+import OneRMComponent from './components/OneRMComponent';
 import ScoreDisplayFormat from './components/ScoreDisplayFormat';
 
 type WODPastPerformanceProps = {
@@ -115,15 +116,15 @@ const WODPastPerformance = ({
 			return ErrorDisplayText;
 		}
 
-		// TODO: implementation OneRMComponent
-		// const oneRMs = {};
-		// Object.keys(showResults).forEach(movement_type => {
-		// 	showResults[movement_type]!.forEach(mov => {
-		// 		if (mov.one_rm && !oneRMs[movement_type]) {
-		// 			oneRMs[movement_type] = mov.one_rm;
-		// 		}
-		// 	});
-		// });
+		const oneRMs: { [key: string]: { weight: number } } = {};
+
+		Object.keys(showResults).forEach(movement_type => {
+			showResults[movement_type]!.forEach(mov => {
+				if (mov.one_rm && !oneRMs[movement_type]) {
+					oneRMs[movement_type] = mov.one_rm;
+				}
+			});
+		});
 
 		return Object.keys(showResults).map(movement => {
 			const showMovements = showResults[movement] || [];
@@ -140,19 +141,14 @@ const WODPastPerformance = ({
 					</Text>
 					<Spacer size="sm" />
 
-					{/*
-                        // TODO: implementation OneRMComponent 
+					{oneRMs[movement] && (
+						<OneRMComponent
+							weight={oneRMs[movement]?.weight as number}
+						/>
+					)}
 
-                        {oneRMs[movement] && (
-                            <OneRMComponent {...oneRMs[movement]} />
-                        )} 
-
-					    {hasData || oneRMs[movement] ? (
-                            // renderScoresData(showMovements)
-                    */}
-
-					{hasData ? (
-						renderScoresData(showMovements.splice(0, 5))
+					{hasData || oneRMs[movement] ? (
+						renderScoresData(showMovements)
 					) : (
 						<Text size="rg" color="darkgray">
 							No results yet

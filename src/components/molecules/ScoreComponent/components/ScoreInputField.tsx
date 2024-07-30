@@ -197,7 +197,7 @@ const ScoreInputField = ({
 			return (
 				<View style={styles.inputMainContainer}>
 					{/*
-					// TODO: On previous implementation, reps this is not used
+					// TEMP: On previous implementation, reps this is not used
 
 					// Old implementation:
 					<View

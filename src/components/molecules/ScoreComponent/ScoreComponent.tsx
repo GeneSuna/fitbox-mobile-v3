@@ -537,7 +537,6 @@ const ScoreComponent = ({
 
 		if (movementId) {
 			if (roundIndex != null) {
-				// TODO: Check implementation
 				newSection.movements[movementId]!.minutes[roundIndex] = val;
 
 				let totalMin: number = 0;
@@ -562,7 +561,6 @@ const ScoreComponent = ({
 				newSection.movements[movementId]!.value = `${val}:${time[1]}`;
 			}
 		} else if (roundIndex != null) {
-			// TODO: Check implementation
 			newSection.minutes[roundIndex] = String(val);
 
 			let totalMin = 0;
@@ -631,7 +629,6 @@ const ScoreComponent = ({
 		}
 
 		if (movementId !== null) {
-			// TODO: Check implementation
 			if (roundIndex !== null) {
 				newSection.movements[movementId]!.seconds[roundIndex] = val;
 
@@ -653,7 +650,6 @@ const ScoreComponent = ({
 				newSection.movements[movementId]!.value = `${time[0]}:${val}`;
 			}
 		} else if (roundIndex !== null) {
-			// TODO: Check implementation
 			newSection.seconds[roundIndex] = val;
 
 			let totalMin = 0;

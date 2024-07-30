@@ -99,7 +99,7 @@ export const PastPerformanceResultSchema = z.object({
 	time: z.string().nullish(),
 	reps: z.string().nullish(),
 	wod_score_reps: z.number().nullish(),
-	rounds: z.string().nullish(),
+	rounds: z.number().nullish(),
 	sets: z.number().nullish(),
 	weight: z.string().nullish(),
 	weight_unit: z.string().nullish(),
@@ -107,6 +107,12 @@ export const PastPerformanceResultSchema = z.object({
 	distance_unit: z.string().nullish(),
 	calories: z.string().nullish(),
 	movement_name: z.string().nullish(),
+	one_rm: z
+		.object({
+			weight: z.number(),
+			// other fields
+		})
+		.nullish(),
 });
 
 export const GetPastPerformanceResultSchema = z.object({
