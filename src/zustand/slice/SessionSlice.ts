@@ -15,6 +15,11 @@ const createSessionSlice: StateCreator<
 	venueFilters: [],
 	classFilters: [],
 	headerTitle: null,
+	defaultClassFilter: null,
+
+	setDefaultClassFilter: data => {
+		setState({ defaultClassFilter: data });
+	},
 
 	setHeaderTitle(title) {
 		setState({ headerTitle: title });

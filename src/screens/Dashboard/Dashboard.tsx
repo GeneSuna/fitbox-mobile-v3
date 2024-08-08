@@ -2,18 +2,20 @@ import useAuth from '@/auth/hooks/useAuth';
 import { Avatar, Row, ScrollView, Spacer, Text } from '@/components/atoms';
 import { SafeScreen } from '@/components/template';
 import { navigate } from '@/navigators/NavigationRef';
+import { getGymClasses, getGymVenues } from '@/services/gym';
 import { getClassFilters } from '@/services/session';
 import { getBookedSessions, getUserGymInfo } from '@/services/users';
 import { config } from '@/theme/_config';
-import layout from '@/theme/layout';
+import { GymVenueType } from '@/types/schemas/gym';
 import { ClassFiltersDataType } from '@/types/schemas/session';
 import { UserSchemaType } from '@/types/schemas/user';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
+import { ClassFilter, VenueFilter } from '@/zustand/interface/SessionInterface';
 import { useFocusEffect } from '@react-navigation/native';
-import { isEmpty } from 'lodash';
+import { isArray, isEmpty } from 'lodash';
 import moment from 'moment';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
 	Alert,
@@ -66,6 +68,7 @@ const Dashboard = () => {
 		setVenueFilters,
 		setClassFilters,
 		setHeaderTitle,
+		setDefaultClassFilter,
 	} = useStore(state => ({
 		setAppState: state.setAppState,
 		classFilters: state.classFilters,
@@ -73,6 +76,7 @@ const Dashboard = () => {
 		setClassFilters: state.setClassFilters,
 		setVenueFilters: state.setVenueFilters,
 		setHeaderTitle: state.setHeaderTitle,
+		setDefaultClassFilter: state.setDefaultClassFilter,
 	}));
 
 	const [loading, setLoading] = useState<boolean>(true);
@@ -264,10 +268,77 @@ const Dashboard = () => {
 		}, []),
 	);
 
+	// get filter options every gym switch
+	useEffect(() => {
+		void fetchFilterOptions();
+	}, []);
+
+	const fetchFilterOptions = () => {
+		const selectedVenueIds = venueFilters
+			.filter(v => v.is_selected)
+			.map(v => v.id);
+		const selectedClassIds = classFilters
+			.filter(c => c.is_selected)
+			.map(c => c.id);
+
+		// fetch venues
+		getGymVenues()
+			.then(res => {
+				if (isArray(res)) {
+					const venueFilterList: VenueFilter[] = res.map(
+						(c: GymVenueType) => {
+							return {
+								...c,
+								is_selected:
+									selectedVenueIds.includes(c.id) || false,
+							};
+						},
+					);
+
+					// add "No location" filter
+					venueFilterList.unshift({
+						id: -1,
+						name: 'No location',
+						location: 'Show classes without a location',
+						is_selected: false,
+					});
+
+					// set venue filters
+					setVenueFilters(venueFilterList);
+				}
+			})
+			.catch(err => {
+				Say.err(err as string);
+			});
+
+		getGymClasses()
+			.then(res => {
+				if (!res.error) {
+					const classFilterList: ClassFilter[] = res.data.map(c => {
+						return {
+							...c,
+							is_selected:
+								selectedClassIds.includes(c.id) || false,
+						};
+					});
+
+					// set class filters
+					setClassFilters(classFilterList);
+				} else {
+					throw new Error(res.message);
+				}
+			})
+			.catch(err => {
+				Say.err(err as string);
+			});
+	};
+
 	const getClassFiltersFn = async () => {
 		try {
 			const res = await getClassFilters();
 			setClassFiltersData(res.data);
+			const defaultItem = res.data.find(item => item.isDefault === 1);
+			setDefaultClassFilter(defaultItem as ClassFiltersDataType);
 		} catch (e) {
 			Say.err(e as string);
 		}
@@ -402,7 +473,10 @@ const Dashboard = () => {
 
 						<Spacer size="xl" />
 
-						<Row spacing="space-between" style={layout.wrap}>
+						<Row
+							spacing="space-between"
+							style={styles.presetFilters}
+						>
 							{renderActionButtons}
 							{classFiltersData.map(item =>
 								renderPresetFilters(item),
@@ -510,6 +584,10 @@ const styles = StyleSheet.create({
 		alignItems: 'flex-end',
 		backgroundColor: 'white',
 		padding: 5,
+	},
+	presetFilters: {
+		flexWrap: 'wrap',
+		flexDirection: 'row-reverse',
 	},
 });
 

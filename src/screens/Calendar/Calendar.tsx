@@ -14,6 +14,7 @@ import {
 	ClassItemData,
 	VenueFilter,
 } from '@/zustand/interface/SessionInterface';
+import { useIsFocused } from '@react-navigation/native';
 import { isArray } from 'lodash';
 import moment from 'moment';
 import { useCallback, useEffect, useState } from 'react';
@@ -41,6 +42,8 @@ const Calendar = () => {
 		setActiveMonth,
 		setVenueFilters,
 		setClassFilters,
+		setHeaderTitle,
+		defaultClassFilter,
 	} = useStore(state => ({
 		classes: state.classes,
 		classFilters: state.classFilters,
@@ -49,6 +52,8 @@ const Calendar = () => {
 		setActiveMonth: state.setActiveMonth,
 		setVenueFilters: state.setVenueFilters,
 		setClassFilters: state.setClassFilters,
+		setHeaderTitle: state.setHeaderTitle,
+		defaultClassFilter: state.defaultClassFilter,
 	}));
 
 	const [initialLoading, setInitialLoading] = useState<boolean>(true);
@@ -236,6 +241,40 @@ const Calendar = () => {
 	useEffect(() => {
 		void fetchFilterOptions();
 	}, []);
+
+	const isFocused = useIsFocused();
+	useEffect(() => {
+		if (!isFocused && defaultClassFilter) {
+			let defaultClass = [];
+			let defaultVenue = [];
+
+			const classIds = new Set(defaultClassFilter.classIds);
+			const venueIds = new Set(defaultClassFilter.locationIds);
+
+			defaultClass = classFilters.map(item => ({
+				...item,
+				is_selected: !!classIds.has(item.id as number),
+			}));
+
+			defaultVenue = venueFilters.map(item => ({
+				...item,
+				is_selected: !!venueIds.has(item.id as number),
+			}));
+
+			setClassFilters(defaultClass);
+			setVenueFilters(defaultVenue);
+			setHeaderTitle(defaultClassFilter.name);
+		}
+	}, [isFocused]);
+
+	useEffect(() => {
+		const clearClasses = classFilters.some(c => c.is_selected);
+		const clearLocations = venueFilters.some(v => v.is_selected);
+
+		if (!clearClasses && !clearLocations) {
+			setHeaderTitle(moment(currentDate).format('MMMM'));
+		}
+	}, [classFilters, venueFilters]);
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const renderItem = useCallback(({ item }: any) => {

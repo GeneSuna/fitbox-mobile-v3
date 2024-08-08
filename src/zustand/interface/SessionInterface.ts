@@ -1,4 +1,5 @@
 import { GymClassType, GymVenueType } from '@/types/schemas/gym';
+import { ClassFiltersDataType } from '@/types/schemas/session';
 import { FilterTypeEnum } from '@/utils/Enum';
 
 type ClassItemData = {
@@ -36,6 +37,7 @@ interface SessionStateInterface {
 	classFilters: ClassFilter[];
 	activeMonth: string;
 	headerTitle: string | null;
+	defaultClassFilter: ClassFiltersDataType | null;
 }
 
 interface SessionInterface extends SessionStateInterface {
@@ -46,6 +48,7 @@ interface SessionInterface extends SessionStateInterface {
 	setClassFilters: (data: ClassFilter[]) => void;
 	clearFilters: (filterType?: FilterTypeEnum) => void;
 	setHeaderTitle: (title: string) => void;
+	setDefaultClassFilter: (data: ClassFiltersDataType) => void;
 }
 
 export type {
