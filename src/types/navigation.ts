@@ -42,6 +42,8 @@ export type ApplicationStackParamList = {
 	HealthCapture: HealthCaptureParams;
 	Scoring: ScoringParams;
 	ScoreComments: ScoreCommentsParams;
+	PaymentInformationModal: PaymentInformationModalParams;
+	BuyNow: SubscriptionSetupParams;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
@@ -89,6 +91,9 @@ export type SubscriptionDetailsParams = {
 
 export type SubscriptionSetupParams = {
 	fromSubscription?: boolean;
+	sessionId?: number;
+	sessionDate?: string;
+	onSuccessPurchase?: () => void;
 };
 
 export type HealthCaptureParams = {
@@ -140,6 +145,10 @@ export type ScoreCommentsParams = {
 	score_id: number;
 	type: string;
 	showComments: boolean;
+};
+
+export type PaymentInformationModalParams = {
+	onSuccessCallback?: () => void;
 };
 
 export type DashboardStackNavigatorProps = StackScreenProps<DashboardParamList>;

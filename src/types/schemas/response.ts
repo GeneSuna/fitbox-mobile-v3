@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GenderSchema, boolOrOneZero } from './common';
 import {
 	GymClassSchema,
 	GymInfoSchema,
@@ -127,7 +128,7 @@ export const UpdateUserProfilePayloadSchema = z.object({
 	firstname: z.string().optional(),
 	lastname: z.string().optional(),
 	dob: z.string().optional(),
-	gender: z.string().optional(),
+	gender: GenderSchema.optional(),
 	email: z.string().optional(),
 	contact_phone: z.string().optional(),
 	height: z.number().optional(),
@@ -144,7 +145,9 @@ export type UpdateUserProfileTypes = z.infer<
 
 export const AttendSessionResponseSchema = z.object({
 	error: z.boolean(),
+	error_code: z.string().nullish(),
 	message: z.string(),
+	allow_buynow: boolOrOneZero,
 	allow_override: z.boolean().optional(),
 });
 

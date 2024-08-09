@@ -29,3 +29,6 @@ export const boolOrOneZero = z
 
 		return value === 1;
 	});
+
+export type GenderType = z.infer<typeof GenderSchema>;
+export const GenderSchema = z.enum(['Male', 'Female', 'Other']).nullable();

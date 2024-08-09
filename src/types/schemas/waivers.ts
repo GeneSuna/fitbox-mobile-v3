@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GenderSchema } from './common';
 
 export const WaiverSchema = z.object({
 	agreed: z.number(),
@@ -12,7 +13,7 @@ export const WaiverSchema = z.object({
 		email: z.string(),
 		face_id: z.string().nullable(),
 		firstname: z.string(),
-		gender: z.string().nullable(),
+		gender: GenderSchema,
 		id: z.number(),
 		lastname: z.string(),
 	}),

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { boolOrOneZero } from './common';
+import { GenderSchema, boolOrOneZero } from './common';
 
 export const UserSchema = z.object({
 	user_id: z.number(),
@@ -15,7 +15,7 @@ export const UserSchema = z.object({
 	}),
 	height: z.number(),
 	current_weight: z.number(),
-	gender: z.enum(['Male', 'Female', 'Other']).nullable(),
+	gender: GenderSchema,
 	show_subscription_from: z.boolean().optional(),
 	show_payment_form: boolOrOneZero,
 	show_billing_form: boolOrOneZero,
@@ -68,7 +68,7 @@ export const UserProfileSchema = z.object({
 	eula_accepted: z.number().optional(),
 	face_id: z.any().optional(),
 	first_name: z.string(),
-	gender: z.string(),
+	gender: GenderSchema,
 	has_payment_details: z.number().optional(),
 	height: z.number(),
 	last_name: z.string(),

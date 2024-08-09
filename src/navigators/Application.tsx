@@ -16,6 +16,7 @@ import {
 	Landing,
 	Login,
 	PDFViewerScreen,
+	PaymentInformation,
 	ResetPassword,
 	ScoreCommentsScreen,
 	Session,
@@ -23,6 +24,7 @@ import {
 	Shop,
 	SignUp,
 	Startup,
+	SubscriptionSetup,
 	WebView,
 } from '@/screens';
 import { useTheme } from '@/theme';
@@ -453,16 +455,21 @@ const ApplicationNavigator = () => {
 							component={WODAddAttendance}
 							options={{ title: 'Add Attendance' }}
 						/>
+						<Stack.Screen
+							name="PaymentInformationModal"
+							component={PaymentInformation}
+							options={{
+								title: 'Payment Information',
+								headerRight: HeaderCloseButton,
+								headerLeft: () => null,
+							}}
+						/>
+						<Stack.Screen
+							name="BuyNow"
+							component={SubscriptionSetup}
+							options={{ title: 'Buy Subscription' }}
+						/>
 					</Stack.Group>
-					{/*
-				<Stack.Screen
-					name="Scoring"
-					component={SessionScoringScreen}
-					options={() => ({
-						...CommonHeaderOptions,
-						headerShown: false,
-					})}
-				/> */}
 
 					<Stack.Screen
 						name="Webview"

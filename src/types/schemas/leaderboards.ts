@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { boolOrOneZero } from './common';
+import { GenderSchema, boolOrOneZero } from './common';
 
 export const SectionSchema = z.object({
 	id: z.number(),
@@ -29,7 +29,7 @@ export const SectionSchema = z.object({
 export const LeaderboardsDataSchema = z.object({
 	firstname: z.string(),
 	lastname: z.string(),
-	gender: z.string().nullable(),
+	gender: GenderSchema,
 	profile_image: z.string(),
 	venue_id: z.number().nullable(),
 	score_type: z.string().nullable(),

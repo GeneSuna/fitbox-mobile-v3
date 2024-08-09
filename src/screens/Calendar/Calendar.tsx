@@ -1,13 +1,10 @@
 /* eslint-disable no-console */
-import useAuth from '@/auth/hooks/useAuth';
 import { Loader } from '@/components/molecules';
 import { SafeScreen } from '@/components/template';
 import { getGymClasses, getGymVenues } from '@/services/gym';
-import { getScheduleList } from '@/services/session';
 import { config } from '@/theme/_config';
 import { GymVenueType } from '@/types/schemas/gym';
-import { Func } from '@/utils';
-import { FilterTypeEnum, VisibilityOptions } from '@/utils/Enum';
+import { FilterTypeEnum } from '@/utils/Enum';
 import useStore from '@/zustand/Store';
 import {
 	ClassFilter,
@@ -32,13 +29,12 @@ const { height } = Dimensions.get('window');
 const { fonts } = config;
 
 const Calendar = () => {
-	const { user } = useAuth();
-
 	const {
 		classes,
+		loggedInUser,
 		classFilters,
 		venueFilters,
-		setClasses,
+		getClassesByDate,
 		setActiveMonth,
 		setVenueFilters,
 		setClassFilters,
@@ -46,9 +42,10 @@ const Calendar = () => {
 		defaultClassFilter,
 	} = useStore(state => ({
 		classes: state.classes,
+		loggedInUser: state.loggedInUser,
 		classFilters: state.classFilters,
 		venueFilters: state.venueFilters,
-		setClasses: state.setClasses,
+		getClassesByDate: state.getClassesByDate,
 		setActiveMonth: state.setActiveMonth,
 		setVenueFilters: state.setVenueFilters,
 		setClassFilters: state.setClassFilters,
@@ -72,105 +69,13 @@ const Calendar = () => {
 
 		week.forEach((date, i) => {
 			if (moment(date).isSameOrAfter(moment(currentDate))) {
+				if (initialLoading) setInitialLoading(false);
+
 				setTimeout(() => {
-					fetchList(date);
+					getClassesByDate(date, loggedInUser!.id);
 				}, 50 * i);
 			}
 		});
-	};
-
-	const fetchList = (date: string) => {
-		if (initialLoading) setInitialLoading(false);
-
-		// check if already loading
-		const hasData = classes.find(item => item.title === date);
-		if (hasData) {
-			return;
-		}
-
-		// add loading state
-		setClasses(date, [{ isLoading: true }]);
-
-		getScheduleList(date, date)
-			.then(res => {
-				if (!res.error) {
-					const classesData: ClassItemData[] = res.data.map(item => {
-						// get duration
-						const duration = `${Func.getDuration(
-							item.local_start,
-							item.local_end,
-						)} min(s)`;
-
-						// check if schedule is hidden
-						const hideSchedule = Func.isSessionVisible(
-							item.bookable,
-							item.fb_class?.class_visibility ||
-								item.class?.class_visibility,
-							VisibilityOptions.SUBSCRIBED,
-						);
-
-						// isbookinglocked
-						const isBookingLocked = Func.checkSessionLock(
-							item.local_start,
-							item.booking_HH,
-							item.booking_MM,
-						);
-
-						// get spots left
-						const spotsLeft = item.class
-							? Func.getSpotLeft(
-									item.attendance_limit as number,
-									item.member_attendance?.length as number,
-							  )
-							: null;
-
-						// isAttending
-						const isAttending = item?.member_attendance?.some(
-							m => m.user_id === user?.id,
-						);
-
-						// waitlist button
-						const waitlistBtn =
-							!!item.waitlist.enable_waitlist &&
-							moment(item.local_start).diff(moment(), 'minutes') >
-								Number(item.waitlist.waitlist_timelimit) * 60;
-
-						// isWaitlisted
-						const isWaitlisted = item.member_waitlist.some(
-							w =>
-								w.calendar_event_id === item.id &&
-								w.user_id === user?.id,
-						);
-
-						// return data
-						return {
-							start: moment(item.local_start).format('H:mm A'),
-							isSubscribed: Func.checkSubscription(item.bookable),
-							location: item.venue_id ? item.venue : undefined,
-							venueId: Number(item.venue_id),
-							waitlistTime: item.waitlist.waitlist_timelimit,
-							startDate: item.local_start,
-							color: item.class.class_colour_hex,
-							classId: item.class.id,
-							eventId: item.event_id,
-							isCoach: item.isCoach,
-							title: item.title,
-							isBookingLocked,
-							hideSchedule,
-							isWaitlisted,
-							waitlistBtn,
-							isAttending,
-							spotsLeft,
-							duration,
-						};
-					});
-
-					setClasses(date, classesData);
-				}
-			})
-			.catch(err => {
-				console.log('@err', err);
-			});
 	};
 
 	const fetchFilterOptions = () => {

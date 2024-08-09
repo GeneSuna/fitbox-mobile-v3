@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GenderSchema } from './common';
 
 export const SubscriptionSchema = z.object({
 	expiration_date: z.string().nullable(),
@@ -125,7 +126,7 @@ export const SubscriptionSaveMemberSchema = z.object({
 	faceme_password: z.null().optional(),
 	firstname: z.string(),
 	full_training_date: z.null().optional(),
-	gender: z.string(),
+	gender: GenderSchema,
 	grade: z.number(),
 	guid: z.string(),
 	has_credit_card_details: z.number(),
@@ -177,10 +178,10 @@ export const SubscriptionSaveSchema = z.object({
 	context_id: z.number(),
 	created_at: z.string(),
 	current_period_start_date: z.string(),
-	customer_id: z.number(),
+	customer_id: z.number().or(z.string()),
 	id: z.number(),
 	member: SubscriptionSaveMemberSchema,
-	payment_method: z.string(),
+	payment_method: z.string().optional(),
 	product: UserSubscriptionProductsSchema,
 	product_id: z.number(),
 	remote_customer_id: z.string(),

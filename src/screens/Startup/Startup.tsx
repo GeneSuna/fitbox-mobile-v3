@@ -37,12 +37,19 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 							routes: [{ name: 'Eula' }],
 						});
 					}
+
+					/**
+					 * TODO: High prio
+					 * On some accounts, when goes to gym waiver screen it crashes the app for some reason.
+					 * Please investigate and fix.
+					 */
 					if (!user.user_data.waiver_accepted) {
 						return navigation.reset({
 							index: 0,
 							routes: [{ name: 'GymWaiver' }],
 						});
 					}
+
 					if (
 						user.user_data.show_billing_form &&
 						!user.user_data.billing_agreement_accepted

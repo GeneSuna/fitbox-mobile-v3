@@ -10,7 +10,7 @@ import { getUserProfile } from '@/services/users';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import {
-	MenuStackNavigatorProps,
+	MainTabScreenProps,
 	SubscriptionSetupParams,
 } from '@/types/navigation';
 import { GetUserSubscriptionProductsType } from '@/types/schemas/response';
@@ -47,44 +47,58 @@ type StateProps = {
 	startDate: string;
 	showDatePicker: boolean;
 	processing: boolean;
+	isBuyNow: boolean;
+	sessionId?: number;
 };
 
 const iosVersion = parseInt(Platform.Version as string, 10);
 
-const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
+const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 	const { fromAcceptInvite, setupSubscriptionId, setAppState } = useStore(
 		state => ({
 			fromAcceptInvite: state.fromAcceptInvite,
 			setupSubscriptionId: state.setupSubscriptionId,
 			setAppState: state.setAppState,
+			clearClasses: state.clearClasses,
 		}),
 	);
 	const initialStartDate = moment().format('YYYY-MM-DD');
 	const { user, updateUser } = useAuth();
-	const { fromSubscription } = route.params as SubscriptionSetupParams;
+	const { fromSubscription, onSuccessPurchase, sessionDate, sessionId } =
+		route.params as SubscriptionSetupParams;
 	const [data, setData] = useState<GetUserSubscriptionProductsType>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [state, setState] = useState<StateProps>({
 		currentSubscription: null,
 		loadingPaymentDetails: true,
 		selectedProductId: null,
-		startDate: initialStartDate,
+		startDate: sessionDate || initialStartDate,
 		showDatePicker: false,
 		processing: false,
+		isBuyNow: !!sessionId,
+		sessionId,
 	});
 	const [hasPaymentDetails, setHasPaymentDetails] = useState<boolean>(false);
 
 	useLayoutEffect(() => {
-		navigation.setOptions(
-			fromSubscription
-				? {
-						title: 'New Subscription',
-				  }
-				: {
-						title: 'Membership',
-						headerLeft: () => null,
-				  },
-		);
+		let navOptions: Record<string, unknown> = {
+			title: 'Membership',
+			headerLeft: () => null,
+		};
+
+		if (fromSubscription) {
+			navOptions = {
+				title: 'New Subscription',
+			};
+		}
+
+		if (state.isBuyNow) {
+			navOptions = {
+				title: 'Buy Now',
+			};
+		}
+
+		navigation.setOptions(navOptions);
 	}, []);
 
 	useEffect(() => {
@@ -106,23 +120,31 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 				}
 			}
 
-			const res = fromSubscription
-				? await getUserSubscriptionProducts()
-				: await getSubscriptionProducts();
+			const res =
+				fromSubscription || state.isBuyNow
+					? await getUserSubscriptionProducts(sessionId)
+					: await getSubscriptionProducts();
 
 			if (!res.error && res.data.length) {
 				setData(res);
 				setIsLoading(false);
 
-				const selectedProductId = res.data.some(
-					p => p.id === setupSubscriptionId,
-				)
-					? setupSubscriptionId
-					: null;
+				let selectedProductId;
+
+				if (state.isBuyNow && res.data.length === 1) {
+					selectedProductId = res.data[0]!.id;
+				} else {
+					selectedProductId = res.data.some(
+						p => p.id === setupSubscriptionId,
+					)
+						? setupSubscriptionId
+						: null;
+				}
+
 				if (selectedProductId) {
 					setState({ ...state, selectedProductId });
 				}
-			} else if (fromSubscription) {
+			} else if (fromSubscription || state.isBuyNow) {
 				void Say.okThen(
 					'There are no available subscriptions at the moment.',
 					'Sorry',
@@ -195,17 +217,30 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 				Say.err(res.message);
 			} else {
 				SimpleToast.show(
-					'Subscription added successfully',
+					state.isBuyNow
+						? 'Booked successfully!'
+						: 'Subscription setup successful',
 					SimpleToast.SHORT,
 				);
 
 				setAppState('setupSubscriptionId', null);
 
+				// purchase now callback
+				// go back to subscription screen if from subscription
+				if (state.isBuyNow) {
+					onSuccessPurchase?.();
+					navigation.pop();
+				}
+
 				if (fromSubscription) navigation.pop();
 			}
 
 			setState({ ...state, processing: false });
-			handleSkip(Boolean(product?.type === 'free'));
+
+			// handle skip
+			if (!state.isBuyNow) {
+				handleSkip(Boolean(product?.type === 'free'));
+			}
 		} catch (e) {
 			// eslint-disable-next-line no-console
 			console.log('error: ', e);
@@ -351,7 +386,7 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 						</ScrollView>
 					)}
 				</View>
-				{!fromSubscription && (
+				{!fromSubscription && !state.isBuyNow && (
 					<TouchableOpacity
 						onPress={() => handleSkip()}
 						style={{ paddingVertical: config.metrics.md }}
@@ -404,7 +439,13 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 					data={selectedProduct as UserSubscriptionProductsType}
 				/>
 
-				<View style={styles.selectStartDateViewStyle}>
+				<View
+					style={[
+						styles.selectStartDateViewStyle,
+						// eslint-disable-next-line react-native/no-inline-styles
+						{ display: !state.isBuyNow ? 'flex' : 'none' },
+					]}
+				>
 					<Spacer size="lg" />
 
 					<Text size="md" style={styles.headerStyle} center>
@@ -457,7 +498,7 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 				<Spacer size="lg" />
 
 				<Button
-					title="Submit"
+					title={state.isBuyNow ? 'Purchase now' : 'Submit'}
 					sm
 					style={styles.buttonStyle}
 					labelStyle={styles.buttonLabelStyle}
@@ -467,7 +508,7 @@ const SubscriptionSetup = ({ route, navigation }: MenuStackNavigatorProps) => {
 
 				<Spacer />
 
-				{isEmpty(setupSubscriptionId) && (
+				{isEmpty(setupSubscriptionId) && !state.isBuyNow && (
 					<TouchableOpacity
 						onPress={() =>
 							setState({ ...state, selectedProductId: null })

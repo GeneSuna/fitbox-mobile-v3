@@ -1,10 +1,15 @@
 import { Button, Row } from '@/components/atoms';
+import { attendSession } from '@/services/session';
 import layout from '@/theme/layout';
+import { ApplicationStackParamList } from '@/types/navigation';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { useQueryClient } from '@tanstack/react-query';
 import moment from 'moment';
 import { memo, useCallback, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
+import SimpleToast from 'react-native-simple-toast';
 
 interface SessionActionButtonsProps {
 	eventId: number;
@@ -31,10 +36,18 @@ const SessionActionButtons = ({
 	waitlistTime,
 	isBookingLocked,
 }: SessionActionButtonsProps) => {
-	const loggedInUser = useStore(state => state.loggedInUser);
+	const navigation =
+		useNavigation<NavigationProp<ApplicationStackParamList>>();
+
+	const queryClient = useQueryClient();
+
+	const { loggedInUser, getClassesByDate } = useStore(state => ({
+		loggedInUser: state.loggedInUser,
+		getClassesByDate: state.getClassesByDate,
+	}));
 
 	const [isWaitlisting, setWaitlisting] = useState<boolean>(false);
-	const [isBooking, setBooking] = useState<boolean>(false);
+	const [isBooking, setIsBooking] = useState<boolean>(false);
 	const [isAttending, setAttending] = useState<boolean>(propsIsAttending);
 
 	const currentTime = moment();
@@ -52,94 +65,201 @@ const SessionActionButtons = ({
 		isBookingLocked,
 	});
 
-	const handleBook = () => {
-		setBooking(true);
+	const reloadSessionDetail = () =>
+		void queryClient.invalidateQueries({
+			queryKey: ['sessionGetScheduleDetail'],
+		});
 
+	// TODO: Find a way to merge both function from AgendaItem.tsx
+	const handleBuyNow = () => {
+		const redirectToBuyNow = () => {
+			const sessionDate = startTime.format('YYYY-MM-DD');
+
+			navigation.navigate('BuyNow', {
+				sessionId: eventId,
+				sessionDate,
+				onSuccessPurchase: () => {
+					handleBook();
+					getClassesByDate(sessionDate, loggedInUser!.id);
+				},
+			});
+		};
+
+		const hasPaymentDetails = loggedInUser?.user_data.has_payment_details;
+		if (hasPaymentDetails !== 'skipped' && !hasPaymentDetails) {
+			Alert.alert(
+				'Oops!',
+				'You need to have payment details to book this class. Do you want to add payment details now?',
+				[
+					{
+						text: 'Yes',
+						onPress: () => {
+							navigation.navigate('PaymentInformationModal', {
+								onSuccessCallback: redirectToBuyNow,
+							});
+						},
+					},
+					{ text: 'No', style: 'destructive' },
+				],
+				{ cancelable: true },
+			);
+		} else {
+			redirectToBuyNow();
+		}
+	};
+
+	const handleBook = (showSuccessToast = true) => {
+		if (isBooking) return;
+
+		setIsBooking(true);
 		// TODO: for booking modal this.toggleProcessingMember(currentUserId);
 
-		if (!isBooking) {
-			Say.ok('Coming soon!');
-			// try {
-			// 	const payload = {
-			// 		event_id: eventId,
-			// 		is_attend: !isAttending,
-			// 	};
+		attendSession({
+			event_id: Number(eventId),
+			is_attend: !isAttending,
+		})
+			.then(res => {
+				const currentUser = loggedInUser!.user_data;
 
-			// 	const res = await RestService.attendSession(payload);
-			// 	const data = await res.json();
-			// 	if (data.error) {
-			// 		if (data?.error_code === 'AB001') {
-			// 			// Show alert if user is already booked for this
-			// 			Toast.show('You are already booked for this ');
+				if (res.error) {
+					// check error code and verify if waitlist on class is enabled
+					if (res.error_code === 'SFULL01' && waitlistEnabled) {
+						Alert.alert(
+							'Session full',
+							'This session is already full, do you want to join waitlist instead?',
+							[
+								{
+									text: 'Yes',
+									onPress: handleWaitlist,
+								},
+								{
+									text: 'No',
+									onPress: reloadSessionDetail,
+									style: 'destructive',
+								},
+							],
+							{
+								cancelable: true,
+								onDismiss: reloadSessionDetail,
+							},
+						);
+					} else if (res.error_code === 'AB001') {
+						// Show alert if user is already booked for this session
+						SimpleToast.show(
+							'You are already booked for this session',
+							SimpleToast.SHORT,
+						);
 
-			// 			// refresh calendar to update booked s on calendar
-			// 			this.props.refreshCalendar(true);
+						// trigger refresh
+						reloadSessionDetail();
+					} else if (res?.allow_buynow) {
+						Alert.alert(
+							'No Sessions Remaining',
+							`${res?.message}Would you like to buy another subscription and book?`,
+							[
+								{ text: 'No', style: 'destructive' },
+								{
+									text: 'Buy',
+									onPress: handleBuyNow,
+								},
+							],
+							{ cancelable: true },
+						);
+					} else {
+						Say.warn(res.message.replace('box', 'gym'));
+					}
 
-			// 			// trigger refresh for this screen
-			// 			this.onRefresh();
-			// 		} else {
-			// 			Say.warn(data.message.replace('box', 'gym'));
-			// 			this.props.navigation.pop();
-			// 		}
-			// 	} else {
-			// 		isAttending = !isAttending;
+					if (res?.error_code === 'AB001') {
+						// Show alert if user is already booked for this
+						SimpleToast.show(
+							'You are already booked for this session',
+							SimpleToast.SHORT,
+						);
 
-			// 		const userDetails = {
-			// 			user: {
-			// 				id: currentUserId,
-			// 				firstname: this.state.userFirstname,
-			// 				lastname: this.state.userLastname,
-			// 				profile_image: this.state.userImage,
-			// 			},
-			// 			user_id: currentUserId,
-			// 		};
+						getClassesByDate(
+							moment(startTime).format('YYYY-MM-DD'),
+							currentUser.user_id,
+						);
+					}
 
-			// 		if (isAttending) {
-			// 			// add user to booked members
-			// 			bookedMembers.push({
-			// 				...userDetails,
-			// 				attendance: {
-			// 					// add attendance status
-			// 					status: 'booked',
-			// 				},
-			// 			});
+					if (res.message) {
+						Say.warn(res.message, 'Oops!');
+					}
+				} else {
+					setAttending(!isAttending);
+				}
 
-			// 			// remove user from not booked members
-			// 			notBookedMembers = notBookedMembers.filter(
-			// 				member => member.user_id !== currentUserId,
-			// 			);
+				// TODO: Implement for booking users if staff
+				// const userDetails = {
+				// 	user: {
+				// 		id: currentUser.user_id,
+				// 		firstname: currentUser.first_name,
+				// 		lastname: currentUser.last_name,
+				// 		profile_image: currentUser.profile_image,
+				// 	},
+				// 	user_id: currentUser.user_id,
+				// };
 
-			// 			// show toast
-			// 			Toast.show('You have successfully booked this session');
-			// 		} else {
-			// 			// remove user from booked members
-			// 			bookedMembers = bookedMembers.filter(
-			// 				member => member.user_id !== currentUserId,
-			// 			);
+				// if (isAttending) {
+				// 	// add user to booked members
+				// 	bookedMembers.push({
+				// 		...userDetails,
+				// 		attendance: {
+				// 			// add attendance status
+				// 			status: 'booked',
+				// 		},
+				// 	});
 
-			// 			// add user to not booked members
-			// 			notBookedMembers.push(userDetails);
+				// 	// remove user from not booked members
+				// 	notBookedMembers = notBookedMembers.filter(
+				// 		member => member.user_id !== currentUserId,
+				// 	);
 
-			// 			// show toast
-			// 			Toast.show(
-			// 				'You have successfully unbooked this session',
-			// 			);
-			// 		}
+				// 	// show toast
+				// 	Toast.show('You have successfully booked this session');
+				// } else {
+				// 	// remove user from booked members
+				// 	bookedMembers = bookedMembers.filter(
+				// 		member => member.user_id !== currentUserId,
+				// 	);
 
-			// 		this.handleRefreshCalendar();
-			// 	}
-			// } catch (err) {
-			// 	Say.err(err);
-			// } finally {
-			// 	this.setState({
-			// 		isBooking: false,
-			// 		bookedMembers,
-			// 		notBookedMembers,
-			// 	});
+				// 	// add user to not booked members
+				// 	notBookedMembers.push(userDetails);
 
-			// 	this.toggleProcessingMember(currentUserId);
-			// }
-		}
+				// 	// show toast
+				// 	Toast.show('You have successfully unbooked this session');
+				// }
+
+				// 		this.handleRefreshCalendar();
+				// 	}
+				// } catch (err) {
+				// 	Say.err(err);
+				// } finally {
+				// 	this.setState({
+				// 		isBooking: false,
+				// 		bookedMembers,
+				// 		notBookedMembers,
+				// 	});
+
+				// 	this.toggleProcessingMember(currentUserId);
+
+				// show toast
+				if (showSuccessToast) {
+					const bookAction = !isAttending ? 'booked' : 'unbooked';
+
+					SimpleToast.show(
+						`You have successfully ${bookAction} this session`,
+						SimpleToast.SHORT,
+					);
+				}
+			})
+			.catch(() => {
+				// console.log('@err', err);
+				Say.warn('Error booking session', 'Oops!');
+			})
+			.finally(() => {
+				setIsBooking(false);
+			});
 	};
 
 	const handleWaitlist = () => {
@@ -186,7 +306,7 @@ const SessionActionButtons = ({
 				<Button
 					sm
 					title="Unbook"
-					onPress={handleBook}
+					onPress={() => handleBook()}
 					loading={isBooking}
 				/>
 			);
@@ -219,14 +339,21 @@ const SessionActionButtons = ({
 				<Button
 					sm
 					title="Book"
-					onPress={handleBook}
+					onPress={() => handleBook()}
 					loading={isBooking}
 				/>
 			);
 		}
 
 		return null;
-	}, [islocked, isAttending, isWaitlist, spotsLeft, waitlistEnabled]);
+	}, [
+		islocked,
+		isBooking,
+		isAttending,
+		isWaitlist,
+		spotsLeft,
+		waitlistEnabled,
+	]);
 
 	return !subscribed ? (
 		<Text style={[styles.warningTxt, styles.container]}>

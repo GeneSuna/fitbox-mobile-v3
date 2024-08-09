@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
+import useAuth from '@/auth/hooks/useAuth';
 import { Button, Row, Spacer, Text } from '@/components/atoms';
+import { goBack } from '@/navigators/NavigationRef';
 import {
 	confirmSetupIntent,
 	getPaymentInfo,
@@ -9,10 +11,16 @@ import {
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import {
+	ApplicationScreenProps,
+	MenuStackNavigatorProps,
+	PaymentInformationModalParams,
+} from '@/types/navigation';
+import {
 	CardDetailsType,
 	PaymentMethodType,
 	PaymetInfoDatatype,
 } from '@/types/schemas/payment';
+import { UserSchemaType } from '@/types/schemas/user';
 import { Say } from '@/utils';
 import Stripe from '@/utils/Stripe';
 import { PaymentSheet, useStripe } from '@stripe/stripe-react-native';
@@ -29,7 +37,13 @@ type PaymentStateType = {
 	country: string;
 };
 
-const PaymentInformation = () => {
+const PaymentInformation = ({
+	route,
+}: MenuStackNavigatorProps | ApplicationScreenProps) => {
+	const routeParams = route.params as PaymentInformationModalParams;
+
+	const { user, updateUser } = useAuth();
+
 	const [state, setState] = useState<PaymentStateType>({
 		isLoading: true,
 		hasPaymentMethod: true,
@@ -131,7 +145,25 @@ const PaymentInformation = () => {
 			await confirmSetupIntent(setupPaymentId as string)
 				.then(() => {
 					void getPaymentInfoFn();
+
 					Say.ok('Successfully Added/Updated Payment Details');
+
+					// update session
+					updateUser({
+						...user?.user_data,
+						has_payment_details: 1,
+					} as UserSchemaType);
+
+					if (
+						routeParams.onSuccessCallback &&
+						typeof routeParams.onSuccessCallback === 'function'
+					) {
+						goBack();
+
+						setTimeout(() => {
+							routeParams.onSuccessCallback!();
+						}, 500);
+					}
 				})
 				.catch(e => Say.err(e as string));
 		}

@@ -9,7 +9,8 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { isNumber } from 'lodash';
 import moment from 'moment';
 import { memo, useCallback, useMemo, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
+import SimpleToast from 'react-native-simple-toast';
 
 const { metrics, fonts } = config;
 
@@ -43,10 +44,13 @@ const AgendaItem = ({
 	const navigation =
 		useNavigation<NavigationProp<ApplicationStackParamList>>();
 
-	const { classFilters, venueFilters } = useStore(e => ({
-		classFilters: e.classFilters,
-		venueFilters: e.venueFilters,
-	}));
+	const { loggedInUser, classFilters, venueFilters, getClassesByDate } =
+		useStore(e => ({
+			loggedInUser: e.loggedInUser,
+			classFilters: e.classFilters,
+			venueFilters: e.venueFilters,
+			getClassesByDate: e.getClassesByDate,
+		}));
 
 	const [isBooking, setIsBooking] = useState<boolean>(false);
 	const [isAttending, setIsAttending] = useState<boolean>(!!isAttendingProp);
@@ -60,7 +64,23 @@ const AgendaItem = ({
 		})
 			.then(res => {
 				if (res.error) {
-					Say.warn(res.message, 'Oops!');
+					if (res?.error_code === 'AB001') {
+						// Show alert if user is already booked for this
+						SimpleToast.show(
+							'You are already booked for this session',
+							SimpleToast.SHORT,
+						);
+
+						// refresh calendar to update booked s on calendar
+						getClassesByDate(
+							moment(startDate).format('YYYY-MM-DD'),
+							loggedInUser!.id,
+						);
+					}
+
+					if (res.message) {
+						Say.warn(res.message, 'Oops!');
+					}
 				} else {
 					setIsAttending(true);
 				}
@@ -93,6 +113,44 @@ const AgendaItem = ({
 			});
 	};
 
+	// TODO: Find a way to merge both function from SessionActionButtons.tsx
+	const handleBuyNow = () => {
+		const redirectToBuyNow = () => {
+			const sessionDate = moment(startDate).format('YYYY-MM-DD');
+
+			navigation.navigate('BuyNow', {
+				sessionId: eventId,
+				sessionDate,
+				onSuccessPurchase: () => {
+					handleBook();
+					getClassesByDate(sessionDate, loggedInUser!.id);
+				},
+			});
+		};
+
+		const hasPaymentDetails = loggedInUser?.user_data.has_payment_details;
+		if (hasPaymentDetails !== 'skipped' && !hasPaymentDetails) {
+			Alert.alert(
+				'Oops!',
+				'You need to have payment details to book this class. Do you want to add payment details now?',
+				[
+					{
+						text: 'Yes',
+						onPress: () => {
+							navigation.navigate('PaymentInformationModal', {
+								onSuccessCallback: redirectToBuyNow,
+							});
+						},
+					},
+					{ text: 'No', style: 'destructive' },
+				],
+				{ cancelable: true },
+			);
+		} else {
+			redirectToBuyNow();
+		}
+	};
+
 	const handleViewSession = useCallback(() => {
 		navigation.navigate('Session', {
 			id: Number(eventId),
@@ -103,6 +161,21 @@ const AgendaItem = ({
 	}, []);
 
 	const renderButton = useCallback(() => {
+		if (!isSubscribed && !isCoach && !isAttending) {
+			const isFull = spotsLeft === 0;
+			return (
+				<Button
+					sm
+					compact
+					fullWidth
+					mode="outlined"
+					variant="info"
+					title={isFull ? 'Full' : 'Buy'}
+					onPress={() => (!isFull ? handleBuyNow() : {})}
+				/>
+			);
+		}
+
 		if (isCoach) {
 			return (
 				<Button
@@ -256,15 +329,7 @@ const AgendaItem = ({
 				</Text>
 				{location ? <Text size="sm">{location}</Text> : null}
 			</View>
-			<View style={styles.itemButtonContainer}>
-				{!isSubscribed ? (
-					<Text center size="xs">
-						Class not included in Subscription
-					</Text>
-				) : (
-					renderButton()
-				)}
-			</View>
+			<View style={styles.itemButtonContainer}>{renderButton()}</View>
 		</TouchableOpacity>
 	);
 };

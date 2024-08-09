@@ -125,9 +125,6 @@ const Session = ({ route }: ApplicationScreenProps) => {
 		return bookedMembers.length + 10;
 	}, [session, bookedMembers]);
 
-	// 		TODO:		tab: showWorkoutTab ? 1 : 0, // show wod page if available
-	// 		TODO:			toggledSections,
-
 	const handleTabChange = (tab: SessionTabsEnum) => {
 		setActiveTab(tab);
 	};

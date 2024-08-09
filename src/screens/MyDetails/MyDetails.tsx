@@ -18,6 +18,7 @@ import {
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { MenuStackNavigatorProps } from '@/types/navigation';
+import { GenderType } from '@/types/schemas/common';
 import { UserProfileType, UserSchemaType } from '@/types/schemas/user';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
@@ -134,7 +135,7 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 			eula_accepted: 0,
 			face_id: '',
 			first_name: '',
-			gender: '',
+			gender: null,
 			has_payment_details: 0,
 			height: 0,
 			last_name: '',
@@ -280,7 +281,7 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 			...data,
 			genderObj: { displayText, value, icon },
 			genderOptions: !data.genderOptions,
-			user: { ...data.user, gender: displayText },
+			user: { ...data.user, gender: displayText as GenderType },
 		});
 	};
 

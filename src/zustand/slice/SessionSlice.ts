@@ -1,4 +1,6 @@
-import { FilterTypeEnum } from '@/utils/Enum';
+import { getScheduleList } from '@/services/session';
+import { Func } from '@/utils';
+import { FilterTypeEnum, VisibilityOptions } from '@/utils/Enum';
 import { produce } from 'immer';
 import moment from 'moment';
 import type { StateCreator } from 'zustand';
@@ -66,6 +68,100 @@ const createSessionSlice: StateCreator<
 				});
 			}
 		}
+	},
+
+	getClassesByDate: (date, userId) => {
+		// Define initial state and functions here or outside the store
+		const { classes, setClasses } = getState();
+		const hasData = classes.find(item => item.title === date);
+		if (hasData) {
+			return;
+		}
+
+		// Add loading state
+		setClasses(date, [{ isLoading: true }]);
+
+		getScheduleList(date, date)
+			.then(res => {
+				if (!res.error) {
+					const classesData = res.data.map(item => {
+						// Get duration
+						const duration = `${Func.getDuration(
+							item.local_start,
+							item.local_end,
+						)} min(s)`;
+
+						// Check if schedule is hidden
+						const hideSchedule = Func.isSessionVisible(
+							item.bookable,
+							item.fb_class?.class_visibility ||
+								item.class?.class_visibility,
+							VisibilityOptions.SUBSCRIBED,
+						);
+
+						// Is booking locked
+						const isBookingLocked = Func.checkSessionLock(
+							item.local_start,
+							item.booking_HH,
+							item.booking_MM,
+						);
+
+						// Get spots left
+						const spotsLeft = item.class
+							? Func.getSpotLeft(
+									item.attendance_limit as number,
+									item.member_attendance?.length as number,
+							  )
+							: null;
+
+						// Waitlist button
+						const waitlistBtn =
+							!!item.waitlist.enable_waitlist &&
+							moment(item.local_start).diff(moment(), 'minutes') >
+								Number(item.waitlist.waitlist_timelimit) * 60;
+
+						// isAttending
+						const isAttending = item?.member_attendance?.some(
+							m => m.user_id === userId,
+						);
+
+						// isWaitlisted
+						const isWaitlisted = item.member_waitlist.some(
+							w =>
+								w.calendar_event_id === item.id &&
+								w.user_id === userId,
+						);
+
+						// return data
+						return {
+							start: moment(item.local_start).format('H:mm A'),
+							isSubscribed: Func.checkSubscription(item.bookable),
+							location: item.venue_id ? item.venue : undefined,
+							venueId: Number(item.venue_id),
+							waitlistTime: item.waitlist.waitlist_timelimit,
+							startDate: item.local_start,
+							color: item.class.class_colour_hex,
+							classId: item.class.id,
+							eventId: item.event_id,
+							isCoach: item.isCoach,
+							title: item.title,
+							isBookingLocked,
+							hideSchedule,
+							isWaitlisted,
+							waitlistBtn,
+							isAttending,
+							spotsLeft,
+							duration,
+						};
+					});
+
+					setClasses(date, classesData);
+				}
+			})
+			.catch(err => {
+				// eslint-disable-next-line no-console
+				console.log('getClassesByDate', err);
+			});
 	},
 
 	clearClasses: () => {

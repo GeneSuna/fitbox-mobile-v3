@@ -12,7 +12,7 @@ import {
 	SessionSectionSchemaType,
 	SessionWODMovementDetailsSchemaType,
 } from '@/types/schemas/session';
-import { Say } from '@/utils';
+import { Constant, Say } from '@/utils';
 import useStore from '@/zustand/Store';
 import { useFocusEffect } from '@react-navigation/native';
 import { isArray, isNaN, parseInt } from 'lodash';
@@ -28,7 +28,14 @@ import {
 import SimpleToast from 'react-native-simple-toast';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Button, Row, ScrollView, Spacer, Text } from '../../atoms';
+import {
+	Button,
+	KeyboardSpacer,
+	Row,
+	ScrollView,
+	Spacer,
+	Text,
+} from '../../atoms';
 import ScoreComment from './components/ScoreComment';
 import ScoreHeader from './components/ScoreHeader';
 import ScoreInputField from './components/ScoreInputField';
@@ -962,8 +969,7 @@ const ScoreComponent = ({
 				}}
 			/>
 
-			{/* TODO: Implement when Keyboard spacer is merged */}
-			{/* {!Consts.IS_ANDROID && <KeyboardSpacer topSpacing={-50} />} */}
+			{!Constant.IS_ANDROID && <KeyboardSpacer heightDeduction={50} />}
 		</>
 	);
 };
