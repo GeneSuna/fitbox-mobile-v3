@@ -209,6 +209,7 @@ const Dashboard = () => {
 							waitlistTime: Number(
 								session.waitlist_info.waitlist_timelimit,
 							),
+							color: session.fb_class.class_colour_hex,
 						});
 					}
 				});
@@ -228,6 +229,7 @@ const Dashboard = () => {
 							isCoach: true,
 							waitlistEnabled: false,
 							waitlistTime: 0,
+							color: session.class_colour_hex,
 						});
 					}
 				});
@@ -541,8 +543,8 @@ const Dashboard = () => {
 							<>
 								<Spacer size="md" />
 								<View style={styles.bookedSessionsContainer}>
-									{upcomingSessions // show only 3
-										.slice(0, 3)
+									{upcomingSessions // show only 1
+										.slice(0, 1)
 										.map(({ ...rest }, i) => (
 											<BookedSessionCard
 												key={i}
@@ -553,7 +555,7 @@ const Dashboard = () => {
 							</>
 						)}
 
-						{!loading && upcomingSessions.length > 3 && (
+						{!loading && upcomingSessions.length > 1 && (
 							<TouchableOpacity
 								style={styles.viewMoreButton}
 								onPress={() => navigate('Calendar')}
@@ -598,12 +600,9 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 	},
 	bookedSessionsContainer: {
-		borderRadius: metrics.rg,
 		overflow: 'hidden',
-		borderColor: '#F2F2F2',
-		borderWidth: 1,
 		gap: 1,
-		backgroundColor: fonts.colors.lightgrey,
+		backgroundColor: fonts.colors.light,
 	},
 	rowButton: {
 		flexDirection: 'row',

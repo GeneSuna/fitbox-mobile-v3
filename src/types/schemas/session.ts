@@ -105,6 +105,7 @@ export const StaffBookedSessionSchema = z.object({
 	end: z.string(),
 	venue_id: z.number().nullish(),
 	venue_name: z.string().nullish(),
+	class_colour_hex: z.string().default('FFFFFF'),
 });
 
 export const BookedSessionSchema = z.object({

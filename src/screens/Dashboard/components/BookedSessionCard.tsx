@@ -1,12 +1,11 @@
-import { Row, Spacer, Text } from '@/components/atoms';
+import { Button, Row, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ApplicationStackParamList } from '@/types/navigation';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import { memo } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { StyleSheet, View } from 'react-native';
 
 const { metrics, fonts } = config;
 
@@ -19,6 +18,7 @@ export interface BookedSessionCardProps {
 	isCoach: boolean;
 	waitlistEnabled: boolean;
 	waitlistTime: number;
+	color: string;
 }
 
 const BookedSessionCard = ({
@@ -30,6 +30,7 @@ const BookedSessionCard = ({
 	isCoach,
 	waitlistEnabled,
 	waitlistTime,
+	color,
 }: BookedSessionCardProps) => {
 	const navigation =
 		useNavigation<NavigationProp<ApplicationStackParamList>>();
@@ -42,11 +43,18 @@ const BookedSessionCard = ({
 			waitlistTime,
 		});
 
+	const buttonStyle = {
+		backgroundColor: 'white',
+		borderColor: isCoach
+			? config.colors.info
+			: config.fonts.colors.darkgray,
+	};
+
 	return (
-		<TouchableOpacity style={styles.container} onPress={handlePress}>
+		<View style={styles.container}>
 			<Row style={layout.flex_1}>
 				<View style={layout.justifyCenter}>
-					<Text bold size="sm" color="mute" center>
+					<Text bold size="sm" center>
 						{moment(startTime).format('DD MMM')}
 					</Text>
 					<Text size="sm" color="mute" center>
@@ -54,7 +62,12 @@ const BookedSessionCard = ({
 					</Text>
 				</View>
 
-				<Spacer horizontal />
+				<View
+					style={[
+						styles.divider,
+						{ backgroundColor: color || fonts.colors.brand },
+					]}
+				/>
 
 				<View style={layout.flex_1}>
 					<Text bold size="md" numberOfLines={2}>
@@ -76,13 +89,17 @@ const BookedSessionCard = ({
 
 			<Spacer horizontal size="xs" />
 
-			<Icon
-				name={isCoach ? 'account-arrow-right' : 'arrow-right'}
-				color={isCoach ? fonts.colors.info : fonts.colors.gray200}
-				size={fonts.metrics.lg}
-				style={{ marginRight: metrics.sm }}
+			<Button
+				title={isCoach ? 'Coach' : 'Open'}
+				style={buttonStyle}
+				labelStyle={{
+					color: isCoach
+						? config.colors.info
+						: config.fonts.colors.darkgray,
+				}}
+				onPress={handlePress}
 			/>
-		</TouchableOpacity>
+		</View>
 	);
 };
 
@@ -95,6 +112,10 @@ const styles = StyleSheet.create({
 		paddingVertical: metrics.rg,
 		paddingHorizontal: metrics.rg,
 		alignItems: 'center',
+		marginBottom: metrics.sm,
+		borderColor: '#F2F2F2',
+		borderWidth: 1,
+		borderRadius: 2,
 	},
 	warningTxt: {
 		color: '#595959',
@@ -105,5 +126,10 @@ const styles = StyleSheet.create({
 		borderColor: fonts.colors.darkgray,
 		borderWidth: 1,
 		width: 'auto',
+	},
+	divider: {
+		borderRadius: 8,
+		width: 5,
+		marginHorizontal: metrics.rg,
 	},
 });
