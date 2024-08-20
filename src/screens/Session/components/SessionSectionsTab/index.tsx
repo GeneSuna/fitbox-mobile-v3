@@ -1,4 +1,11 @@
-import { Button, Row, ScrollView, Spacer, Text } from '@/components/atoms';
+import {
+	Button,
+	HTMLView,
+	Row,
+	ScrollView,
+	Spacer,
+	Text,
+} from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ApplicationStackParamList } from '@/types/navigation';
@@ -13,7 +20,6 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { isArray, isEmpty, parseInt } from 'lodash';
 import { useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import HTMLView from 'react-native-htmlview';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import WebView from 'react-native-webview';
 
@@ -279,7 +285,10 @@ const SessionsSectionsTab = ({ session }: SessionsSectionsTabProps) => {
 									<>
 										<Spacer size="rg" />
 										<HTMLView
-											value={String(section.text_section)}
+											content={String(
+												section.text_section,
+											)}
+											index={index}
 										/>
 									</>
 								) : null}
@@ -513,7 +522,7 @@ const SessionsSectionsTab = ({ session }: SessionsSectionsTabProps) => {
 										<Spacer />
 										<Button
 											variant="info"
-											title="Log Result"
+											title="Add Result"
 											onPress={() => submitScore(section)}
 											labelStyle={styles.logResultBtn}
 										/>

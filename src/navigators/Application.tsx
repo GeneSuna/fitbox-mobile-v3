@@ -419,7 +419,7 @@ const ApplicationNavigator = () => {
 							component={SessionScoringScreen}
 							options={() => ({
 								...CommonHeaderOptions,
-								title: 'Log Result',
+								title: 'Add Result',
 							})}
 						/>
 					</Stack.Group>

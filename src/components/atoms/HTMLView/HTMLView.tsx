@@ -8,9 +8,10 @@ const { metrics } = config;
 
 interface HTMLViewProps {
 	content: string;
+	index?: number | null;
 }
 
-const HTMLView = ({ content }: HTMLViewProps) => {
+const HTMLView = ({ content, index = null }: HTMLViewProps) => {
 	const [loading, setLoading] = useState(true);
 	const [webViewHeight, setWebViewHeight] = useState(0);
 
@@ -19,22 +20,30 @@ const HTMLView = ({ content }: HTMLViewProps) => {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		setWebViewHeight(Number(event.nativeEvent.data));
 
+	const backgroundColor =
+		index !== null && index % 2 === 0 ? '#F5F5F5' : '#FFFFFF';
+
 	const renderContent = `
         <html>
             <head>
                 <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
+				<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
                 <style>
                     * {
                         -webkit-box-sizing: border-box;
                         -moz-box-sizing: border-box;
                         box-sizing: border-box;
+
                     }
                     body {
                         padding: 0;
                         margin: 0;
-                        font-family: sans-serif;
-                        font-size: ${metrics.lg}px;
+                        font-family: 'Montserrat', sans-serif;
+                        font-size: 15px;
                         word-wrap: break-word;
+						background-color: ${backgroundColor} ;
+						overflow:hidden;
+						box-sizing: border-box;
                     }
                     blockquote {
                         padding: 10px 20px;
@@ -42,6 +51,10 @@ const HTMLView = ({ content }: HTMLViewProps) => {
                         font-size: 17.5px;
                         border-left: 5px solid #eeeeee;
                     }
+					ul {
+					 	list-style-type: disc; /* Ensure bullets are visible */
+            			margin-left: -10px; /* Remove default margin */
+					}
                 </style>
             </head>
             <body>
