@@ -295,11 +295,12 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 
 			<View style={styles.versionContainer}>
 				<Text>{`App Version ${menuOptions ? '3.2' : ''}`}</Text>
-				{apiUrl !== Constant.API_BASE_URLS.DEV && (
-					<Text size="sm" style={styles.environment}>
-						Development Mode ({apiUrl})
-					</Text>
-				)}
+				{apiUrl !== Constant.API_BASE_URLS.DEV &&
+					Constant.ENABLE_ENV_PICKER && (
+						<Text size="sm" style={styles.environment}>
+							Development Mode ({apiUrl})
+						</Text>
+					)}
 			</View>
 		</ScrollView>
 	);

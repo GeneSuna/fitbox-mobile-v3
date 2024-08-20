@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	Alert,
 	Dimensions,
@@ -23,6 +23,9 @@ const { width } = Dimensions.get('window');
 const LandingScreen = ({ navigation }: ApplicationScreenProps) => {
 	const { t } = useTranslation(['landing', 'common']);
 	const { getApiUrl, setApiUrl } = useAuth();
+
+	// enable or disable the environment picker by setting the value in Constant.ts
+	const enableEnvPicker = Constant.ENABLE_ENV_PICKER;
 
 	const [optionsVisibility, setOptionsVisibility] = useState<boolean>(false);
 	const [currentApi, setCurrentApi] = useState<string>(getApiUrl());
@@ -57,6 +60,12 @@ const LandingScreen = ({ navigation }: ApplicationScreenProps) => {
 		// End of Identity implementation
 	};
 
+	useEffect(() => {
+		if (!enableEnvPicker) {
+			setApiUrl(Constant.API_URL);
+		}
+	}, []);
+
 	const envList = Object.values(Constant.API_BASE_URLS);
 	const onRotateEnv = () => {
 		const currentIndex = envList.indexOf(getApiUrl());
@@ -70,19 +79,21 @@ const LandingScreen = ({ navigation }: ApplicationScreenProps) => {
 
 	return (
 		<View style={styles.main}>
-			<View style={styles.changeEnvButton}>
-				<Button
-					title={currentApi
-						.replace('https://', '')
-						.replace('.fitbox', '')
-						.replace('.iq', '')
-						.replace('fitbox', 'PRODUCTION')
-						.toUpperCase()}
-					variant="darkgray"
-					onPress={onRotateEnv}
-					sm
-				/>
-			</View>
+			{enableEnvPicker && (
+				<View style={styles.changeEnvButton}>
+					<Button
+						title={currentApi
+							.replace('https://', '')
+							.replace('.fitbox', '')
+							.replace('.iq', '')
+							.replace('fitbox', 'PRODUCTION')
+							.toUpperCase()}
+						variant="darkgray"
+						onPress={onRotateEnv}
+						sm
+					/>
+				</View>
+			)}
 
 			<View style={styles.container}>
 				<ImageVariant

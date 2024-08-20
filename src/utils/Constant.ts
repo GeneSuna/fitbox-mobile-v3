@@ -36,6 +36,8 @@ const API_BASE_URLS = {
 	PROD: 'https://fitbox.iq',
 };
 
+const ENABLE_ENV_PICKER = false;
+
 const RECAPTCHA = {
 	siteKey: '6Ldez1UdAAAAAI_K-Fz1pDkcbQCLHN3JZ6b8hXE1',
 	baseURL: 'http://fitboxcorp.com/',
@@ -195,4 +197,5 @@ export default {
 	DEVICEWIDTH,
 	RECAPTCHA,
 	STRIPE_PUBLISHABLE_KEY,
+	ENABLE_ENV_PICKER,
 };
