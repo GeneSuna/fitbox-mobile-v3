@@ -157,7 +157,8 @@ export type DashboardStackNavigatorProps = StackScreenProps<DashboardParamList>;
 
 export type ConversationParams = {
 	conversation: MessageItemType;
-	index: number | boolean;
+	index?: number | boolean;
+	switchToGym?: unknown;
 };
 
 export type InboxScreenProps = StackScreenProps<InboxParamList>;

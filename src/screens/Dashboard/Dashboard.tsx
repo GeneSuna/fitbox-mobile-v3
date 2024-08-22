@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import useAuth from '@/auth/hooks/useAuth';
 import { Row, ScrollView, Spacer, Text } from '@/components/atoms';
 import { SafeScreen } from '@/components/template';
 import { navigate } from '@/navigators/NavigationRef';
+import { savePushToken } from '@/services/auth';
 import { getGymClasses, getGymVenues } from '@/services/gym';
 import { getAttendanceReport } from '@/services/leaderboards';
 import { getClassFilters } from '@/services/session';
@@ -16,6 +19,7 @@ import { UserSchemaType } from '@/types/schemas/user';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
 import { ClassFilter, VenueFilter } from '@/zustand/interface/SessionInterface';
+import messaging, { firebase } from '@react-native-firebase/messaging';
 import { useFocusEffect } from '@react-navigation/native';
 import { isArray, isEmpty } from 'lodash';
 import moment from 'moment';
@@ -25,10 +29,12 @@ import {
 	Alert,
 	Dimensions,
 	Image,
+	Platform,
 	StyleSheet,
 	TouchableOpacity,
 	View,
 } from 'react-native';
+import PushNotification from 'react-native-push-notification';
 import BookedSessionCard, {
 	BookedSessionCardProps,
 } from './components/BookedSessionCard';
@@ -70,6 +76,7 @@ const Dashboard = () => {
 		setAppState,
 		classFilters,
 		venueFilters,
+		pushToken,
 		setVenueFilters,
 		setClassFilters,
 		setHeaderTitle,
@@ -82,6 +89,7 @@ const Dashboard = () => {
 		setVenueFilters: state.setVenueFilters,
 		setHeaderTitle: state.setHeaderTitle,
 		setDefaultClassFilter: state.setDefaultClassFilter,
+		pushToken: state.pushToken,
 	}));
 
 	const [loading, setLoading] = useState<boolean>(true);
@@ -253,16 +261,64 @@ const Dashboard = () => {
 		// 	() => {
 		// 		// get switchable users
 		// 		this.getSwitchableUsers();
-
-		// 		// check if session start notification is enabled
-		// 		const sessionStartEnabled =
-		// 			this.props.global?.notification_settings?.settings?.session; // setting_configuration.session_start
-		// 		if (member_sessions.length && sessionStartEnabled) {
-		// 			// set local notifications
-		// 			this.setLocalNotifications(member_sessions);
-		// 		}
 		// 	},
 		// );
+		// Check if session start notification is enabled and include it in the condition with member_sessions.length then setLocalNotifications
+		setLocalNotifications(memberSessions);
+	};
+
+	const setLocalNotifications = (sessions: BookedSessionCardProps[]) =>
+		sessions.map(session => {
+			const schedule = moment(session.startTime);
+
+			if (schedule.isBefore()) return null;
+
+			const notificationData = {
+				screen: 'Session',
+				session: {
+					...session,
+					title: session.title,
+				},
+			};
+
+			PushNotification.localNotificationSchedule({
+				channelId: 'session-start',
+				title: session.title,
+				message: 'Your session is about to start',
+				date: schedule.toDate(),
+				data: notificationData,
+				userInfo: {
+					data: notificationData,
+				},
+			});
+
+			return true;
+		});
+
+	const savePushNotificationToken = async () => {
+		const authStatus = await messaging().requestPermission();
+		const enabled =
+			authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+			authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+		if (enabled) {
+			const token = await firebase.app().messaging().getToken();
+			if (token && token !== pushToken) {
+				try {
+					const res = await savePushToken(
+						token,
+						user?.user_data.user_id as number,
+						Platform.OS === 'android' ? 'android' : 'ios',
+					);
+
+					if (res.status === 200) {
+						setAppState('pushToken', token);
+					}
+				} catch (e) {
+					// console.log('Token not saved');
+				}
+			}
+		}
 	};
 
 	useFocusEffect(
@@ -275,6 +331,7 @@ const Dashboard = () => {
 			void initializeAppStates();
 			void getUpcomingSessions();
 			void getClassFiltersFn();
+			PushNotification.cancelAllLocalNotifications();
 		}, []),
 	);
 
@@ -283,6 +340,7 @@ const Dashboard = () => {
 	useEffect(() => {
 		void fetchFilterOptions();
 		void fetchAttendanceReport();
+		void savePushNotificationToken();
 	}, []);
 
 	const fetchAttendanceReport = () => {

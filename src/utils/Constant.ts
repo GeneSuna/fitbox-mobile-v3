@@ -203,6 +203,15 @@ const QUESTIONS_LIST = [
 ];
 
 /**
+ * Notification Service URL for Push Notifications depending on the environment
+ */
+
+const NOTIFICATION_SERVICE_URL = {
+	DEV: 'https://fitbox-dev-microservices.azurewebsites.net/api/NotificationService?code=sYC9PuVtRl8udPnN8LQTzF/gX2YtX0OltS6xX3bQCAp1ZH0Mg3FknQ==',
+	STG: 'https://fitbox-stg-microservices.azurewebsites.net/api/NotificationService?code=/W0YnAVNdmeGd/gcnAbvIMQqhcpTpiKIs0Qk696AfcAG5EeD5Bg5/Q==',
+	PROD: 'https://fitbox.azurewebsites.net/api/NotificationService?code=Eb7se86SBFJyrQYlOc1294j45eT86UXCuRHV5d6ZpWHf3QpYMUrBog==',
+};
+/**
  * Number of results to show in the performance summary on fetch
  */
 const PAGINATE_FETCH_LIMIT = 20;
@@ -223,4 +232,5 @@ export default {
 	STRIPE_PUBLISHABLE_KEY,
 	PAGINATE_FETCH_LIMIT,
 	ENABLE_ENV_PICKER,
+	NOTIFICATION_SERVICE_URL,
 };

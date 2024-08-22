@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import useAuth from '@/auth/hooks/useAuth';
 import { HR, KeyboardSpacer, Row, Text } from '@/components/atoms';
 import { ChatMessage, MessageInput, Modal } from '@/components/molecules';
@@ -15,9 +17,11 @@ import {
 	MessageItemUserType,
 	SendMessageDataType,
 } from '@/types/schemas/message';
+import { NotificationsType } from '@/types/schemas/notifications';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
 import Clipboard from '@react-native-clipboard/clipboard';
+import messaging from '@react-native-firebase/messaging';
 import { isEmpty, sortBy } from 'lodash';
 import moment from 'moment';
 import { useEffect, useLayoutEffect, useState } from 'react';
@@ -30,6 +34,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
+import PushNotification from 'react-native-push-notification';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -96,6 +101,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 	const { attachedFiles, setAppState } = useStore(store => ({
 		attachedFiles: store.attachedFiles,
 		setAppState: store.setAppState,
+		showModalNotification: store.showModalNotification,
 	}));
 
 	const handleEnterMessage = (message: string) =>
@@ -240,12 +246,24 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 
 		setState(prevState => ({ ...prevState, userList: users }));
 
-		// TODO: handle notifications
+		handleNotifications();
+
+		setAppState('showModalNotification', false);
 
 		navigation.setOptions({
 			title: screenTitle,
 			headerRight: renderInfoButton,
 		});
+	}, []);
+
+	useEffect(() => {
+		const onMessageListener = messaging().onMessage(message => {
+			if (message?.notification?.title === conversation.subject)
+				handleRefresh();
+			setAppState('showModalNotification', false);
+		});
+
+		return () => onMessageListener();
 	}, []);
 
 	const handleActionPress = (action: string) => {
@@ -271,12 +289,15 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 		await getData(state.page);
 	};
 
+	const handleRefresh = () => {
+		setState(prevState => ({ ...prevState, refreshing: true, list: [] }));
+		void getData();
+	};
+
 	useEffect(() => {
 		void (async () => {
-			// TODO: handle push notifications
 			await getData();
 
-			// TODO: show modal notification
 			// TODO: check if switch to gym is set on navigation params
 
 			const res = await checkConversationReplyStatus(
@@ -292,6 +313,20 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 
 		return () => setAppState('attachedFiles', []);
 	}, []);
+
+	const handleNotifications = () => {
+		PushNotification.getDeliveredNotifications(
+			(notifications: NotificationsType[]) => {
+				notifications.forEach(notif => {
+					if (notif.title === conversation.subject) {
+						PushNotification.removeDeliveredNotifications([
+							notif.identifier,
+						]);
+					}
+				});
+			},
+		);
+	};
 
 	const getData = async (page?: number) => {
 		let list: SendMessageDataType[] = [];

@@ -19,6 +19,9 @@ const defaultState: ApplicationStateInterface = {
 	lastRxValue: false,
 	showConfetti: false,
 	attachedFiles: [],
+	notifications: [],
+	showModalNotification: false,
+	pushToken: '',
 };
 
 const createApplicationSlice: StateCreator<

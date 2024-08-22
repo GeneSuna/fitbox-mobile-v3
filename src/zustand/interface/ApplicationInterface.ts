@@ -1,3 +1,5 @@
+import { NotificationsType } from '@/types/schemas/notifications';
+
 interface ApplicationStateInterface {
 	appForceUpdate: boolean;
 	allowLeaderboards: boolean;
@@ -14,6 +16,9 @@ interface ApplicationStateInterface {
 	lastRxValue: boolean; // is_rx_value
 	showConfetti: boolean;
 	attachedFiles: AttachedFilesInterface[];
+	notifications: NotificationsType[];
+	showModalNotification: boolean;
+	pushToken: string;
 }
 
 interface AttachedFilesInterface {

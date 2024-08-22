@@ -44,6 +44,7 @@ import CalendarHeaderRightComponent from '@/screens/Calendar/components/Calendar
 import ShopHeaderRightComponent from '@/screens/Shop/components/ShopHeaderRightComponent';
 
 import useAuth from '@/auth/hooks/useAuth';
+import { NotificationDialog } from '@/components/molecules';
 import ResultTypesModal from '@/screens/PerformanceSummary/ResultTypesModal/ResultTypesModal';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
@@ -271,6 +272,11 @@ const ApplicationNavigator = () => {
 	const { variant, navigationTheme, colors } = useTheme();
 	const { getApiUrl } = useAuth();
 
+	const { notifications, showModalNotification } = useStore(state => ({
+		notifications: state.notifications,
+		showModalNotification: state.showModalNotification,
+	}));
+
 	const url = getApiUrl();
 	const getKeyBasedOnEnv = () => {
 		if (url.includes('dev.fitbox.iq')) {
@@ -290,192 +296,197 @@ const ApplicationNavigator = () => {
 			publishableKey={getKeyBasedOnEnv()}
 			merchantIdentifier="merchant.com.af.fitbox"
 		>
-			<NavigationContainer
-				linking={linking}
-				ref={navigationRef}
-				theme={navigationTheme}
-			>
-				<Stack.Navigator key={variant} initialRouteName="Startup">
-					<Stack.Group
-						screenOptions={{
-							headerShown: false, // hide header by default but when screen needs it, it will be shown with corresponding options below
-							headerTintColor: 'white',
-							headerTitleAlign: 'center',
-							headerStyle: {
-								backgroundColor: config.colors.brand,
-							},
-							headerTitleStyle: layout.fontMontserratRegular,
-							cardStyleInterpolator:
-								CardStyleInterpolators.forScaleFromCenterAndroid,
-						}}
-					>
-						<Stack.Screen name="Startup" component={Startup} />
-						<Stack.Screen name="Auth" component={Auth} />
-						<Stack.Screen name="Landing" component={Landing} />
-						<Stack.Screen name="Example" component={Example} />
-						<Stack.Screen
-							name="Login"
-							component={Login}
-							options={{
-								...TabHeaderOptions,
-								headerBackTitleVisible: false,
+			<>
+				<NavigationContainer
+					linking={linking}
+					ref={navigationRef}
+					theme={navigationTheme}
+				>
+					<Stack.Navigator key={variant} initialRouteName="Startup">
+						<Stack.Group
+							screenOptions={{
+								headerShown: false, // hide header by default but when screen needs it, it will be shown with corresponding options below
+								headerTintColor: 'white',
+								headerTitleAlign: 'center',
+								headerStyle: {
+									backgroundColor: config.colors.brand,
+								},
+								headerTitleStyle: layout.fontMontserratRegular,
+								cardStyleInterpolator:
+									CardStyleInterpolators.forScaleFromCenterAndroid,
 							}}
-						/>
-						<Stack.Screen
-							name="ResetPassword"
-							component={ResetPassword}
-							options={{
-								title: 'Forgot Password',
-								...TabHeaderOptions,
-								headerBackTitleVisible: false,
-							}}
-						/>
-						<Stack.Screen
-							name="Main"
-							component={MainTabNavigator}
-						/>
-						<Stack.Screen
-							name="Session"
-							component={Session}
-							options={({ route }) => ({
-								title: route.params.title,
-								...TabHeaderOptions,
-							})}
-						/>
-						<Stack.Screen
-							name="ScoreComments"
-							component={ScoreCommentsScreen}
-							options={{
-								title: 'Class Results',
-								...TabHeaderOptions,
-							}}
-						/>
-						<Stack.Screen
-							name="Eula"
-							component={EULAScreen}
-							options={{
-								title: 'End User License Agreement',
-								...TabHeaderOptions,
-							}}
-						/>
-						<Stack.Screen
-							name="BillingAgreement"
-							component={BillingAgreementScreen}
-							options={{
-								title: 'Billing Agreement',
-								...TabHeaderOptions,
-							}}
-						/>
-						<Stack.Screen
-							name="GymWaiver"
-							component={GymWaiverScreen}
-							options={{
-								title: 'Gym Waiver',
-								...TabHeaderOptions,
-							}}
-						/>
-						<Stack.Screen
-							name="PDFViewer"
-							component={PDFViewerScreen}
-							options={{
-								...TabHeaderOptions,
-								headerBackTitleVisible: false,
-							}}
-						/>
-						<Stack.Screen
-							name="HealthCapture"
-							component={HealthCaptureScreen}
-							options={{
-								...TabHeaderOptions,
-								headerBackTitleVisible: false,
-							}}
-						/>
-						<Stack.Screen
-							name="SignUp"
-							component={SignUp}
-							options={{
-								...TabHeaderOptions,
-								headerBackTitleVisible: false,
-								title: 'Sign Up',
-							}}
-						/>
-						<Stack.Screen
-							name="Scoring"
-							component={SessionScoringScreen}
-							options={() => ({
-								...TabHeaderOptions,
-								title: 'Add Result',
-							})}
-						/>
-					</Stack.Group>
+						>
+							<Stack.Screen name="Startup" component={Startup} />
+							<Stack.Screen name="Auth" component={Auth} />
+							<Stack.Screen name="Landing" component={Landing} />
+							<Stack.Screen name="Example" component={Example} />
+							<Stack.Screen
+								name="Login"
+								component={Login}
+								options={{
+									...TabHeaderOptions,
+									headerBackTitleVisible: false,
+								}}
+							/>
+							<Stack.Screen
+								name="ResetPassword"
+								component={ResetPassword}
+								options={{
+									title: 'Forgot Password',
+									...TabHeaderOptions,
+									headerBackTitleVisible: false,
+								}}
+							/>
+							<Stack.Screen
+								name="Main"
+								component={MainTabNavigator}
+							/>
+							<Stack.Screen
+								name="Session"
+								component={Session}
+								options={({ route }) => ({
+									title: route.params.title,
+									...TabHeaderOptions,
+								})}
+							/>
+							<Stack.Screen
+								name="ScoreComments"
+								component={ScoreCommentsScreen}
+								options={{
+									title: 'Class Results',
+									...TabHeaderOptions,
+								}}
+							/>
+							<Stack.Screen
+								name="Eula"
+								component={EULAScreen}
+								options={{
+									title: 'End User License Agreement',
+									...TabHeaderOptions,
+								}}
+							/>
+							<Stack.Screen
+								name="BillingAgreement"
+								component={BillingAgreementScreen}
+								options={{
+									title: 'Billing Agreement',
+									...TabHeaderOptions,
+								}}
+							/>
+							<Stack.Screen
+								name="GymWaiver"
+								component={GymWaiverScreen}
+								options={{
+									title: 'Gym Waiver',
+									...TabHeaderOptions,
+								}}
+							/>
+							<Stack.Screen
+								name="PDFViewer"
+								component={PDFViewerScreen}
+								options={{
+									...TabHeaderOptions,
+									headerBackTitleVisible: false,
+								}}
+							/>
+							<Stack.Screen
+								name="HealthCapture"
+								component={HealthCaptureScreen}
+								options={{
+									...TabHeaderOptions,
+									headerBackTitleVisible: false,
+								}}
+							/>
+							<Stack.Screen
+								name="SignUp"
+								component={SignUp}
+								options={{
+									...TabHeaderOptions,
+									headerBackTitleVisible: false,
+									title: 'Sign Up',
+								}}
+							/>
+							<Stack.Screen
+								name="Scoring"
+								component={SessionScoringScreen}
+								options={() => ({
+									...TabHeaderOptions,
+									title: 'Add Result',
+								})}
+							/>
+						</Stack.Group>
 
-					<Stack.Group
-						screenOptions={{
-							headerTintColor: colors.darkgray,
-							headerRight: HeaderCloseButton,
-							headerLeft: () => null,
-							presentation: 'modal',
-							headerShown: true,
-
-							...(Constant.IS_ANDROID
-								? {
-										cardStyleInterpolator:
-											CardStyleInterpolators.forModalPresentationIOS,
-								  }
-								: {}),
-						}}
-					>
-						<Stack.Screen
-							name="SwitchGym"
-							component={SwitchGym}
-							options={{ title: 'Switch Gym' }}
-						/>
-						<Stack.Screen
-							name="SwitchUser"
-							component={SwitchUser}
-							options={{ title: 'Switch User' }}
-						/>
-						<Stack.Screen
-							name="AddAttendance"
-							component={WODAddAttendance}
-							options={{ title: 'Add Attendance' }}
-						/>
-						<Stack.Screen
-							name="PaymentInformationModal"
-							component={PaymentInformation}
-							options={{
-								title: 'Payment Information',
+						<Stack.Group
+							screenOptions={{
+								headerTintColor: colors.darkgray,
 								headerRight: HeaderCloseButton,
 								headerLeft: () => null,
-							}}
-						/>
-						<Stack.Screen
-							name="BuyNow"
-							component={SubscriptionSetup}
-							options={{ title: 'Buy Subscription' }}
-						/>
-						<Stack.Screen
-							name="ResultTypesModal"
-							component={ResultTypesModal}
-							options={{
-								title: 'Add new result',
-							}}
-						/>
-					</Stack.Group>
+								presentation: 'modal',
+								headerShown: true,
 
-					<Stack.Screen
-						name="Webview"
-						component={WebView}
-						options={({ route }) => ({
-							title: route.params.title,
-							headerTintColor: colors.darkgray,
-							presentation: 'modal',
-							headerRight: HeaderCloseButton,
-							headerLeft: () => null,
-						})}
-					/>
-				</Stack.Navigator>
-			</NavigationContainer>
+								...(Constant.IS_ANDROID
+									? {
+											cardStyleInterpolator:
+												CardStyleInterpolators.forModalPresentationIOS,
+									  }
+									: {}),
+							}}
+						>
+							<Stack.Screen
+								name="SwitchGym"
+								component={SwitchGym}
+								options={{ title: 'Switch Gym' }}
+							/>
+							<Stack.Screen
+								name="SwitchUser"
+								component={SwitchUser}
+								options={{ title: 'Switch User' }}
+							/>
+							<Stack.Screen
+								name="AddAttendance"
+								component={WODAddAttendance}
+								options={{ title: 'Add Attendance' }}
+							/>
+							<Stack.Screen
+								name="PaymentInformationModal"
+								component={PaymentInformation}
+								options={{
+									title: 'Payment Information',
+									headerRight: HeaderCloseButton,
+									headerLeft: () => null,
+								}}
+							/>
+							<Stack.Screen
+								name="BuyNow"
+								component={SubscriptionSetup}
+								options={{ title: 'Buy Subscription' }}
+							/>
+							<Stack.Screen
+								name="ResultTypesModal"
+								component={ResultTypesModal}
+								options={{
+									title: 'Add new result',
+								}}
+							/>
+						</Stack.Group>
+
+						<Stack.Screen
+							name="Webview"
+							component={WebView}
+							options={({ route }) => ({
+								title: route.params.title,
+								headerTintColor: colors.darkgray,
+								presentation: 'modal',
+								headerRight: HeaderCloseButton,
+								headerLeft: () => null,
+							})}
+						/>
+					</Stack.Navigator>
+				</NavigationContainer>
+				{showModalNotification && (
+					<NotificationDialog notification={notifications} />
+				)}
+			</>
 		</StripeProvider>
 	);
 };
