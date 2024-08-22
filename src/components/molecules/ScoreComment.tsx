@@ -1,17 +1,18 @@
 import { KeyboardSpacer, Row, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
+import layout from '@/theme/layout';
 import { Constant } from '@/utils';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import BottomPanel from '../../BottomPanel/BottomPanel';
+import BottomPanel from './BottomPanel/BottomPanel';
 
 interface ScoreCommentProps {
 	commentValue: string | null;
 	commentField: string | number | null;
-	commentLeaderboardVisible: boolean;
-	enableLeaderboardComment: boolean;
+	commentLeaderboardVisible?: boolean;
+	enableLeaderboardComment?: boolean;
 	onCommentChange: (val: string) => void;
-	onLeaderboardClick: () => void;
+	onLeaderboardClick?: () => void;
 	onSave: () => void;
 	onClose: () => void;
 }
@@ -39,25 +40,27 @@ const ScoreComment = ({
 		}
 	>
 		<View style={styles.commentModalContainer}>
-			{enableLeaderboardComment ? (
-				<Row onPress={onLeaderboardClick}>
-					<View style={styles.checkBox}>
-						{commentLeaderboardVisible ? (
-							<Icon
-								name="check"
-								style={styles.showLeaderboardIcon}
-								color={config.fonts.colors.info}
-							/>
-						) : null}
-					</View>
+			{enableLeaderboardComment && onLeaderboardClick ? (
+				<>
+					<Row onPress={onLeaderboardClick}>
+						<View style={styles.checkBox}>
+							{commentLeaderboardVisible ? (
+								<Icon
+									name="check"
+									style={styles.showLeaderboardIcon}
+									color={config.fonts.colors.info}
+								/>
+							) : null}
+						</View>
 
-					<Spacer horizontal size="xs" />
+						<Spacer horizontal size="xs" />
 
-					<Text size="md">Show on leaderboard</Text>
-				</Row>
+						<Text size="md">Show on leaderboard</Text>
+					</Row>
+
+					<Spacer size="sm" />
+				</>
 			) : null}
-
-			<Spacer size="sm" />
 
 			<View style={styles.commentInputStyle}>
 				<TextInput
@@ -88,6 +91,7 @@ const styles = StyleSheet.create({
 	commentInputLabelStyle: {
 		color: config.fonts.colors.black,
 		fontSize: config.fonts.metrics.md,
+		...layout.fontMontserratRegular,
 	},
 	commentInputStyle: {
 		borderColor: config.fonts.colors.lightgrey,

@@ -1,6 +1,19 @@
 import { z } from 'zod';
 import { GenderSchema, boolOrOneZero } from './common';
 
+export const ScoringTypeSchema = z.object({
+	id: z.number(),
+	context_id: z.number().optional(),
+	name: z.string(),
+	unit_type: z.string(),
+	method: z.string(),
+	default_param: z.unknown().optional(),
+	created_at: z.unknown().optional(),
+	updated_at: z.string().optional(),
+	sort_type: z.string(),
+	hidden_to: z.unknown().optional(),
+});
+
 export const SectionSchema = z.object({
 	id: z.number(),
 	name: z.string(),
@@ -12,18 +25,7 @@ export const SectionSchema = z.object({
 	reps: z.string().nullable(),
 	duration: z.number(),
 	sequence: z.number(),
-	scoring_type: z.object({
-		id: z.number(),
-		context_id: z.number(),
-		name: z.string(),
-		unit_type: z.string(),
-		method: z.string(),
-		default_param: z.unknown().nullable(),
-		created_at: z.unknown().nullable(),
-		updated_at: z.string(),
-		sort_type: z.string(),
-		hidden_to: z.unknown().nullable(),
-	}),
+	scoring_type: ScoringTypeSchema,
 });
 
 export const LeaderboardsDataSchema = z.object({
@@ -139,6 +141,32 @@ export const AttendanceReportDataSchema = z.object({
 	yearToDate: z.number(),
 });
 
+export const PastPerformanceHistorySchema = z.object({
+	id: z.number(),
+	date_input: z.string(),
+	past_performance_id: z.number(),
+	displayName: z.string(),
+	type: z.string(),
+	program_wod_id: z.number().nullable(),
+	context_id: z.number().nullable(),
+});
+
+export const ResultTypeSchema = z.object({
+	id: z.number(),
+	name: z.string(),
+	type: z.string(),
+});
+
+export const OneRmSchema = z.object({
+	is_independent_scores: z.boolean(),
+	movement_name: z.string(),
+	scoring_type_method: z.string(),
+	scoring_type_name: z.string(),
+	scoring_type_unit: z.string(),
+	weight: z.string(),
+});
+
+export type IScoringType = z.infer<typeof ScoringTypeSchema>;
 export type SectionType = z.infer<typeof SectionSchema>;
 export type LeaderboardsDataType = z.infer<typeof LeaderboardsDataSchema>;
 export type ScoreDetailsDataType = z.infer<typeof ScoreDetailsDataSchema>;
@@ -155,3 +183,7 @@ export type ScoreResultType = z.infer<typeof ScoreResultSchema>;
 export type AttendanceReportDataType = z.infer<
 	typeof AttendanceReportDataSchema
 >;
+export type PastPerformanceHistoryType = z.infer<
+	typeof PastPerformanceHistorySchema
+>;
+export type ResultType = z.infer<typeof ResultTypeSchema>;

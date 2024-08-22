@@ -6,6 +6,7 @@ import {
 } from '@/types/schemas/session';
 import moment from 'moment';
 import ReactNativeBlobUtil from 'react-native-blob-util';
+import Constant from './Constant';
 import { VisibilityOptions } from './Enum';
 
 const decodeHtml = (str: string): string => {
@@ -171,6 +172,17 @@ const getFileExt = (filename: string) => {
 	return split.pop()?.toLowerCase();
 };
 
+const getNextPageParam = (end: number, totalResults?: number) => {
+	const hasMoreData = end < totalResults!;
+
+	if (hasMoreData) {
+		// compute next page via limit and total results
+		const nextPage = Math.ceil(end / Constant.PAGINATE_FETCH_LIMIT) + 1;
+		return nextPage;
+	}
+	return undefined;
+};
+
 export default {
 	decodeHtml,
 	stripHtmlTags,
@@ -184,4 +196,5 @@ export default {
 	getYoutubeUrl,
 	getBase64,
 	getFileExt,
+	getNextPageParam,
 };

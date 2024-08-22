@@ -8,4 +8,6 @@ export { default as MenuOption } from './MenuOption/MenuOption';
 export { default as MessageInput } from './MessageInput/MessageInput';
 export { default as Modal } from './Modal/Modal';
 export { default as QRCamera } from './QRCamera/QRCamera';
+export { default as RowItem } from './RowItem/RowItem';
 export { default as ScoreComponent } from './ScoreComponent/ScoreComponent';
+export { default as ScoreMovementComponent } from './ScoreMovementComponent/ScoreMovementComponent';

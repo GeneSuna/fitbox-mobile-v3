@@ -14,13 +14,10 @@ import {
 	SubscriptionSetup,
 } from '@/screens';
 import { useTheme } from '@/theme';
-import { config } from '@/theme/_config';
-import layout from '@/theme/layout';
 import { MenuStackParamList } from '@/types/navigation';
-import {
-	CardStyleInterpolators,
-	createStackNavigator,
-} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
+import PerformanceSummaryStack from './PerformanceSummaryStack';
+import { CommonHeaderOptions } from './utils/options';
 
 const Stack = createStackNavigator<MenuStackParamList>();
 const MenuStackNavigator = () => {
@@ -29,14 +26,7 @@ const MenuStackNavigator = () => {
 	return (
 		<Stack.Navigator
 			key={variant}
-			screenOptions={{
-				headerStyle: { backgroundColor: config.colors.brand },
-				headerTitleAlign: 'center',
-				cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-				headerTintColor: 'white',
-				headerBackTitleVisible: false,
-				headerTitleStyle: layout.fontMontserratRegular,
-			}}
+			screenOptions={CommonHeaderOptions}
 			initialRouteName="Menu"
 		>
 			<Stack.Screen name="Menu" component={Menu} />
@@ -73,6 +63,11 @@ const MenuStackNavigator = () => {
 				options={{
 					title: 'Add/Update Payment Details',
 				}}
+			/>
+			<Stack.Screen
+				name="PerformanceSummary"
+				component={PerformanceSummaryStack}
+				options={{ headerShown: false }}
 			/>
 			<Stack.Screen
 				name="StripeSuccess"

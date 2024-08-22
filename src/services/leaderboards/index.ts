@@ -1,9 +1,13 @@
 export { default as addScore } from './addScore';
+export { default as addScoreMovement } from './addScoreMovement';
 export { default as applauseScore } from './applauseScore';
 export { default as commentScore } from './commentScore';
+export { default as deleteScore } from './deleteScore';
 export { default as getAttendanceReport } from './getAttendanceReport';
 export { default as getClassLeaderboard } from './getClassLeaderboards';
 export { default as getScore } from './getScore';
 export { default as getScoreApplauses } from './getScoreApplauses';
 export { default as getScoreComments } from './getScoreComments';
 export { default as getScoreDetails } from './getScoreDetails';
+export { default as getScoringTypes } from './getScoringTypes';
+export { default as updateScore } from './updateScore';

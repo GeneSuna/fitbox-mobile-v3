@@ -1,3 +1,6 @@
+/**
+ * TODO: Move this to molecules
+ */
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';

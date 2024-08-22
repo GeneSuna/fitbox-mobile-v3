@@ -155,6 +155,9 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 			case 'payments':
 				navigation.navigate('PaymentInformation');
 				break;
+			case 'performance':
+				navigation.navigate('PerformanceSummary');
+				break;
 			case 'health-info':
 				navigation.navigate('HealthCapture', { fromMenu: true });
 				break;
@@ -228,8 +231,10 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 		icon: string;
 		fontAwesome?: boolean;
 	}) => {
+		let useIcon;
+
 		if (item.fontAwesome) {
-			return (
+			useIcon = (
 				<FontAwesomeIcon
 					name={item.icon}
 					style={styles.menuOptionIcon}
@@ -237,16 +242,18 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 					size={15}
 				/>
 			);
+		} else {
+			useIcon = (
+				<Ionicons
+					name={item.icon}
+					style={[styles.menuOptionIcon, styles.menuOptionIonic]}
+					color="#777"
+					size={21}
+				/>
+			);
 		}
 
-		return (
-			<Ionicons
-				name={item.icon}
-				style={styles.menuOptionIcon}
-				color="#777"
-				size={20}
-			/>
-		);
+		return <View style={styles.iconContainer}>{useIcon}</View>;
 	};
 
 	const renderRightIcon = () => (
@@ -295,12 +302,14 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 
 			<View style={styles.versionContainer}>
 				<Text>{`App Version ${menuOptions ? '3.2' : ''}`}</Text>
-				{apiUrl !== Constant.API_BASE_URLS.DEV &&
-					Constant.ENABLE_ENV_PICKER && (
-						<Text size="sm" style={styles.environment}>
-							Development Mode ({apiUrl})
-						</Text>
-					)}
+				{[
+					Constant.API_BASE_URLS.DEV,
+					Constant.API_BASE_URLS.STAGING,
+				].includes(apiUrl) && (
+					<Text size="sm" style={styles.environment}>
+						Development Mode ({apiUrl})
+					</Text>
+				)}
 			</View>
 		</ScrollView>
 	);
@@ -311,6 +320,9 @@ export default Menu;
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: '#F4F4F4',
+	},
+	iconContainer: {
+		justifyContent: 'center',
 	},
 	menuOptionContainer: {
 		gap: 1,
@@ -324,6 +336,9 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		verticalAlign: 'middle',
 		marginLeft: 13,
+	},
+	menuOptionIonic: {
+		marginTop: 1,
 	},
 	menuOptionRightIcon: {
 		marginRight: -config.metrics.md,

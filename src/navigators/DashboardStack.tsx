@@ -1,25 +1,14 @@
 import { ClassResultsScreen, Dashboard, ScoreCommentsScreen } from '@/screens';
-import { config } from '@/theme/_config';
-import layout from '@/theme/layout';
 import { DashboardParamList } from '@/types/navigation';
-import {
-	CardStyleInterpolators,
-	createStackNavigator,
-} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
+import { CommonHeaderOptions } from './utils/options';
 
 const Stack = createStackNavigator<DashboardParamList>();
 
 const DashboardStackNavigator = () => {
 	return (
 		<Stack.Navigator
-			screenOptions={{
-				headerStyle: { backgroundColor: config.colors.brand },
-				cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-				headerTitleStyle: layout.fontMontserratRegular,
-				headerTitleAlign: 'center',
-				headerTintColor: 'white',
-				headerBackTitleVisible: false,
-			}}
+			screenOptions={CommonHeaderOptions}
 			initialRouteName="Dashboard"
 		>
 			<Stack.Screen

@@ -44,6 +44,7 @@ export type ApplicationStackParamList = {
 	ScoreComments: ScoreCommentsParams;
 	PaymentInformationModal: PaymentInformationModalParams;
 	BuyNow: SubscriptionSetupParams;
+	ResultTypesModal: undefined;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
@@ -119,6 +120,7 @@ export type MenuStackParamList = {
 	PDFViewerScreen: PDFViewerScreenParams;
 	HelpScreen: undefined;
 	HealthCapture: HealthCaptureParams;
+	PerformanceSummary: undefined;
 };
 export type MenuStackNavigatorProps = StackScreenProps<MenuStackParamList>;
 
@@ -169,4 +171,20 @@ export type MainTabParamList = {
 };
 export type MainTabScreenProps = StackScreenProps<
 	MainTabParamList & ApplicationStackParamList & MenuStackParamList
+>;
+
+export type MovementHistoryParams = {
+	movementId: number;
+	name: string;
+	addResult?: boolean;
+};
+
+export type PerformanceSummaryParamList = {
+	PastPerformance: undefined;
+	MovementHistory: MovementHistoryParams;
+	WorkoutHistory: undefined;
+};
+
+export type PerformanceSummaryScreenProps = StackScreenProps<
+	PerformanceSummaryParamList & ApplicationStackParamList
 >;

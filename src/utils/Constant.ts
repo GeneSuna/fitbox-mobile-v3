@@ -9,6 +9,8 @@ import { Dimensions, Platform } from 'react-native';
 const CONSTANT_SAMPLE = 'just a test';
 const DEVICEHEIGHT = Dimensions.get('screen').height;
 const DEVICEWIDTH = Dimensions.get('screen').width;
+
+// TODO: Move this to a more appropriate location
 const BODY_PARTS = [
 	{ label: 'Neck', value: 'Neck' },
 	{ label: 'Shoulder', value: 'Shoulder' },
@@ -30,27 +32,44 @@ const SORT_OPTIONS = [
 	{ name: 'Groups', value: 'group' },
 ];
 
+/**
+ * Base URLs for the API
+ */
 const API_BASE_URLS = {
 	DEV: 'https://dev.fitbox.iq',
 	STAGING: 'https://staging.fitbox.iq',
 	PROD: 'https://fitbox.iq',
 };
 
+/**
+ * Environment Picker
+ * This is to en
+ */
 const ENABLE_ENV_PICKER = false;
 
+/**
+ * Recaptcha keys
+ */
 const RECAPTCHA = {
 	siteKey: '6Ldez1UdAAAAAI_K-Fz1pDkcbQCLHN3JZ6b8hXE1',
 	baseURL: 'http://fitboxcorp.com/',
 };
 
+/**
+ * Stripe Keys
+ */
 const STRIPE_PUBLISHABLE_KEY = {
 	TEST: 'pk_test_FXdNftSfeoWHolUG1cwGCLxK00gUIDUAec',
 	LIVE: 'pk_live_o1GIALVbZwAltbmrw1rXaOyf00T1zjQ3RU',
 };
 
-// TODO: transfer apiKey or retrieve somewhere
+/**
+ * Tenor API Key
+ * TODO: transfer apiKey or retrieve somewhere
+ */
 const TENOR_API_KEY = 'AIzaSyCe3wcxBWD8Oe5SBfBz7qhR2680gYvIqEA';
 
+// TODO: Move this to a more appropriate location
 const QUESTIONS_LIST = [
 	{
 		qid: 'allergies',
@@ -183,6 +202,11 @@ const QUESTIONS_LIST = [
 	},
 ];
 
+/**
+ * Number of results to show in the performance summary on fetch
+ */
+const PAGINATE_FETCH_LIMIT = 20;
+
 export default {
 	API_URL: process.env.API_URL ?? '',
 	HELP_URL: process.env.HELP_URL ?? '',
@@ -197,5 +221,6 @@ export default {
 	DEVICEWIDTH,
 	RECAPTCHA,
 	STRIPE_PUBLISHABLE_KEY,
+	PAGINATE_FETCH_LIMIT,
 	ENABLE_ENV_PICKER,
 };

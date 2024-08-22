@@ -32,7 +32,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import {
 	CardStyleInterpolators,
-	StackNavigationOptions,
 	createStackNavigator,
 } from '@react-navigation/stack';
 
@@ -45,6 +44,7 @@ import CalendarHeaderRightComponent from '@/screens/Calendar/components/Calendar
 import ShopHeaderRightComponent from '@/screens/Shop/components/ShopHeaderRightComponent';
 
 import useAuth from '@/auth/hooks/useAuth';
+import ResultTypesModal from '@/screens/PerformanceSummary/ResultTypesModal/ResultTypesModal';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import type {
@@ -60,6 +60,7 @@ import DashboardStackNavigator from './DashboardStack';
 import MenuStackNavigator from './MenuStack';
 import { navigationRef } from './NavigationRef';
 import HeaderCloseButton from './components/HeaderCloseButton';
+import { CommonHeaderOptions, TabHeaderOptions } from './utils/options';
 
 const linking: LinkingOptions<ApplicationStackParamList> = {
 	prefixes: ['com.fitbox://', 'https://fitbox.iq', 'http://fitbox.iq'],
@@ -96,12 +97,6 @@ const tabBarIconRender = ({
 	color: string;
 	size: number;
 }) => <Ionicons name={icons[route]} size={size} color={color} />;
-
-const CommonHeaderOptions: StackNavigationOptions = {
-	headerShown: true,
-	cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-	headerBackTitleVisible: false,
-};
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const MainTabNavigator = () => {
@@ -180,17 +175,7 @@ const InboxStackNavigator = () => {
 	const { colors } = useTheme();
 	return (
 		<InboxStack.Navigator initialRouteName="Inbox">
-			<InboxStack.Group
-				screenOptions={{
-					headerStyle: { backgroundColor: config.colors.brand },
-					headerTitleAlign: 'center',
-					cardStyleInterpolator:
-						CardStyleInterpolators.forHorizontalIOS,
-					headerTintColor: 'white',
-					headerBackTitleVisible: false,
-					headerTitleStyle: layout.fontMontserratRegular,
-				}}
-			>
+			<InboxStack.Group screenOptions={CommonHeaderOptions}>
 				<InboxStack.Screen name="Inbox" component={Inbox} />
 				<InboxStack.Screen
 					name="Conversation"
@@ -332,7 +317,7 @@ const ApplicationNavigator = () => {
 							name="Login"
 							component={Login}
 							options={{
-								...CommonHeaderOptions,
+								...TabHeaderOptions,
 								headerBackTitleVisible: false,
 							}}
 						/>
@@ -341,7 +326,7 @@ const ApplicationNavigator = () => {
 							component={ResetPassword}
 							options={{
 								title: 'Forgot Password',
-								...CommonHeaderOptions,
+								...TabHeaderOptions,
 								headerBackTitleVisible: false,
 							}}
 						/>
@@ -354,7 +339,7 @@ const ApplicationNavigator = () => {
 							component={Session}
 							options={({ route }) => ({
 								title: route.params.title,
-								...CommonHeaderOptions,
+								...TabHeaderOptions,
 							})}
 						/>
 						<Stack.Screen
@@ -362,7 +347,7 @@ const ApplicationNavigator = () => {
 							component={ScoreCommentsScreen}
 							options={{
 								title: 'Class Results',
-								...CommonHeaderOptions,
+								...TabHeaderOptions,
 							}}
 						/>
 						<Stack.Screen
@@ -370,7 +355,7 @@ const ApplicationNavigator = () => {
 							component={EULAScreen}
 							options={{
 								title: 'End User License Agreement',
-								...CommonHeaderOptions,
+								...TabHeaderOptions,
 							}}
 						/>
 						<Stack.Screen
@@ -378,7 +363,7 @@ const ApplicationNavigator = () => {
 							component={BillingAgreementScreen}
 							options={{
 								title: 'Billing Agreement',
-								...CommonHeaderOptions,
+								...TabHeaderOptions,
 							}}
 						/>
 						<Stack.Screen
@@ -386,14 +371,14 @@ const ApplicationNavigator = () => {
 							component={GymWaiverScreen}
 							options={{
 								title: 'Gym Waiver',
-								...CommonHeaderOptions,
+								...TabHeaderOptions,
 							}}
 						/>
 						<Stack.Screen
 							name="PDFViewer"
 							component={PDFViewerScreen}
 							options={{
-								...CommonHeaderOptions,
+								...TabHeaderOptions,
 								headerBackTitleVisible: false,
 							}}
 						/>
@@ -401,7 +386,7 @@ const ApplicationNavigator = () => {
 							name="HealthCapture"
 							component={HealthCaptureScreen}
 							options={{
-								...CommonHeaderOptions,
+								...TabHeaderOptions,
 								headerBackTitleVisible: false,
 							}}
 						/>
@@ -409,7 +394,7 @@ const ApplicationNavigator = () => {
 							name="SignUp"
 							component={SignUp}
 							options={{
-								...CommonHeaderOptions,
+								...TabHeaderOptions,
 								headerBackTitleVisible: false,
 								title: 'Sign Up',
 							}}
@@ -418,7 +403,7 @@ const ApplicationNavigator = () => {
 							name="Scoring"
 							component={SessionScoringScreen}
 							options={() => ({
-								...CommonHeaderOptions,
+								...TabHeaderOptions,
 								title: 'Add Result',
 							})}
 						/>
@@ -468,6 +453,13 @@ const ApplicationNavigator = () => {
 							name="BuyNow"
 							component={SubscriptionSetup}
 							options={{ title: 'Buy Subscription' }}
+						/>
+						<Stack.Screen
+							name="ResultTypesModal"
+							component={ResultTypesModal}
+							options={{
+								title: 'Add new result',
+							}}
 						/>
 					</Stack.Group>
 

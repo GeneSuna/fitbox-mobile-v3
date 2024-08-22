@@ -11,10 +11,15 @@ import {
 	AttendanceReportDataSchema,
 	GetPastPerformanceResultSchema,
 	LeaderboardsDataSchema,
+	OneRmSchema,
+	PastPerformanceHistorySchema,
+	PastPerformanceResultSchema,
 	PrResultSchema,
+	ResultTypeSchema,
 	ScoreCommentsDataSchema,
 	ScoreDetailsDataSchema,
 	ScoreResultSchema,
+	ScoringTypeSchema,
 } from './leaderboards';
 import {
 	ContactDataSchema,
@@ -55,8 +60,17 @@ import { WaiverSchema } from './waivers';
 
 export const apiResponseSchema = <T>(dataSchema: z.ZodSchema<T>) =>
 	z.object({
-		// data could be any key in object
 		data: dataSchema,
+		message: z.string(),
+		error: z.boolean(),
+	});
+
+export const apiPaginationResponseSchema = <T>(dataSchema: z.ZodSchema<T>) =>
+	z.object({
+		data: dataSchema,
+		end: z.number(),
+		start: z.number(),
+		totalResults: z.number(),
 		message: z.string(),
 		error: z.boolean(),
 	});
@@ -314,3 +328,24 @@ export const GetFitboxGallerySchema = apiResponseSchema(
 export const GetAttendanceReportSchema = apiResponseSchema(
 	AttendanceReportDataSchema,
 );
+
+export const GetUserMovementSchema = apiResponseSchema(
+	z.object({
+		movements: z.array(PastPerformanceResultSchema),
+		one_rm: OneRmSchema.nullable(),
+	}),
+);
+
+export const GetPastPerformanceHistorySchema = apiPaginationResponseSchema(
+	z.array(PastPerformanceHistorySchema),
+);
+
+export const GetResultsTypesSchema = apiPaginationResponseSchema(
+	z.array(ResultTypeSchema),
+);
+
+export const GetScoringTypesSchema = apiResponseSchema(
+	z.array(ScoringTypeSchema),
+);
+
+export const DeleteScoreResponseSchema = apiResponseSchema(z.any());

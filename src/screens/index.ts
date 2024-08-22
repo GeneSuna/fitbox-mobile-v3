@@ -24,6 +24,7 @@ export { default as MyDetails } from './MyDetails/MyDetails';
 export { default as PDFViewerScreen } from './PDFViewerScreen/PDFViewerScreen';
 export { default as PaymentInformation } from './PaymentInformation/PaymentInformation';
 export { default as PaymentUpdate } from './PaymentUpdate/PaymentUpdate';
+export { default as PastPerformance } from './PerformanceSummary/PastPerformance';
 export { default as ResetPassword } from './ResetPassword/ResetPassword';
 export { default as ScoreCommentsScreen } from './ScoreCommentsScreen/ScoreCommentsScreen';
 export { default as Session } from './Session/Session';
