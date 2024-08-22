@@ -54,10 +54,10 @@ const styles = StyleSheet.create({
 		height: 55,
 	},
 	tileTextContainer: {
-		flex: 4,
+		flex: 1,
 	},
 	tileIconContainer: {
-		flex: 1,
+		marginRight: metrics.sm,
 	},
 	tileContainer: {
 		flexDirection: 'row',
