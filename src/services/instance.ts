@@ -13,7 +13,7 @@ const xAppVersion = `${process.env.APP_VERSION ? process.env.APP_VERSION : ''}`;
  * @returns API Token
  */
 const apiToken = () =>
-	Constant.MASQUERADE_USER_API_TOKEN ?? mmkvStorage.getString('apiToken');
+	Constant.MASQUERADE_USER_API_TOKEN || mmkvStorage.getString('apiToken');
 
 /**
  * Get the API URL from the storage
