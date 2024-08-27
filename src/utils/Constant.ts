@@ -6,9 +6,51 @@
 
 import { Dimensions, Platform } from 'react-native';
 
-const CONSTANT_SAMPLE = 'just a test';
+/**
+ * This is to enable the environment picker in the login screen to switch between different environments
+ */
+const ENABLE_ENV_PICKER = true;
+
+/**
+ * This is the API token for the masquerade user
+ * Leave it empty if you don't want to use the masquerade user
+ */
+const MASQUERADE_USER_API_TOKEN = '';
+
+/**
+ * Get the device height
+ */
 const DEVICEHEIGHT = Dimensions.get('screen').height;
+
+/**
+ * Get the device width
+ */
 const DEVICEWIDTH = Dimensions.get('screen').width;
+
+/**
+ * Base URLs for the API
+ */
+const API_BASE_URLS = {
+	DEV: 'https://dev.fitbox.iq',
+	STAGING: 'https://staging.fitbox.iq',
+	PROD: 'https://fitbox.iq',
+};
+
+/**
+ * Recaptcha keys
+ */
+const RECAPTCHA = {
+	siteKey: '6Ldez1UdAAAAAI_K-Fz1pDkcbQCLHN3JZ6b8hXE1',
+	baseURL: 'http://fitboxcorp.com/',
+};
+
+/**
+ * Stripe Keys
+ */
+const STRIPE_PUBLISHABLE_KEY = {
+	TEST: 'pk_test_FXdNftSfeoWHolUG1cwGCLxK00gUIDUAec',
+	LIVE: 'pk_live_o1GIALVbZwAltbmrw1rXaOyf00T1zjQ3RU',
+};
 
 // TODO: Move this to a more appropriate location
 const BODY_PARTS = [
@@ -31,37 +73,6 @@ const SORT_OPTIONS = [
 	{ name: 'Staff', value: 'staff' },
 	{ name: 'Groups', value: 'group' },
 ];
-
-/**
- * Base URLs for the API
- */
-const API_BASE_URLS = {
-	DEV: 'https://dev.fitbox.iq',
-	STAGING: 'https://staging.fitbox.iq',
-	PROD: 'https://fitbox.iq',
-};
-
-/**
- * Environment Picker
- * This is to en
- */
-const ENABLE_ENV_PICKER = false;
-
-/**
- * Recaptcha keys
- */
-const RECAPTCHA = {
-	siteKey: '6Ldez1UdAAAAAI_K-Fz1pDkcbQCLHN3JZ6b8hXE1',
-	baseURL: 'http://fitboxcorp.com/',
-};
-
-/**
- * Stripe Keys
- */
-const STRIPE_PUBLISHABLE_KEY = {
-	TEST: 'pk_test_FXdNftSfeoWHolUG1cwGCLxK00gUIDUAec',
-	LIVE: 'pk_live_o1GIALVbZwAltbmrw1rXaOyf00T1zjQ3RU',
-};
 
 /**
  * Tenor API Key
@@ -217,9 +228,10 @@ const NOTIFICATION_SERVICE_URL = {
 const PAGINATE_FETCH_LIMIT = 20;
 
 export default {
+	ENABLE_ENV_PICKER,
+	MASQUERADE_USER_API_TOKEN,
 	API_URL: process.env.API_URL ?? '',
 	HELP_URL: process.env.HELP_URL ?? '',
-	CONSTANT_SAMPLE,
 	IS_ANDROID: Platform.OS === 'android',
 	BODY_PARTS,
 	QUESTIONS_LIST,
@@ -231,6 +243,5 @@ export default {
 	RECAPTCHA,
 	STRIPE_PUBLISHABLE_KEY,
 	PAGINATE_FETCH_LIMIT,
-	ENABLE_ENV_PICKER,
 	NOTIFICATION_SERVICE_URL,
 };

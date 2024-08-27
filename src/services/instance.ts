@@ -3,10 +3,28 @@ import { mmkvStorage } from '@/storage';
 import { Constant, Say } from '@/utils';
 import ky from 'ky';
 
+/**
+ * Get the API token from the storage
+ */
 const xAppVersion = `${process.env.APP_VERSION ? process.env.APP_VERSION : ''}`;
-const apiToken = () => mmkvStorage.getString('apiToken');
+
+/**
+ * Get the API token from the storage
+ * @returns API Token
+ */
+const apiToken = () =>
+	Constant.MASQUERADE_USER_API_TOKEN ?? mmkvStorage.getString('apiToken');
+
+/**
+ * Get the API URL from the storage
+ * @returns API URL
+ */
 const apiUrl = () => mmkvStorage.getString('apiUrl');
 
+/**
+ * Create a new instance of ky
+ * @returns KyInstance
+ */
 export const instance = () =>
 	ky.extend({
 		prefixUrl: apiUrl() || Constant.API_URL,
@@ -16,6 +34,10 @@ export const instance = () =>
 		signal: undefined,
 	});
 
+/**
+ * Create a new instance of ky with secured headers
+ * @returns KyInstance
+ */
 export const securedInstance = () =>
 	ky.extend({
 		prefixUrl: apiUrl() || Constant.API_URL,
