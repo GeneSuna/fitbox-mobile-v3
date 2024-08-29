@@ -134,7 +134,7 @@ const createSessionSlice: StateCreator<
 
 						// return data
 						return {
-							start: moment(item.local_start).format('H:mm A'),
+							start: moment(item.local_start).format('H:mm'),
 							isSubscribed: Func.checkSubscription(item.bookable),
 							location: item.venue_id ? item.venue : undefined,
 							venueId: Number(item.venue_id),

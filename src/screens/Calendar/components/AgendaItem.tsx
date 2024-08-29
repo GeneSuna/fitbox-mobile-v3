@@ -345,8 +345,10 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 	},
 	timeContainer: {
-		width: '20%',
+		width: '18%',
 		justifyContent: 'center',
+		alignItems: 'center',
+		marginRight: config.metrics.rg,
 	},
 	divider: {
 		borderRadius: 8,
