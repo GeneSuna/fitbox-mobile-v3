@@ -146,7 +146,7 @@ const Session = ({ route }: ApplicationScreenProps) => {
 		);
 	}
 
-	if (refreshing) {
+	if (data === undefined) {
 		return <SessionLoader />;
 	}
 
@@ -188,6 +188,7 @@ const Session = ({ route }: ApplicationScreenProps) => {
 			{activeTab === SessionTabsEnum.SECTIONS ? (
 				<SessionSectionsTab
 					session={session as SessionDetailSchemaType}
+					refreshing={refreshing}
 				/>
 			) : null}
 

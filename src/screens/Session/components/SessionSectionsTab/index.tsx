@@ -17,6 +17,7 @@ import {
 import { Func, Say } from '@/utils';
 import useStore from '@/zustand/Store';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { useQueryClient } from '@tanstack/react-query';
 import { isArray, isEmpty, parseInt } from 'lodash';
 import { useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -48,11 +49,17 @@ const WarningText = ({ text }: { text: string }) => (
 
 interface SessionsSectionsTabProps {
 	session: SessionDetailSchemaType;
+	refreshing: boolean;
 }
 
-const SessionsSectionsTab = ({ session }: SessionsSectionsTabProps) => {
+const SessionsSectionsTab = ({
+	session,
+	refreshing,
+}: SessionsSectionsTabProps) => {
 	const navigation =
 		useNavigation<NavigationProp<ApplicationStackParamList>>();
+
+	const queryClient = useQueryClient();
 
 	const loggedInUser = useStore(s => s.loggedInUser);
 
@@ -61,7 +68,6 @@ const SessionsSectionsTab = ({ session }: SessionsSectionsTabProps) => {
 		member => member.user_id === loggedInUser?.id,
 	);
 
-	const [refreshing, setRefreshing] = useState(false);
 	const [isVideoLoading, setIsVideoLoading] = useState(true);
 	const [videoModalActive, setVideoModalActive] = useState(false);
 	const [videoUrlCode, setVideoUrlCode] = useState('');
@@ -94,7 +100,6 @@ const SessionsSectionsTab = ({ session }: SessionsSectionsTabProps) => {
 
 	// eslint-disable-next-line no-console
 	console.log('testing', {
-		setRefreshing,
 		isVideoLoading,
 		videoModalActive,
 		videoUrlCode,
@@ -137,6 +142,12 @@ const SessionsSectionsTab = ({ session }: SessionsSectionsTabProps) => {
 		navigation.navigate('Webview', {
 			title,
 			content: `${content}<br/><br/>`, // workaround for scrolling issues
+		});
+	};
+
+	const handleRefresh = () => {
+		void queryClient.invalidateQueries({
+			queryKey: ['sessionGetScheduleDetail'],
 		});
 	};
 
@@ -548,7 +559,7 @@ const SessionsSectionsTab = ({ session }: SessionsSectionsTabProps) => {
 					<ScrollView
 						contentContainerStyle={styles.sectionsContainer}
 						refreshing={Boolean(refreshing)}
-						onRefresh={() => {}}
+						onRefresh={handleRefresh}
 					>
 						{renderSections()}
 					</ScrollView>

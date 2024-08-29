@@ -122,13 +122,11 @@ const SessionActionButtons = ({
 								},
 								{
 									text: 'No',
-									onPress: reloadSessionDetail,
 									style: 'destructive',
 								},
 							],
 							{
 								cancelable: true,
-								onDismiss: reloadSessionDetail,
 							},
 						);
 					} else if (res.error_code === 'AB001') {
@@ -137,9 +135,6 @@ const SessionActionButtons = ({
 							'You are already booked for this session',
 							SimpleToast.SHORT,
 						);
-
-						// trigger refresh
-						reloadSessionDetail();
 					} else if (res?.allow_buynow) {
 						Alert.alert(
 							'No Sessions Remaining',
@@ -241,6 +236,8 @@ const SessionActionButtons = ({
 					loggedInUser!.id,
 					true,
 				);
+
+				reloadSessionDetail();
 			})
 			.catch(() => {
 				// console.log('@err', err);
