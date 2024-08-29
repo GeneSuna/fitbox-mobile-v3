@@ -69,7 +69,6 @@ export default OneRMComponent;
 
 const styles = StyleSheet.create({
 	mainCon: {
-		flex: 1,
 		paddingHorizontal: 15,
 		marginBottom: config.metrics.lg,
 	},

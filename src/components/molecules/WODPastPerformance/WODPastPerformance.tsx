@@ -121,7 +121,9 @@ const WODPastPerformance = ({
 		Object.keys(showResults).forEach(movement_type => {
 			showResults[movement_type]!.forEach(mov => {
 				if (mov.one_rm && !oneRMs[movement_type]) {
-					oneRMs[movement_type] = mov.one_rm;
+					oneRMs[movement_type] = mov.one_rm as unknown as {
+						weight: number;
+					};
 				}
 			});
 		});

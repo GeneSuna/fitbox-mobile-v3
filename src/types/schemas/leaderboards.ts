@@ -111,7 +111,7 @@ export const PastPerformanceResultSchema = z.object({
 	movement_name: z.string().nullish(),
 	one_rm: z
 		.object({
-			weight: z.number(),
+			weight: z.string().nullish(),
 			// other fields
 		})
 		.nullish(),

@@ -115,7 +115,10 @@ const ScoreDisplayFormat = ({ data }: ScoreDisplayFormatProps) => {
 					{data.distance} {data.distance_unit}
 				</Text>
 			);
-		case 20: // For Load
+		case 20: {
+			// For Load
+			const weight = data?.one_rm?.weight ?? data?.weight;
+
 			return (
 				<Row>
 					<Text size="md" color="darkgray">
@@ -126,12 +129,11 @@ const ScoreDisplayFormat = ({ data }: ScoreDisplayFormatProps) => {
 						{' '}
 						{data.wod_score_id
 							? data.value
-							: `${data.weight} ${
-									data.weight_unit ? data.weight_unit : ''
-							  }`}
+							: `${weight} ${data.weight_unit ?? ''}`}
 					</Text>
 				</Row>
 			);
+		}
 		case 34: // Calories
 			return (
 				<Row spacing="space-between">
