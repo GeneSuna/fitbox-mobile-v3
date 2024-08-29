@@ -15,6 +15,7 @@ const colors = {
 	orange: '#FFA500',
 	magenta: '#FF0066',
 	wellnessPrimary: '#00FF00',
+	sessionBlue: '#0033A5',
 } as const;
 
 const colorsLight = {

@@ -216,7 +216,7 @@ const SessionsSectionsTab = ({
 								<Text
 									size="lg"
 									bold
-									color="info"
+									color="sessionBlue"
 									style={layout.flex_1}
 								>
 									{section.name}

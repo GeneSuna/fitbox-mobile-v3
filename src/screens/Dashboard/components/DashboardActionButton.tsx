@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
 	},
 	tileTextContainer: {
 		flex: 1,
+		alignItems: 'center',
 	},
 	tileIconContainer: {
 		marginRight: metrics.sm,

@@ -567,6 +567,7 @@ const Dashboard = () => {
 							spacing={
 								showSwitchBtn ? 'space-between' : 'space-around'
 							}
+							style={{ marginBottom: config.metrics.lg }}
 						>
 							<View>
 								<Text bold size="xxl">
@@ -587,7 +588,7 @@ const Dashboard = () => {
 							<View
 								style={{
 									marginTop: config.metrics.lg,
-									marginBottom: config.metrics.rg,
+									marginBottom: config.metrics.xl,
 								}}
 							>
 								<Row spacing="space-evenly">
@@ -666,7 +667,7 @@ const Dashboard = () => {
 							</>
 						)}
 
-						{!loading && upcomingSessions.length > 1 && (
+						{!loading && (
 							<TouchableOpacity
 								style={styles.viewMoreButton}
 								onPress={() => navigate('Calendar')}
@@ -791,6 +792,7 @@ const styles = StyleSheet.create({
 	presetFilters: {
 		flexWrap: 'wrap',
 		flexDirection: 'row-reverse',
+		marginTop: config.metrics.xl,
 	},
 	attendanceIcon: {
 		width: 25,
