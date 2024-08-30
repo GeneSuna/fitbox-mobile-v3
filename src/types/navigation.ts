@@ -137,7 +137,9 @@ export type DashboardParamList = {
 	Dashboard: undefined;
 	ClassResults: ClassResultsParams;
 	ScoreComments: ScoreCommentsParams;
+	Bookings: undefined;
 };
+
 export type ClassResultsParams = {
 	selectClass?: number;
 	dateFromParams?: string;

@@ -1,4 +1,9 @@
-import { ClassResultsScreen, Dashboard, ScoreCommentsScreen } from '@/screens';
+import {
+	BookingScreen,
+	ClassResultsScreen,
+	Dashboard,
+	ScoreCommentsScreen,
+} from '@/screens';
 import { DashboardParamList } from '@/types/navigation';
 import { createStackNavigator } from '@react-navigation/stack';
 import { CommonHeaderOptions } from './utils/options';
@@ -30,6 +35,13 @@ const DashboardStackNavigator = () => {
 				component={ScoreCommentsScreen}
 				options={{
 					title: 'Class Results',
+				}}
+			/>
+			<Stack.Screen
+				name="Bookings"
+				component={BookingScreen}
+				options={{
+					title: 'My Bookings',
 				}}
 			/>
 		</Stack.Navigator>

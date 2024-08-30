@@ -2,6 +2,7 @@ export { default as AboutUs } from './AboutUs/AboutUs';
 export { default as AcceptedWaiversScreen } from './AcceptedWaiversScreen/AcceptedWaiversScreen';
 export { default as Auth } from './Auth/Auth';
 export { default as BillingAgreementScreen } from './BillingAgreementScreen/BillingAgreementScreen';
+export { default as BookingScreen } from './BookingScreen/BookingScreen';
 export { default as BrowseMediaScreen } from './BrowseMediaScreen/BrowseMediaScreen';
 export { default as Calendar } from './Calendar/Calendar';
 export { default as Camera } from './Camera/Camera';

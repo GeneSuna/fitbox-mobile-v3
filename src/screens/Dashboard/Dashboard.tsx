@@ -667,10 +667,10 @@ const Dashboard = () => {
 							</>
 						)}
 
-						{!loading && (
+						{!loading && upcomingSessions.length > 0 && (
 							<TouchableOpacity
 								style={styles.viewMoreButton}
-								onPress={() => navigate('Calendar')}
+								onPress={() => navigate('Bookings')}
 							>
 								<Text bold color="info">
 									{t('dashboard:sessions.member.viewAll')}
