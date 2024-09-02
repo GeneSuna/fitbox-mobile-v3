@@ -8,6 +8,7 @@ import { SafeScreen } from '@/components/template';
 import { useTheme } from '@/theme';
 
 import useAuth from '@/auth/hooks/useAuth';
+import { getApiToken } from '@/services/instance';
 import type { ApplicationScreenProps } from '@/types/navigation';
 
 const Startup = ({ navigation }: ApplicationScreenProps) => {
@@ -16,6 +17,7 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 		// getToken,
 		isLoggedIn,
 		user,
+		signOut,
 	} = useAuth();
 	const { t } = useTranslation(['startup']);
 
@@ -28,7 +30,8 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 
 	useEffect(() => {
 		const checkToken = () => {
-			if (isLoggedIn) {
+			const apiToken = getApiToken();
+			if (isLoggedIn && apiToken) {
 				if (user?.user_data) {
 					// check if user has accepted EULA
 					if (!user?.user_data.eula_accepted) {
@@ -78,6 +81,9 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 					routes: [{ name: 'Main' }],
 				});
 			}
+
+			// perform signout
+			signOut();
 
 			return navigation.reset({
 				index: 0,
