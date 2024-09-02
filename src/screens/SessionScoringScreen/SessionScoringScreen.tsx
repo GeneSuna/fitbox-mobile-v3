@@ -9,7 +9,7 @@ import { ApplicationScreenProps, ScoringParams } from '@/types/navigation';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { BottomSheetDefaultBackdropProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import { useFocusEffect } from '@react-navigation/native';
-import { JSX, useCallback, useEffect, useMemo, useState } from 'react';
+import { JSX, useCallback, useEffect, useState } from 'react';
 import {
 	Dimensions,
 	Keyboard,
@@ -73,7 +73,6 @@ const SessionScoringScreen = ({ route }: ApplicationScreenProps) => {
 		[],
 	);
 
-	const isKeyboardVisible = useMemo(() => Keyboard.isVisible(), [Keyboard]);
 	const scoringBy = section.scoring_by;
 	if (scoringBy === 'section' || scoringBy === 'movement') {
 		return (
@@ -98,7 +97,7 @@ const SessionScoringScreen = ({ route }: ApplicationScreenProps) => {
 					</View>
 				</View>
 
-				{!isKeyboardVisible && (
+				{!Keyboard.isVisible() && (
 					<BottomSheet
 						snapPoints={[bottomSheetSpacing, '90%']}
 						backgroundStyle={styles.pastPerformanceContainer}
