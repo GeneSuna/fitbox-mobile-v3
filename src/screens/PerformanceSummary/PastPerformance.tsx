@@ -155,7 +155,7 @@ const PastPerformance = ({ navigation }: PerformanceSummaryScreenProps) => {
 			/>
 
 			<Button
-				title="Add New"
+				title="Add New Result"
 				variant="info"
 				style={styles.addBtn}
 				onPress={() => navigation.navigate('ResultTypesModal')}
