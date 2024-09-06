@@ -5,7 +5,16 @@ import layout from '@/theme/layout';
 import { SendMessageDataType } from '@/types/schemas/message';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import {
+	Image,
+	ImageSourcePropType,
+	ImageStyle,
+	StyleProp,
+	StyleSheet,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import ImagePop from '../ImagePop/ImagePop';
 
 type ChatMessageProps = {
@@ -15,6 +24,16 @@ type ChatMessageProps = {
 	dontDisplayTime: boolean;
 	index: number;
 };
+
+const MemoizedImage = React.memo(
+	({
+		source,
+		style,
+	}: {
+		source: ImageSourcePropType;
+		style: StyleProp<ImageStyle>;
+	}) => <Image source={source} style={style} />,
+);
 
 const ChatMessage = (props: ChatMessageProps) => {
 	const { user } = useAuth();
@@ -113,7 +132,7 @@ const ChatMessage = (props: ChatMessageProps) => {
 						</Text>
 					)}
 					{hasGIF && (
-						<Image
+						<MemoizedImage
 							source={{
 								uri: lines[lines.length - 1],
 							}}

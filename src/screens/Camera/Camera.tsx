@@ -1,3 +1,5 @@
+// OBSOLETE: hide record video feature as it is not working in some devices
+// TODO: fix record video feature
 import { Row, Spacer, Text } from '@/components/atoms';
 import { goBack } from '@/navigators/NavigationRef';
 import { config } from '@/theme/_config';

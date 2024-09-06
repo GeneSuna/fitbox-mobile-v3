@@ -1,3 +1,4 @@
+// OBSOLETE: hide fitbox gallery feature
 import { Card, Row, Spacer, Text } from '@/components/atoms';
 import { getFitboxGallery } from '@/services/message';
 import { config } from '@/theme/_config';

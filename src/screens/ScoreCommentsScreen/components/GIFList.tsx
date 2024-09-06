@@ -57,20 +57,20 @@ const GIFList = ({
 	}, [searchQuery]);
 
 	const renderGIFTile = ({ item }: { item: GIFItemType }) => {
-		const tinyGIF = item.media_formats.tinygif;
+		const nanoGIF = item.media_formats.nanogif;
 
 		return (
 			<TouchableOpacity
 				style={styles.gifContainer}
 				// TODO: change url if GIF is too large to display in the Conversation component
 				onPress={() => {
-					setChosenGIF(item.media_formats.mediumgif.url);
-					setGIFUrl(item.media_formats.mediumgif.url);
+					setChosenGIF(nanoGIF.url);
+					setGIFUrl(nanoGIF.url);
 				}}
 			>
 				<Image
 					source={{
-						uri: tinyGIF.url,
+						uri: nanoGIF.url,
 					}}
 					style={styles.gifStyle}
 				/>

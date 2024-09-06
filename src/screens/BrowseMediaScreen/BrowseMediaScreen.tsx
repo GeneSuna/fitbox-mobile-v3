@@ -161,7 +161,8 @@ const BrowseMediaScreen = ({ navigation }: ComposeScreenProps) => {
 					/>
 				</Row>
 			</Card>
-
+			{/* OBSOLETE: hide fitbox gallery feature */}
+			{/*
 			<Card
 				style={styles.cardContainer}
 				onPress={() => navigation.navigate('fitboxGallery')}
@@ -183,9 +184,10 @@ const BrowseMediaScreen = ({ navigation }: ComposeScreenProps) => {
 						style={styles.alignSelfCenter}
 					/>
 				</Row>
-			</Card>
-
-			<Card
+			</Card> */}
+			{/* OBSOLETE: hide videocam feature for now as it is not working in some devices
+			TODO: fix videocam feature */}
+			{/* <Card
 				style={styles.cardContainer}
 				onPress={() => navigation.navigate('Camera')}
 			>
@@ -211,7 +213,7 @@ const BrowseMediaScreen = ({ navigation }: ComposeScreenProps) => {
 						style={styles.alignSelfCenter}
 					/>
 				</Row>
-			</Card>
+			</Card> */}
 		</View>
 	);
 };
