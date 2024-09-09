@@ -31,10 +31,17 @@ const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
 		getNextPageParam: (a, b) =>
 			Func.getNextPageParam(a.end, b[0]?.totalResults),
 		select: d => {
-			const results = d.pages.flatMap(page => page.data);
+			const uniqueResults = Array.from(
+				new Map(
+					d.pages
+						.flatMap(page => page.data)
+						.filter(item => !!item.id) // Exclude items with no id cause backend seems blank items
+						.map(item => [item.id, item]),
+				),
+			).map(([, item]) => item);
 
 			return {
-				data: results,
+				data: uniqueResults,
 				totalResults: d.pages[0]?.totalResults || 0,
 			};
 		},
@@ -88,7 +95,10 @@ const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
 				<Text color="gray200" size="xs" transform="uppercase">
 					{item.type.slice(0, -1)}
 				</Text>
-				<Text>{item.name}</Text>
+				<Text>
+					{item.name}
+					{item.id}
+				</Text>
 			</View>
 			<Icon
 				name="plus"
@@ -98,9 +108,7 @@ const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
 		</Row>
 	);
 
-	const keyExtractor = (item: ResultType, index: number) => {
-		return `${index}_${item.id}_${Math.random()}`;
-	};
+	const keyExtractor = (item: ResultType) => `${item.id}`;
 
 	return (
 		<View style={layout.flex_1}>

@@ -142,7 +142,7 @@ export const AttendanceReportDataSchema = z.object({
 });
 
 export const PastPerformanceHistorySchema = z.object({
-	id: z.number(),
+	id: z.number().nullable(),
 	date_input: z.string(),
 	past_performance_id: z.number(),
 	displayName: z.string(),

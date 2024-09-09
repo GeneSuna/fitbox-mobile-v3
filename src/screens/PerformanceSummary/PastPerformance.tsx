@@ -34,10 +34,17 @@ const PastPerformance = ({ navigation }: PerformanceSummaryScreenProps) => {
 		getNextPageParam: (a, b) =>
 			Func.getNextPageParam(a.end, b[0]?.totalResults),
 		select: d => {
-			const results = d.pages.flatMap(page => page.data);
+			const uniqueResults = Array.from(
+				new Map(
+					d.pages
+						.flatMap(page => page.data)
+						.filter(item => !!item.id) // Exclude items with no id cause backend seems blank items
+						.map(item => [item.id, item]),
+				),
+			).map(([, item]) => item);
 
 			return {
-				data: results,
+				data: uniqueResults,
 				totalResults: d.pages[0]?.totalResults || 0,
 			};
 		},
@@ -66,6 +73,10 @@ const PastPerformance = ({ navigation }: PerformanceSummaryScreenProps) => {
 	};
 
 	const onResultClick = (result: PastPerformanceHistoryType) => {
+		if (!result.id) {
+			throw new Error('Result is invalid');
+		}
+
 		switch (result.type) {
 			case 'movement':
 				// For independent movements
@@ -75,7 +86,7 @@ const PastPerformance = ({ navigation }: PerformanceSummaryScreenProps) => {
 				}
 
 				navigation.navigate('MovementHistory', {
-					movementId: result.id,
+					movementId: result.id, // Movement ID is required but we've already checked for it in select using filter see line 68
 					name: result.displayName,
 				});
 				break;
@@ -109,8 +120,7 @@ const PastPerformance = ({ navigation }: PerformanceSummaryScreenProps) => {
 		);
 	};
 
-	const itemExtractor = (item: PastPerformanceHistoryType) =>
-		`${item.id}_${Math.random()}`;
+	const itemExtractor = (item: PastPerformanceHistoryType) => `${item.id}`;
 
 	return (
 		<View style={layout.flex_1}>
