@@ -9,6 +9,7 @@ import { configureFonts, Provider } from 'react-native-paper';
 import PushNotification from 'react-native-push-notification';
 import 'react-native-reanimated';
 import AuthProvider from './auth/AuthProvider/AuthProvider';
+import KeyboardVisibilityProvider from './context/KeyboardProvider';
 import ApplicationNavigator from './navigators/Application';
 import { mmkvStorage } from './storage';
 import './translations';
@@ -71,7 +72,9 @@ function App() {
 			<AuthProvider storage={mmkvStorage}>
 				<ThemeProvider storage={mmkvStorage}>
 					<Provider theme={customTheme}>
-						<ApplicationNavigator />
+						<KeyboardVisibilityProvider>
+							<ApplicationNavigator />
+						</KeyboardVisibilityProvider>
 					</Provider>
 				</ThemeProvider>
 			</AuthProvider>

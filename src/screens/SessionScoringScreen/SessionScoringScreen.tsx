@@ -1,6 +1,7 @@
 import { Text } from '@/components/atoms';
 import { ScoreComponent } from '@/components/molecules';
 import WODPastPerformance from '@/components/molecules/WODPastPerformance/WODPastPerformance';
+import useKeyboardVisibility from '@/hooks/useKeyboardVisibility';
 import { goBack } from '@/navigators/NavigationRef';
 import { getPastPerformance } from '@/services/users';
 import { config } from '@/theme/_config';
@@ -12,7 +13,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import { JSX, useCallback, useEffect, useState } from 'react';
 import {
 	Dimensions,
-	Keyboard,
 	StyleSheet,
 	TouchableWithoutFeedback,
 	View,
@@ -24,9 +24,10 @@ const { fonts } = config;
 const bottomSheetSpacing = Dimensions.get('window').height * 0.3;
 
 const SessionScoringScreen = ({ route }: ApplicationScreenProps) => {
+	const { isKeyboardVisible } = useKeyboardVisibility();
 	const { section, sessionId } = route.params as ScoringParams;
 
-	// // Prepare state variables
+	// Prepare state variables
 	const [isExpanded, setExpanded] = useState(false);
 	const [isLoadingHistory, setLoadingHistory] = useState(true);
 	const [results, setResults] = useState({});
@@ -97,7 +98,7 @@ const SessionScoringScreen = ({ route }: ApplicationScreenProps) => {
 					</View>
 				</View>
 
-				{!Keyboard.isVisible() && (
+				{!isKeyboardVisible && (
 					<BottomSheet
 						snapPoints={[bottomSheetSpacing, '90%']}
 						backgroundStyle={styles.pastPerformanceContainer}

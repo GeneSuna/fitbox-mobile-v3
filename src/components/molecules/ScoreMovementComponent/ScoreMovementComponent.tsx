@@ -10,6 +10,7 @@ import {
 	Spacer,
 	Text,
 } from '@/components/atoms';
+import useKeyboardVisibility from '@/hooks/useKeyboardVisibility';
 import { goBack } from '@/navigators/NavigationRef';
 import {
 	addScoreMovement,
@@ -79,6 +80,7 @@ const ScoreMovementComponent = ({
 	containerStyle,
 	onSuccess,
 }: ScoreMovementComponentProps) => {
+	const { isKeyboardVisible } = useKeyboardVisibility();
 	const { setAppState } = useStore(state => ({
 		setAppState: state.setAppState,
 	}));
@@ -670,7 +672,7 @@ const ScoreMovementComponent = ({
 				</Row>
 			)}
 
-			{!Keyboard.isVisible() && (
+			{!isKeyboardVisible && (
 				<View style={styles.searchHeaderStyle}>
 					<TouchableOpacity
 						style={styles.searchContainerStyle}
