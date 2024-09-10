@@ -71,6 +71,7 @@ const createSessionSlice: StateCreator<
 
 	getClassesByDate: (date, userId, force = false) => {
 		// Define initial state and functions here or outside the store
+
 		const { classes, setClasses } = getState();
 		const hasData = classes.find(
 			item => item.title === date && !item.data[0]?.isLoading,
@@ -84,10 +85,14 @@ const createSessionSlice: StateCreator<
 				if (!res.error) {
 					const classesData = res.data.map(item => {
 						// Get duration
-						const duration = `${Func.getDuration(
+
+						const durationValue = Func.getDuration(
 							item.local_start,
 							item.local_end,
-						)} min(s)`;
+						);
+						const duration = `${durationValue} ${
+							durationValue > 1 ? 'mins' : 'min'
+						}`;
 
 						// Check if schedule is hidden
 						const hideSchedule = Func.isSessionVisible(

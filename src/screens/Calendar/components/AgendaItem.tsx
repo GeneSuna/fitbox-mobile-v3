@@ -350,7 +350,11 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 						<Text bold size="md">
 							{title}
 						</Text>
-						{location ? <Text size="sm">{location}</Text> : null}
+						{location ? (
+							<Text color="info" size="sm">
+								{location}
+							</Text>
+						) : null}
 					</View>
 					<View style={styles.itemButtonContainer}>
 						{renderButton()}
