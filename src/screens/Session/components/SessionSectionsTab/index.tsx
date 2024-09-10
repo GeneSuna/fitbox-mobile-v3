@@ -1,6 +1,6 @@
 import {
 	Button,
-	HTMLView,
+	HTMLRenderer,
 	Row,
 	ScrollView,
 	Spacer,
@@ -298,15 +298,10 @@ const SessionsSectionsTab = ({
 								)}
 
 								{section.text_section ? (
-									<>
-										<Spacer size="rg" />
-										<HTMLView
-											content={String(
-												section.text_section,
-											)}
-											index={index}
-										/>
-									</>
+									<HTMLRenderer
+										content={String(section.text_section)}
+										index={index}
+									/>
 								) : null}
 
 								{useWodMovements.length > 0 ? (
@@ -611,8 +606,8 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
 	sessionContainer: {
-		padding: 20,
-		paddingTop: 0,
+		paddingHorizontal: 20,
+		paddingBottom: 10,
 	},
 	sessionHeaderComponent: {
 		padding: 20,
