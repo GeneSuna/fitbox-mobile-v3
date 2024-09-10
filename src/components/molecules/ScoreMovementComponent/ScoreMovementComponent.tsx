@@ -46,7 +46,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RowItem from '../RowItem/RowItem';
-import ScoreComment from '../ScoreComment';
+import ScoreComment from '../ScoreComponent/components/ScoreComment';
 
 const iosVersion = parseInt(Platform.Version as string, 10);
 

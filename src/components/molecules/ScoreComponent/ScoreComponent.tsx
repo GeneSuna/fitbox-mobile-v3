@@ -36,7 +36,8 @@ import {
 	Spacer,
 	Text,
 } from '../../atoms';
-import ScoreComment from '../ScoreComment';
+
+import ScoreComment from './components/ScoreComment';
 import ScoreHeader from './components/ScoreHeader';
 import ScoreInputField from './components/ScoreInputField';
 import { ScoreInputFieldHandlers, SessionSectionState } from './types';

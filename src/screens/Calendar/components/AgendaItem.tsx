@@ -1,4 +1,5 @@
-import { Button, SkeletonView, Text } from '@/components/atoms';
+import { SkeletonView, Text } from '@/components/atoms';
+import { BookButton } from '@/components/molecules';
 import { attendSession, joinWaitlist } from '@/services/session';
 import { config } from '@/theme/_config';
 import { ApplicationStackParamList } from '@/types/navigation';
@@ -6,16 +7,9 @@ import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
 import { ClassItemData } from '@/zustand/interface/SessionInterface';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { isNumber } from 'lodash';
 import moment from 'moment';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-	Alert,
-	Animated,
-	StyleSheet,
-	TouchableOpacity,
-	View,
-} from 'react-native';
+import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
 import SimpleToast from 'react-native-simple-toast';
 
 const { metrics, fonts } = config;
@@ -122,45 +116,6 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 				});
 		};
 
-		// TODO: Find a way to merge both function from SessionActionButtons.tsx
-		const handleBuyNow = () => {
-			const redirectToBuyNow = () => {
-				const sessionDate = moment(startDate).format('YYYY-MM-DD');
-
-				navigation.navigate('BuyNow', {
-					sessionId: eventId,
-					sessionDate,
-					onSuccessPurchase: () => {
-						handleBook();
-						getClassesByDate(sessionDate, loggedInUser!.id, true);
-					},
-				});
-			};
-
-			const hasPaymentDetails =
-				loggedInUser?.user_data.has_payment_details;
-			if (hasPaymentDetails !== 'skipped' && !hasPaymentDetails) {
-				Alert.alert(
-					'Oops!',
-					'You need to have payment details to book this class. Do you want to add payment details now?',
-					[
-						{
-							text: 'Yes',
-							onPress: () => {
-								navigation.navigate('PaymentInformationModal', {
-									onSuccessCallback: redirectToBuyNow,
-								});
-							},
-						},
-						{ text: 'No', style: 'destructive' },
-					],
-					{ cancelable: true },
-				);
-			} else {
-				redirectToBuyNow();
-			}
-		};
-
 		const handleViewSession = useCallback(() => {
 			navigation.navigate('Session', {
 				id: Number(eventId),
@@ -170,125 +125,37 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 			});
 		}, []);
 
-		const renderButton = useCallback(() => {
-			if (!isSubscribed && !isCoach && !isAttending) {
-				const isFull = spotsLeft === 0;
-				return (
-					<Button
-						sm
-						compact
-						fullWidth
-						mode="outlined"
-						variant="info"
-						title={isFull ? 'Full' : 'Buy'}
-						onPress={() => (!isFull ? handleBuyNow() : {})}
-					/>
-				);
-			}
-
-			if (isCoach) {
-				return (
-					<Button
-						sm
-						compact
-						fullWidth
-						title="Coach"
-						onPress={handleViewSession}
-					/>
-				);
-			}
-
-			if (isAttending) {
-				return (
-					<Button
-						title="Booked"
-						onPress={handleViewSession}
-						variant="brand"
-						sm
-						compact
-						fullWidth
-					/>
-				);
-			}
-
-			if (spotsLeft === null || !isNumber(spotsLeft)) {
-				return null;
-			}
-
-			if (!isAttending && isWaitlisted) {
-				return (
-					<Button
-						title="Waitlisted"
-						variant="brand"
-						fullWidth
-						compact
-						sm
-					/>
-				);
-			}
-
-			if (
-				isAttending &&
-				!isWaitlisted &&
-				spotsLeft > 0 &&
-				spotsLeft <= 3
-			) {
-				return (
-					<Button
-						sm
-						compact
-						fullWidth
-						mode="outlined"
-						title={`${spotsLeft} ${
-							spotsLeft > 1 ? 'spots' : 'spot'
-						} left`}
-						onPress={handleBook}
-					/>
-				);
-			}
-
-			if (!isAttending && !isWaitlisted && spotsLeft === 0) {
-				if (waitlistBtn) {
-					return (
-						<Button
-							sm
-							compact
-							fullWidth
-							mode="outlined"
-							title="Waitlist"
-							onPress={handleWaitlist}
-							loading={isBooking}
-						/>
-					);
-				}
-
-				return (
-					<Button sm mode="outlined" title="Full" compact fullWidth />
-				);
-			}
-
-			if (
-				!isBookingLocked &&
-				!isAttending &&
-				!isWaitlisted &&
-				spotsLeft > 0 &&
-				moment(startDate).isAfter(moment())
-			) {
-				return (
-					<Button
-						sm
-						compact
-						fullWidth
-						title="Book"
-						mode="outlined"
-						onPress={handleBook}
-						loading={isBooking}
-					/>
-				);
-			}
-
-			return null;
-		}, [isBooking]);
+		const renderButton = useCallback(
+			() => (
+				<BookButton
+					isSubscribed={isSubscribed}
+					isCoach={isCoach as boolean}
+					isAttending={isAttending}
+					spotsLeft={spotsLeft as number}
+					isWaitlisted={isWaitlisted as boolean}
+					startDate={startDate as string}
+					isBookingLocked={isBookingLocked as boolean}
+					waitlistBtn={waitlistBtn as boolean}
+					isBooking={isBooking}
+					eventId={eventId as number}
+					handleBook={handleBook}
+					handleWaitlist={handleWaitlist}
+					handleViewSession={handleViewSession}
+				/>
+			),
+			[
+				isBooking,
+				isAttending,
+				isSubscribed,
+				isCoach,
+				spotsLeft,
+				isWaitlisted,
+				startDate,
+				isBookingLocked,
+				waitlistBtn,
+				eventId,
+			],
+		);
 
 		const isFiltered = useMemo(() => {
 			const useClassFilters = classFilters.filter(

@@ -1,3 +1,4 @@
+export { default as BookButton } from './BookButton/BookButton';
 export { default as BottomPanel } from './BottomPanel/BottomPanel';
 export { default as Brand } from './Brand/Brand';
 export { default as ChatMessage } from './ChatMessage/ChatMessage';

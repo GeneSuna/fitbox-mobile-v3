@@ -183,6 +183,10 @@ const getNextPageParam = (end: number, totalResults?: number) => {
 	return undefined;
 };
 
+const isSessionWithin72Hours = (startDate: string): boolean => {
+	return moment(startDate).isAfter(moment().subtract(72, 'hours'));
+};
+
 export default {
 	decodeHtml,
 	stripHtmlTags,
@@ -197,4 +201,5 @@ export default {
 	getBase64,
 	getFileExt,
 	getNextPageParam,
+	isSessionWithin72Hours,
 };

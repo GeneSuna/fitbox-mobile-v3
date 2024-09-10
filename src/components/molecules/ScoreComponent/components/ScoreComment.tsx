@@ -4,7 +4,7 @@ import layout from '@/theme/layout';
 import { Constant } from '@/utils';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import BottomPanel from './BottomPanel/BottomPanel';
+import BottomPanel from '../../BottomPanel/BottomPanel';
 
 interface ScoreCommentProps {
 	commentValue: string | null;
