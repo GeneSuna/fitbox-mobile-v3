@@ -14,6 +14,8 @@ import { Platform } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import Say from './Say';
 
+let fetchGymAssets: (() => Promise<void>) | null = null;
+
 const initialize = () => {
 	messaging()
 		.getInitialNotification()
@@ -148,15 +150,24 @@ const onMessageHandler = (
 		setAppState('showModalNotification', true);
 		setAppState('notifications', newNotifications);
 
+		if (typeof fetchGymAssets === 'function') {
+			void fetchGymAssets();
+		}
+
 		return true;
 	}
 	return true;
 };
 
-// TODO: setGymFetcher
+const setGymFetcher = (fetcher: () => Promise<void>) => {
+	if (fetcher) {
+		fetchGymAssets = fetcher;
+	}
+};
 
 export default {
 	initialize,
 	notificationHandler,
 	onMessageHandler,
+	setGymFetcher,
 };

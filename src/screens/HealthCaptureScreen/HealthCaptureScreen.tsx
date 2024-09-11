@@ -11,7 +11,7 @@ import {
 } from '@/types/navigation';
 import { GymInfoType } from '@/types/schemas/gym';
 import { UserHealthInfoType, UserSchemaType } from '@/types/schemas/user';
-import { Constant, Say } from '@/utils';
+import { Say } from '@/utils';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { navigate } from '@/navigators/NavigationRef';
@@ -29,6 +29,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import { DataTable } from 'react-native-paper';
 import SimpleToast from 'react-native-simple-toast';
 import { InputCell, OptionButton, TextCell } from './components';
+import healthData from './data';
 
 type TableColumns = {
 	slug: string;
@@ -68,6 +69,8 @@ type DataObject = {
 	[key: string]: string | number | boolean;
 };
 
+const { QUESTIONS_LIST } = healthData;
+
 const HealthCaptureScreen = ({
 	navigation,
 	route,
@@ -78,7 +81,7 @@ const HealthCaptureScreen = ({
 		gymInfo: null,
 		loading: true,
 		submitting: true,
-		questions: Constant.QUESTIONS_LIST.map(
+		questions: QUESTIONS_LIST.map(
 			question =>
 				({
 					...question,

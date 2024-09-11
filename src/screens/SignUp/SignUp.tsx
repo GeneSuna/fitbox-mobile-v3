@@ -181,8 +181,6 @@ const SignUp = ({ navigation }: ApplicationScreenProps) => {
 		})();
 	}, [state.code]);
 
-	// TODO: add parseCode fn used in handleScan
-
 	const fetchGymData = async () => {
 		setState(prevState => ({ ...prevState, fetching: true }));
 

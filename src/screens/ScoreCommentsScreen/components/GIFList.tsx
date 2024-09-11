@@ -62,7 +62,6 @@ const GIFList = ({
 		return (
 			<TouchableOpacity
 				style={styles.gifContainer}
-				// TODO: change url if GIF is too large to display in the Conversation component
 				onPress={() => {
 					setChosenGIF(nanoGIF.url);
 					setGIFUrl(nanoGIF.url);

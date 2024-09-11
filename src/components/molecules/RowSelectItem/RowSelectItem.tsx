@@ -1,13 +1,10 @@
-/**
- * TODO: Move this to molecules
- */
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Row from '../Row/Row';
-import Spacer from '../Spacer/Spacer';
-import Text from '../Text/Text';
+import Row from '../../atoms/Row/Row';
+import Spacer from '../../atoms/Spacer/Spacer';
+import Text from '../../atoms/Text/Text';
 
 const { fonts } = config;
 

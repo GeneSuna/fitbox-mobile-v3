@@ -1,5 +1,6 @@
 import useAuth from '@/auth/hooks/useAuth';
 import { Button, Row, ScrollView, Spacer, Text } from '@/components/atoms';
+import { navigate } from '@/navigators/NavigationRef';
 import {
 	getSubscriptionInfo,
 	getSubscriptionProducts,
@@ -178,7 +179,7 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 
 			setAppState('fromAcceptInvite', false);
 			updateUser(session);
-			// TODO: navigate to AuthLoading
+			navigate('ApplicationNavigator', { screen: 'Startup' });
 		}
 	};
 

@@ -14,7 +14,7 @@ import {
 	SessionSectionSchemaType,
 	SessionWODMovementSchemaType,
 } from '@/types/schemas/session';
-import { Func, Say } from '@/utils';
+import { Constant, Func, Say } from '@/utils';
 import useStore from '@/zustand/Store';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
@@ -26,14 +26,7 @@ import WebView from 'react-native-webview';
 
 const { metrics, fonts } = config;
 
-// TODO: Move this to constant
-const movementParams = [
-	{ key: 'calories' },
-	{ key: 'distance' },
-	{ key: 'height' },
-	{ key: 'weight' },
-	{ key: 'time' },
-];
+const movementParams = Constant.MOVEMENT_PARAMS;
 
 const WarningText = ({ text }: { text: string }) => (
 	<Text

@@ -1,5 +1,5 @@
 import useAuth from '@/auth/hooks/useAuth';
-import { RowSelectItem } from '@/components/atoms';
+import { RowSelectItem } from '@/components/molecules';
 import { goBack, resetRoot } from '@/navigators/NavigationRef';
 import { getChildInfo, getParentInfo, switchAccount } from '@/services/users';
 import { config } from '@/theme/_config';

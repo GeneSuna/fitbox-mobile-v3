@@ -1,4 +1,5 @@
 import { Button, Spacer, Text } from '@/components/atoms';
+import { navigate } from '@/navigators/NavigationRef';
 import { config } from '@/theme/_config';
 import { Modal, StyleSheet, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -20,9 +21,9 @@ const StripeSuccess = () => {
 					buttonColor={config.colors.info}
 					labelStyle={styles.returnBtn}
 					title="Return to home"
-					// TODO: navigate to AuthLoading
-					// eslint-disable-next-line no-console
-					onPress={() => console.log('Strip Success')}
+					onPress={() =>
+						navigate('ApplicationNavigator', { screen: 'Startup' })
+					}
 				/>
 			</View>
 		</Modal>

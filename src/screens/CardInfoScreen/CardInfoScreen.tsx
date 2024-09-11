@@ -122,8 +122,7 @@ const CardInfoScreen = () => {
 			session.has_payment_details = 'skipped';
 
 			updateUser(session);
-			// TODO: create and navigate to AuthLoading
-			// navigate('AuthLoading')
+			navigate('ApplicationNavigator', { screen: 'Startup' });
 		}
 	};
 

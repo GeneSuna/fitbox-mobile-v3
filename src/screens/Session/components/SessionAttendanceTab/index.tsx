@@ -34,8 +34,6 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 	const loggedInUser = useStore(state => state.loggedInUser);
 	const isStaff = loggedInUser?.user_data.is_staff;
 	const attendanceLimit = Number(session?.attendance_limit);
-
-	// TODO: For adding/removing attendance (Staff only)
 	const [processingMembers, setProcessingMembers] = useState<number[]>([]);
 	const [bookedMembers, setBookedMembers] = useState<
 		SessionMemberAttendanceSchemaType[]

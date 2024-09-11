@@ -11,5 +11,6 @@ export { default as Modal } from './Modal/Modal';
 export { default as NotificationDialog } from './NotificationDialog/NotificationDialog';
 export { default as QRCamera } from './QRCamera/QRCamera';
 export { default as RowItem } from './RowItem/RowItem';
+export { default as RowSelectItem } from './RowSelectItem/RowSelectItem';
 export { default as ScoreComponent } from './ScoreComponent/ScoreComponent';
 export { default as ScoreMovementComponent } from './ScoreMovementComponent/ScoreMovementComponent';

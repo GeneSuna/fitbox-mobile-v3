@@ -87,7 +87,7 @@ const ClassResultsScreen = ({
 
 	const [state, setState] = useState<State>({
 		allow_comments:
-			typeof allowCommentsState === 'number' ? allowCommentsState : true, // TODO: get initial value from global state,
+			typeof allowCommentsState === 'number' ? allowCommentsState : true,
 		loading: true,
 		loadingResults: true,
 		classesModal: false,
@@ -184,7 +184,7 @@ const ClassResultsScreen = ({
 					).then(() => navigation.goBack());
 				}
 			})
-			.catch(() => Say.err('Something went wrong'));
+			.catch(() => Say.err('Something went wrong, Here!'));
 	};
 
 	const fetchVenues = async () => {
@@ -231,7 +231,7 @@ const ClassResultsScreen = ({
 					}));
 				})
 				.catch(() => {
-					Say.err('Something went wrong');
+					Say.err('Something went wrong, Leaderboards');
 				});
 		}
 	};

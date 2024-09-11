@@ -18,6 +18,7 @@ import { NotificationSettingsState } from '@/types/schemas/notifications';
 import { ClassFiltersDataType } from '@/types/schemas/session';
 import { UserSchemaType } from '@/types/schemas/user';
 import { Constant, Say } from '@/utils';
+import NotificationService from '@/utils/NotificationService';
 import useStore from '@/zustand/Store';
 import { ClassFilter, VenueFilter } from '@/zustand/interface/SessionInterface';
 import messaging, { firebase } from '@react-native-firebase/messaging';
@@ -400,6 +401,7 @@ const Dashboard = () => {
 		void fetchFilterOptions();
 		void fetchAttendanceReport();
 		void onMountTasks();
+		NotificationService.setGymFetcher(initializeAppStates);
 	}, []);
 
 	const fetchAttendanceReport = () => {
