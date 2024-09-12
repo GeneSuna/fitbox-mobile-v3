@@ -81,9 +81,11 @@ const SessionsSectionsTab = ({
 			if (hasCollapse) {
 				// get all indexes of sections that has default_collapse_state = 1
 				openSections = sections
-					.map((section, index) =>
-						section.default_collapse_state ? index : -1,
-					)
+					.map((section, index) => {
+						return section.default_collapse_state === 0
+							? index
+							: -1;
+					})
 					.filter(index => index !== -1);
 			}
 		}

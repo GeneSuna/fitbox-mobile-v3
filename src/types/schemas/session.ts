@@ -347,7 +347,7 @@ export const SessionFBWODSchema = z.object({
 		allow_sets_or_round_scoring: boolOrOneZero,
 		member_notes: z.string().nullable(),
 		coach_notes: z.string().nullable(),
-		default_collapse_state: boolOrOneZero,
+		default_collapse_state: z.number(),
 		staff_only: boolOrOneZero,
 		wod_movements: z.array(SessionWODMovementSchema).nullish(),
 	}),
@@ -355,7 +355,7 @@ export const SessionFBWODSchema = z.object({
 
 export type SessionSectionSchemaType = z.infer<typeof SessionSectionSchema>;
 export const SessionSectionSchema = z.object({
-	default_collapse_state: boolOrOneZero,
+	default_collapse_state: z.number(),
 	video: z.string().nullish(),
 	id: z.number(),
 	fb_wod: SessionFBWODSchema.nullish(),
