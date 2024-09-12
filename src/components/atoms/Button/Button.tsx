@@ -48,7 +48,9 @@ const Button = ({
 
 		// outlined
 		...(!isOutlined
-			? { backgroundColor: colors[variant].color }
+			? {
+					backgroundColor: colors[variant].color,
+			  }
 			: { borderColor: colors[variant].color }),
 
 		...(!rounded ? { borderRadius: 6 } : {}),

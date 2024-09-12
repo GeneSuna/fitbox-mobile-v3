@@ -337,6 +337,7 @@ const SessionActionButtons = ({
 					title="Unbook"
 					onPress={() => handleBook()}
 					loading={isBooking}
+					mode="contained"
 				/>
 			);
 		}
@@ -376,6 +377,7 @@ const SessionActionButtons = ({
 					title="Book"
 					onPress={() => handleBook()}
 					loading={isBooking}
+					mode="contained"
 				/>
 			);
 		}

@@ -109,6 +109,7 @@ const BookButton = ({
 				fullWidth
 				title="Coach"
 				onPress={handleViewSession}
+				mode="contained"
 			/>
 		);
 	}
@@ -122,6 +123,7 @@ const BookButton = ({
 				sm
 				compact
 				fullWidth
+				mode="contained"
 			/>
 		);
 	}
@@ -132,7 +134,14 @@ const BookButton = ({
 
 	if (!isAttending && isWaitlisted) {
 		return (
-			<Button title="Waitlisted" variant="brand" fullWidth compact sm />
+			<Button
+				title="Waitlisted"
+				variant="brand"
+				fullWidth
+				compact
+				sm
+				mode="contained"
+			/>
 		);
 	}
 

@@ -65,7 +65,6 @@ const NotificationDialog = ({
 						<View style={layout.flex_1}>
 							<Button
 								sm
-								// mode="outlined"
 								buttonColor={config.colors.brand}
 								onPress={() =>
 									setAppState('showModalNotification', false)
