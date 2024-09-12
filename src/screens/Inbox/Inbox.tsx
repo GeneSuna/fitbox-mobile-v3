@@ -1,15 +1,23 @@
 import useAuth from '@/auth/hooks/useAuth';
 import { Row, Spacer, Text } from '@/components/atoms';
 import { FlatList, Loader } from '@/components/molecules';
-import { getConversationList } from '@/services/message';
+import {
+	getConversationArchivedList,
+	getConversationList,
+} from '@/services/message';
 import { getUserGyms } from '@/services/users';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { InboxScreenProps } from '@/types/navigation';
 import { Gym } from '@/types/schemas/gym';
-import { MessageItemType } from '@/types/schemas/message';
-import { Say } from '@/utils';
+import {
+	ConversationArchivedListDataType,
+	MessageItemType,
+} from '@/types/schemas/message';
+import { NotificationsType } from '@/types/schemas/notifications';
+import { Constant, Say } from '@/utils';
 import useStore from '@/zustand/Store';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import { useFocusEffect } from '@react-navigation/native';
 import {
 	useCallback,
@@ -32,9 +40,11 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 
 	const userId = user?.id;
 
-	const { teamId, setAppState } = useStore(state => ({
+	const { teamId, setAppState, notifications } = useStore(state => ({
 		teamId: state.teamId,
 		setAppState: state.setAppState,
+		notifications: state.notifications,
+		showModalNotification: state.showModalNotification,
 	}));
 
 	const renderCreateButton = () => (
@@ -61,7 +71,9 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 	}, []);
 
 	const [view] = useState('');
-	const [list, setList] = useState<MessageItemType[]>([]);
+	const [list, setList] = useState<
+		MessageItemType[] | ConversationArchivedListDataType[]
+	>([]);
 	const [loading, setLoading] = useState(true);
 	const [loadingMore, setLoadingMore] = useState(false);
 	const [refreshing, setRefreshing] = useState(false);
@@ -72,23 +84,21 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 	const [selectGymModal, setSelectGymModal] = useState(false);
 
 	const removeBadgeNumber = () => {
-		// TODO: Remove badge number reference below
-		// const { notifications, setNotifications, showModalNotification } =
-		// 	this.props;
-		// let newNotifications = [];
-		// notifications.map(notif => {
-		// 	if (notif.type !== 'message') newNotifications.push(notif);
-		// });
-		// // close modal notif
-		// showModalNotification(false);
-		// // set notifications
-		// setNotifications(newNotifications);
-		// if (Consts.IS_ANDROID) {
-		// 	// Set icon badge for android
-		// } else {
-		// 	// Set icon badge for IOS
-		// 	PushNotificationIOS.setApplicationIconBadgeNumber(0);
-		// }
+		const newNotifications: NotificationsType[] = [];
+
+		notifications.forEach(notif => {
+			if (notif.type !== 'message') newNotifications.push(notif);
+		});
+		// close modal notif
+		setAppState('showModalNotification', false);
+		// set notifications
+		setAppState('notifications', newNotifications);
+		if (Constant.IS_ANDROID) {
+			// Set icon badge for android
+		} else {
+			// Set icon badge for IOS
+			PushNotificationIOS.setApplicationIconBadgeNumber(0);
+		}
 	};
 
 	const fetchGyms = async () => {
@@ -110,7 +120,8 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 			return;
 		}
 
-		let finalList: MessageItemType[] = [];
+		let finalList: MessageItemType[] | ConversationArchivedListDataType[] =
+			[];
 
 		if (view === '') {
 			const res = await getConversationList(activeGymId, { page });
@@ -126,9 +137,12 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 				finalList = [...list, ...res.data];
 			}
 		} else if (view === 'archived') {
-			// TODO: Archived messages
-			// finalList = (await RestService.getConversationArchivedList())
-			// 	.data;
+			// OBSOLETE: Archiving feature is disabled for now since its not working
+			const archivedRes = await getConversationArchivedList();
+			if (!archivedRes.error) {
+				finalList = archivedRes.data;
+				setHasMore(false);
+			}
 		}
 
 		removeBadgeNumber();
@@ -181,8 +195,6 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 	);
 
 	const renderInboxItem = (item: MessageItemType, index: number) => {
-		// const { sender_id: senderId, convo_id } = item;
-
 		const itemData = {
 			...item,
 			userId: Number(userId),
@@ -191,9 +203,6 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 		return (
 			<InboxItem index={index} data={itemData} onPress={handlePress} />
 		);
-
-		// TODO: Apply archived messages here
-		// return null;
 	};
 
 	const renderGymSelect = useCallback(() => {

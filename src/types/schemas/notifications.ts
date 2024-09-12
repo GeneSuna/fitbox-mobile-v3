@@ -33,6 +33,7 @@ export const NotificationsSchema = z.object({
 	title: z.string(),
 	userInteraction: z.boolean(),
 	identifier: z.unknown(),
+	type: z.string().optional(),
 });
 
 export const MessageNotificationsSchema = z.object({

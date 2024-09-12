@@ -23,6 +23,7 @@ import {
 } from './leaderboards';
 import {
 	ContactDataSchema,
+	ConversationArchivedListDataSchema,
 	FitboxGalleryDataSchema,
 	MessageItemSchema,
 	SearchGIFResultsSchema,
@@ -349,3 +350,13 @@ export const GetScoringTypesSchema = apiResponseSchema(
 );
 
 export const DeleteScoreResponseSchema = apiResponseSchema(z.any());
+
+export const GetConversationArchivedListSchema = z.object({
+	data: z.array(ConversationArchivedListDataSchema),
+	error: z.boolean(),
+	message: z.string(),
+	page: z.number(),
+	total_items: z.number(),
+	total_pages: z.number(),
+	unread_items: z.number(),
+});

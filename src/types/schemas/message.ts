@@ -166,4 +166,22 @@ export const FitboxGalleryDataSchema = z.object({
 	response_code: z.number().optional(),
 });
 
+export const ConversationArchivedListDataSchema = z.object({
+	created_at: z.string(),
+	firstname: z.string(),
+	group: z.array(z.unknown()),
+	id: z.number(),
+	lastname: z.string(),
+	message: z.string(),
+	profile_image: z.string(),
+	sender_id: z.number(),
+	status: z.number(),
+	subject: z.string(),
+	user_list: z.array(z.unknown()),
+});
+
+export type ConversationArchivedListDataType = z.infer<
+	typeof ConversationArchivedListDataSchema
+>;
+
 export type FitboxGalleryFilesType = z.infer<typeof FitboxGalleryFilesSchema>;
