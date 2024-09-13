@@ -2,11 +2,42 @@
 
 # Set path to xcodeproj
 PROJECT_PATH="ios/fitbox.xcodeproj"  # Adjust path as per your project structure
+BRANCH_DEV="dev"
+BRANCH_DEV_BUILD="dev-build"
+
+# Function to handle errors
+handle_error() {
+    echo "Error: $1"
+    exit 1
+}
+
+# Ensure we are on the correct branch
+echo "Switching to $BRANCH_DEV_BUILD branch..."
+git checkout $BRANCH_DEV_BUILD || handle_error "Failed to switch to $BRANCH_DEV_BUILD branch"
+
+# Pull latest changes from dev-build branch
+echo "Pulling latest changes from $BRANCH_DEV_BUILD branch..."
+git pull origin $BRANCH_DEV_BUILD || handle_error "Failed to pull latest changes from $BRANCH_DEV_BUILD branch"
+
+# Pull latest changes from dev branch
+echo "Pulling latest changes from $BRANCH_DEV branch..."
+git fetch origin $BRANCH_DEV
+git checkout $BRANCH_DEV
+git pull origin $BRANCH_DEV || handle_error "Failed to pull latest changes from $BRANCH_DEV branch"
+
+# Merge dev into dev-build
+echo "Merging $BRANCH_DEV into $BRANCH_DEV_BUILD..."
+git checkout $BRANCH_DEV_BUILD
+git merge $BRANCH_DEV --allow-unrelated-histories
+
+# Check for merge conflicts
+if [ $? -ne 0 ]; then
+    handle_error "Merge conflicts occurred. Please resolve them manually."
+fi
 
 # Read current build number
 # Extract current version placeholder value
 CURRENT_PROJECT_VERSION=$(xcodebuild -project $PROJECT_PATH -showBuildSettings | grep "CURRENT_PROJECT_VERSION" | uniq | awk '{print $3}')
-
 echo "Current Project Version: $CURRENT_PROJECT_VERSION"
 
 # Increment build number
@@ -18,7 +49,6 @@ echo "New Project Version (1): $NEW_PROJECT_VERSION"
 sed -i '' -e "s/CURRENT_PROJECT_VERSION = [0-9]*;/CURRENT_PROJECT_VERSION = $NEW_PROJECT_VERSION;/g" $PROJECT_PATH/project.pbxproj
 
 echo "Updated CURRENT_PROJECT_VERSION to $NEW_PROJECT_VERSION in XCODEPROJ"
-
 
 # Commit the updated file if there are changes
 if [ -n "$(git status --porcelain "$PROJECT_PATH")" ]; then
