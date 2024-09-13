@@ -1,8 +1,10 @@
+// TODO: create a util function for moment-timezone with the user's timezone
+import useAuth from '@/auth/hooks/useAuth';
 import { ScrollView } from '@/components/atoms';
 import { getBookedSessions } from '@/services/users';
 import { config } from '@/theme/_config';
 import { Say } from '@/utils';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import BookedSessionCard, {
@@ -15,6 +17,8 @@ const BookingScreen = () => {
 	const [upcomingSessions, setUpcomingSessions] = useState<
 		BookedSessionCardProps[]
 	>([]);
+	const { user } = useAuth();
+	const timezone = user?.user_data.dob.timezone as string;
 
 	useEffect(() => {
 		void getUpcomingSessions();
@@ -36,7 +40,8 @@ const BookingScreen = () => {
 				// Parse the response data
 				res.data.forEach(session => {
 					if (
-						moment(session.calendar_event.end_datetime)
+						moment
+							.tz(session.calendar_event.end_datetime, timezone)
 							.add(30, 'minutes')
 							.isAfter()
 					) {
@@ -62,7 +67,12 @@ const BookingScreen = () => {
 
 			if (res.staffSessions && res.staffSessions.length > 0) {
 				res.staffSessions.forEach(session => {
-					if (moment(session.start).add(30, 'minutes').isAfter()) {
+					if (
+						moment
+							.tz(session.end, timezone)
+							.add(30, 'minutes')
+							.isAfter()
+					) {
 						memberSessions.push({
 							id: session.id,
 							startTime: session.start,
@@ -84,8 +94,8 @@ const BookingScreen = () => {
 		} finally {
 			// sort sessions by start time
 			memberSessions.sort((sessionA, sessionB) => {
-				const startA = moment(sessionA.startTime);
-				const startB = moment(sessionB.startTime);
+				const startA = moment.tz(sessionA.startTime, timezone);
+				const startB = moment.tz(sessionB.startTime, timezone);
 				return startA && startB && startA > startB ? 1 : -1;
 			});
 

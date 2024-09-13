@@ -24,7 +24,7 @@ import { ClassFilter, VenueFilter } from '@/zustand/interface/SessionInterface';
 import messaging, { firebase } from '@react-native-firebase/messaging';
 import { useFocusEffect } from '@react-navigation/native';
 import { isArray, isEmpty } from 'lodash';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -74,6 +74,7 @@ const { metrics, fonts } = config;
 const Dashboard = () => {
 	const { t } = useTranslation(['dashboard']);
 	const { user } = useAuth();
+	const timezone = user?.user_data.dob.timezone as string;
 	// const headerHeight = useHeaderHeight();
 
 	const {
@@ -177,7 +178,7 @@ const Dashboard = () => {
 			if (userData) {
 				if (
 					field === 'dob' &&
-					!moment(userData[field]?.date).isValid()
+					!moment.tz(userData[field]?.date, timezone).isValid()
 				) {
 					emptyRequiredFields.push(field);
 				}
@@ -241,7 +242,8 @@ const Dashboard = () => {
 				// Parse the response data
 				res.data.forEach(session => {
 					if (
-						moment(session.calendar_event.end_datetime)
+						moment
+							.tz(session.calendar_event.end_datetime, timezone)
 							.add(30, 'minutes')
 							.isAfter()
 					) {
@@ -267,7 +269,12 @@ const Dashboard = () => {
 
 			if (res.staffSessions && res.staffSessions.length > 0) {
 				res.staffSessions.forEach(session => {
-					if (moment(session.start).add(30, 'minutes').isAfter()) {
+					if (
+						moment
+							.tz(session.start, timezone)
+							.add(30, 'minutes')
+							.isAfter()
+					) {
 						memberSessions.push({
 							id: session.id,
 							startTime: session.start,
@@ -289,8 +296,8 @@ const Dashboard = () => {
 		} finally {
 			// sort sessions by start time
 			memberSessions.sort((sessionA, sessionB) => {
-				const startA = moment(sessionA.startTime);
-				const startB = moment(sessionB.startTime);
+				const startA = moment.tz(sessionA.startTime, timezone);
+				const startB = moment.tz(sessionB.startTime, timezone);
 				return startA && startB && startA > startB ? 1 : -1;
 			});
 
@@ -313,7 +320,7 @@ const Dashboard = () => {
 
 	const setLocalNotifications = (sessions: BookedSessionCardProps[]) =>
 		sessions.map(session => {
-			const schedule = moment(session.startTime);
+			const schedule = moment.tz(session.startTime, timezone);
 
 			if (schedule.isBefore()) return null;
 
