@@ -79,7 +79,13 @@ const SessionScoringScreen = ({ route }: ApplicationScreenProps) => {
 		return (
 			<>
 				<View style={layout.flex_1}>
-					<View style={styles.workoutScoreContainer}>
+					<View
+						style={[
+							styles.workoutScoreContainer,
+							!isKeyboardVisible &&
+								styles.workoutScoreContainerExpanded,
+						]}
+					>
 						<ScoreComponent
 							sessionId={sessionId}
 							section={section}
@@ -133,6 +139,8 @@ export default SessionScoringScreen;
 const styles = StyleSheet.create({
 	workoutScoreContainer: {
 		flex: 1,
+	},
+	workoutScoreContainerExpanded: {
 		marginBottom: bottomSheetSpacing,
 	},
 	backdropBackground: {

@@ -1,4 +1,5 @@
 import { ScoreMovementComponent } from '@/components/molecules';
+import useKeyboardVisibility from '@/hooks/useKeyboardVisibility';
 import { getUserMovements } from '@/services/users';
 import layout from '@/theme/layout';
 import { PerformanceSummaryParamList } from '@/types/navigation';
@@ -8,7 +9,7 @@ import BottomSheet, { WINDOW_HEIGHT } from '@gorhom/bottom-sheet';
 import { StackScreenProps } from '@react-navigation/stack';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import MovementHistoryBS from './components/MovementHistoryBS';
 
 const bottomSheetSpacing = WINDOW_HEIGHT * 0.3;
@@ -19,6 +20,7 @@ type MovementHistoryProps = StackScreenProps<
 >;
 
 const MovementHistory = ({ route, navigation }: MovementHistoryProps) => {
+	const { isKeyboardVisible } = useKeyboardVisibility();
 	const queryClient = useQueryClient();
 	const { movementId, name, addResult } = route.params;
 
@@ -80,25 +82,36 @@ const MovementHistory = ({ route, navigation }: MovementHistoryProps) => {
 			<ScoreMovementComponent
 				containerStyle={[
 					layout.flex_1,
-					{ marginBottom: bottomSheetSpacing },
+					!isKeyboardVisible && styles.containerExpanded,
 				]}
 				movementId={movementId}
 				movementName={name}
 				onSuccess={onSuccessCallback}
 			/>
 
-			<MovementHistoryBS
-				sheetRef={sheetRef}
-				sheetIndex={sheetIndex}
-				movements={movements}
-				setSheetIndex={setSheetIndex}
-				movementName={name}
-				oneRm={oneRm || 0}
-				bottomOffset={bottomSheetSpacing}
-				isLoading={isLoading}
-			/>
+			{!isKeyboardVisible && (
+				<MovementHistoryBS
+					sheetRef={sheetRef}
+					sheetIndex={sheetIndex}
+					movements={movements}
+					setSheetIndex={setSheetIndex}
+					movementName={name}
+					oneRm={oneRm || 0}
+					bottomOffset={bottomSheetSpacing}
+					isLoading={isLoading}
+				/>
+			)}
 		</View>
 	);
 };
 
 export default MovementHistory;
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
+	containerExpanded: {
+		marginBottom: bottomSheetSpacing,
+	},
+});
