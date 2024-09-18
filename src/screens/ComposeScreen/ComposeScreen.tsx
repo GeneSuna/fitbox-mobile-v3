@@ -179,28 +179,32 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 	};
 
 	return (
-		<View style={layout.flex_1}>
-			<View style={styles.recipientContainer}>
-				<Row
-					style={{
-						paddingHorizontal: config.metrics.md,
-						paddingVertical: config.metrics.rg,
-					}}
-					align="center"
-				>
-					<Text>To</Text>
-					<Spacer horizontal />
-					<TouchableOpacity
-						style={layout.flex_1}
-						onPress={handlePressRecipients}
+		<KeyboardAvoidingView
+			style={layout.flex_1}
+			behavior={Platform.OS === 'ios' ? 'height' : 'padding'}
+			enabled
+		>
+			<View style={layout.flex_1}>
+				<View style={styles.recipientContainer}>
+					<Row
+						style={{
+							paddingHorizontal: config.metrics.md,
+							paddingVertical: config.metrics.rg,
+						}}
+						align="center"
 					>
-						<Text color="mute" numberOfLines={2}>
-							{(state.recipients as string) || 'Recipients'}
-						</Text>
-					</TouchableOpacity>
-				</Row>
-			</View>
-
+						<Text>To</Text>
+						<Spacer horizontal />
+						<TouchableOpacity
+							style={layout.flex_1}
+							onPress={handlePressRecipients}
+						>
+							<Text color="mute" numberOfLines={2}>
+								{(state.recipients as string) || 'Recipients'}
+							</Text>
+						</TouchableOpacity>
+					</Row>
+				</View>
 			<View
 				style={{
 					padding: config.metrics.md,
@@ -253,21 +257,16 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 						style={styles.disableReplyButtonStyle}
 						onPress={() => setDisableReply(!replyDisabled)}
 					>
-						<Row
-							style={{ paddingHorizontal: config.metrics.rg }}
-							spacing="space-between"
-						>
-							<Text>Disable replies</Text>
-							<View style={styles.checkboxInput}>
-								{replyDisabled ? (
-									<Icon
-										name="checkmark-outline"
-										size={config.metrics.md}
-										color={config.borders.colors.mute}
-										style={styles.disableIcon}
-									/>
-								) : null}
-							</View>
+						<Row style={layout.flex_1} align="center">
+							<Icon
+								name="attach-outline"
+								size={config.metrics.lg}
+								color={config.backgrounds.light}
+								style={{ marginRight: config.metrics.md }}
+							/>
+							<Text color="light" numberOfLines={1}>
+								File Name
+							</Text>
 						</Row>
 					</TouchableOpacity>
 				)}
