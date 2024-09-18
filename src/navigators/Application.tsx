@@ -106,11 +106,6 @@ const tabBarIconRender = ({
 	return <Ionicons name={icons[route]} size={size} color={color} />;
 };
 
-const CommonHeaderOptions: StackNavigationOptions = {
-	headerShown: true,
-	cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-};
-
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const MainTabNavigator = () => {
 	const { variant, colors } = useTheme();
@@ -451,7 +446,6 @@ const ApplicationNavigator = () => {
 								})}
 							/>
 						</Stack.Group>
-
 
 						<Stack.Group
 							screenOptions={{

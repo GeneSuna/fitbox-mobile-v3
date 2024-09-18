@@ -179,32 +179,27 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 	};
 
 	return (
-		<KeyboardAvoidingView
-			style={layout.flex_1}
-			behavior={Platform.OS === 'ios' ? 'height' : 'padding'}
-			enabled
-		>
-			<View style={layout.flex_1}>
-				<View style={styles.recipientContainer}>
-					<Row
-						style={{
-							paddingHorizontal: config.metrics.md,
-							paddingVertical: config.metrics.rg,
-						}}
-						align="center"
+		<View style={layout.flex_1}>
+			<View style={styles.recipientContainer}>
+				<Row
+					style={{
+						paddingHorizontal: config.metrics.md,
+						paddingVertical: config.metrics.rg,
+					}}
+					align="center"
+				>
+					<Text>To</Text>
+					<Spacer horizontal />
+					<TouchableOpacity
+						style={layout.flex_1}
+						onPress={handlePressRecipients}
 					>
-						<Text>To</Text>
-						<Spacer horizontal />
-						<TouchableOpacity
-							style={layout.flex_1}
-							onPress={handlePressRecipients}
-						>
-							<Text color="mute" numberOfLines={2}>
-								{(state.recipients as string) || 'Recipients'}
-							</Text>
-						</TouchableOpacity>
-					</Row>
-				</View>
+						<Text color="mute" numberOfLines={2}>
+							{(state.recipients as string) || 'Recipients'}
+						</Text>
+					</TouchableOpacity>
+				</Row>
+			</View>
 			<View
 				style={{
 					padding: config.metrics.md,
