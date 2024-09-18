@@ -142,7 +142,7 @@ const ScoreComponent = ({
 		commentValue: null,
 		commentLeaderboardVisible: defaultLeaderboardVisible,
 		enableLeaderboardComment,
-		hideOnLeaderboard: false,
+		hideOnLeaderboard: true,
 	});
 	const [isDeleting, setDeleting] = useState<boolean>(false);
 	const [submitting, setSubmitting] = useState<boolean>(false);
@@ -294,7 +294,7 @@ const ScoreComponent = ({
 						value: saveMovements[0]?.value ?? 0,
 						reps: Number(saveMovements[0]?.reps) ?? 0,
 						comments: saveMovements[0]?.comments ?? '',
-						hide_on_leaderboard: state.hideOnLeaderboard,
+						leaderboard_visible: state.hideOnLeaderboard,
 					};
 				} else if (section.scoring_by === 'section') {
 					payload = {
@@ -305,7 +305,7 @@ const ScoreComponent = ({
 						),
 						reps: section.reps,
 						comments: section.comments,
-						hide_on_leaderboard: state.hideOnLeaderboard,
+						leaderboard_visible: state.hideOnLeaderboard,
 					};
 				}
 			} else {
@@ -323,7 +323,7 @@ const ScoreComponent = ({
 					reps: section.reps,
 					comments: section.comments,
 					movements: saveMovements,
-					hide_on_leaderboard: state.hideOnLeaderboard,
+					leaderboard_visible: state.hideOnLeaderboard,
 				};
 			}
 		} else {
@@ -346,7 +346,7 @@ const ScoreComponent = ({
 				comments: section.comments,
 				comment_leaderboard_visible: false,
 				movements: saveMovements,
-				hide_on_leaderboard: state.hideOnLeaderboard,
+				leaderboard_visible: state.hideOnLeaderboard,
 			};
 
 			if (section.comments !== '') {
@@ -894,16 +894,22 @@ const ScoreComponent = ({
 					}
 				>
 					<Row style={{ paddingHorizontal: config.metrics.rg }}>
-						<View style={styles.checkboxInput}>
+						<View
+							style={[
+								styles.checkboxInput,
+								state.hideOnLeaderboard &&
+									styles.checkboxInputChecked,
+							]}
+						>
 							{state.hideOnLeaderboard ? (
 								<Icon
 									name="checkmark"
 									size={config.fonts.metrics.sm}
-									color={config.fonts.colors.mute}
+									color={config.fonts.colors.light}
 								/>
 							) : null}
 						</View>
-						<Text>Hide from leaderboard</Text>
+						<Text>Show on leaderboard</Text>
 					</Row>
 				</TouchableOpacity>
 
@@ -970,7 +976,7 @@ const ScoreComponent = ({
 				}}
 			/>
 
-			{!Constant.IS_ANDROID && <KeyboardSpacer heightDeduction={50} />}
+			{!Constant.IS_ANDROID && <KeyboardSpacer />}
 		</>
 	);
 };
@@ -1009,5 +1015,9 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		marginRight: config.metrics.sm,
+	},
+	checkboxInputChecked: {
+		backgroundColor: config.fonts.colors.info,
+		borderColor: config.fonts.colors.info,
 	},
 });
