@@ -540,7 +540,7 @@ const SessionsSectionsTab = ({
 				);
 			})
 		);
-	}, [sections, toggledSections]);
+	}, [sections, toggledSections, isAttend]);
 
 	if (Array.isArray(sections)) {
 		if (sections.length > 0) {
