@@ -47,13 +47,13 @@ const SubscriptionDetails = ({ route }: MenuStackNavigatorProps) => {
 	} else if (data?.expiration_interval_unit === 'never') {
 		subscriptionExpiresValue = 'Never';
 	} else {
-		subscriptionExpiresValue = `${data?.expiration_interval ?? ''}minimum`;
+		subscriptionExpiresValue = `${data?.expiration_interval ?? ''} minimum`;
 	}
 
 	let billingFrequencyValue;
 	if (data?.recurring_interval_unit === 'per-billing-cycle') {
 		billingFrequencyValue = 'Per Billing Cycle';
-	} else if (data?.recurring_interval_unit.toLowerCase() === 'day') {
+	} else if (data?.recurring_interval_unit?.toLowerCase() === 'day') {
 		billingFrequencyValue = 'Daily';
 	} else {
 		billingFrequencyValue = `${data?.recurring_interval_unit ?? ''}ly`;
@@ -87,12 +87,13 @@ const SubscriptionDetails = ({ route }: MenuStackNavigatorProps) => {
 					title="Membership Expires"
 					value={subscriptionExpiresValue}
 				/>
-				{data?.recurring_interval_unit !== '' && (
-					<SubscriptionRowDetail
-						title="Billing Frequency"
-						value={billingFrequencyValue}
-					/>
-				)}
+				{data?.recurring_interval_unit &&
+					data?.recurring_interval_unit !== '' && (
+						<SubscriptionRowDetail
+							title="Billing Frequency"
+							value={billingFrequencyValue}
+						/>
+					)}
 
 				{data?.apply_transaction_fees_to_member === 1 && (
 					<SubscriptionRowDetail
