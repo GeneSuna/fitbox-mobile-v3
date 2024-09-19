@@ -79,12 +79,6 @@ const PastPerformance = ({ navigation }: PerformanceSummaryScreenProps) => {
 
 		switch (result.type) {
 			case 'movement':
-				// For independent movements
-				if (result.context_id !== 0) {
-					SimpleToast.show('Coming soon!', SimpleToast.SHORT);
-					return;
-				}
-
 				navigation.navigate('MovementHistory', {
 					movementId: result.id, // Movement ID is required but we've already checked for it in select using filter see line 68
 					name: result.displayName,
