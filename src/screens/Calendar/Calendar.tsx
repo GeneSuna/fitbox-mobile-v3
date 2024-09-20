@@ -169,12 +169,12 @@ const Calendar = () => {
 		void fetchFilterOptions();
 
 		if (!hasPlaceholder) {
-			// create date placeholders to today to next 2 months
-			const today = moment();
-			const nextMonth = today.clone().add(1, 'months');
+			// Start of month and monday
+			const sDate = moment().startOf('month');
+			const nextMonth = sDate.clone().add(1, 'months');
 			const dates = Array.from(
-				{ length: nextMonth.diff(today, 'days') },
-				(_, i) => today.clone().add(i, 'days').format('YYYY-MM-DD'),
+				{ length: nextMonth.diff(sDate, 'days') },
+				(_, i) => sDate.clone().add(i, 'days').format('YYYY-MM-DD'),
 			);
 
 			dates.forEach(date => {
@@ -292,6 +292,7 @@ const Calendar = () => {
 						keyExtractor={(item: ClassItemData) =>
 							String(item.eventId)
 						}
+						viewOffset={-50}
 						initialNumToRender={10}
 						maxToRenderPerBatch={5}
 						onEndReached={() => {
