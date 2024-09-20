@@ -515,7 +515,7 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 						}
 					>
 						<Text
-							size="md"
+							size="rg"
 							style={styles.fontAlata}
 							color="darkgray"
 							center
