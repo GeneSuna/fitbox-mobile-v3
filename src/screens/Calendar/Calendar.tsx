@@ -289,15 +289,12 @@ const Calendar = () => {
 						sectionStyle={styles.section}
 						windowSize={100}
 						removeClippedSubviews
-						keyExtractor={(item: ClassItemData) =>
-							String(item.eventId)
-						}
 						viewOffset={-50}
 						initialNumToRender={10}
 						maxToRenderPerBatch={5}
-						onEndReached={() => {
-							console.log('onEndReached');
-						}}
+						keyExtractor={(item: ClassItemData) =>
+							String(item.eventId)
+						}
 					/>
 				)}
 			</CalendarProvider>

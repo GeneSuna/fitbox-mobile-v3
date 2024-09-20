@@ -1,0 +1,28 @@
+diff --git a/node_modules/react-native-calendars/src/expandableCalendar/agendaList.js b/node_modules/react-native-calendars/src/expandableCalendar/agendaList.js
+index d485d8d..e14a4e9 100644
+--- a/node_modules/react-native-calendars/src/expandableCalendar/agendaList.js
++++ b/node_modules/react-native-calendars/src/expandableCalendar/agendaList.js
+@@ -152,11 +152,20 @@ const AgendaList = (props) => {
+     const _onScrollToIndexFailed = useCallback((info) => {
+         if (onScrollToIndexFailed) {
+             onScrollToIndexFailed(info);
+-        }
+-        else {
++        } else {
+             console.log('onScrollToIndexFailed info: ', info);
++            // Retry mechanism
++            setTimeout(() => {
++                list.current?.scrollToLocation({
++                    animated: true,
++                    sectionIndex: info.sectionIndex,
++                    itemIndex: info.index,
++                    viewPosition: 0,
++                    viewOffset: (constants.isAndroid ? sectionHeight.current : 0) + viewOffset
++                });
++            }, 500); // Retry after 500ms
+         }
+-    }, [onScrollToIndexFailed]);
++    }, [onScrollToIndexFailed, viewOffset]);
+     const onHeaderLayout = useCallback((event) => {
+         sectionHeight.current = event.nativeEvent.layout.height;
+     }, []);
