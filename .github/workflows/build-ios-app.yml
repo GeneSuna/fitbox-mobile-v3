@@ -60,6 +60,11 @@ jobs:
                   git clean -ffdx
                   npm cache clean --force
 
+            - name: Increment Xcode Build Number and Commit
+              run: |
+                  bash scripts/increment_build_number.sh
+              id: build_number
+
             - name: Clean Xcode Build
               run: |
                   cd ios
@@ -91,11 +96,6 @@ jobs:
                    cd ios
                    pod repo update
                    RCT_NEW_ARCH_ENABLED=1 bundle exec pod install --verbose
-                   
-            - name: Increment Xcode Build Number and Commit
-              run: |
-                  bash scripts/increment_build_number.sh
-              id: build_number
 
             - name: build archive
               run: |
