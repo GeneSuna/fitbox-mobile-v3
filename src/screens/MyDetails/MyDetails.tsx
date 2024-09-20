@@ -243,7 +243,11 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 					const response = await updateUserProfile(payload);
 
 					// update state
-					updateUser(payload as unknown as UserSchemaType);
+					updateUser({
+						...payload,
+						first_name: details.first_name,
+						last_name: details.last_name,
+					} as unknown as UserSchemaType);
 
 					// clear the empty required fields
 					setAppState('emptyRequiredFields', []);
