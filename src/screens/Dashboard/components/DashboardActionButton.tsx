@@ -1,6 +1,7 @@
 import { Text } from '@/components/atoms';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
+import layout from '@/theme/layout';
 import { StyleSheet, View } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -19,17 +20,23 @@ const DashboardActionButton = ({
 	icon,
 }: DashboardActionButtonProps) => {
 	const { colors } = useTheme();
+
+	const stringHasOneWord = text.split(' ').length === 1;
 	return (
-		<TouchableRipple
-			onPress={onPress}
-			style={[styles.container, { borderColor: colors.brand }]}
-		>
+		<TouchableRipple onPress={onPress} style={styles.container}>
 			<View style={styles.tileContainer}>
 				<View style={styles.tileIconContainer}>
 					<Icon name={icon} size={metrics.lg} color={colors.brand} />
 				</View>
+
 				<View style={styles.tileTextContainer}>
-					<Text size="md" color="brand" bold numberOfLines={2}>
+					<Text
+						size="md"
+						color="brand"
+						bold
+						numberOfLines={stringHasOneWord ? 1 : 2}
+						style={layout.flex_1}
+					>
 						{text}
 					</Text>
 				</View>
@@ -42,27 +49,26 @@ export default DashboardActionButton;
 
 const styles = StyleSheet.create({
 	container: {
-		paddingVertical: metrics.sm,
 		width: '48%',
-		marginBottom: metrics.md,
-		gap: 8,
 		borderWidth: 1,
-		paddingLeft: 7,
-		paddingRight: 6,
+		borderColor: config.colors.brand,
+		flexWrap: 'wrap',
+		paddingVertical: config.metrics.sm,
+		paddingHorizontal: config.metrics.md,
 		borderRadius: 4,
 		justifyContent: 'center',
-		height: 55,
+		minHeight: 55,
+		marginBottom: metrics.md,
 	},
 	tileTextContainer: {
 		flex: 1,
-		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	tileIconContainer: {
+		justifyContent: 'center',
 		marginRight: metrics.sm,
 	},
 	tileContainer: {
 		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'center',
 	},
 });
