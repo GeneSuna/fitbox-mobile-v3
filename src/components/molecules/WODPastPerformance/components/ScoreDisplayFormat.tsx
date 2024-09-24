@@ -117,19 +117,15 @@ const ScoreDisplayFormat = ({ data }: ScoreDisplayFormatProps) => {
 			);
 		case 20: {
 			// For Load
-			const weight = data?.one_rm?.weight ?? data?.weight;
-
+			const weight = data?.one_rm?.weight ?? data?.weight ?? data.value;
 			return (
 				<Row>
 					<Text size="md" color="darkgray">
-						{data.rounds ? data.rounds : data.sets} x{' '}
+						{data.rounds ?? data.sets ?? 1} x{' '}
 						{data.reps === '0' ? 1 : data.reps} @
 					</Text>
 					<Text size="md" color="darkgray" bold>
-						{' '}
-						{data.wod_score_id
-							? data.value
-							: `${weight} ${data.weight_unit ?? ''}`}
+						{` ${weight} ${data.weight_unit || 'kg'}`}
 					</Text>
 				</Row>
 			);
