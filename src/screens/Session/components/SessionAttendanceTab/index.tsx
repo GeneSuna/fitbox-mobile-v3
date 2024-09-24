@@ -278,7 +278,7 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 	const StickyHeaderComponent = (
 		<View>
 			<Text style={styles.slots}>
-				{`Slots: ${bookedMembersRef.current.length} / ${
+				{`${bookedMembersRef.current.length} / ${
 					attendanceLimit !== null ? attendanceLimit : '&#8734;'
 				}`}
 			</Text>

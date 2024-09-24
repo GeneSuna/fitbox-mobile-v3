@@ -132,6 +132,6 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		top: -6,
 		right: -8,
-		backgroundColor: config.colors.info,
+		backgroundColor: config.colors.brand,
 	},
 });
