@@ -450,7 +450,10 @@ const ScoreComponent = ({
 
 		setState(s => ({
 			...s,
-			hideOnLeaderboard: !!record.leaderboard_visible,
+			hideOnLeaderboard:
+				record.leaderboard_visible !== undefined
+					? !!record.leaderboard_visible
+					: s.hideOnLeaderboard,
 		}));
 
 		section.isRx = record.score_type === 'Rx';
