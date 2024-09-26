@@ -1,7 +1,6 @@
 import { Text } from '@/components/atoms';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
-import layout from '@/theme/layout';
 import { StyleSheet, View } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -35,7 +34,7 @@ const DashboardActionButton = ({
 						color="brand"
 						bold
 						numberOfLines={stringHasOneWord ? 1 : 2}
-						style={layout.flex_1}
+						style={styles.tileText}
 					>
 						{text}
 					</Text>
@@ -63,6 +62,7 @@ const styles = StyleSheet.create({
 	tileTextContainer: {
 		flex: 1,
 		justifyContent: 'center',
+		alignItems: 'center',
 	},
 	tileIconContainer: {
 		justifyContent: 'center',
@@ -70,5 +70,9 @@ const styles = StyleSheet.create({
 	},
 	tileContainer: {
 		flexDirection: 'row',
+	},
+	tileText: {
+		flex: 1,
+		textAlign: 'center',
 	},
 });
