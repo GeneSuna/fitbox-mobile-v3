@@ -561,7 +561,7 @@ export const ClassFiltersDataSchema = z.object({
 	isDefault: z.union([z.boolean(), z.number()]),
 	locationIds: z.array(z.number()),
 	name: z.string(),
-	sequence: z.number(),
+	sequence: z.number().optional(),
 	updated_at: z.string().optional(),
 });
 

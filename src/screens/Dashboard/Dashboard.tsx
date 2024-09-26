@@ -488,9 +488,19 @@ const Dashboard = () => {
 	};
 
 	const getClassFiltersFn = async () => {
+		const leaderboards = {
+			classIds: [],
+			id: 0,
+			isDefault: 0,
+			locationIds: [],
+			name: 'Leaderboard',
+		};
+
 		try {
 			const res = await getClassFilters();
-			setClassFiltersData(res.data);
+			const newResData = res.data;
+			newResData.splice(1, 0, leaderboards);
+			setClassFiltersData(newResData);
 			const defaultItem = res.data.find(item => item.isDefault === 1);
 			setDefaultClassFilter(defaultItem as ClassFiltersDataType);
 		} catch (e) {
@@ -557,12 +567,17 @@ const Dashboard = () => {
 	};
 
 	const renderPresetFilters = (item: ClassFiltersDataType) => {
+		const isLeaderboard = item.name === 'Leaderboard';
+		const onPress = isLeaderboard
+			? () => onActionButtonClick('results')
+			: () => onPresetFilterClick(item);
+
 		return (
 			<DashboardActionButton
-				key={item.id}
+				key={isLeaderboard ? 'leaderboard' : item.id}
 				text={item.name}
-				icon="calendar-alt"
-				onPress={() => onPresetFilterClick(item)}
+				icon={isLeaderboard ? 'trophy' : 'calendar-alt'}
+				onPress={onPress}
 			/>
 		);
 	};
@@ -699,7 +714,7 @@ const Dashboard = () => {
 							spacing="space-between"
 							style={styles.presetFilters}
 						>
-							{renderActionButtons}
+							{isEmpty(classFiltersData) && renderActionButtons}
 							{classFiltersData.map(item =>
 								renderPresetFilters(item),
 							)}
@@ -806,7 +821,6 @@ const styles = StyleSheet.create({
 	},
 	presetFilters: {
 		flexWrap: 'wrap',
-		flexDirection: 'row-reverse',
 		marginTop: config.metrics.xl,
 	},
 	attendanceIcon: {
