@@ -959,7 +959,20 @@ const ScoreComponent = ({
 					}));
 				}}
 				onClose={() => {
-					setState(s => ({ ...s, commentField: null }));
+					const comment = state.commentValue as string;
+					if (
+						state.commentField !== 'section' &&
+						typeof state.commentField === 'number'
+					) {
+						section.movements[state.commentField]!.comments =
+							comment;
+					} else {
+						section.comments = comment;
+					}
+					setState(s => ({
+						...s,
+						commentField: null,
+					}));
 				}}
 				onSave={() => {
 					const comment = state.commentValue as string;
@@ -998,9 +1011,8 @@ const styles = StyleSheet.create({
 	},
 	commentDisplay: {
 		alignSelf: 'center',
-		maxWidth: '70%',
-		justifyContent: 'center',
-		position: 'relative',
+		width: Constant.DEVICEWIDTH * 0.8,
+		height: 100,
 	},
 	commentInputIcon: {
 		marginLeft: 15,

@@ -76,7 +76,7 @@ const ScoreComment = ({
 				/>
 			</View>
 
-			{!Constant.IS_ANDROID && <KeyboardSpacer heightDeduction={50} />}
+			<KeyboardSpacer heightDeduction={Constant.IS_ANDROID ? 0 : 50} />
 		</View>
 	</BottomPanel>
 );
