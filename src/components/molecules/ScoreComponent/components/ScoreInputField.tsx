@@ -28,7 +28,7 @@ const FieldInput = ({
 }: FieldInputProps) => {
 	const showBorder = !!onChangeText;
 
-	if (!value && !onChangeText) {
+	if ((!value || value === '0') && !onChangeText) {
 		return null;
 	}
 
