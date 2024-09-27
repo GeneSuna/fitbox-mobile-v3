@@ -251,7 +251,8 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 
 	// Determine if the add button should be shown
 	const showAddButton =
-		(bookedMembers?.length < attendanceLimit || attendanceLimit === null) &&
+		bookedMembers?.length < attendanceLimit &&
+		attendanceLimit !== null &&
 		isStaff;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
