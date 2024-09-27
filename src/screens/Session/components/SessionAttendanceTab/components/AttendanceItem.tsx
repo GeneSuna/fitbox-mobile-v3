@@ -1,4 +1,5 @@
 import { Avatar, Row, Spacer, Text } from '@/components/atoms';
+import { Loader } from '@/components/molecules';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import useStore from '@/zustand/Store';
@@ -14,6 +15,7 @@ interface AttendanceItemProps {
 	name: string;
 	status: string;
 	isStaff: boolean;
+	loading: boolean;
 	handleCheckInUser: (userId: number) => Promise<void>;
 	handleToggleUserAttendance: (
 		userId: number,
@@ -27,14 +29,14 @@ const AttendanceItem = ({
 	name,
 	status,
 	isStaff,
+	loading,
 	handleCheckInUser,
 	handleToggleUserAttendance,
 }: AttendanceItemProps) => {
 	const loggedInUser = useStore(state => state.loggedInUser);
 
 	// Check if member is checked in
-	const checkedIn = status === 'checked-in' || isNil(status); // is nil for added members
-	// const loading = processingMembers.includes(member.user_id);
+	const checkedIn = status === 'checked-in' || isNil(status); // is nil for added member
 
 	return (
 		<Row style={styles.container}>
@@ -53,23 +55,32 @@ const AttendanceItem = ({
 			<View style={styles.actionButtonContainer}>
 				{isStaff && (
 					<Row>
-						<MIcon
-							size={config.metrics.lg}
-							name="account-check"
-							color={
-								checkedIn
-									? config.colors.oceanGreen
-									: config.backgrounds.darkgray
-							}
-							onPress={() => void handleCheckInUser(id)}
-						/>
-						<Spacer horizontal size="sm" />
-						<MIcon
-							size={config.metrics.lg}
-							name="account-off"
-							color={config.backgrounds.darkgray}
-							onPress={() => void handleToggleUserAttendance(id)}
-						/>
+						{loading ? (
+							<Loader />
+						) : (
+							<>
+								<MIcon
+									size={config.metrics.lg}
+									name="account-check"
+									color={
+										checkedIn
+											? config.colors.oceanGreen
+											: config.backgrounds.darkgray
+									}
+									onPress={() => void handleCheckInUser(id)}
+								/>
+								<Spacer horizontal size="sm" />
+								<MIcon
+									size={config.metrics.lg}
+									name="account-off"
+									color={config.backgrounds.darkgray}
+									onPress={() =>
+										void handleToggleUserAttendance(id)
+									}
+								/>
+							</>
+						)}
+
 						<Spacer horizontal size="sm" />
 					</Row>
 				)}

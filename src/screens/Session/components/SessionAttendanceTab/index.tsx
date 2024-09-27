@@ -54,12 +54,12 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 
 	const bookedMembersRef = useRef(session.member_attendance);
 
-	const toggleProcessingMember = (userId: number) => {
-		if (processingMembers.includes(userId)) {
-			setProcessingMembers(processingMembers.filter(id => id !== userId));
-		} else {
-			setProcessingMembers([...processingMembers, userId]);
-		}
+	const addProcessingMember = (userId: number) => {
+		setProcessingMembers([...processingMembers, userId]);
+	};
+
+	const removeProcessingMember = (userId: number) => {
+		setProcessingMembers(processingMembers.filter(id => id !== userId));
 	};
 
 	const handleToggleUserAttendance = async (
@@ -87,7 +87,7 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 		}
 
 		// add user to processingMembers
-		toggleProcessingMember(userId);
+		addProcessingMember(userId);
 
 		// otherwise use toggle attendance
 
@@ -178,7 +178,7 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 				);
 			})
 			.finally(() => {
-				toggleProcessingMember(userId);
+				removeProcessingMember(userId);
 			});
 	};
 
@@ -188,7 +188,7 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 			Say.warn('Please wait while we are processing your request');
 		}
 
-		toggleProcessingMember(userId);
+		addProcessingMember(userId);
 
 		const findUser = bookedMembersRef.current?.find(
 			member => member.user_id === userId,
@@ -246,7 +246,7 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 		}
 
 		// remove user from processingMembers
-		toggleProcessingMember(userId);
+		removeProcessingMember(userId);
 	};
 
 	// Determine if the add button should be shown
@@ -255,26 +255,29 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 		attendanceLimit !== null &&
 		isStaff;
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const renderItem = useCallback(({ item }: any) => {
-		const {
-			user,
-			user_id: userId,
-			attendance,
-		} = item as SessionMemberAttendanceSchemaType;
-
-		return (
-			<AttendanceItem
-				id={userId}
-				avatar={user.profile_image}
-				name={`${user.firstname} ${user.lastname}`}
-				isStaff={isStaff as boolean}
-				status={attendance.status}
-				handleCheckInUser={handleCheckInUser}
-				handleToggleUserAttendance={handleToggleUserAttendance}
-			/>
-		);
-	}, []);
+	const renderItem = useCallback(
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		({ item }: any) => {
+			const {
+				user,
+				user_id: userId,
+				attendance,
+			} = item as SessionMemberAttendanceSchemaType;
+			return (
+				<AttendanceItem
+					id={userId}
+					avatar={user.profile_image}
+					name={`${user.firstname} ${user.lastname}`}
+					isStaff={isStaff as boolean}
+					status={attendance.status}
+					handleCheckInUser={handleCheckInUser}
+					handleToggleUserAttendance={handleToggleUserAttendance}
+					loading={processingMembers.includes(userId)}
+				/>
+			);
+		},
+		[processingMembers],
+	);
 
 	const StickyHeaderComponent = (
 		<View>

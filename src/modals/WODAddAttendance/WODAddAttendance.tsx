@@ -1,5 +1,6 @@
 import { Avatar, Row, Spacer, Text } from '@/components/atoms';
 import { FlatList, Loader } from '@/components/molecules';
+import { updateAttendance } from '@/services/leaderboards';
 import { attendSession } from '@/services/session';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
@@ -33,12 +34,12 @@ const WODAddAttendance = ({ route }: AddAttendanceProps) => {
 		NotBookedMemberSchemaType[]
 	>(session?.not_book_members ?? []);
 
-	const toggleProcessingMember = (userId: number) => {
-		if (processingMembers.includes(userId)) {
-			setProcessingMembers(processingMembers.filter(id => id !== userId));
-		} else {
-			setProcessingMembers([...processingMembers, userId]);
-		}
+	const addProcessingMember = (userId: number) => {
+		setProcessingMembers([...processingMembers, userId]);
+	};
+
+	const removeProcessingMember = (userId: number) => {
+		setProcessingMembers(processingMembers.filter(id => id !== userId));
 	};
 
 	const handleToggleUserAttendance = async (
@@ -70,7 +71,7 @@ const WODAddAttendance = ({ route }: AddAttendanceProps) => {
 		}
 
 		// add user to processingMembers
-		toggleProcessingMember(userId);
+		addProcessingMember(userId);
 
 		// otherwise use toggle attendance
 
@@ -83,7 +84,7 @@ const WODAddAttendance = ({ route }: AddAttendanceProps) => {
 		};
 
 		await attendSession(payload)
-			.then(response => {
+			.then(async response => {
 				if (!response.error) {
 					// if booking success
 					let newNotBookedMembers = [];
@@ -122,6 +123,14 @@ const WODAddAttendance = ({ route }: AddAttendanceProps) => {
 						SimpleToast.SHORT,
 					);
 
+					if (!override) {
+						await updateAttendance({
+							event_id: payload.event_id,
+							user_id: userId,
+							status: 'checked-in',
+						});
+					}
+
 					// Invalidate the session query
 					void queryClient.invalidateQueries({
 						queryKey: ['sessionGetScheduleDetail'],
@@ -158,7 +167,7 @@ const WODAddAttendance = ({ route }: AddAttendanceProps) => {
 				);
 			})
 			.finally(() => {
-				toggleProcessingMember(userId);
+				removeProcessingMember(userId);
 			});
 	};
 
