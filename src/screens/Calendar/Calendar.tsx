@@ -359,11 +359,10 @@ const Calendar = () => {
 					index: todayIndex,
 					animated: false,
 				});
-
-				setTimeout(() => {
-					setIsInitialLoadingComplete(true);
-				}, 50);
 			}
+			setTimeout(() => {
+				setIsInitialLoadingComplete(true);
+			}, 50);
 		}, 1000);
 
 		handleDateChange(TODAYS_DATE);
@@ -408,8 +407,9 @@ const Calendar = () => {
 
 	return (
 		<SafeScreen>
-			{isInitialLoading ||
-				(!isInitialLoadingComplete && <CalendarSkeletonLoader />)}
+			{(isInitialLoading || !isInitialLoadingComplete) && (
+				<CalendarSkeletonLoader />
+			)}
 
 			<CalendarProvider
 				onDateChanged={handleDateChange}
