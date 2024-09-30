@@ -79,10 +79,14 @@ const SubscriptionDetails = ({ route }: MenuStackNavigatorProps) => {
 						2,
 					)}`}
 				/>
-				<SubscriptionRowDetail
-					title="1st Billing Date"
-					value={moment(data?.first_billing_date).format('DD/MM/YY')}
-				/>
+				{data?.type !== 'free' && (
+					<SubscriptionRowDetail
+						title="1st Billing Date"
+						value={moment(data?.first_billing_date).format(
+							'DD/MM/YY',
+						)}
+					/>
+				)}
 				<SubscriptionRowDetail
 					title="Membership Expires"
 					value={subscriptionExpiresValue}
