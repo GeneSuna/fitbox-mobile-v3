@@ -383,13 +383,15 @@ const Dashboard = () => {
 
 	useFocusEffect(
 		useCallback(() => {
-			setTimeout(() => {
+			const timer = setTimeout(() => {
 				setRefreshing(false);
 				setLoading(false);
 			}, 2000);
 
 			void onFocusTasks();
 			void fetchAttendanceReport();
+
+			return () => clearTimeout(timer);
 		}, []),
 	);
 

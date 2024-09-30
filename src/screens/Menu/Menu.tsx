@@ -178,11 +178,11 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 				break;
 			case 'logout': {
 				signOut();
-
 				navigation.reset({
 					index: 0,
 					routes: [{ name: 'Landing' }],
 				});
+
 				break;
 			}
 			case 'about': {

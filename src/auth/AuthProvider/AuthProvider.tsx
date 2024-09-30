@@ -91,15 +91,6 @@ const AuthProvider = ({ children, storage }: Props) => {
 
 		// remove push token from server
 		try {
-			// clear calendar state
-			clearClasses();
-
-			// clear global state
-			clearStates();
-
-			// clear filter state
-			clearFilters();
-
 			await deletePushToken(token, id);
 
 			// remove all tokens from storage
@@ -107,9 +98,22 @@ const AuthProvider = ({ children, storage }: Props) => {
 			storage.delete('user');
 
 			// remove the logged in user
-			setLoggedInUser(null);
+			const timer = setTimeout(() => {
+				// clear calendar state
+				clearClasses();
+
+				// clear global state
+				clearStates();
+
+				// clear filter state
+				clearFilters();
+				setLoggedInUser(null);
+			}, 800);
+
+			return () => clearTimeout(timer);
 		} catch (error) {
 			// console.error('@error', error);
+			return null;
 		}
 	};
 
