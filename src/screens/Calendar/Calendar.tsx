@@ -32,25 +32,18 @@ import {
 	View,
 	ViewToken,
 } from 'react-native';
-import { CalendarProvider, WeekCalendar } from 'react-native-calendars';
 import { Badge } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AgendaItem from './components/AgendaItem';
 import CalendarFilterPanel from './components/CalendarFilterPanel';
 import CalendarFilterSelect from './components/CalendarFilterSelectPanel';
 import CalendarSkeletonLoader from './components/CalendarSkeletonLoader';
+import CalendarWeek from './components/CalendarWeek';
 
 const { height } = Dimensions.get('window');
 const { fonts } = config;
 
 const TODAYS_DATE = moment().format(Constant.DEFAULT_DATE_FORMAT);
-
-const WEEK_CALENDAR_THEME = {
-	selectedDayBackgroundColor: fonts.colors.brand,
-	todayTextColor: fonts.colors.brand,
-	textDayFontFamily: layout.fontMontserratRegular.fontFamily,
-	textDayHeaderFontFamily: layout.fontMontserratBold.fontFamily,
-};
 
 const Calendar = () => {
 	const {
@@ -62,7 +55,6 @@ const Calendar = () => {
 		setHasPlaceholder,
 		setClasses,
 		getClassesByDate,
-		setActiveMonth,
 		setVenueFilters,
 		setClassFilters,
 		setHeaderTitle,
@@ -79,7 +71,6 @@ const Calendar = () => {
 		setHasPlaceholder: state.setHasPlaceholder,
 		setClasses: state.setClasses,
 		getClassesByDate: state.getClassesByDate,
-		setActiveMonth: state.setActiveMonth,
 		setVenueFilters: state.setVenueFilters,
 		setClassFilters: state.setClassFilters,
 		setHeaderTitle: state.setHeaderTitle,
@@ -187,38 +178,10 @@ const Calendar = () => {
 	};
 
 	useEffect(() => {
-		if (isInitialLoadingComplete) {
-			void loadClasses();
-		}
-
-		if (!isWeekCalendarScrolling) {
-			return;
-		}
-
-		if (!flashListRef.current) {
-			return;
-		}
-
-		const dateIndex = memoizedClasses.findIndex(
-			item => typeof item === 'string' && item === currentDate,
+		console.log(
+			'hasPlaceholderhasPlaceholderhasPlaceholder:hasPlaceholder',
 		);
 
-		if (dateIndex !== -1) {
-			setIsNavigating(true);
-			flashListRef.current.scrollToIndex({
-				index: dateIndex,
-				animated: true,
-			});
-
-			setTimeout(() => {
-				setIsNavigating(false);
-			}, 1000);
-		}
-
-		setIsWeekCalendarScrolling(false);
-	}, [currentDate]);
-
-	useEffect(() => {
 		if (hasPlaceholder) {
 			return;
 		}
@@ -247,8 +210,45 @@ const Calendar = () => {
 		setHasPlaceholder(true);
 	}, [hasPlaceholder]);
 
+	useEffect(() => {
+		console.log('useEffect(() => {if (isInitialLoadingComplete) {');
+
+		if (isInitialLoadingComplete) {
+			void loadClasses();
+		}
+
+		if (!isWeekCalendarScrolling) {
+			return;
+		}
+
+		if (!flashListRef.current) {
+			return;
+		}
+
+		const dateIndex = memoizedClasses.findIndex(
+			item => typeof item === 'string' && item === currentDate,
+		);
+
+		if (dateIndex !== -1) {
+			setIsNavigating(true);
+			flashListRef.current.scrollToIndex({
+				index: dateIndex,
+				animated: true,
+				viewOffset: -3,
+			});
+
+			setTimeout(() => {
+				setIsNavigating(false);
+			}, 1500);
+		}
+
+		setIsWeekCalendarScrolling(false);
+	}, [currentDate]);
+
 	const isFocused = useIsFocused();
 	useEffect(() => {
+		console.log('useEffect(() => {if (!isFocused && defaultClassFilter) {');
+
 		if (!isFocused && defaultClassFilter) {
 			let defaultClass = [];
 			let defaultVenue = [];
@@ -275,6 +275,10 @@ const Calendar = () => {
 	}, [isFocused]);
 
 	useEffect(() => {
+		console.log(
+			'useEffect(() => {const clearClasses = classFilters.some(c => c.is_selected);',
+		);
+
 		const clearClasses = classFilters.some(c => c.is_selected);
 		const clearLocations = venueFilters.some(v => v.is_selected);
 
@@ -343,30 +347,35 @@ const Calendar = () => {
 		.filter(item => item !== null) as number[];
 
 	const handleDateChange = useCallback((date: SetStateAction<string>) => {
+		console.log('change', date);
+
 		setCurrentDate(date);
 	}, []);
 
+	// FOR Scroll to Today on initial Load
 	useEffect(() => {
-		if (!isInitialLoading) return;
-
-		const todayIndex = memoizedClasses.findIndex(
-			item => typeof item === 'string' && item === TODAYS_DATE,
-		);
-
 		setTimeout(() => {
+			if (!isInitialLoading) return;
+
+			const todayIndex = memoizedClasses.findIndex(
+				item => typeof item === 'string' && item === TODAYS_DATE,
+			);
+
+			setIsNavigating(true);
 			if (todayIndex !== -1 && flashListRef.current) {
 				flashListRef.current.scrollToIndex({
 					index: todayIndex,
 					animated: false,
 				});
 			}
+
 			setTimeout(() => {
 				setIsInitialLoadingComplete(true);
-			}, 50);
+				handleDateChange(TODAYS_DATE);
+				setIsInitialLoading(false);
+				setIsNavigating(false);
+			}, 1000);
 		}, 1000);
-
-		handleDateChange(TODAYS_DATE);
-		setIsInitialLoading(false);
 	}, [memoizedClasses]);
 
 	const onViewableItemsChanged = ({
@@ -374,12 +383,17 @@ const Calendar = () => {
 	}: {
 		viewableItems: ViewToken[];
 	}) => {
-		if (isNavigating || !hasPlaceholder) {
+		if (isNavigating) {
+			console.log('isNavigating', isNavigating);
+			console.log('hasPlaceholder', hasPlaceholder);
+
 			return;
 		}
 
 		const firstItem = viewableItems[0];
 		if (!firstItem) {
+			console.log('nofirstitem');
+
 			return;
 		}
 
@@ -411,28 +425,21 @@ const Calendar = () => {
 				<CalendarSkeletonLoader />
 			)}
 
-			<CalendarProvider
-				onDateChanged={handleDateChange}
-				onMonthChange={month =>
-					setActiveMonth(moment(month.dateString).format('MMMM'))
-				}
-				date={currentDate}
-			>
-				<WeekCalendar
-					firstDay={1}
-					allowShadow={false}
-					current={currentDate}
-					theme={WEEK_CALENDAR_THEME}
+			<View style={[layout.flex_1]}>
+				<CalendarWeek
+					currentDate={currentDate}
+					setCurrentDate={d => {
+						setIsWeekCalendarScrolling(true);
+						handleDateChange(d);
+					}}
 					onMomentumScrollBegin={() =>
 						setIsWeekCalendarScrolling(true)
 					}
 					onMomentumScrollEnd={() =>
 						setIsWeekCalendarScrolling(false)
 					}
-					onDayPress={() => {
-						setIsWeekCalendarScrolling(true);
-					}}
 				/>
+
 				<FlashList
 					ref={flashListRef}
 					data={memoizedClasses}
@@ -445,8 +452,11 @@ const Calendar = () => {
 					onMomentumScrollBegin={() => setIsScrolling(true)}
 					onMomentumScrollEnd={() => setIsScrolling(false)}
 					onViewableItemsChanged={onViewableItemsChanged}
+					viewabilityConfig={{
+						itemVisiblePercentThreshold: 100,
+					}}
 				/>
-			</CalendarProvider>
+			</View>
 
 			{numberOfFilters > 0 && (
 				<View style={styles.filterContainer}>
@@ -489,7 +499,10 @@ const Calendar = () => {
 			{currentDate !== TODAYS_DATE && (
 				<TouchableOpacity
 					disabled={isScrolling}
-					onPress={() => handleDateChange(TODAYS_DATE)}
+					onPress={() => {
+						setIsWeekCalendarScrolling(true);
+						handleDateChange(TODAYS_DATE);
+					}}
 					style={[
 						isScrolling && styles.opacified,
 						styles.floatingActionBtn,

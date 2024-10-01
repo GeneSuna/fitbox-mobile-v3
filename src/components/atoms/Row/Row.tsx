@@ -1,7 +1,7 @@
 import {
 	FlexAlignType,
 	StyleProp,
-	TouchableOpacity,
+	TouchableWithoutFeedback,
 	View,
 	ViewStyle,
 } from 'react-native';
@@ -37,7 +37,9 @@ const Row = ({
 
 	if (onPress) {
 		return (
-			<TouchableOpacity onPress={onPress}>{component}</TouchableOpacity>
+			<TouchableWithoutFeedback onPress={onPress}>
+				{component}
+			</TouchableWithoutFeedback>
 		);
 	}
 
