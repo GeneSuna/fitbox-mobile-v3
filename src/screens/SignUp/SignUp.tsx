@@ -248,10 +248,51 @@ const SignUp = ({ navigation }: ApplicationScreenProps) => {
 		setState(prev => ({ ...prev, code, gymInfo: null }));
 	};
 
-	const onCaptchaVerified = () => {
+	const onCaptchaVerified = async () => {
 		setState(prevState => ({ ...prevState, verified: true }));
-		void onSubmit();
-		recaptchaRef.current?.close();
+
+		setState(prevState => ({ ...prevState, fieldsError: {} }));
+		const { fields, role, code } = stateRef.current as State;
+
+		const hasEmptyFields = validateFields();
+		if (hasEmptyFields) {
+			Say.warn('Please fill up all required fields');
+			return false;
+		}
+
+		setState(prevState => ({ ...prevState, processing: true }));
+		SimpleToast.show('Please wait...', SimpleToast.SHORT);
+
+		const payload = {
+			email: (fields as Fields).email,
+			firstname: (fields as Fields).firstname,
+			lastname: (fields as Fields).lastname,
+			password: (fields as Fields).password,
+			password_confirmation: (fields as Fields).password_confirmation,
+			team_id: Number(code),
+			role,
+		};
+
+		const res = await register(payload);
+		if (res.error) {
+			if (res.data) {
+				setState(prevState => ({
+					...prevState,
+					fieldsError: res.data as FormErrors,
+				}));
+			}
+		} else {
+			void Say.okThen('Successfully Registered!').then(async () => {
+				SimpleToast.show('Signing in...', SimpleToast.SHORT);
+
+				await signIn(payload.email, payload.password).then(user => {
+					if (user) navigation.navigate('Startup');
+				});
+			});
+		}
+
+		setState(prevState => ({ ...prevState, processing: false }));
+		return recaptchaRef.current?.close();
 	};
 
 	const onCaptchaError = () => {
@@ -261,7 +302,6 @@ const SignUp = ({ navigation }: ApplicationScreenProps) => {
 	const onSubmit = async () => {
 		setState(prevState => ({ ...prevState, fieldsError: {} }));
 		const { fields, role, verified, code } = stateRef.current as State;
-
 		if (!verified) {
 			recaptchaRef.current?.open();
 			return false;
@@ -557,7 +597,7 @@ const SignUp = ({ navigation }: ApplicationScreenProps) => {
 					siteKey={Constant.RECAPTCHA.siteKey}
 					baseUrl={Constant.RECAPTCHA.baseURL}
 					ref={recaptchaRef}
-					onVerify={onCaptchaVerified}
+					onVerify={() => void onCaptchaVerified()}
 					onError={onCaptchaError}
 					onExpire={onCaptchaError}
 				/>
