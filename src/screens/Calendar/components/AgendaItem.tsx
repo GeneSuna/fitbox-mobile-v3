@@ -6,7 +6,7 @@ import useStore from '@/zustand/Store';
 import { ClassItemData } from '@/zustand/interface/SessionInterface';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 const { metrics, fonts } = config;
 
@@ -95,60 +95,57 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 
 		if (isLoading) {
 			return (
-				<SkeletonView
-					height={10}
-					width={50}
-					style={styles.itemLoader}
-				/>
+				<View style={styles.itemLoaderContainer}>
+					<SkeletonView
+						height={10}
+						width={50}
+						style={styles.itemLoader}
+					/>
+				</View>
 			);
 		}
 
 		return (
-			<Animated.View>
-				<TouchableOpacity
-					onPress={handleViewSession}
-					style={styles.item}
-				>
-					<View style={styles.timeContainer}>
-						<Text size="rg" bold>
-							{start}
+			<TouchableOpacity onPress={handleViewSession} style={styles.item}>
+				<View style={styles.timeContainer}>
+					<Text size="rg" bold>
+						{start}
+					</Text>
+					<Text size="xs">{duration}</Text>
+				</View>
+				<View
+					style={[
+						styles.divider,
+						{ backgroundColor: color || fonts.colors.brand },
+					]}
+				/>
+				<View style={styles.contentContainer}>
+					<Text bold size="md">
+						{title}
+					</Text>
+					{location ? (
+						<Text color="info" size="sm">
+							{location}
 						</Text>
-						<Text size="xs">{duration}</Text>
-					</View>
-					<View
-						style={[
-							styles.divider,
-							{ backgroundColor: color || fonts.colors.brand },
-						]}
+					) : null}
+				</View>
+				<View style={styles.itemButtonContainer}>
+					<BookButton
+						eventId={eventId as number}
+						classId={classId as number}
+						isSubscribed={isSubscribed}
+						isCoach={isCoach as boolean}
+						spotsLeft={spotsLeft as number}
+						isWaitlisted={isWaitlisted as boolean}
+						startDate={startDate as string}
+						isBookingLocked={isBookingLocked as boolean}
+						waitlistBtn={waitlistBtn as boolean}
+						isAttending={isAttending}
+						setAttending={setIsAttending}
+						handleViewSession={handleViewSession}
 					/>
-					<View style={styles.contentContainer}>
-						<Text bold size="md">
-							{title}
-						</Text>
-						{location ? (
-							<Text color="info" size="sm">
-								{location}
-							</Text>
-						) : null}
-					</View>
-					<View style={styles.itemButtonContainer}>
-						<BookButton
-							eventId={eventId as number}
-							classId={classId as number}
-							isSubscribed={isSubscribed}
-							isCoach={isCoach as boolean}
-							spotsLeft={spotsLeft as number}
-							isWaitlisted={isWaitlisted as boolean}
-							startDate={startDate as string}
-							isBookingLocked={isBookingLocked as boolean}
-							waitlistBtn={waitlistBtn as boolean}
-							isAttending={isAttending}
-							setAttending={setIsAttending}
-							handleViewSession={handleViewSession}
-						/>
-					</View>
-				</TouchableOpacity>
-			</Animated.View>
+				</View>
+			</TouchableOpacity>
 		);
 	},
 	(prevProps, nextProps) => {
@@ -173,6 +170,11 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		borderBottomColor: 'lightgrey',
 		flexDirection: 'row',
+	},
+	itemLoaderContainer: {
+		paddingTop: config.metrics.md,
+		height: 84,
+		justifyContent: 'center',
 	},
 	itemLoader: {
 		marginLeft: 20,

@@ -1,11 +1,10 @@
-/* eslint-disable react-native/no-inline-styles */
 import { Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { Constant } from '@/utils';
 import useStore from '@/zustand/Store';
 import moment from 'moment';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 
@@ -25,11 +24,13 @@ const CalendarWeek = ({
 		setActiveMonth: state.setActiveMonth,
 	}));
 
+	const [currentIndex, setCurrentIndex] = useState(0);
+
 	const swiper = useRef<SwiperFlatList>(null);
 
 	const weeks = useMemo(() => {
 		const start = moment(currentDate).startOf('isoWeek');
-		return [-2, -1, 0, 1, 2, 3].map(adj => {
+		return [-1, 0, 1].map(adj => {
 			return Array.from({ length: 7 }).map((_, index) => {
 				const date = moment(start).add(adj, 'week').add(index, 'day');
 				return {
@@ -58,14 +59,42 @@ const CalendarWeek = ({
 		setActiveMonth(moment(currentDate).format('MMMM'));
 	}, [currentDate]);
 
+	const handleChangeIndex = (index: number) => {
+		if (index === currentIndex) return;
+		setCurrentIndex(index);
+
+		let useDate;
+		// eslint-disable-next-line default-case
+		switch (index) {
+			case 0:
+				useDate = moment(currentDate)
+					.startOf('isoWeek')
+					.subtract(1, 'day')
+					.format(Constant.DEFAULT_DATE_FORMAT);
+				break;
+			case 2:
+				useDate = moment(currentDate)
+					.endOf('isoWeek')
+					.add(1, 'day')
+					.format(Constant.DEFAULT_DATE_FORMAT);
+		}
+
+		if (useDate) {
+			onMomentumScrollBegin();
+			setCurrentDate(useDate);
+		}
+	};
+
 	return (
-		<View style={styles.container}>
+		<View>
 			<SwiperFlatList
 				ref={swiper}
 				autoplayLoop={false}
 				showPagination={false}
 				onMomentumScrollBegin={onMomentumScrollBegin}
 				onMomentumScrollEnd={onMomentumScrollEnd}
+				decelerationRate="fast"
+				onChangeIndex={({ index }) => handleChangeIndex(index)}
 			>
 				{weeks.map((dates, index) => (
 					<View style={styles.itemRow} key={index}>
@@ -81,18 +110,9 @@ const CalendarWeek = ({
 								>
 									<View
 										style={[
-											// styles.item,
 											layout.flex_1,
-											{
-												justifyContent: 'center',
-												alignItems: 'center',
-											},
-											// isActive && {
-											// 	backgroundColor:
-											// 		config.fonts.colors.brand,
-											// 	borderColor:
-											// 		config.fonts.colors.brand,
-											// },
+											layout.justifyCenter,
+											layout.itemsCenter,
 										]}
 									>
 										<Text color="gray100" bold size="xs">
@@ -134,7 +154,6 @@ const CalendarWeek = ({
 export default CalendarWeek;
 
 const styles = StyleSheet.create({
-	container: {},
 	item: {
 		flex: 1,
 		justifyContent: 'center',

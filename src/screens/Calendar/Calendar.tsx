@@ -93,7 +93,7 @@ const Calendar = () => {
 
 	const loadClasses = () => {
 		// create a range from current date to 3 days ago and 3 days ahead
-		let startDate = moment(currentDate);
+		let startDate = moment(currentDate).startOf('isoWeek');
 		if (isInitialLoadingComplete) {
 			startDate = moment(currentDate).subtract(3, 'days');
 		}
@@ -178,10 +178,6 @@ const Calendar = () => {
 	};
 
 	useEffect(() => {
-		console.log(
-			'hasPlaceholderhasPlaceholderhasPlaceholder:hasPlaceholder',
-		);
-
 		if (hasPlaceholder) {
 			return;
 		}
@@ -192,7 +188,7 @@ const Calendar = () => {
 		void fetchFilterOptions();
 
 		// Start of month and monday
-		const startDate = moment().startOf('month');
+		const startDate = moment().subtract(1, 'month');
 		const endingDate = startDate.clone().add(2, 'months');
 		const dates = Array.from(
 			{ length: endingDate.diff(startDate, 'days') },
@@ -211,44 +207,53 @@ const Calendar = () => {
 	}, [hasPlaceholder]);
 
 	useEffect(() => {
-		console.log('useEffect(() => {if (isInitialLoadingComplete) {');
-
 		if (isInitialLoadingComplete) {
-			void loadClasses();
-		}
-
-		if (!isWeekCalendarScrolling) {
-			return;
-		}
-
-		if (!flashListRef.current) {
-			return;
-		}
-
-		const dateIndex = memoizedClasses.findIndex(
-			item => typeof item === 'string' && item === currentDate,
-		);
-
-		if (dateIndex !== -1) {
-			setIsNavigating(true);
-			flashListRef.current.scrollToIndex({
-				index: dateIndex,
-				animated: true,
-				viewOffset: -3,
-			});
-
 			setTimeout(() => {
-				setIsNavigating(false);
+				void loadClasses();
 			}, 1500);
 		}
+	}, [isInitialLoadingComplete]);
 
-		setIsWeekCalendarScrolling(false);
+	useEffect(() => {
+		const scrollToDateIndex = async () => {
+			if (isInitialLoadingComplete) {
+				void loadClasses();
+			}
+
+			if (!isWeekCalendarScrolling) {
+				return;
+			}
+
+			if (!flashListRef.current) {
+				return;
+			}
+
+			const dateIndex = memoizedClasses.findIndex(
+				item => typeof item === 'string' && item === currentDate,
+			);
+
+			if (dateIndex !== -1) {
+				setIsNavigating(true);
+
+				await new Promise(resolve => {
+					flashListRef.current?.scrollToIndex({
+						index: dateIndex,
+						animated: true,
+					});
+
+					setTimeout(resolve, 1500);
+				});
+				setIsNavigating(false);
+			}
+
+			setIsWeekCalendarScrolling(false);
+		};
+
+		void scrollToDateIndex();
 	}, [currentDate]);
 
 	const isFocused = useIsFocused();
 	useEffect(() => {
-		console.log('useEffect(() => {if (!isFocused && defaultClassFilter) {');
-
 		if (!isFocused && defaultClassFilter) {
 			let defaultClass = [];
 			let defaultVenue = [];
@@ -275,10 +280,6 @@ const Calendar = () => {
 	}, [isFocused]);
 
 	useEffect(() => {
-		console.log(
-			'useEffect(() => {const clearClasses = classFilters.some(c => c.is_selected);',
-		);
-
 		const clearClasses = classFilters.some(c => c.is_selected);
 		const clearLocations = venueFilters.some(v => v.is_selected);
 
@@ -347,8 +348,6 @@ const Calendar = () => {
 		.filter(item => item !== null) as number[];
 
 	const handleDateChange = useCallback((date: SetStateAction<string>) => {
-		console.log('change', date);
-
 		setCurrentDate(date);
 	}, []);
 
@@ -384,16 +383,11 @@ const Calendar = () => {
 		viewableItems: ViewToken[];
 	}) => {
 		if (isNavigating) {
-			console.log('isNavigating', isNavigating);
-			console.log('hasPlaceholder', hasPlaceholder);
-
 			return;
 		}
 
 		const firstItem = viewableItems[0];
 		if (!firstItem) {
-			console.log('nofirstitem');
-
 			return;
 		}
 
@@ -432,9 +426,10 @@ const Calendar = () => {
 						setIsWeekCalendarScrolling(true);
 						handleDateChange(d);
 					}}
-					onMomentumScrollBegin={() =>
-						setIsWeekCalendarScrolling(true)
-					}
+					onMomentumScrollBegin={() => {
+						setIsNavigating(true);
+						setIsWeekCalendarScrolling(true);
+					}}
 					onMomentumScrollEnd={() =>
 						setIsWeekCalendarScrolling(false)
 					}
@@ -448,12 +443,15 @@ const Calendar = () => {
 					getItemType={getItemType}
 					keyExtractor={(_, index) => index.toString()}
 					stickyHeaderIndices={stickyHeaderIndices}
-					estimatedItemSize={83}
 					onMomentumScrollBegin={() => setIsScrolling(true)}
 					onMomentumScrollEnd={() => setIsScrolling(false)}
 					onViewableItemsChanged={onViewableItemsChanged}
-					viewabilityConfig={{
-						itemVisiblePercentThreshold: 100,
+					viewabilityConfig={{ itemVisiblePercentThreshold: 100 }}
+					estimatedItemSize={84}
+					// eslint-disable-next-line @typescript-eslint/no-shadow
+					overrideItemLayout={layout => {
+						// eslint-disable-next-line no-param-reassign
+						layout.size = 84; // Set a fixed height for each item
 					}}
 				/>
 			</View>
