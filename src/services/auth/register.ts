@@ -18,6 +18,7 @@ export default async (payload: PayloadType) => {
 	const response = await securedInstance()
 		.post(url, {
 			body: JSON.stringify(payload),
+			timeout: 30000,
 		})
 		.json();
 
