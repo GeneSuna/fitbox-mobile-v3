@@ -119,6 +119,13 @@ const MOVEMENT_PARAMS = [
 	{ key: 'time' },
 ];
 
+// Timeout in milliseconds for getting a response
+const RESPONSE_TIMEOUT = {
+	DEV: 60000,
+	STG: 60000,
+	PROD: 20000,
+};
+
 export default {
 	ENABLE_ENV_PICKER,
 	MASQUERADE_USER_API_TOKEN,
@@ -137,4 +144,5 @@ export default {
 	NOTIFICATION_SERVICE_URL,
 	NOTIFICATION_SETTINGS,
 	MOVEMENT_PARAMS,
+	RESPONSE_TIMEOUT,
 };

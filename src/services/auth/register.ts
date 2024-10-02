@@ -8,7 +8,6 @@ export default async (payload: unknown) => {
 	const response = await securedInstance()
 		.post(url, {
 			body: JSON.stringify(payload),
-			timeout: 30000,
 		})
 		.json();
 

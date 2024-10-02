@@ -22,6 +22,20 @@ export const getApiToken = () =>
  */
 export const getApiUrl = () => mmkvStorage.getString('apiUrl');
 
+const url = getApiUrl();
+const getTimeout = () => {
+	if (url?.includes('dev.fitbox.iq')) {
+		return Constant.RESPONSE_TIMEOUT.DEV;
+	}
+	if (url?.includes('staging.fitbox.iq')) {
+		return Constant.RESPONSE_TIMEOUT.STG;
+	}
+	if (url?.includes('fitbox.iq')) {
+		return Constant.RESPONSE_TIMEOUT.PROD;
+	}
+	return Constant.RESPONSE_TIMEOUT.PROD;
+};
+
 /**
  * Create a new instance of ky
  * @returns KyInstance
@@ -50,6 +64,7 @@ export const securedInstance = () =>
 			'Content-Type': 'application/json',
 			'x-app-version': xAppVersion,
 		},
+		timeout: getTimeout(),
 		hooks: {
 			beforeRequest: [
 				request => {
