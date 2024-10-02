@@ -38,7 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0092D1609C6746D5BB52694C /* Barlow-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Barlow-Bold.ttf"; path = "../src/theme/assets/fonts/Barlow-Bold.ttf"; sourceTree = "<group>"; };
+		0092D1609C6746D5BB52694C /* Barlow-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Barlow-Bold.ttf"; path = "../src/theme/assets/fonts/Barlow-Bold.ttf"; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* fitboxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fitboxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* fitboxTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = fitboxTests.m; sourceTree = "<group>"; };
@@ -48,18 +48,18 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = fitbox/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = fitbox/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = fitbox/main.m; sourceTree = "<group>"; };
-		2BD80FD8A90C4E32839E7CA4 /* Barlow-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Barlow-Light.ttf"; path = "../src/theme/assets/fonts/Barlow-Light.ttf"; sourceTree = "<group>"; };
-		2FBF39F9855D4D73AC262AC7 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../src/theme/assets/fonts/Roboto-Regular.ttf"; sourceTree = "<group>"; };
+		2BD80FD8A90C4E32839E7CA4 /* Barlow-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Barlow-Light.ttf"; path = "../src/theme/assets/fonts/Barlow-Light.ttf"; sourceTree = "<group>"; };
+		2FBF39F9855D4D73AC262AC7 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../src/theme/assets/fonts/Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		392EDFA95319695B8BF623F9 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = fitbox/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-fitbox.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fitbox.debug.xcconfig"; path = "Target Support Files/Pods-fitbox/Pods-fitbox.debug.xcconfig"; sourceTree = "<group>"; };
-		4518EB12E1EF464B9513FEDE /* fitbox.ipa */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = fitbox.ipa; path = "../src/theme/assets/fonts/fitbox 2024-06-28 09-11-01/fitbox.ipa"; sourceTree = "<group>"; };
+		4518EB12E1EF464B9513FEDE /* fitbox.ipa */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = fitbox.ipa; path = "../src/theme/assets/fonts/fitbox 2024-06-28 09-11-01/fitbox.ipa"; sourceTree = "<group>"; };
 		4529E04564F267472C1285C7 /* Pods_fitbox_fitboxTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_fitbox_fitboxTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5709B34CF0A7D63546082F79 /* Pods-fitbox.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fitbox.release.xcconfig"; path = "Target Support Files/Pods-fitbox/Pods-fitbox.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-fitbox-fitboxTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fitbox-fitboxTests.debug.xcconfig"; path = "Target Support Files/Pods-fitbox-fitboxTests/Pods-fitbox-fitboxTests.debug.xcconfig"; sourceTree = "<group>"; };
-		6B76D5E253BF4E5A9D13C1DA /* Inter-VariableFont_opsz,wght.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-VariableFont_opsz,wght.ttf"; path = "../src/theme/assets/fonts/Inter-VariableFont_opsz,wght.ttf"; sourceTree = "<group>"; };
+		6B76D5E253BF4E5A9D13C1DA /* Inter-VariableFont_opsz,wght.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-VariableFont_opsz,wght.ttf"; path = "../src/theme/assets/fonts/Inter-VariableFont_opsz,wght.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = fitbox/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-fitbox-fitboxTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fitbox-fitboxTests.release.xcconfig"; path = "Target Support Files/Pods-fitbox-fitboxTests/Pods-fitbox-fitboxTests.release.xcconfig"; sourceTree = "<group>"; };
-		AB63AA94EDA84E9FAC76B34D /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../src/theme/assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; };
+		AB63AA94EDA84E9FAC76B34D /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../src/theme/assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		B06A429309411A169CC0ABEF /* Pods_fitbox.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_fitbox.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB00A2F72C242362002C8C5F /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Montserrat-Regular.ttf"; path = "../src/theme/assets/fonts/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 		CB00A2F82C242363002C8C5F /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Montserrat-Bold.ttf"; path = "../src/theme/assets/fonts/Montserrat-Bold.ttf"; sourceTree = "<group>"; };
@@ -132,7 +132,6 @@
 				6B76D5E253BF4E5A9D13C1DA /* Inter-VariableFont_opsz,wght.ttf */,
 			);
 			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -536,7 +535,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 38;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 72JFN8S92U;
@@ -574,7 +573,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 38;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 72JFN8S92U;

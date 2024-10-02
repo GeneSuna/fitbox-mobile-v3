@@ -105,19 +105,23 @@ const Dashboard = () => {
 		notifSettings: state.notifSettings,
 	}));
 
-	const [loading, setLoading] = useState<boolean>(true);
 	const [refreshing, setRefreshing] = useState<boolean>(true);
 	const [gymBanner, setGymBanner] = useState<string>('');
 	const [gymLogo, setGymLogo] = useState<string>('');
 	const [upcomingSessions, setUpcomingSessions] = useState<
 		BookedSessionCardProps[]
 	>([]);
+
+	const [upcomingSessionsIsLoading, setUpcomingSessionsIsLoading] =
+		useState<boolean>(true);
 	const [classFiltersData, setClassFiltersData] = useState<
 		ClassFiltersDataType[]
 	>([]);
 
 	const [attendanceReport, setAttendanceReport] =
 		useState<AttendanceReportDataType | null>(null);
+	const [attendanceReportIsLoading, setAttendanceReportIsLoading] =
+		useState<boolean>(true);
 
 	const [presetFiltersIsLoaded, setPresetFiltersIsLoaded] =
 		useState<boolean>(false);
@@ -241,7 +245,7 @@ const Dashboard = () => {
 	};
 
 	const getUpcomingSessions = async () => {
-		setLoading(true);
+		setUpcomingSessionsIsLoading(true);
 		const memberSessions: BookedSessionCardProps[] = [];
 
 		try {
@@ -312,7 +316,7 @@ const Dashboard = () => {
 			});
 
 			setUpcomingSessions(memberSessions);
-			setLoading(false);
+			setUpcomingSessionsIsLoading(false);
 			setRefreshing(false);
 		}
 
@@ -394,7 +398,6 @@ const Dashboard = () => {
 		useCallback(() => {
 			const timer = setTimeout(() => {
 				setRefreshing(false);
-				setLoading(false);
 			}, 2000);
 
 			void onFocusTasks();
@@ -424,6 +427,7 @@ const Dashboard = () => {
 	}, []);
 
 	const fetchAttendanceReport = () => {
+		setAttendanceReportIsLoading(true);
 		try {
 			getAttendanceReport(user?.user_data.user_id as number)
 				.then(res => {
@@ -436,6 +440,8 @@ const Dashboard = () => {
 				});
 		} catch (e) {
 			Say.err(e as string);
+		} finally {
+			setAttendanceReportIsLoading(false);
 		}
 	};
 
@@ -596,6 +602,131 @@ const Dashboard = () => {
 		);
 	};
 
+	const renderDashboardComponents = () => {
+		const allSectionsLoaded =
+			!upcomingSessionsIsLoading &&
+			presetFiltersIsLoaded &&
+			!attendanceReportIsLoading;
+
+		if (!allSectionsLoaded) {
+			return (
+				<>
+					<View
+						style={{
+							marginTop: config.metrics.lg,
+							marginBottom: config.metrics.xl,
+						}}
+					>
+						<SkeletonView height={65} width="100%" />
+					</View>
+					<Spacer size="md" />
+					<SkeletonView height={81} width="100%" />
+					<View style={styles.viewMoreButton}>
+						<SkeletonView height={17.2} width="40%" />
+					</View>
+					<View style={{ marginTop: config.metrics.xl }}>
+						<SkeletonView height={165} width="100%" />
+					</View>
+				</>
+			);
+		}
+
+		return (
+			<>
+				{attendanceReport && (
+					<View
+						style={{
+							marginTop: config.metrics.lg,
+							marginBottom: config.metrics.xl,
+						}}
+					>
+						<Text bold style={{ marginBottom: config.metrics.sm }}>
+							Attendance:
+						</Text>
+
+						<Row spacing="space-evenly">
+							<View
+								style={[
+									layout.flex_1,
+									styles.attendanceContainer,
+								]}
+							>
+								<Row align="flex-end">
+									<Image
+										source={resources.icon.monthToDate}
+										style={styles.attendanceIcon}
+									/>
+									<Text style={styles.attendanceValue} bold>
+										{attendanceReport?.monthToDate}
+									</Text>
+									<Text
+										size="md"
+										style={styles.attendanceText}
+									>
+										this month
+									</Text>
+								</Row>
+							</View>
+
+							<View
+								style={[
+									layout.flex_1,
+									styles.attendanceContainer,
+								]}
+							>
+								<Row align="flex-end">
+									<Image
+										source={resources.icon.yearToDate}
+										style={styles.attendanceIcon}
+									/>
+									<Text style={styles.attendanceValue} bold>
+										{attendanceReport?.yearToDate}
+									</Text>
+									<Text
+										size="md"
+										style={styles.attendanceText}
+									>
+										this year
+									</Text>
+								</Row>
+							</View>
+						</Row>
+					</View>
+				)}
+
+				{upcomingSessions.length > 0 && (
+					<>
+						<Spacer size="md" />
+						<View style={styles.bookedSessionsContainer}>
+							{upcomingSessions // show only 1
+								.slice(0, 1)
+								.map(({ ...rest }, i) => (
+									<BookedSessionCard key={i} {...rest} />
+								))}
+						</View>
+					</>
+				)}
+
+				{upcomingSessions.length > 1 && (
+					<TouchableOpacity
+						style={styles.viewMoreButton}
+						onPress={() => navigate('Bookings')}
+					>
+						<Text bold color="info">
+							{t('dashboard:sessions.member.viewAll')}
+						</Text>
+					</TouchableOpacity>
+				)}
+
+				<Spacer size="xl" />
+				<Row spacing="space-between" style={styles.presetFilters}>
+					{isEmpty(classFiltersData) && renderActionButtons}
+					{classFiltersData.map(item => renderPresetFilters(item))}
+				</Row>
+			</>
+		);
+	};
+
 	return (
 		<SafeScreen>
 			{/* TODO: If banner doesn't update include versioning of image to apply changes */}
@@ -628,144 +759,7 @@ const Dashboard = () => {
 							) : null} */}
 						</Row>
 
-						{attendanceReport ? (
-							<View
-								style={{
-									marginTop: config.metrics.lg,
-									marginBottom: config.metrics.xl,
-								}}
-							>
-								<Text
-									bold
-									style={{ marginBottom: config.metrics.sm }}
-								>
-									Sessions:
-								</Text>
-
-								<Row spacing="space-evenly">
-									<View
-										style={[
-											layout.flex_1,
-											styles.attendanceContainer,
-										]}
-									>
-										<Row align="flex-end">
-											<Image
-												source={
-													resources.icon.monthToDate
-												}
-												style={styles.attendanceIcon}
-											/>
-											<Text
-												style={styles.attendanceValue}
-												bold
-											>
-												{attendanceReport?.monthToDate}
-											</Text>
-											<Text
-												size="md"
-												style={styles.attendanceText}
-											>
-												this month
-											</Text>
-										</Row>
-									</View>
-
-									<View
-										style={[
-											layout.flex_1,
-											styles.attendanceContainer,
-										]}
-									>
-										<Row align="flex-end">
-											<Image
-												source={
-													resources.icon.yearToDate
-												}
-												style={styles.attendanceIcon}
-											/>
-											<Text
-												style={styles.attendanceValue}
-												bold
-											>
-												{attendanceReport?.yearToDate}
-											</Text>
-											<Text
-												size="md"
-												style={styles.attendanceText}
-											>
-												this year
-											</Text>
-										</Row>
-									</View>
-								</Row>
-							</View>
-						) : (
-							<View
-								style={{
-									marginTop: config.metrics.lg,
-									marginBottom: config.metrics.xl,
-								}}
-							>
-								<SkeletonView height={65} width="100%" />
-							</View>
-						)}
-
-						{upcomingSessions.length > 0 ? (
-							<>
-								<Spacer size="md" />
-								<View style={styles.bookedSessionsContainer}>
-									{upcomingSessions // show only 1
-										.slice(0, 1)
-										.map(({ ...rest }, i) => (
-											<BookedSessionCard
-												key={i}
-												{...rest}
-											/>
-										))}
-								</View>
-							</>
-						) : (
-							<>
-								<Spacer size="md" />
-								<SkeletonView height={81} width="100%" />
-							</>
-						)}
-
-						{!loading && upcomingSessions.length > 0 ? (
-							<TouchableOpacity
-								style={styles.viewMoreButton}
-								onPress={() => navigate('Bookings')}
-							>
-								<Text bold color="info">
-									{t('dashboard:sessions.member.viewAll')}
-								</Text>
-							</TouchableOpacity>
-						) : (
-							<View style={styles.viewMoreButton}>
-								<SkeletonView height={17.2} width="40%" />
-							</View>
-						)}
-
-						<Spacer size="xl" />
-
-						{presetFiltersIsLoaded ? (
-							<Row
-								spacing="space-between"
-								style={styles.presetFilters}
-							>
-								{isEmpty(classFiltersData) &&
-									renderActionButtons}
-								{classFiltersData.map(item =>
-									renderPresetFilters(item),
-								)}
-							</Row>
-						) : (
-							<View style={{ marginTop: config.metrics.xl }}>
-								<SkeletonView height={165} width="100%" />
-							</View>
-						)}
-
+						{renderDashboardComponents()}
 						<Spacer size="xl" />
 
 						{/* NOTE: Hide Announcements for now */}
