@@ -346,6 +346,11 @@ const SessionsSectionsTab = ({
 											<WebView
 												javaScriptEnabled
 												domStorageEnabled
+												allowsFullscreenVideo
+												allowsInlineMediaPlayback
+												mediaPlaybackRequiresUserAction={
+													false
+												}
 												onLoadEnd={onLoadVideo}
 												onError={onVideoError}
 												source={{
@@ -474,7 +479,7 @@ const SessionsSectionsTab = ({
 																	size={
 																		config
 																			.metrics
-																			.sm
+																			.rg
 																	}
 																/>
 															</>
