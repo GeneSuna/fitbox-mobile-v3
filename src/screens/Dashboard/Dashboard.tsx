@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import useAuth from '@/auth/hooks/useAuth';
 import {
+	Avatar,
 	Row,
 	ScrollView,
 	SkeletonView,
@@ -9,6 +10,7 @@ import {
 	Text,
 } from '@/components/atoms';
 import { SafeScreen } from '@/components/template';
+import useSwitchableUsers from '@/hooks/useSwitchableUsers';
 import { navigate } from '@/navigators/NavigationRef';
 import { savePushToken } from '@/services/auth';
 import { getGymClasses, getGymVenues } from '@/services/gym';
@@ -45,11 +47,13 @@ import {
 } from 'react-native';
 import { RESULTS, checkNotifications } from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
+import Icon from 'react-native-vector-icons/Ionicons';
 import BookedSessionCard, {
 	BookedSessionCardProps,
 } from './components/BookedSessionCard';
 import DashboardActionButton from './components/DashboardActionButton';
 import DashboardHeader from './components/DashboardHeader';
+import LoggedInUserInfo from './components/LoggedInUserInfo';
 
 // List of action buttons to be displayed on the dashboard screen
 const actionButtons = [
@@ -82,6 +86,8 @@ const Dashboard = () => {
 	const { user } = useAuth();
 	const timezone = user?.user_data.dob.timezone as string;
 	// const headerHeight = useHeaderHeight();
+
+	const { hasSwitchableUsers } = useSwitchableUsers();
 
 	const {
 		setAppState,
@@ -316,16 +322,13 @@ const Dashboard = () => {
 			});
 
 			setUpcomingSessions(memberSessions);
-			setUpcomingSessionsIsLoading(false);
 			setRefreshing(false);
+
+			setTimeout(() => {
+				setUpcomingSessionsIsLoading(false);
+			}, 1000);
 		}
 
-		// TODO: Do the following once other functionalities are implemented
-		// 	() => {
-		// 		// get switchable users
-		// 		this.getSwitchableUsers();
-		// 	},
-		// );
 		const sessionStartEnabled = notifSettings?.settings?.session;
 		if (sessionStartEnabled && memberSessions.length > 0) {
 			setLocalNotifications(memberSessions);
@@ -441,7 +444,9 @@ const Dashboard = () => {
 		} catch (e) {
 			Say.err(e as string);
 		} finally {
-			setAttendanceReportIsLoading(false);
+			setTimeout(() => {
+				setAttendanceReportIsLoading(false);
+			}, 1000);
 		}
 	};
 
@@ -528,12 +533,11 @@ const Dashboard = () => {
 		}
 	};
 
-	// TEMPORARY VARIABLES
-	const showSwitchBtn = true;
-	// const avatarImage = 'https://avatars.githubusercontent.com/u/15073128?v=4';
+	const avatarImage = `${
+		user?.user_data.profile_image ??
+		'https://avatars.githubusercontent.com/u/15073128'
+	}?v=${moment().toISOString()}`;
 
-	// TEMPORARY FUNCTIONS
-	// const onSwitchUserClick = () => navigate('SwitchUser');
 	const onActionButtonClick = (navTo: string) => {
 		if (navTo === 'calendar') {
 			navigate('Calendar');
@@ -739,9 +743,7 @@ const Dashboard = () => {
 					<View>
 						<Row
 							align="center"
-							spacing={
-								showSwitchBtn ? 'space-between' : 'space-around'
-							}
+							spacing="space-between"
 							style={{ marginBottom: config.metrics.lg }}
 						>
 							<View>
@@ -751,12 +753,19 @@ const Dashboard = () => {
 									})}
 								</Text>
 							</View>
-							{/* Remove profile pic for now from Gene and Cam */}
-							{/* {showSwitchBtn ? (
-								<TouchableOpacity onPress={onSwitchUserClick}>
+
+							{hasSwitchableUsers ? (
+								<TouchableOpacity
+									activeOpacity={1}
+									onPress={() => navigate('SwitchUser')}
+								>
 									<Avatar source={avatarImage} />
+									<Icon
+										name="swap-horizontal"
+										style={styles.switchIcon}
+									/>
 								</TouchableOpacity>
-							) : null} */}
+							) : null}
 						</Row>
 
 						{renderDashboardComponents()}
@@ -770,6 +779,7 @@ const Dashboard = () => {
 				</View>
 			</ScrollView>
 
+			<LoggedInUserInfo />
 			{/* <WhatsNewDialog /> */}
 		</SafeScreen>
 	);
@@ -877,6 +887,15 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	attendanceValue: { fontSize: 35 },
+	switchIcon: {
+		position: 'absolute',
+		right: 0,
+		bottom: 0,
+		borderRadius: 10,
+		padding: 3,
+		fontSize: config.fonts.metrics.xs,
+		...layout.shadowLight,
+	},
 });
 
 export default Dashboard;

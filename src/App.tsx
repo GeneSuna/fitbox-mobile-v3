@@ -10,6 +10,7 @@ import PushNotification from 'react-native-push-notification';
 import 'react-native-reanimated';
 import AuthProvider from './auth/AuthProvider/AuthProvider';
 import KeyboardVisibilityProvider from './context/KeyboardProvider';
+import SwitchableUserProvider from './context/SwitchableUser';
 import ApplicationNavigator from './navigators/Application';
 import { mmkvStorage } from './storage';
 import './translations';
@@ -73,7 +74,9 @@ function App() {
 				<ThemeProvider storage={mmkvStorage}>
 					<Provider theme={customTheme}>
 						<KeyboardVisibilityProvider>
-							<ApplicationNavigator />
+							<SwitchableUserProvider>
+								<ApplicationNavigator />
+							</SwitchableUserProvider>
 						</KeyboardVisibilityProvider>
 					</Provider>
 				</ThemeProvider>

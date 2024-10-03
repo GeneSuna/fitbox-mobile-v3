@@ -27,6 +27,13 @@ const menuOptions = [
 				role: 'any',
 			},
 			{
+				id: 'child-account',
+				name: 'Child Account',
+				icon: 'people-outline',
+				context: 'any',
+				role: 'any',
+			},
+			{
 				id: 'gym',
 				name: 'My Gyms',
 				icon: 'dumbbell',
@@ -154,6 +161,9 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 		switch (id) {
 			case 'information':
 				navigation.navigate('MyDetails');
+				break;
+			case 'child-account':
+				navigation.navigate('SwitchUser');
 				break;
 			case 'subscription':
 				navigation.navigate('Subscription');
