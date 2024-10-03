@@ -73,6 +73,8 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 	}));
 	const { user, updateUser } = useAuth();
 
+	const MINIMUM_DATE = '1900-01-01';
+
 	const scrollViewStyle: StyleProp<ViewStyle> = {
 		padding: 20,
 		marginBottom: isEmpty(emptyRequiredFields) ? 0 : 50,
@@ -106,6 +108,7 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 	const [datePicker, setDatePicker] = useState(false);
 	const [dob, setDob] = useState<string>();
 	const [isLoading, setIsLoading] = useState(true);
+	const [userDobValid, setUserDobValid] = useState(false);
 
 	const [data, setData] = useState<DataTypes>({
 		pictureOptions: false,
@@ -153,6 +156,12 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 			setIsLoading(true);
 			try {
 				const res = await getUserProfile(user?.id);
+
+				setUserDobValid(
+					moment(res.user_data.dob.date).isValid() &&
+						moment(res.user_data.dob.date).isAfter(MINIMUM_DATE),
+				);
+
 				if (!res.error) {
 					const newDate = new Date(res.user_data.dob.date);
 					setDOBFn(newDate);
@@ -274,7 +283,7 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 		});
 	}, [data]);
 
-	const datePickerVal = dob ? new Date(dob) : new Date();
+	const datePickerVal = userDobValid ? new Date(dob as string) : new Date();
 
 	// temporary variables
 	const avatarImage = 'https://avatars.githubusercontent.com/u/15073128?v=4';
@@ -307,6 +316,9 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 	};
 
 	const confirmDOB = (date: string | Date) => {
+		setUserDobValid(
+			moment(date).isValid() && moment(date).isAfter(MINIMUM_DATE),
+		);
 		setDOBFn(date);
 		setDatePicker(!datePicker);
 	};
@@ -443,7 +455,7 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 						isVisible={datePicker}
 						onConfirm={confirmDOB}
 						onCancel={() => setDatePicker(!datePicker)}
-						// minimumDate={new Date(Consts.MINIMUM_DATE)}
+						minimumDate={new Date(MINIMUM_DATE)}
 						maximumDate={new Date()}
 					/>
 
@@ -515,7 +527,7 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 								onPress={() => setDatePicker(!datePicker)}
 							>
 								<Text style={styles.textLabelStyle}>
-									{dob || 'Click to set'}
+									{userDobValid ? dob : 'Click to set'}
 								</Text>
 								<Icon
 									name="calendar"
