@@ -139,6 +139,7 @@ const InputField = ({
 		<View style={styles.inputContainer}>
 			<TextInput
 				key={field.id}
+				autoFocus={isEmailField}
 				label={
 					<Text style={{ ...layout.fontMontserratRegular }}>
 						{field.label}
