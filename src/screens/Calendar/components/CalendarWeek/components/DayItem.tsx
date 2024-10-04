@@ -1,7 +1,9 @@
 import { Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import { memo } from 'react';
+import useStore from '@/zustand/Store';
+import moment from 'moment';
+import { memo, useMemo } from 'react';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 
 export type IWeek = {
@@ -18,39 +20,74 @@ interface DayItemProps {
 }
 
 const DayItem = ({
-	item: { display, weekday },
+	item: { date, display, weekday },
 	isActive,
 	isToday,
 	onPress,
-}: DayItemProps) => (
-	<TouchableWithoutFeedback onPress={onPress}>
-		<View style={[layout.flex_1, layout.justifyCenter, layout.itemsCenter]}>
-			<Text color="gray100" bold size="xs">
-				{weekday}
-			</Text>
+}: DayItemProps) => {
+	const activeMonth = useStore(s => s.activeMonth);
+
+	const isFirstOrLastDayOfMonth = useMemo(() => {
+		return (
+			moment(date).isSame(moment(date).startOf('month'), 'day') ||
+			moment(date).isSame(moment(date).endOf('month'), 'day')
+		);
+	}, [date]);
+
+	const topDisplay = useMemo(() => {
+		const isSameMonth = moment(date).format('MMM') === activeMonth;
+		if (isSameMonth || !isFirstOrLastDayOfMonth) {
+			return weekday;
+		}
+
+		return moment(date).format('MMM');
+	}, [activeMonth]);
+
+	return (
+		<TouchableWithoutFeedback onPress={onPress}>
 			<View
 				style={[
-					styles.itemDay,
-					isActive && styles.itemDayActive,
-					isToday && styles.itemDayToday,
+					layout.flex_1,
+					layout.justifyCenter,
+					layout.itemsCenter,
 				]}
 			>
 				<Text
-					center
-					color={
-						// eslint-disable-next-line no-nested-ternary
-						isActive ? 'light' : isToday ? 'brand' : 'gray800'
-					}
-					size="rg"
+					color={isFirstOrLastDayOfMonth ? 'brand' : 'gray100'}
+					bold
+					size="xs"
 				>
-					{display}
+					{topDisplay}
 				</Text>
+				<View
+					style={[
+						styles.itemDay,
+						isActive && styles.itemDayActive,
+						isToday && styles.itemDayToday,
+					]}
+				>
+					<Text
+						center
+						color={
+							// eslint-disable-next-line no-nested-ternary
+							isActive ? 'light' : isToday ? 'brand' : 'gray800'
+						}
+						size="rg"
+					>
+						{display}
+					</Text>
+				</View>
 			</View>
-		</View>
-	</TouchableWithoutFeedback>
-);
+		</TouchableWithoutFeedback>
+	);
+};
 
-export default memo(DayItem);
+export default memo(DayItem, (prevProps, nextProps) => {
+	return (
+		prevProps.isActive === nextProps.isActive &&
+		prevProps.isToday === nextProps.isToday
+	);
+});
 
 const styles = StyleSheet.create({
 	itemDay: {
