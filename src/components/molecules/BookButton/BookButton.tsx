@@ -27,7 +27,7 @@ interface BookButtonProps {
 	startDate: string;
 	isBookingLocked: boolean;
 	waitlistBtn: boolean;
-	isPreviewMode?: boolean;
+	isPreviewMode?: boolean; // If from WOD screen
 	handleViewSession?: () => void;
 	setAttending?: (value: boolean) => void;
 }
@@ -334,6 +334,10 @@ const BookButton = ({
 	const isSessionWithin72Hours = Func.isSessionWithin72Hours(startDate);
 
 	const isSessionFromPast = Func.isSessionFromPast(startDate);
+
+	if (!isPreviewMode && isSessionFromPast) {
+		return null;
+	}
 
 	if (isBookingLocked && isPreviewMode) {
 		return <Button sm mode="outlined" title="Booking Locked" disabled />;
