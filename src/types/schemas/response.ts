@@ -56,6 +56,8 @@ import {
 	UserHealthInfoSchema,
 	UserProfileSchema,
 	UserSchema,
+	ValidateInviteCodeDataExistsSchema,
+	ValidateInviteCodeDataSchema,
 } from './user';
 import { WaiverSchema } from './waivers';
 
@@ -360,3 +362,11 @@ export const GetConversationArchivedListSchema = z.object({
 	total_pages: z.number(),
 	unread_items: z.number(),
 });
+
+export const ValidateInviteCodeResponseSchema = apiResponseSchema(
+	z.union([ValidateInviteCodeDataSchema, ValidateInviteCodeDataExistsSchema]),
+);
+
+export const AcceptInviteResponseSchema = apiResponseSchema(
+	z.object({ accepted: z.boolean() }),
+);

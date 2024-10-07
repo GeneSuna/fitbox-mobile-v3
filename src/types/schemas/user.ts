@@ -139,3 +139,44 @@ export const UserHealthInfoSchema = z.object({
 export type UserProfileType = z.infer<typeof UserProfileSchema>;
 export type UserSchemaType = z.infer<typeof UserSchema>;
 export type UserHealthInfoType = z.infer<typeof UserHealthInfoSchema>;
+
+export const UserDetailsSchema = z.object({
+	email: z.string(),
+	firstname: z.string(),
+	lastname: z.string(),
+	password: z.string().optional(),
+	confirm_password: z.string().optional(),
+});
+
+export type UserDetailsType = z.infer<typeof UserDetailsSchema>;
+
+export const ValidateInviteCodeDataSchema = z.object({
+	exists: z.boolean(),
+	gymDetails: z.object({
+		id: z.number(),
+		name: z.string(),
+		small_logo: z.string(),
+	}),
+	userAlreadyActive: z.boolean(),
+	userDetails: UserDetailsSchema,
+	valid: z.boolean(),
+});
+
+export const ValidateInviteCodeDataExistsSchema = z.object({
+	exists: z.boolean(),
+	valid: z.boolean(),
+});
+
+export type ValidateInviteCodeDataType = z.infer<
+	typeof ValidateInviteCodeDataSchema
+>;
+
+export type ValidateInviteCodeDataExistsType = z.infer<
+	typeof ValidateInviteCodeDataExistsSchema
+>;
+
+export type ValidateInviteCodeResponseType = {
+	data: ValidateInviteCodeDataType;
+	message: string;
+	error: boolean;
+};

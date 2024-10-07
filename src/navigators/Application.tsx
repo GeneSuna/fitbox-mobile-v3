@@ -13,6 +13,7 @@ import {
 	GymWaiverScreen,
 	HealthCaptureScreen,
 	Inbox,
+	InviteCodeScreen,
 	Landing,
 	Login,
 	PDFViewerScreen,
@@ -444,6 +445,14 @@ const ApplicationNavigator = () => {
 								options={() => ({
 									...TabHeaderOptions,
 									title: 'Add Result',
+								})}
+							/>
+							<Stack.Screen
+								name="Invite"
+								component={InviteCodeScreen}
+								options={() => ({
+									...TabHeaderOptions,
+									title: 'Invite Code',
 								})}
 							/>
 						</Stack.Group>

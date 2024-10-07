@@ -4,7 +4,7 @@ import { BottomPanel, QRCamera } from '@/components/molecules';
 import { checkEmail, register } from '@/services/auth';
 import { getUserGymInfoV2 } from '@/services/users';
 import { config } from '@/theme/_config';
-import { ApplicationScreenProps } from '@/types/navigation';
+import { ApplicationScreenProps, SignUpParams } from '@/types/navigation';
 import { GymInfoType, MemberRolesType } from '@/types/schemas/gym';
 import { Constant, Say } from '@/utils';
 import { capitalize, isArray, isEmpty } from 'lodash';
@@ -131,7 +131,7 @@ const SIGNUP_CUSTOM_INPUT_FIELDS = {
 
 const MAX_CODE_LENGTH = 4;
 
-const SignUp = ({ navigation }: ApplicationScreenProps) => {
+const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 	const [state, setState] = useState<State>({
 		allowEmail: false,
 		validatingEmail: null,
@@ -140,7 +140,7 @@ const SignUp = ({ navigation }: ApplicationScreenProps) => {
 		roleModalTopHeight: '20%',
 		verified: false,
 		useQR: false,
-		code: '',
+		code: (route.params as SignUpParams)?.gymCode || '',
 		gymInfo: null,
 		processing: false,
 		proceed: false,

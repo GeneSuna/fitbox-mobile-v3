@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import {
-	Alert,
 	Dimensions,
 	ImageSourcePropType,
 	StyleSheet,
@@ -12,6 +11,7 @@ import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import useAuth from '@/auth/hooks/useAuth';
 import { Button, ImageVariant, Row, Spacer, Text } from '@/components/atoms';
 import { Modal } from '@/components/molecules';
+import { navigate } from '@/navigators/NavigationRef';
 import { config } from '@/theme/_config';
 import LogoImage from '@/theme/assets/images/logo_with_name.png';
 import { ApplicationScreenProps } from '@/types/navigation';
@@ -36,14 +36,7 @@ const LandingScreen = ({ navigation }: ApplicationScreenProps) => {
 	const navigateToPage = (page: string) => {
 		setOptionsVisibility(false);
 
-		// TODO: Temporary only remove once screens are implemented
-		if (page === 'Main') {
-			navigation.navigate(page);
-		} else if (page === 'SignUp') {
-			navigation.navigate(page);
-		} else {
-			Alert.alert(`${page} page coming soon!`);
-		}
+		navigate(page);
 	};
 
 	const handleLogin = () => {

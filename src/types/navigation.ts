@@ -28,7 +28,7 @@ export type ApplicationStackParamList = {
 	Landing: undefined;
 	Login: LoginParams;
 	ResetPassword: undefined;
-	SignUp: undefined;
+	SignUp: SignUpParams;
 	Invite: undefined;
 	Eula: undefined;
 	SwitchGym: undefined;
@@ -49,6 +49,10 @@ export type ApplicationStackParamList = {
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
+
+export type SignUpParams = {
+	gymCode?: string;
+};
 
 export type ComposeScreenProps = StackScreenProps<
 	ComposeStackParamsList & InboxParamList

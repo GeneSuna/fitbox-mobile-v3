@@ -191,6 +191,8 @@ const isSessionFromPast = (startDate: string): boolean => {
 	return moment(startDate).isBefore(moment());
 };
 
+const isGymCode = (code: string) => code.length === 4 && /^\d+$/.test(code);
+
 export default {
 	decodeHtml,
 	stripHtmlTags,
@@ -207,4 +209,5 @@ export default {
 	getNextPageParam,
 	isSessionWithin72Hours,
 	isSessionFromPast,
+	isGymCode,
 };

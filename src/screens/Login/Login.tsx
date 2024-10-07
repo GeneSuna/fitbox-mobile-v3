@@ -2,6 +2,7 @@ import useAuth from '@/auth/hooks/useAuth';
 import { Button, Row, ScrollView, Spacer, Text } from '@/components/atoms';
 import { Loader } from '@/components/molecules';
 import { SafeScreen } from '@/components/template';
+import { navigate } from '@/navigators/NavigationRef';
 import { checkEmail } from '@/services/auth';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
@@ -286,7 +287,7 @@ const Login = ({ navigation, route }: ApplicationScreenProps) => {
 						<Text
 							color="brand"
 							style={style.mdText}
-							onPress={() => navigation.navigate('SignUp')}
+							onPress={() => navigate('SignUp')}
 						>
 							{t('login:button.register')}
 						</Text>
