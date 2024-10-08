@@ -193,6 +193,8 @@ const isSessionFromPast = (startDate: string): boolean => {
 
 const isGymCode = (code: string) => code.length === 4 && /^\d+$/.test(code);
 
+const isHTML = RegExp.prototype.test.bind(/(<([^>]+)>)/i);
+
 export default {
 	decodeHtml,
 	stripHtmlTags,
@@ -210,4 +212,5 @@ export default {
 	isSessionWithin72Hours,
 	isSessionFromPast,
 	isGymCode,
+	isHTML,
 };

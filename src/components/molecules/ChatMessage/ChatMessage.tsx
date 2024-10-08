@@ -3,6 +3,7 @@ import { Avatar, LinkPreview, Row, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { SendMessageDataType } from '@/types/schemas/message';
+import { Func } from '@/utils';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React from 'react';
@@ -15,6 +16,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
+import HTMLView from 'react-native-htmlview';
 import ImagePop from '../ImagePop/ImagePop';
 
 type ChatMessageProps = {
@@ -80,6 +82,8 @@ const ChatMessage = (props: ChatMessageProps) => {
 		marginBottom: index === 0 ? config.metrics.rg : 0,
 	};
 
+	const isHTML = Func.isHTML(combinedString);
+
 	const renderMessage = () => (
 		<Row
 			style={[
@@ -126,11 +130,23 @@ const ChatMessage = (props: ChatMessageProps) => {
 						messageMarginTop,
 					]}
 				>
-					{!isEmpty(combinedString) && (
-						<Text size="md" style={{ color: textColor }}>
-							{combinedString}
-						</Text>
-					)}
+					{!isEmpty(combinedString) &&
+						(isHTML ? (
+							<HTMLView
+								value={combinedString}
+								stylesheet={{
+									p: {
+										color: isFromUser ? 'white' : 'black',
+										fontSize: config.fonts.metrics.md,
+										fontFamily: 'Montserrat-Regular',
+									},
+								}}
+							/>
+						) : (
+							<Text size="md" style={{ color: textColor }}>
+								{combinedString}
+							</Text>
+						))}
 					{hasGIF && (
 						<MemoizedImage
 							source={{
