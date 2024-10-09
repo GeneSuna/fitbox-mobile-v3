@@ -91,12 +91,7 @@ const Calendar = () => {
 
 	const flashListRef = useRef<FlashList<string | ClassItemData>>(null);
 
-	const loadClasses = useCallback(() => {
-		if (!isScrolling) {
-			getClassesByDate(currentDate, loggedInUser!.id);
-			return;
-		}
-
+	const loadClasses = () => {
 		// create a range from current date to 3 days ago and 3 days ahead
 		let startDate = moment(currentDate).startOf('isoWeek');
 		if (isInitialLoadingComplete) {
@@ -118,7 +113,7 @@ const Calendar = () => {
 				getClassesByDate(wDate, loggedInUser!.id);
 			}
 		});
-	}, [isScrolling]);
+	};
 
 	const fetchFilterOptions = () => {
 		const selectedVenueIds = venueFilters
