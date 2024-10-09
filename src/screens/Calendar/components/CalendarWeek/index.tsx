@@ -87,7 +87,7 @@ const CalendarWeek = ({
 	);
 
 	return (
-		<View style={styles.container}>
+		<View>
 			<FlashList
 				ref={swiper}
 				horizontal
@@ -113,9 +113,6 @@ const CalendarWeek = ({
 export default CalendarWeek;
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 0.11,
-	},
 	item: {
 		flex: 1,
 		justifyContent: 'center',
