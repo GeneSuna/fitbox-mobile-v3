@@ -10,14 +10,14 @@ import DayItem, { IWeek } from './components/DayItem';
 interface CalendarWeekProps {
 	currentDate: string;
 	setCurrentDate: (currentDate: string) => void;
-	onMomentumScrollBegin: () => void;
-	onMomentumScrollEnd: () => void;
+	onMomentumScrollBegin?: () => void;
+	onMomentumScrollEnd?: () => void;
 }
 const CalendarWeek = ({
 	currentDate,
 	setCurrentDate,
-	onMomentumScrollBegin,
-	onMomentumScrollEnd,
+	onMomentumScrollBegin = () => {},
+	onMomentumScrollEnd = () => {},
 }: CalendarWeekProps) => {
 	const { setActiveMonth } = useStore(state => ({
 		setActiveMonth: state.setActiveMonth,

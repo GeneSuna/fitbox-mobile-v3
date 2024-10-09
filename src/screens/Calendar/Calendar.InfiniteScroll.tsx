@@ -22,14 +22,15 @@ import {
 	useCallback,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from 'react';
 import {
 	Dimensions,
-	RefreshControl,
 	StyleSheet,
 	TouchableOpacity,
 	View,
+	ViewToken,
 } from 'react-native';
 import { Badge } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -80,12 +81,38 @@ const Calendar = () => {
 	}));
 
 	const [currentDate, setCurrentDate] = useState<string>(TODAYS_DATE);
+	const [isNavigating, setIsNavigating] = useState(false);
+	const [isScrolling, setIsScrolling] = useState(false);
 	const [isInitialLoading, setIsInitialLoading] = useState(true);
 	const [isInitialLoadingComplete, setIsInitialLoadingComplete] =
 		useState(false);
+	const [isWeekCalendarScrolling, setIsWeekCalendarScrolling] =
+		useState(false);
+
+	const flashListRef = useRef<FlashList<string | ClassItemData>>(null);
 
 	const loadClasses = () => {
-		getClassesByDate(currentDate, loggedInUser!.id);
+		// create a range from current date to 3 days ago and 3 days ahead
+		let startDate = moment(currentDate).startOf('isoWeek');
+		if (isInitialLoadingComplete) {
+			startDate = moment(currentDate).subtract(3, 'days');
+		}
+		const endDate = moment(currentDate).add(3, 'days');
+
+		// Generate an array of dates from startDate to endDate
+		const week = [];
+		let date = startDate;
+
+		while (date.isSameOrBefore(endDate)) {
+			week.push(date.format(Constant.DEFAULT_DATE_FORMAT));
+			date = date.add(1, 'day');
+		}
+
+		week.forEach(wDate => {
+			if (moment(wDate).isSameOrAfter(moment(currentDate))) {
+				getClassesByDate(wDate, loggedInUser!.id);
+			}
+		});
 	};
 
 	const fetchFilterOptions = () => {
@@ -185,7 +212,45 @@ const Calendar = () => {
 				void loadClasses();
 			}, 1500);
 		}
-	}, [isInitialLoadingComplete, currentDate]);
+	}, [isInitialLoadingComplete]);
+
+	useEffect(() => {
+		const scrollToDateIndex = async () => {
+			if (isInitialLoadingComplete) {
+				void loadClasses();
+			}
+
+			if (!isWeekCalendarScrolling) {
+				return;
+			}
+
+			if (!flashListRef.current) {
+				return;
+			}
+
+			const dateIndex = memoizedClasses.findIndex(
+				item => typeof item === 'string' && item === currentDate,
+			);
+
+			if (dateIndex !== -1) {
+				setIsNavigating(true);
+
+				await new Promise(resolve => {
+					flashListRef.current?.scrollToIndex({
+						index: dateIndex,
+						animated: false,
+					});
+
+					setTimeout(resolve, 1500);
+				});
+				setIsNavigating(false);
+			}
+
+			setIsWeekCalendarScrolling(false);
+		};
+
+		void scrollToDateIndex();
+	}, [currentDate]);
 
 	const isFocused = useIsFocused();
 	useEffect(() => {
@@ -226,11 +291,25 @@ const Calendar = () => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const renderItem = useCallback(({ item }: any) => {
 		if (typeof item === 'string') {
-			return null;
+			const isToday = moment(item).isSame(moment(), 'day');
+			return (
+				<View style={styles.section}>
+					<Text bold color="darkgray">
+						{isToday ? 'Today' : ''}
+						{moment(item).format(
+							`${!isToday ? 'dddd' : ''}, MMM DD`,
+						)}
+					</Text>
+				</View>
+			);
 		}
 
 		const useItem = item as ClassItemData;
 		return <AgendaItem key={useItem.eventId} item={useItem} />;
+	}, []);
+
+	const getItemType = useCallback((item: string | ClassItemData) => {
+		return typeof item === 'string' ? 'sectionHeader' : 'row';
 	}, []);
 
 	useFocusEffect(
@@ -269,10 +348,6 @@ const Calendar = () => {
 		};
 
 		classes.forEach(section => {
-			if (section.title !== currentDate) {
-				return;
-			}
-
 			formattedClasses.push(section.title);
 
 			// Filter classes based on criteria
@@ -287,22 +362,81 @@ const Calendar = () => {
 			}
 		});
 		return formattedClasses;
-	}, [classes, classFilters, venueFilters, currentDate]);
+	}, [classes, classFilters, venueFilters]);
 
-	useEffect(() => {
-		if (memoizedClasses.length > 0) {
-			setIsInitialLoadingComplete(true);
-			setIsInitialLoading(false);
-		}
-	}, [memoizedClasses]);
+	const stickyHeaderIndices = memoizedClasses
+		.map((item, index) => {
+			if (typeof item === 'string') {
+				return index;
+			}
+
+			return null;
+		})
+		.filter(item => item !== null) as number[];
 
 	const handleDateChange = useCallback((date: SetStateAction<string>) => {
 		setCurrentDate(date);
 	}, []);
 
-	const isLoadingCurrentDate =
-		memoizedClasses.some(e => typeof e === 'object' && e.isLoading) ||
-		memoizedClasses.length === 0;
+	// FOR Scroll to Today on initial Load
+	useEffect(() => {
+		setTimeout(() => {
+			if (!isInitialLoading) return;
+
+			const todayIndex = memoizedClasses.findIndex(
+				item => typeof item === 'string' && item === TODAYS_DATE,
+			);
+
+			setIsNavigating(true);
+			if (todayIndex !== -1 && flashListRef.current) {
+				flashListRef.current.scrollToIndex({
+					index: todayIndex,
+					animated: false,
+				});
+			}
+
+			setTimeout(() => {
+				setIsInitialLoadingComplete(true);
+				handleDateChange(TODAYS_DATE);
+				setIsInitialLoading(false);
+				setIsNavigating(false);
+			}, 1000);
+		}, 1000);
+	}, [memoizedClasses]);
+
+	const onViewableItemsChanged = ({
+		viewableItems,
+	}: {
+		viewableItems: ViewToken[];
+	}) => {
+		if (isNavigating) {
+			return;
+		}
+
+		const firstItem = viewableItems[0];
+		if (!firstItem) {
+			return;
+		}
+
+		let newDate: string | null = firstItem.item as string;
+
+		if (typeof firstItem.item === 'object') {
+			if ('startDate' in firstItem.item) {
+				const newDateObj = newDate as ClassItemData;
+				newDate = newDateObj.startDate ?? '';
+			} else if ('isLoading' in firstItem.item) {
+				newDate = null;
+			}
+		}
+
+		if (!!newDate && moment(newDate).isValid()) {
+			console.log('navigating to', newDate);
+
+			handleDateChange(
+				moment(newDate).format(Constant.DEFAULT_DATE_FORMAT),
+			);
+		}
+	};
 
 	return (
 		<SafeScreen>
@@ -314,27 +448,36 @@ const Calendar = () => {
 				<CalendarWeek
 					currentDate={currentDate}
 					setCurrentDate={d => {
+						setIsWeekCalendarScrolling(true);
 						handleDateChange(d);
 					}}
+					onMomentumScrollBegin={() => {
+						setIsNavigating(true);
+						setIsWeekCalendarScrolling(true);
+					}}
+					onMomentumScrollEnd={() =>
+						setIsWeekCalendarScrolling(false)
+					}
 				/>
 
 				<FlashList
-					refreshControl={
-						<RefreshControl
-							refreshing={isLoadingCurrentDate}
-							onRefresh={() => {
-								getClassesByDate(
-									currentDate,
-									loggedInUser!.id,
-									true,
-								);
-							}}
-							colors={[config.fonts.colors.brand]}
-						/>
-					}
+					ref={flashListRef}
 					data={memoizedClasses}
+					stickyHeaderHiddenOnScroll
 					renderItem={renderItem}
+					getItemType={getItemType}
+					keyExtractor={(_, index) => index.toString()}
+					stickyHeaderIndices={stickyHeaderIndices}
+					onMomentumScrollBegin={() => setIsScrolling(true)}
+					onMomentumScrollEnd={() => setIsScrolling(false)}
+					onViewableItemsChanged={onViewableItemsChanged}
+					viewabilityConfig={{ itemVisiblePercentThreshold: 100 }}
 					estimatedItemSize={AGENDA_ITEM_HEIGHT}
+					// eslint-disable-next-line @typescript-eslint/no-shadow
+					overrideItemLayout={layout => {
+						// eslint-disable-next-line no-param-reassign
+						layout.size = AGENDA_ITEM_HEIGHT; // Set a fixed height for each item
+					}}
 				/>
 			</View>
 
@@ -378,10 +521,15 @@ const Calendar = () => {
 
 			{currentDate !== TODAYS_DATE && (
 				<TouchableOpacity
+					disabled={isScrolling}
 					onPress={() => {
+						setIsWeekCalendarScrolling(true);
 						handleDateChange(TODAYS_DATE);
 					}}
-					style={[styles.floatingActionBtn]}
+					style={[
+						isScrolling && styles.opacified,
+						styles.floatingActionBtn,
+					]}
 				>
 					<Text size="sm" bold color="brand">
 						Today

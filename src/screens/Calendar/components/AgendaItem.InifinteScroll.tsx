@@ -1,4 +1,4 @@
-import { Text } from '@/components/atoms';
+import { SkeletonView, Text } from '@/components/atoms';
 import { BookButton } from '@/components/molecules';
 import { config } from '@/theme/_config';
 import { ApplicationStackParamList } from '@/types/navigation';
@@ -54,8 +54,20 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 			});
 		}, []);
 
-		if (hideSchedule || isLoading === true) {
+		if (hideSchedule) {
 			return null;
+		}
+
+		if (isLoading === true) {
+			return (
+				<View style={styles.itemLoaderContainer}>
+					<SkeletonView
+						height={10}
+						width={50}
+						style={styles.itemLoader}
+					/>
+				</View>
+			);
 		}
 
 		if (isLoading === false) {
