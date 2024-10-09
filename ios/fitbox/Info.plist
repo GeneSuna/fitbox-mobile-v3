@@ -66,11 +66,7 @@
 		<string>Fontisto.ttf</string>
 		<string>Montserrat-Regular.ttf</string>
 		<string>Montserrat-Bold.ttf</string>
-		<string>Barlow-Light.ttf</string>
-		<string>Roboto-Regular.ttf</string>
-		<string>Barlow-Bold.ttf</string>
-		<string>Roboto-Bold.ttf</string>
-		<string>Inter-VariableFont_opsz,wght.ttf</string>
+		<string>Inter-VariableFont_opsz_wght.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

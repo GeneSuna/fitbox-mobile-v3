@@ -60,6 +60,10 @@ jobs:
                   git clean -ffdx
                   npm cache clean --force
 
+            - name: Clean Derived Data
+              run: |
+                  rm -rf ~/Library/Developer/Xcode/DerivedData/*
+
             - name: Increment Xcode Build Number and Commit
               run: |
                   bash scripts/increment_build_number.sh
@@ -77,25 +81,25 @@ jobs:
 
             - name: Update Bundler and Install Gems
               run: |
-                   gem update --system
-                   gem install bundler
-                   bundle install
+                  gem update --system
+                  gem install bundler
+                  bundle install
 
             - name: Clear Bundler Cache
               run: |
-                   bundle clean --force
-                   rm -rf ~/.bundle/cache
+                  bundle clean --force
+                  rm -rf ~/.bundle/cache
 
             - name: Install Pod Dependencies
               run: |
-                   echo "RCT_NEW_ARCH_ENABLED: $RCT_NEW_ARCH_ENABLED"
-                   which bundle
-                   bundle --version
-                   which pod
-                   pod --version
-                   cd ios
-                   pod repo update
-                   RCT_NEW_ARCH_ENABLED=1 bundle exec pod install --verbose
+                  echo "RCT_NEW_ARCH_ENABLED: $RCT_NEW_ARCH_ENABLED"
+                  which bundle
+                  bundle --version
+                  which pod
+                  pod --version
+                  cd ios
+                  pod repo update
+                  RCT_NEW_ARCH_ENABLED=1 bundle exec pod install --verbose
 
             - name: build archive
               run: |
@@ -131,3 +135,11 @@ jobs:
                   PASSWORD: ${{ secrets.APPLE_SPECIFIC_PASSWORD }}
               run: |
                   cd ios && xcrun altool --upload-app -f $RUNNER_TEMP/build/fitbox.ipa -t ios -u $USERNAME -p $PASSWORD
+
+            - name: Checkout dev branch
+              run: |
+                  git checkout dev
+
+            - name: Delete DEV-IOS-BUILD Branch
+              run: |
+                  bash scripts/delete_build_branch.sh
