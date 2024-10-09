@@ -73,7 +73,7 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 		if (isLoading === false) {
 			return (
 				<View style={styles.itemLoaderContainer}>
-					<Text color="lightgrey">No classes found</Text>
+					<Text color="black">No classes found</Text>
 				</View>
 			);
 		}
