@@ -85,7 +85,24 @@ const Calendar = () => {
 		useState(false);
 
 	const loadClasses = () => {
-		getClassesByDate(currentDate, loggedInUser!.id);
+		// create a range from current date to 3 days ago and 3 days ahead
+		const startDate = moment(currentDate).startOf('isoWeek');
+		const endDate = moment(currentDate).endOf('isoWeek');
+
+		// Generate an array of dates from startDate to endDate
+		const week = [];
+		let date = startDate;
+
+		while (date.isSameOrBefore(endDate)) {
+			week.push(date.format(Constant.DEFAULT_DATE_FORMAT));
+			date = date.add(1, 'day');
+		}
+
+		week.forEach(wDate => {
+			if (moment(wDate).isSameOrAfter(moment(currentDate))) {
+				getClassesByDate(wDate, loggedInUser!.id);
+			}
+		});
 	};
 
 	const fetchFilterOptions = () => {
@@ -161,8 +178,8 @@ const Calendar = () => {
 		void fetchFilterOptions();
 
 		// Start of month and monday
-		const startDate = moment().subtract(1, 'month');
-		const endingDate = startDate.clone().add(2, 'months');
+		const startDate = moment().startOf('isoWeek');
+		const endingDate = moment().endOf('isoWeek');
 		const dates = Array.from(
 			{ length: endingDate.diff(startDate, 'days') },
 			(_, i) =>
@@ -177,6 +194,7 @@ const Calendar = () => {
 		});
 
 		setHasPlaceholder(true);
+		setCurrentDate(TODAYS_DATE);
 	}, [hasPlaceholder]);
 
 	useEffect(() => {
@@ -313,9 +331,7 @@ const Calendar = () => {
 			<View style={[layout.flex_1]}>
 				<CalendarWeek
 					currentDate={currentDate}
-					setCurrentDate={d => {
-						handleDateChange(d);
-					}}
+					setCurrentDate={setCurrentDate}
 				/>
 
 				<FlashList
