@@ -97,12 +97,16 @@ const Dashboard = () => {
 		setHeaderTitle,
 		setDefaultClassFilter,
 		notifSettings,
+		setClassFiltersToApply,
+		setVenueFiltersToApply,
 	} = useStore(state => ({
 		setAppState: state.setAppState,
 		classFilters: state.classFilters,
 		venueFilters: state.venueFilters,
 		setClassFilters: state.setClassFilters,
 		setVenueFilters: state.setVenueFilters,
+		setClassFiltersToApply: state.setClassFiltersToApply,
+		setVenueFiltersToApply: state.setVenueFiltersToApply,
 		setHeaderTitle: state.setHeaderTitle,
 		setDefaultClassFilter: state.setDefaultClassFilter,
 		pushToken: state.pushToken,
@@ -524,7 +528,9 @@ const Dashboard = () => {
 			const newResData = res.data;
 			newResData.splice(1, 0, leaderboards);
 			setClassFiltersData(newResData);
-			const defaultItem = res.data.find(item => item.isDefault === 1);
+			const defaultItem = res.data.find(
+				item => item.isDefault === 1 || true,
+			);
 			setDefaultClassFilter(defaultItem as ClassFiltersDataType);
 		} catch (e) {
 			Say.err(e as string);
@@ -585,7 +591,10 @@ const Dashboard = () => {
 		}));
 
 		setClassFilters(updatedClassFilter);
+		setClassFiltersToApply(updatedClassFilter);
 		setVenueFilters(updatedVenueFilter);
+		setVenueFiltersToApply(updatedVenueFilter);
+
 		setHeaderTitle(data.name);
 		navigate('Calendar');
 	};
