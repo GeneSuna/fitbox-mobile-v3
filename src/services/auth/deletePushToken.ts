@@ -1,10 +1,12 @@
-import { ApiRoutes } from '@/constants';
+import { Constant } from '@/utils';
 import ky from 'ky';
 
-export default async (pushToken: string, userId: number) => {
+type ENV = 'DEV' | 'STG' | 'PROD';
+
+export default async (pushToken: string, userId: number, env: ENV) => {
 	const response = await ky
 		.delete(
-			`${ApiRoutes.PushNotificationService}&token=${pushToken}&userId=${userId}`,
+			`${Constant.NOTIFICATION_SERVICE_URL[env]}&token=${pushToken}&userId=${userId}`,
 		)
 		.json();
 

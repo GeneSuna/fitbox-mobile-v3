@@ -25,7 +25,7 @@ import { AttendanceReportDataType } from '@/types/schemas/leaderboards';
 import { NotificationSettingsState } from '@/types/schemas/notifications';
 import { ClassFiltersDataType } from '@/types/schemas/session';
 import { UserSchemaType } from '@/types/schemas/user';
-import { Constant, Say } from '@/utils';
+import { Constant, Func, Say } from '@/utils';
 import NotificationService from '@/utils/NotificationService';
 import useStore from '@/zustand/Store';
 import { ClassFilter, VenueFilter } from '@/zustand/interface/SessionInterface';
@@ -83,9 +83,11 @@ const { metrics, fonts } = config;
 
 const Dashboard = () => {
 	const { t } = useTranslation(['dashboard']);
-	const { user } = useAuth();
+	const { user, getApiUrl } = useAuth();
 	const timezone = user?.user_data.dob.timezone as string;
 	// const headerHeight = useHeaderHeight();
+
+	const url = getApiUrl();
 
 	const {
 		setAppState,
@@ -381,6 +383,7 @@ const Dashboard = () => {
 						token,
 						user?.user_data.user_id as number,
 						Platform.OS === 'android' ? 'android' : 'ios',
+						Func.getEnv(url),
 					);
 
 					if (res.status === 200) {

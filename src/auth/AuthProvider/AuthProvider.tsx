@@ -1,7 +1,7 @@
 import { deletePushToken, login } from '@/services/auth';
 import { LoginResponseSchemaType } from '@/types/schemas/response';
 import { UserSchemaType } from '@/types/schemas/user';
-import { Constant } from '@/utils';
+import { Constant, Func } from '@/utils';
 import useStore from '@/zustand/Store';
 import { PropsWithChildren, createContext, useMemo } from 'react';
 import type { MMKV } from 'react-native-mmkv';
@@ -29,12 +29,14 @@ const AuthProvider = ({ children, storage }: Props) => {
 		clearClasses,
 		clearStates,
 		clearFilters,
+		pushToken,
 	} = useStore(state => ({
 		loggedInUser: state.loggedInUser,
 		setLoggedInUser: state.setLoggedInUser,
 		clearClasses: state.clearClasses,
 		clearStates: state.clearAppState,
 		clearFilters: state.clearFilters,
+		pushToken: state.pushToken,
 	}));
 
 	const setStorageAuth = (data: LoginResponseSchemaType): void => {
@@ -87,11 +89,15 @@ const AuthProvider = ({ children, storage }: Props) => {
 	};
 
 	const signOut = async () => {
-		const { id, token } = loggedInUser as LoginResponseSchemaType;
+		const { id } = loggedInUser as LoginResponseSchemaType;
 
 		// remove push token from server
 		try {
-			await deletePushToken(token, id);
+			await deletePushToken(
+				pushToken,
+				id,
+				Func.getEnv(storage.getString('apiUrl') || Constant.API_URL),
+			);
 
 			// remove all tokens from storage
 			storage.delete('apiToken');

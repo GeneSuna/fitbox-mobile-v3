@@ -1,9 +1,16 @@
-import { ApiRoutes } from '@/constants';
+import { Constant } from '@/utils';
 import ky from 'ky';
 
-export default async (pushToken: string, userId: number, platform: string) => {
+type ENV = 'DEV' | 'STG' | 'PROD';
+
+export default async (
+	pushToken: string,
+	userId: number,
+	platform: string,
+	env: ENV,
+) => {
 	const response = await ky.put(
-		`${ApiRoutes.PushNotificationService}&token=${pushToken}&userId=${userId}&platform=${platform}`,
+		`${Constant.NOTIFICATION_SERVICE_URL[env]}&token=${pushToken}&userId=${userId}&platform=${platform}`,
 	);
 
 	return response;

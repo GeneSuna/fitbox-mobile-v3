@@ -195,6 +195,19 @@ const isGymCode = (code: string) => code.length === 4 && /^\d+$/.test(code);
 
 const isHTML = RegExp.prototype.test.bind(/(<([^>]+)>)/i);
 
+const getEnv = (url: string) => {
+	if (url?.includes('dev.fitbox.iq')) {
+		return 'DEV';
+	}
+	if (url?.includes('staging.fitbox.iq')) {
+		return 'STG';
+	}
+	if (url?.includes('fitbox.iq')) {
+		return 'PROD';
+	}
+	return 'PROD';
+};
+
 export default {
 	decodeHtml,
 	stripHtmlTags,
@@ -213,4 +226,5 @@ export default {
 	isSessionFromPast,
 	isGymCode,
 	isHTML,
+	getEnv,
 };
