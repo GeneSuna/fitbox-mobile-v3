@@ -86,11 +86,16 @@ const CalendarWeek = ({
 		[currentDate, setCurrentDate],
 	);
 
+	const currentIndex = useMemo(() => {
+		return weeks.findIndex(w => w.some(day => day.date === currentDate));
+	}, [currentDate]);
+
 	return (
 		<View>
 			<FlashList
 				ref={swiper}
 				horizontal
+				initialScrollIndex={currentIndex}
 				showsHorizontalScrollIndicator={false}
 				onMomentumScrollBegin={onMomentumScrollBegin}
 				onMomentumScrollEnd={onMomentumScrollEnd}
