@@ -44,8 +44,9 @@ const DayItem = ({
 	}, [activeMonth]);
 
 	return (
-		<TouchableWithoutFeedback onPress={onPress}>
+		<TouchableWithoutFeedback onPressIn={onPress}>
 			<View
+				pointerEvents="box-only"
 				style={[
 					layout.flex_1,
 					layout.justifyCenter,
