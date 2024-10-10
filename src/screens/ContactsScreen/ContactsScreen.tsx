@@ -343,10 +343,11 @@ const ContactsScreen = ({ navigation }: ComposeScreenProps) => {
 	};
 
 	useEffect(() => {
-		const exists = contactList.some(item => item.role === state.sortBy);
-
+		const exists =
+			contactList.some(item => item.role === state.sortBy) &&
+			!state.loading;
 		setIsContactsNotEmpty(exists);
-	}, [state.sortBy]);
+	}, [state.sortBy, contactList, state.loading]);
 
 	const renderContacts = () => {
 		if (state.loading) {
@@ -383,11 +384,12 @@ const ContactsScreen = ({ navigation }: ComposeScreenProps) => {
 		if (state.sortBy === 'group') {
 			return null;
 		}
-		return state.loading ? null : (
+
+		return !state.loading && contactList.length === 0 ? (
 			<View style={styles.emptyContacts}>
 				<Text>Your list is currently empty.</Text>
 			</View>
-		);
+		) : null;
 	};
 
 	return (
@@ -412,9 +414,7 @@ const ContactsScreen = ({ navigation }: ComposeScreenProps) => {
 					);
 				})}
 			</Row>
-			{!state.refreshing &&
-			state.sortBy !== 'group' &&
-			isContactsNotEmpty ? (
+			{!state.refreshing && isContactsNotEmpty ? (
 				<Searchbar
 					placeholder="Search"
 					onChangeText={search =>
