@@ -1,4 +1,5 @@
 import { FlatList, Loader } from '@/components/molecules';
+import useSwitchableUsers from '@/hooks/useSwitchableUsers';
 import { resetRoot } from '@/navigators/NavigationRef';
 import { getUserGyms, updateUserProfile } from '@/services/users';
 import { Gym } from '@/types/schemas/gym';
@@ -23,6 +24,8 @@ const SwitchGym = () => {
 			return getUserGyms();
 		},
 	});
+
+	const { getSwitchableUsers } = useSwitchableUsers();
 
 	const onSelectGym = useCallback((id: number) => {
 		setSwitching(true);
@@ -52,6 +55,7 @@ const SwitchGym = () => {
 			})
 			.finally(() => {
 				setSwitching(false);
+				getSwitchableUsers();
 			});
 	}, []);
 

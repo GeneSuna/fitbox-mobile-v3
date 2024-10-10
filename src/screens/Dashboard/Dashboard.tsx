@@ -87,8 +87,6 @@ const Dashboard = () => {
 	const timezone = user?.user_data.dob.timezone as string;
 	// const headerHeight = useHeaderHeight();
 
-	const { hasSwitchableUsers } = useSwitchableUsers();
-
 	const {
 		setAppState,
 		classFilters,
@@ -131,6 +129,8 @@ const Dashboard = () => {
 
 	const [presetFiltersIsLoaded, setPresetFiltersIsLoaded] =
 		useState<boolean>(false);
+
+	const { hasSwitchableUsers } = useSwitchableUsers();
 
 	const onRefresh = () => {
 		void initializeAppStates();
