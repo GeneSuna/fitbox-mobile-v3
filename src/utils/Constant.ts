@@ -142,6 +142,8 @@ const TRANSACTION_FEES = {
 	},
 };
 
+const BETA_ACTIVE = 'https://fitbox.iq/beta_active';
+
 export default {
 	ENABLE_ENV_PICKER,
 	MASQUERADE_USER_API_TOKEN,
@@ -162,4 +164,5 @@ export default {
 	MOVEMENT_PARAMS,
 	RESPONSE_TIMEOUT,
 	TRANSACTION_FEES,
+	BETA_ACTIVE,
 };
