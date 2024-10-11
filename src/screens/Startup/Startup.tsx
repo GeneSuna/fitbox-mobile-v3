@@ -86,7 +86,9 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 			});
 		};
 
-		void checkToken();
+		setTimeout(() => {
+			void checkToken();
+		}, 1000);
 	}, [isSuccess]);
 
 	return (
