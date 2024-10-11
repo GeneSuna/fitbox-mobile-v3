@@ -394,7 +394,7 @@ const BookButton = ({
 		return null;
 	}
 
-	if (!isAttending && isWaitlisted) {
+	if (!isAttending && isWaitlisted && !isPreviewMode) {
 		return (
 			<Button
 				title="Waitlisted"
@@ -428,7 +428,7 @@ const BookButton = ({
 						sm
 						compact
 						fullWidth
-						mode="outlined"
+						mode={isPreviewMode ? 'contained' : 'outlined'}
 						title={isPreviewMode ? 'Join Waitlist' : 'Waitlist'}
 						onPress={handleWaitlist}
 						loading={isLoading}
@@ -440,6 +440,7 @@ const BookButton = ({
 				return (
 					<Button
 						sm
+						mode="contained"
 						title="Cancel Waitlist"
 						onPress={handleCancelWaitlist}
 						loading={isLoading}

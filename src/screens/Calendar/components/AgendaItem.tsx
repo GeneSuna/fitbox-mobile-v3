@@ -120,7 +120,8 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 			prevProps.item.isLoading === nextProps.item.isLoading &&
 			prevProps.item.spotsLeft === nextProps.item.spotsLeft &&
 			prevProps.item.color === nextProps.item.color &&
-			prevProps.item.waitlistBtn === nextProps.item.waitlistBtn
+			prevProps.item.waitlistBtn === nextProps.item.waitlistBtn &&
+			prevProps.item.isWaitlisted === nextProps.item.isWaitlisted
 		);
 	},
 );
