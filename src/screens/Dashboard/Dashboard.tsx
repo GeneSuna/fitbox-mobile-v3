@@ -532,9 +532,16 @@ const Dashboard = () => {
 			newResData.splice(1, 0, leaderboards);
 			setClassFiltersData(newResData);
 			const defaultItem = res.data.find(
-				item => item.isDefault === 1 || true,
+				item =>
+					item.isDefault === 1 ||
+					(typeof item.isDefault === 'boolean' &&
+						item.isDefault === true),
 			);
-			setDefaultClassFilter(defaultItem as ClassFiltersDataType);
+			if (defaultItem) {
+				setDefaultClassFilter(defaultItem as ClassFiltersDataType);
+			} else {
+				setDefaultClassFilter({} as ClassFiltersDataType);
+			}
 		} catch (e) {
 			Say.err(e as string);
 		} finally {
