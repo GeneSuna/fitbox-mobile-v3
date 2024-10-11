@@ -136,8 +136,8 @@ const CalendarWeek = forwardRef<CalendarWeekRef, CalendarWeekProps>(
 				/>
 
 				<View style={styles.currentDay}>
-					<Text bold>
-						{moment(currentDate).format('dddd MMM DD')}
+					<Text bold color="gray200">
+						{moment(currentDate).format('dddd, MMM DD')}
 					</Text>
 				</View>
 			</View>
