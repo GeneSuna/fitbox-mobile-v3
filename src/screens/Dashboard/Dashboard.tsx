@@ -12,7 +12,7 @@ import {
 import { SafeScreen } from '@/components/template';
 import useSwitchableUsers from '@/hooks/useSwitchableUsers';
 import { navigate } from '@/navigators/NavigationRef';
-import { savePushToken } from '@/services/auth';
+import { betaActive, savePushToken } from '@/services/auth';
 import { getGymClasses, getGymVenues } from '@/services/gym';
 import { getAttendanceReport } from '@/services/leaderboards';
 import { getClassFilters } from '@/services/session';
@@ -20,6 +20,7 @@ import { getBookedSessions, getUserGymInfo } from '@/services/users';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import resources from '@/theme/resources';
+import { ApplicationStackParamList } from '@/types/navigation';
 import { GymVenueType } from '@/types/schemas/gym';
 import { AttendanceReportDataType } from '@/types/schemas/leaderboards';
 import { NotificationSettingsState } from '@/types/schemas/notifications';
@@ -30,7 +31,11 @@ import NotificationService from '@/utils/NotificationService';
 import useStore from '@/zustand/Store';
 import { ClassFilter, VenueFilter } from '@/zustand/interface/SessionInterface';
 import messaging, { firebase } from '@react-native-firebase/messaging';
-import { useFocusEffect } from '@react-navigation/native';
+import {
+	NavigationProp,
+	useFocusEffect,
+	useNavigation,
+} from '@react-navigation/native';
 import { isArray, isEmpty } from 'lodash';
 import moment from 'moment-timezone';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -83,11 +88,14 @@ const { metrics, fonts } = config;
 
 const Dashboard = () => {
 	const { t } = useTranslation(['dashboard']);
-	const { user, getApiUrl } = useAuth();
+	const { user, getApiUrl, signOut } = useAuth();
 	const timezone = user?.user_data.dob.timezone as string;
 	// const headerHeight = useHeaderHeight();
 
 	const url = getApiUrl();
+
+	const navigationTest =
+		useNavigation<NavigationProp<ApplicationStackParamList>>();
 
 	const {
 		setAppState,
@@ -143,6 +151,36 @@ const Dashboard = () => {
 		void getUpcomingSessions();
 		void getClassFiltersFn();
 		void fetchAttendanceReport();
+		checkBetaActive();
+	};
+
+	const checkBetaActive = () => {
+		betaActive()
+			.then(res => {
+				if (res.status === 404) {
+					Alert.alert(
+						'Beta Over',
+						'The Beta phase is now over. We appreciate your feedback and supprt!',
+						[
+							{
+								text: 'Logout',
+								onPress: () => {
+									signOut();
+
+									navigationTest.reset({
+										index: 0,
+										routes: [{ name: 'Landing' }],
+									});
+								},
+							},
+						],
+					);
+				}
+			})
+			.catch(error => {
+				// eslint-disable-next-line no-console
+				console.log('checkBetaActive: ', error);
+			});
 	};
 
 	const initializeAppStates = async () => {
@@ -400,7 +438,6 @@ const Dashboard = () => {
 		await initializeAppStates();
 		await getUpcomingSessions();
 		await getClassFiltersFn();
-
 		PushNotification.cancelAllLocalNotifications();
 	};
 
@@ -433,6 +470,7 @@ const Dashboard = () => {
 	useEffect(() => {
 		void fetchFilterOptions();
 		void onMountTasks();
+		checkBetaActive();
 		NotificationService.setGymFetcher(initializeAppStates);
 	}, []);
 
