@@ -252,6 +252,16 @@ const ScoreComponent = ({
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				let newMovement: { [key: string]: any } = { ...mov };
 
+				// When movement reps is not set, use section reps
+				if (
+					mov.id &&
+					section.reps &&
+					!section.movements[mov.id as keyof typeof section.movements]
+						?.reps
+				) {
+					newMovement.reps = section.reps;
+				}
+
 				if (independentScoring) {
 					const {
 						// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -330,7 +340,10 @@ const ScoreComponent = ({
 			payload.session_id = sessionId;
 
 			const sectionPayload = {
-				score_type: section.isRx ? 'Rx' : 'Scaled',
+				score_type:
+					section.isRx && section.scoring_by === 'section'
+						? 'Rx'
+						: 'Scaled',
 				scored: section.scored ? 1 : 0,
 				scoring_by: section.scoring_by,
 				id: section.id,
@@ -429,10 +442,13 @@ const ScoreComponent = ({
 		const newSection = { ...section };
 		const movementId = record.wod_movement_id ?? null;
 
-		if (movementId) {
+		if (movementId && newSection.movements[movementId]) {
+			if (record.reps) {
+				newSection.movements[movementId]!.reps = String(record.reps);
+			}
+
 			newSection.movements[movementId]!.scored = true;
 			newSection.movements[movementId]!.value = record.value;
-			newSection.movements[movementId]!.reps = String(record.reps);
 			newSection.movements[movementId]!.comments = record.comments;
 			newSection.movements[movementId]!.comment_leaderboard_visible =
 				record?.comment_leaderboard_visible;
@@ -472,10 +488,17 @@ const ScoreComponent = ({
 			getScore(sessionId)
 				.then(res => {
 					if (!res.error) {
+						const parseScores: Record<number, ScoreResultType> = {};
+
 						res.data.forEach(record => {
 							if (record.wod_section_id === section.id) {
-								parseExistingScore(record as ScoreResultType);
+								parseScores[section.id] =
+									record as ScoreResultType;
 							}
+						});
+
+						Object.values(parseScores).forEach(record => {
+							parseExistingScore(record);
 						});
 					}
 				})

@@ -7,19 +7,11 @@ import { getPastPerformance } from '@/services/users';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ApplicationScreenProps, ScoringParams } from '@/types/navigation';
-import BottomSheet, {
-	BottomSheetBackdrop,
-	BottomSheetScrollView,
-} from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { BottomSheetDefaultBackdropProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import { useFocusEffect } from '@react-navigation/native';
 import { JSX, useCallback, useEffect, useState } from 'react';
-import {
-	Dimensions,
-	StyleSheet,
-	TouchableWithoutFeedback,
-	View,
-} from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import SimpleToast from 'react-native-simple-toast';
 
 const { fonts } = config;
@@ -31,7 +23,6 @@ const SessionScoringScreen = ({ route }: ApplicationScreenProps) => {
 	const { section, sessionId } = route.params as ScoringParams;
 
 	// Prepare state variables
-	const [isExpanded, setExpanded] = useState(false);
 	const [isLoadingHistory, setLoadingHistory] = useState(true);
 	const [results, setResults] = useState({});
 
@@ -96,14 +87,6 @@ const SessionScoringScreen = ({ route }: ApplicationScreenProps) => {
 							independentScoring={false}
 							editMode={false}
 						/>
-
-						{isExpanded && (
-							<TouchableWithoutFeedback
-								onPress={() => setExpanded(false)}
-							>
-								<View style={styles.backdropBackground} />
-							</TouchableWithoutFeedback>
-						)}
 					</View>
 				</View>
 
@@ -114,14 +97,11 @@ const SessionScoringScreen = ({ route }: ApplicationScreenProps) => {
 						animateOnMount={false}
 						backdropComponent={renderBackdrop}
 					>
-						{/* TODO: instad of putting scrollview add it under the list so it wouldnt affect the onerm */}
-						<BottomSheetScrollView>
-							<WODPastPerformance
-								isLoading={isLoadingHistory}
-								section={section}
-								results={results}
-							/>
-						</BottomSheetScrollView>
+						<WODPastPerformance
+							isLoading={isLoadingHistory}
+							section={section}
+							results={results}
+						/>
 					</BottomSheet>
 				)}
 			</>
