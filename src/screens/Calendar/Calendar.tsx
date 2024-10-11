@@ -22,6 +22,7 @@ import {
 	useCallback,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from 'react';
 import {
@@ -37,7 +38,7 @@ import AgendaItem, { AGENDA_ITEM_HEIGHT } from './components/AgendaItem';
 import CalendarFilterPanel from './components/CalendarFilterPanel';
 import CalendarFilterSelect from './components/CalendarFilterSelectPanel';
 import CalendarSkeletonLoader from './components/CalendarSkeletonLoader';
-import CalendarWeek from './components/CalendarWeek';
+import CalendarWeek, { CalendarWeekRef } from './components/CalendarWeek';
 import { FilterCriteria, shouldIncludeClass } from './utils/functions';
 
 const { height } = Dimensions.get('window');
@@ -83,6 +84,8 @@ const Calendar = () => {
 	const [isInitialLoading, setIsInitialLoading] = useState(true);
 	const [isInitialLoadingComplete, setIsInitialLoadingComplete] =
 		useState(false);
+
+	const calendarWeekRef = useRef<CalendarWeekRef>(null);
 
 	const loadClasses = () => {
 		// create a range from current date to 3 days ago and 3 days ahead
@@ -202,7 +205,11 @@ const Calendar = () => {
 			setTimeout(() => {
 				void loadClasses();
 			}, 1500);
+
+			return;
 		}
+
+		setCurrentDate(TODAYS_DATE);
 	}, [isInitialLoadingComplete, currentDate]);
 
 	const isFocused = useIsFocused();
@@ -309,8 +316,13 @@ const Calendar = () => {
 
 	useEffect(() => {
 		if (memoizedClasses.length > 0) {
-			setIsInitialLoadingComplete(true);
-			setIsInitialLoading(false);
+			if (!isInitialLoadingComplete) {
+				setTimeout(() => {
+					setIsInitialLoadingComplete(true);
+					setIsInitialLoading(false);
+					calendarWeekRef.current?.scrollToCurrentDate();
+				}, 2000);
+			}
 		}
 	}, [memoizedClasses]);
 
@@ -330,6 +342,7 @@ const Calendar = () => {
 
 			<View style={[layout.flex_1]}>
 				<CalendarWeek
+					ref={calendarWeekRef}
 					currentDate={currentDate}
 					setCurrentDate={setCurrentDate}
 				/>

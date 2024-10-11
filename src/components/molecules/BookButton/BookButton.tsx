@@ -326,6 +326,20 @@ const BookButton = ({
 
 	const isSessionFromPast = Func.isSessionFromPast(startDate);
 
+	if (isAttending && handleViewSession) {
+		return (
+			<Button
+				title="Booked"
+				onPress={handleViewSession}
+				variant="brand"
+				sm
+				compact
+				fullWidth
+				mode="contained"
+			/>
+		);
+	}
+
 	if (!isPreviewMode && isSessionFromPast) {
 		return null;
 	}
@@ -362,34 +376,18 @@ const BookButton = ({
 		);
 	}
 
-	if (isAttending) {
-		if (handleViewSession) {
-			return (
-				<Button
-					title="Booked"
-					onPress={handleViewSession}
-					variant="brand"
-					sm
-					compact
-					fullWidth
-					mode="contained"
-				/>
-			);
-		}
-
-		if (!isSessionFromPast) {
-			return (
-				<Button
-					sm
-					title="Unbook"
-					onPress={() => handleBook()}
-					loading={isLoading}
-					compact
-					fullWidth
-					mode="contained"
-				/>
-			);
-		}
+	if (isAttending && !isSessionFromPast) {
+		return (
+			<Button
+				sm
+				title="Unbook"
+				onPress={() => handleBook()}
+				loading={isLoading}
+				compact
+				fullWidth
+				mode="contained"
+			/>
+		);
 	}
 
 	if (spotsLeft === null || !isNumber(spotsLeft)) {
