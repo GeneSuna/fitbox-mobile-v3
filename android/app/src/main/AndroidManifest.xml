@@ -51,5 +51,8 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+    <meta-data
+        android:name="android.permission.USE_EXACT_ALARM"
+        android:value="true" />
   </application>
 </manifest>
