@@ -588,10 +588,17 @@ const Dashboard = () => {
 		}
 	};
 
-	const avatarImage = `${
-		user?.user_data.profile_image ??
-		'https://avatars.githubusercontent.com/u/15073128'
-	}?v=${moment().toISOString()}`;
+	let avatarImage = '';
+
+	if (user?.user_data.profile_image) {
+		if (user?.user_data.profile_image.includes(Constant.API_URL)) {
+			avatarImage = user?.user_data.profile_image;
+		} else {
+			avatarImage = `${Constant.API_URL}/${user?.user_data.profile_image}`;
+		}
+	} else {
+		avatarImage = `https://avatars.githubusercontent.com/u/15073128?v=${moment().toISOString()}`;
+	}
 
 	const onActionButtonClick = (navTo: string) => {
 		if (navTo === 'calendar') {
