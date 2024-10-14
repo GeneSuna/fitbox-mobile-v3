@@ -98,11 +98,14 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 	});
 	const [gifUrl, setGIFUrl] = useState<string>('');
 
-	const { attachedFiles, setAppState } = useStore(store => ({
-		attachedFiles: store.attachedFiles,
-		setAppState: store.setAppState,
-		showModalNotification: store.showModalNotification,
-	}));
+	const { attachedFiles, setAppState, unreadMessageCallback } = useStore(
+		store => ({
+			attachedFiles: store.attachedFiles,
+			setAppState: store.setAppState,
+			showModalNotification: store.showModalNotification,
+			unreadMessageCallback: store.unreadMessageCallback,
+		}),
+	);
 
 	const handleEnterMessage = (message: string) =>
 		setState(prevState => ({ ...prevState, message }));
@@ -348,6 +351,8 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 			loading: false,
 			refreshing: false,
 		}));
+
+		unreadMessageCallback();
 	};
 
 	const handleBrowseFiles = () => navigation.navigate('BrowseMedia');

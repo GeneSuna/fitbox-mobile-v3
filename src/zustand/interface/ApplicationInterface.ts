@@ -20,6 +20,7 @@ interface ApplicationStateInterface {
 	showModalNotification: boolean;
 	pushToken: string;
 	notifSettings: NotifSettingsInterface;
+	unreadMessageCallback: () => void;
 }
 
 interface AttachedFilesInterface {

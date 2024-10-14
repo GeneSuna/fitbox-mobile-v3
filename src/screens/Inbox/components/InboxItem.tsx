@@ -32,6 +32,7 @@ const InboxItem = ({ index, data, onPress }: InboxItemProps) => {
 	};
 
 	const isFromUser = data.sender_id === userFromAuth?.user_data.user_id;
+	const isGroup = data.group.length > 2;
 
 	// Prepare sender info
 	let senderInfo =
@@ -77,6 +78,14 @@ const InboxItem = ({ index, data, onPress }: InboxItemProps) => {
 				else message = `${data.firstname} sent a video`;
 			} else if (isFromUser) message = 'You sent a file';
 			else message = `${data.firstname} sent a file`;
+		}
+	} else if (isFromUser) {
+		message = `You: ${message}`;
+	} else if (isGroup) {
+		if (isFromUser) {
+			message = `You: ${message}`;
+		} else {
+			message = `${data.firstname}: ${message}`;
 		}
 	}
 

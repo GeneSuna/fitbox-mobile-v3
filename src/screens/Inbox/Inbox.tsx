@@ -153,6 +153,9 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 	};
 
 	const handlePress = (item: MessageItemType, index: number) => {
+		const updatedList = list as MessageItemType[];
+		(updatedList[index] as MessageItemType).num_of_unread_messages = 0;
+		setList(updatedList);
 		navigation.navigate('Conversation', { conversation: item, index });
 	};
 

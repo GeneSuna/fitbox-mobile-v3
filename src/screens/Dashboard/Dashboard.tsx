@@ -221,6 +221,7 @@ const Dashboard = () => {
 			setAppState('teamId', gymInfo.gym_lookup);
 			setAppState('shopUrl', gymInfo.online_store);
 			setAppState('unreadMessages', gymInfo.num_of_unread_messages);
+			setAppState('unreadMessageCallback', initializeAppStates);
 			setAppState('allowLeaderboards', !!gymInfo.allow_leaderboards);
 			setAppState('allowComments', !!gymInfo.allow_leaderboards_comment);
 			setAppState('appForceUpdate', !!gymInfo.mobile_force_update);

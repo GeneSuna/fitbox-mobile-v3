@@ -60,6 +60,8 @@ import { Constant } from '@/utils';
 import useStore from '@/zustand/Store';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { Badge } from 'react-native-paper';
 import DashboardStackNavigator from './DashboardStack';
 import MenuStackNavigator from './MenuStack';
 import { navigationRef } from './NavigationRef';
@@ -97,13 +99,30 @@ const tabBarIconRender = ({
 	color,
 	size,
 	loading,
+	unreadMessages,
 }: {
 	route: keyof MainTabParamList;
 	color: string;
 	size: number;
 	loading: boolean;
+	unreadMessages?: number;
 }) => {
 	if (loading) return <Loader size="xl" />;
+
+	if (route === 'InboxStack') {
+		return (
+			<>
+				<Ionicons name={icons[route]} size={size} color={color} />
+				<Badge
+					visible={Number(unreadMessages) > 0}
+					size={14}
+					style={styles.badgeStyle}
+				>
+					{unreadMessages}
+				</Badge>
+			</>
+		);
+	}
 
 	return <Ionicons name={icons[route]} size={size} color={color} />;
 };
@@ -111,14 +130,14 @@ const tabBarIconRender = ({
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const MainTabNavigator = () => {
 	const { variant, colors } = useTheme();
-	const { shopUrl, activeMonth, headerTitle, clearClasses } = useStore(
-		state => ({
+	const { shopUrl, activeMonth, headerTitle, clearClasses, unreadMessages } =
+		useStore(state => ({
 			shopUrl: state.shopUrl,
 			activeMonth: state.activeMonth,
 			headerTitle: state.headerTitle,
 			clearClasses: state.clearClasses,
-		}),
-	);
+			unreadMessages: state.unreadMessages,
+		}));
 	const [currentTab, setCurrentTab] = useState<string>('DashboardStack');
 	const [loadingCalendar, setLoadingCalendar] = useState<boolean>(false);
 
@@ -138,6 +157,7 @@ const MainTabNavigator = () => {
 					tabBarIconRender({
 						loading: route.name === 'Calendar' && loadingCalendar,
 						route: route.name,
+						unreadMessages,
 						...options,
 					}),
 				tabBarActiveTintColor: colors.brand,
@@ -535,5 +555,14 @@ const ApplicationNavigator = () => {
 		</StripeProvider>
 	);
 };
+
+const styles = StyleSheet.create({
+	badgeStyle: {
+		position: 'absolute',
+		top: 10,
+		right: 23,
+		backgroundColor: config.colors.brand,
+	},
+});
 
 export default ApplicationNavigator;
