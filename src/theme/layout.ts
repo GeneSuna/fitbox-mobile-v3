@@ -68,6 +68,15 @@ export default {
 	fullHeight: {
 		height: '100%',
 	},
+	/**
+	 * Overflow
+	 */
+	overflowHidden: {
+		overflow: 'hidden',
+	},
+	overflowVisible: {
+		overflow: 'visible',
+	},
 	/* Positions */
 	relative: {
 		position: 'relative',

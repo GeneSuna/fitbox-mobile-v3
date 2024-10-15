@@ -18,26 +18,30 @@ import { Constant, Say } from '@/utils';
 import useStore from '@/zustand/Store';
 import { useFocusEffect } from '@react-navigation/native';
 import { isArray, isNaN, parseInt } from 'lodash';
-import { MutableRefObject, useCallback, useState } from 'react';
+import {
+	MutableRefObject,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
 import {
 	Keyboard,
+	LayoutChangeEvent,
+	NativeScrollEvent,
+	NativeSyntheticEvent,
+	ScrollView,
 	StyleSheet,
 	TextInput,
 	TouchableOpacity,
 	Vibration,
 	View,
 } from 'react-native';
+import Animated from 'react-native-reanimated';
 import SimpleToast from 'react-native-simple-toast';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {
-	Button,
-	KeyboardSpacer,
-	Row,
-	ScrollView,
-	Spacer,
-	Text,
-} from '../../atoms';
+import { Button, KeyboardSpacer, Row, Spacer, Text } from '../../atoms';
 import ScoreComment from './components/ScoreComment';
 import ScoreHeader from './components/ScoreHeader';
 import ScoreInputField from './components/ScoreInputField';
@@ -147,6 +151,16 @@ const ScoreComponent = ({
 	});
 	const [isDeleting, setDeleting] = useState<boolean>(false);
 	const [submitting, setSubmitting] = useState<boolean>(false);
+
+	/**
+	 * Scroll View Height and Content Height
+	 * TODO: Refactor this to a different file
+	 */
+	const scrollViewRef = useRef<ScrollView>(null);
+	const [scrollPosition, setScrollPosition] = useState(10);
+	const [isScrollable, setIsScrollable] = useState(false);
+	const [contentHeight, setContentHeight] = useState(0);
+	const [layoutHeight, setLayoutHeight] = useState(0);
 
 	// eslint-disable-next-line no-console
 	console.log('@setDeleting', setDeleting);
@@ -826,6 +840,8 @@ const ScoreComponent = ({
 				key={movement ? movement.movement_id : unitType}
 				style={styles.scoreContainer}
 			>
+				{movement ? <Text bold>{movement.name}</Text> : null}
+
 				<ScoreInputField
 					section={section}
 					unitType={unitType}
@@ -874,6 +890,30 @@ const ScoreComponent = ({
 		}, []),
 	);
 
+	// Update handleLayout to set layoutHeight
+	const handleLayout = (event: LayoutChangeEvent) => {
+		const { height } = event.nativeEvent.layout;
+		setLayoutHeight(height);
+	};
+
+	// Add handler for content size change
+	const handleContentSizeChange = (_width: number, height: number) => {
+		setContentHeight(height);
+	};
+
+	// Use useEffect to determine if ScrollView is scrollable
+	useEffect(() => {
+		setIsScrollable(contentHeight > layoutHeight);
+	}, [contentHeight, layoutHeight]);
+
+	const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+		const { contentOffset, contentSize, layoutMeasurement } =
+			event.nativeEvent;
+		const maxScroll = contentSize.height - layoutMeasurement.height;
+		const scrollPercent = (contentOffset.y / maxScroll) * 100;
+		setScrollPosition(scrollPercent + 10);
+	};
+
 	return (
 		<>
 			<View style={layout.flex_1}>
@@ -884,41 +924,60 @@ const ScoreComponent = ({
 					onRxChange={rxChanged}
 				/>
 
-				<ScrollView
-					contentInset={{
-						bottom: state.isKeyboardVisible ? 100 : 0,
-					}}
-					style={{ padding: config.metrics.rg }}
-				>
-					{section.scoring_by === 'movement' &&
-						isArray(section?.wod_movements) &&
-						section?.wod_movements?.length > 0 &&
-						section.wod_movements.map(movement => {
-							// remove not included movements if 'editMode' is true
-							if (
-								editMode &&
-								editData?.ref_id !== movement.movement_id
-							) {
-								return false;
-							}
+				<View style={[layout.flex_1, layout.overflowHidden]}>
+					<ScrollView
+						ref={scrollViewRef}
+						contentInset={{
+							bottom: state.isKeyboardVisible ? 100 : 0,
+						}}
+						style={{ padding: config.metrics.rg }}
+						showsVerticalScrollIndicator={false}
+						onLayout={handleLayout}
+						onContentSizeChange={handleContentSizeChange}
+						onScroll={handleScroll}
+						scrollEventThrottle={16}
+					>
+						{section.scoring_by === 'movement' &&
+							isArray(section?.wod_movements) &&
+							section?.wod_movements?.length > 0 &&
+							section.wod_movements.map(movement => {
+								// remove not included movements if 'editMode' is true
+								if (
+									editMode &&
+									editData?.ref_id !== movement.movement_id
+								) {
+									return false;
+								}
 
-							return getScoreSection(
+								return getScoreSection(
+									section.scoring_type?.unit_type,
+									section.scoring_type?.method,
+									{
+										...movement.movement,
+										movement_id: movement.id,
+									},
+								);
+							})}
+
+						{section.scoring_by === 'section' &&
+							getScoreSection(
 								section.scoring_type?.unit_type,
 								section.scoring_type?.method,
-								{
-									...movement.movement,
-									movement_id: movement.id,
-								},
-							);
-						})}
+								null,
+							)}
+					</ScrollView>
 
-					{section.scoring_by === 'section' &&
-						getScoreSection(
-							section.scoring_type?.unit_type,
-							section.scoring_type?.method,
-							null,
-						)}
-				</ScrollView>
+					{isScrollable ? (
+						<View style={styles.scrollIndicatorContainer}>
+							<Animated.View
+								style={[
+									styles.scrollIndicator,
+									{ height: `${scrollPosition}%` },
+								]}
+							/>
+						</View>
+					) : null}
+				</View>
 
 				{!independentScoring ? (
 					<TouchableOpacity
@@ -1042,7 +1101,6 @@ const styles = StyleSheet.create({
 	commentDisplay: {
 		alignSelf: 'center',
 		width: Constant.DEVICEWIDTH * 0.8,
-		height: 100,
 	},
 	commentInputIcon: {
 		marginLeft: 15,
@@ -1069,5 +1127,17 @@ const styles = StyleSheet.create({
 	checkboxInputChecked: {
 		backgroundColor: config.fonts.colors.info,
 		borderColor: config.fonts.colors.info,
+	},
+	scrollIndicatorContainer: {
+		position: 'absolute',
+		right: 0,
+		top: 0,
+		bottom: 0,
+		width: 10,
+		backgroundColor: '#f0f0f0',
+	},
+	scrollIndicator: {
+		width: '100%',
+		backgroundColor: config.fonts.colors.info,
 	},
 });

@@ -32,6 +32,18 @@ const FieldInput = ({
 		return null;
 	}
 
+	const isLoadSameValue =
+		value?.includes('-') &&
+		value.split('-').every(val => val === value.split('-')[0]);
+
+	const getFieldValue = (newValue: string) => {
+		if (isLoadSameValue) {
+			return newValue.split('-')[0];
+		}
+
+		return newValue;
+	};
+
 	return (
 		<View
 			style={[
@@ -51,7 +63,15 @@ const FieldInput = ({
 					{...rest}
 				/>
 			) : (
-				<Text style={styles.inputField}>{value ?? ''}</Text>
+				<View style={[layout.fullWidth, layout.justifyCenter]}>
+					{isLoadSameValue ? (
+						<Text style={styles.superscript}>x</Text>
+					) : null}
+
+					<Text center style={styles.inputField}>
+						{getFieldValue(value ?? '')}
+					</Text>
+				</View>
 			)}
 		</View>
 	);
@@ -520,7 +540,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		flexDirection: 'row',
 		justifyContent: 'space-evenly',
-		alignItems: 'center',
+		alignItems: 'flex-start',
 		marginTop: config.metrics.lg,
 		marginBottom: config.metrics.rg,
 	},
@@ -541,5 +561,13 @@ const styles = StyleSheet.create({
 		padding: 0,
 		alignItems: 'center',
 		justifyContent: 'center',
+	},
+	superscript: {
+		position: 'absolute',
+		fontSize: config.fonts.metrics.md,
+		left: '-20%',
+		bottom: '40%',
+		color: 'gray',
+		...layout.fontMontserratBold,
 	},
 });
