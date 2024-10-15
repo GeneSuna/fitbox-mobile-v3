@@ -82,7 +82,7 @@ const ScoreInputField = ({
 
 	if (ENABLE_SCORE_INPUT_LOGGING) {
 		// eslint-disable-next-line no-console
-		console.log(`InputField - ${unitType} - ${method}`);
+		console.log(`InputField - unitType: ${unitType} - method: ${method}`);
 	}
 
 	if (unitType === 'load') {

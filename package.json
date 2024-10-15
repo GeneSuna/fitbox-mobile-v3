@@ -15,10 +15,11 @@
         "test:report": "jest --collectCoverage --coverageDirectory=\"./coverage\" --ci --reporters=default --reporters=jest-junit --coverage",
         "pod-install": "cd ios && RCT_NEW_ARCH_ENABLED=1 bundle exec pod install && cd ..",
         "prepare": "husky install",
-        "postinstall": "patch-package"
+        "postinstall": "patch-package",
+        "devtools": "npx react-devtools"
     },
     "dependencies": {
-        "@gorhom/bottom-sheet": "^4",
+        "@gorhom/bottom-sheet": "^5.0.0",
         "@ptomasroos/react-native-multi-slider": "^2.2.2",
         "@react-native-clipboard/clipboard": "^1.14.1",
         "@react-native-community/datetimepicker": "^8.1.1",

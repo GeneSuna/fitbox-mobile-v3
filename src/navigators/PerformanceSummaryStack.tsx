@@ -1,5 +1,6 @@
 import { PastPerformance } from '@/screens';
-import MovementHistory from '@/screens/PerformanceSummary/MovementHistory/MovementHistory';
+import MovementHistory from '@/screens/PerformanceSummary/MovementHistory';
+import WorkoutHistory from '@/screens/PerformanceSummary/WorkoutHistory';
 import { PerformanceSummaryParamList } from '@/types/navigation';
 import { createStackNavigator } from '@react-navigation/stack';
 import { CommonHeaderOptions } from './utils/options';
@@ -20,6 +21,11 @@ const PerformanceSummaryStack = () => {
 			<Stack.Screen
 				name="MovementHistory"
 				component={MovementHistory}
+				options={{ title: 'Performance' }}
+			/>
+			<Stack.Screen
+				name="WorkoutHistory"
+				component={WorkoutHistory}
 				options={{ title: 'Performance' }}
 			/>
 		</Stack.Navigator>

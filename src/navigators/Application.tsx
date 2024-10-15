@@ -46,8 +46,8 @@ import ShopHeaderRightComponent from '@/screens/Shop/components/ShopHeaderRightC
 
 import useAuth from '@/auth/hooks/useAuth';
 import { Loader, NotificationDialog } from '@/components/molecules';
-import MovementHistory from '@/screens/PerformanceSummary/MovementHistory/MovementHistory';
-import ResultTypesModal from '@/screens/PerformanceSummary/ResultTypesModal/ResultTypesModal';
+import MovementHistory from '@/screens/PerformanceSummary/MovementHistory';
+import ResultTypesModal from '@/screens/PerformanceSummary/components/ResultTypesModal';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import type {

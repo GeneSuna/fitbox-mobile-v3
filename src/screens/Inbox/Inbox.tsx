@@ -297,7 +297,7 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 			{loadingMore && (
 				<Row spacing="center" align="center">
 					<View style={styles.loaderContainer}>
-						<Loader color="brand" size="xs" />
+						<Loader size="xs" />
 					</View>
 					<Spacer horizontal size="xs" />
 					<Text size="sm">Loading More..</Text>

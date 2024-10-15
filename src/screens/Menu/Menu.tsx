@@ -8,6 +8,7 @@ import layout from '@/theme/layout';
 import { MainTabScreenProps } from '@/types/navigation';
 import { Constant } from '@/utils';
 import useStore from '@/zustand/Store';
+import { useQueryClient } from '@tanstack/react-query';
 import { isEmpty } from 'lodash';
 import { Alert, Linking, StyleSheet, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -143,6 +144,8 @@ const menuOptions = [
 ];
 
 const Menu = ({ navigation }: MainTabScreenProps) => {
+	const queryClient = useQueryClient();
+
 	const { variant, changeTheme } = useTheme();
 	const { signOut, getApiUrl } = useAuth();
 	const { hasSwitchableUsers } = useSwitchableUsers();
@@ -158,6 +161,14 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 
 	const version = DeviceInfo.getVersion();
 	const build = DeviceInfo.getBuildNumber();
+
+	const handleClearCache = () => {
+		// clear zustand state
+		clearStates();
+
+		// clear workout list
+		void queryClient.invalidateQueries({ queryKey: ['getWorkouts'] });
+	};
 
 	const onClick = (id: string) => {
 		switch (id) {
@@ -223,7 +234,7 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 							text: 'Ok',
 							onPress: () => {
 								// trigger clear states
-								clearStates();
+								handleClearCache();
 
 								// say success alert
 								SimpleToast.show(

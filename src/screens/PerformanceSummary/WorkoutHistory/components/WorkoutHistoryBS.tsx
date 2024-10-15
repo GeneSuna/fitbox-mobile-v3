@@ -17,7 +17,7 @@ import { StyleSheet, View } from 'react-native';
 import SimpleToast from 'react-native-simple-toast';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-interface MovementHistoryBSProps {
+interface WorkoutHistoryBSProps {
 	movements: PastPerformanceResultType[];
 	sheetRef: RefObject<BottomSheetMethods>;
 	sheetIndex: number;
@@ -28,7 +28,7 @@ interface MovementHistoryBSProps {
 	isLoading: boolean;
 }
 
-const MovementHistoryBS = ({
+const WorkoutHistoryBS = ({
 	sheetRef,
 	sheetIndex,
 	setSheetIndex,
@@ -37,7 +37,7 @@ const MovementHistoryBS = ({
 	oneRm,
 	bottomOffset,
 	isLoading,
-}: MovementHistoryBSProps) => {
+}: WorkoutHistoryBSProps) => {
 	const renderMovements = () => {
 		return movements.length ? (
 			movements.map((data, i) => {
@@ -159,7 +159,7 @@ const MovementHistoryBS = ({
 	);
 };
 
-export default MovementHistoryBS;
+export default WorkoutHistoryBS;
 
 const styles = StyleSheet.create({
 	movementInfo: {

@@ -1,6 +1,7 @@
 import { goBack } from '@/navigators/NavigationRef';
 import { getScore } from '@/services/leaderboards';
 import addScore, { AddScorePayload } from '@/services/leaderboards/addScore';
+import addWodScore from '@/services/leaderboards/addWodScore';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import {
@@ -11,6 +12,7 @@ import { PrResultDataType } from '@/types/schemas/response';
 import {
 	SessionSectionSchemaType,
 	SessionWODMovementDetailsSchemaType,
+	WODSectionSchemaType,
 } from '@/types/schemas/session';
 import { Constant, Say } from '@/utils';
 import useStore from '@/zustand/Store';
@@ -36,7 +38,6 @@ import {
 	Spacer,
 	Text,
 } from '../../atoms';
-
 import ScoreComment from './components/ScoreComment';
 import ScoreHeader from './components/ScoreHeader';
 import ScoreInputField from './components/ScoreInputField';
@@ -61,9 +62,9 @@ type State = {
 
 interface ScoreComponentProps {
 	sessionId?: number;
-	section: SessionSectionSchemaType;
+	section: SessionSectionSchemaType | WODSectionSchemaType;
 	onSubmitCallback?: () => void;
-	independentScoring: boolean;
+	independentScoring?: boolean;
 	editMode: boolean;
 	editData?: IEditData;
 	wod_id?: number | null;
@@ -304,7 +305,6 @@ const ScoreComponent = ({
 						value: saveMovements[0]?.value ?? 0,
 						reps: Number(saveMovements[0]?.reps) ?? 0,
 						comments: saveMovements[0]?.comments ?? '',
-						leaderboard_visible: state.hideOnLeaderboard,
 					};
 				} else if (section.scoring_by === 'section') {
 					payload = {
@@ -315,7 +315,6 @@ const ScoreComponent = ({
 						),
 						reps: section.reps,
 						comments: section.comments,
-						leaderboard_visible: state.hideOnLeaderboard,
 					};
 				}
 			} else {
@@ -333,7 +332,6 @@ const ScoreComponent = ({
 					reps: section.reps,
 					comments: section.comments,
 					movements: saveMovements,
-					leaderboard_visible: state.hideOnLeaderboard,
 				};
 			}
 		} else {
@@ -381,7 +379,11 @@ const ScoreComponent = ({
 					// 	payload,
 					// );
 				} else {
-					// res = await RestService.submitWodScore(payload);
+					res = await addWodScore(payload).catch(() => {
+						throw new Error(
+							'Something went wrong submitting score',
+						);
+					});
 				}
 			} else {
 				res = await addScore(payload).catch(() => {
@@ -915,34 +917,36 @@ const ScoreComponent = ({
 						)}
 				</ScrollView>
 
-				<TouchableOpacity
-					style={styles.disableReplyButtonStyle}
-					onPress={() =>
-						setState(s => ({
-							...s,
-							hideOnLeaderboard: !s.hideOnLeaderboard,
-						}))
-					}
-				>
-					<Row style={{ paddingHorizontal: config.metrics.rg }}>
-						<View
-							style={[
-								styles.checkboxInput,
-								state.hideOnLeaderboard &&
-									styles.checkboxInputChecked,
-							]}
-						>
-							{state.hideOnLeaderboard ? (
-								<Icon
-									name="checkmark"
-									size={config.fonts.metrics.sm}
-									color={config.fonts.colors.light}
-								/>
-							) : null}
-						</View>
-						<Text>Show on leaderboard</Text>
-					</Row>
-				</TouchableOpacity>
+				{!independentScoring ? (
+					<TouchableOpacity
+						style={styles.disableReplyButtonStyle}
+						onPress={() =>
+							setState(s => ({
+								...s,
+								hideOnLeaderboard: !s.hideOnLeaderboard,
+							}))
+						}
+					>
+						<Row style={{ paddingHorizontal: config.metrics.rg }}>
+							<View
+								style={[
+									styles.checkboxInput,
+									state.hideOnLeaderboard &&
+										styles.checkboxInputChecked,
+								]}
+							>
+								{state.hideOnLeaderboard ? (
+									<Icon
+										name="checkmark"
+										size={config.fonts.metrics.sm}
+										color={config.fonts.colors.light}
+									/>
+								) : null}
+							</View>
+							<Text>Show on leaderboard</Text>
+						</Row>
+					</TouchableOpacity>
+				) : null}
 
 				<View style={{ padding: config.metrics.rg }}>
 					<Button

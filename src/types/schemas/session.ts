@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { boolOrOneZero } from './common';
+import { ScoringTypeSchema } from './leaderboards';
 
 export type BookableSchemaType = z.infer<typeof BookableSchema>;
 export const BookableSchema = z.object({
@@ -313,6 +314,37 @@ export const SessionWODMovementSchema = z.object({
 	movement: SessionWODMovementDetailsSchema,
 });
 
+export type WODSectionSchemaType = z.infer<typeof WODSectionSchema>;
+export const WODSectionSchema = z.object({
+	id: z.number(),
+	belong_benchmark_wod_id: z.number().nullish(),
+	belong_program_wod_id: z.number().nullish(),
+	has_benchmark_wod_id: z.number().nullish(),
+	name: z.string(),
+	scored: z.boolean(),
+	scoring_by: z.string(),
+	scoring_type: ScoringTypeSchema,
+	scoring_type_id: z.number().nullable(),
+	rounds: z.number(),
+	sets: z.number().nullish(),
+	reps: z.string(),
+	duration: z.number().nullish(),
+	sequence: z.number().nullish(),
+	created_at: z.string(),
+	updated_at: z.string(),
+	deleted_at: z.string().nullish(),
+	text_section: z.string().nullish(),
+	publishing_rule: z.string().nullish(),
+	video: z.string().nullish(),
+	is_leaderboard: boolOrOneZero,
+	allow_sets_or_round_scoring: boolOrOneZero,
+	member_notes: z.string().nullable(),
+	coach_notes: z.string().nullable(),
+	default_collapse_state: z.number(),
+	staff_only: boolOrOneZero,
+	wod_movements: z.array(SessionWODMovementSchema).nullish(),
+});
+
 export const SessionFBWODSchema = z.object({
 	id: z.number(),
 	context_id: z.number(),
@@ -323,34 +355,15 @@ export const SessionFBWODSchema = z.object({
 	updated_at: z.string(),
 	deleted_at: z.string().nullish(),
 	notes: z.string(),
-	wod_section: z.object({
-		id: z.number(),
-		belong_benchmark_wod_id: z.number().nullish(),
-		belong_program_wod_id: z.number().nullish(),
-		has_benchmark_wod_id: z.number().nullish(),
-		name: z.string(),
-		scored: z.boolean(),
-		scoring_by: z.string(),
-		scoring_type_id: z.number().nullable(),
-		rounds: z.number(),
-		sets: z.number().nullish(),
-		reps: z.string(),
-		duration: z.number().nullish(),
-		sequence: z.number().nullish(),
-		created_at: z.string(),
-		updated_at: z.string(),
-		deleted_at: z.string().nullish(),
-		text_section: z.string().nullish(),
-		publishing_rule: z.string().nullish(),
-		video: z.string().nullish(),
-		is_leaderboard: boolOrOneZero,
-		allow_sets_or_round_scoring: boolOrOneZero,
-		member_notes: z.string().nullable(),
-		coach_notes: z.string().nullable(),
-		default_collapse_state: z.number(),
-		staff_only: boolOrOneZero,
-		wod_movements: z.array(SessionWODMovementSchema).nullish(),
-	}),
+	wod_section: WODSectionSchema,
+});
+
+export type WorkoutSchemaType = z.infer<typeof WorkoutSchema>;
+export const WorkoutSchema = z.object({
+	id: z.number(),
+	name: z.string(),
+	section_id: z.number(),
+	section_wod: WODSectionSchema,
 });
 
 export type SessionSectionSchemaType = z.infer<typeof SessionSectionSchema>;

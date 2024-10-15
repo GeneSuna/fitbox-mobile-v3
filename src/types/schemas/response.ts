@@ -41,6 +41,7 @@ import {
 	SessionDetailSchema,
 	SessionSchema,
 	StaffBookedSessionSchema,
+	WorkoutSchema,
 } from './session';
 import {
 	SubscriptionDetailsSchema,
@@ -369,4 +370,11 @@ export const ValidateInviteCodeResponseSchema = apiResponseSchema(
 
 export const AcceptInviteResponseSchema = apiResponseSchema(
 	z.object({ accepted: z.boolean() }),
+);
+
+export const GetWorkoutResponseSchema = apiResponseSchema(
+	z.object({
+		benchmark: z.array(WorkoutSchema),
+		favorite: z.array(WorkoutSchema),
+	}),
 );

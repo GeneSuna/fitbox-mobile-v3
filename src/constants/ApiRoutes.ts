@@ -28,7 +28,7 @@ export default {
 	addWodScore: `${v1}fitbox/user/wod/add-score`,
 	removeWodScore: `${v1}fitbox/user/wod/remove-score`,
 	updateWodScore: `${v1}fitbox/user/wod/update-score`,
-	workouts: `${v1}fitbox/leaderboard/workouts`,
+	getWorkouts: `${v1}fitbox/leaderboard/workouts`,
 	workoutsPastPerformance: `${v1}past-performance`,
 	getScoringTypes: `${v1}fitbox/scoring-types`,
 	addScoreMovement: `${v1}fitbox/user/movement/add-score`,

@@ -814,7 +814,7 @@ const SessionsSectionsTab = ({
 							>
 								{isVideoLoading && (
 									<>
-										<Loader size={50} color="brand" />
+										<Loader size={50} />
 										<Spacer size="sm" />
 										<Text>Loading Video..</Text>
 									</>

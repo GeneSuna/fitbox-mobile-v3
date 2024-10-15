@@ -184,9 +184,7 @@ const Login = ({ navigation, route }: ApplicationScreenProps) => {
 							/>
 
 							<View style={style.showPasswordBtn}>
-								{fetching ? (
-									<Loader size="md" color="black" />
-								) : null}
+								{fetching ? <Loader size="md" /> : null}
 
 								{!isEmpty(email) && !userExist && !fetching ? (
 									<Icon

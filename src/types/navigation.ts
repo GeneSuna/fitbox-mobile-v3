@@ -3,6 +3,7 @@ import { ContactMembersType, MessageItemType } from './schemas/message';
 import {
 	SessionDetailSchemaType,
 	SessionSectionSchemaType,
+	WorkoutSchemaType,
 } from './schemas/session';
 
 export type SessionParams = {
@@ -187,10 +188,15 @@ export type MovementHistoryParams = {
 	addResult?: boolean;
 };
 
+export type WorkoutHistoryParams = {
+	data: WorkoutSchemaType;
+	addResult?: boolean;
+};
+
 export type PerformanceSummaryParamList = {
 	PastPerformance: undefined;
 	MovementHistory: MovementHistoryParams;
-	WorkoutHistory: undefined;
+	WorkoutHistory: WorkoutHistoryParams;
 };
 
 export type PerformanceSummaryScreenProps = StackScreenProps<

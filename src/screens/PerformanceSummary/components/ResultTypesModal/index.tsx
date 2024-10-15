@@ -1,89 +1,66 @@
 import { Row, Text } from '@/components/atoms';
 import { FlatList } from '@/components/molecules';
-import { getResultTypes } from '@/services/users';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { PerformanceSummaryScreenProps } from '@/types/navigation';
 import { ResultType } from '@/types/schemas/leaderboards';
-import { Func } from '@/utils';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { debounce } from 'lodash';
-import { useEffect, useState } from 'react';
+import { WorkoutSchemaType } from '@/types/schemas/session';
+import { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import SimpleToast from 'react-native-simple-toast';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useResultTypes } from './hooks/useResultTypes';
+import { useWorkouts } from './hooks/useWorkouts';
 
 const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
-	const queryClient = useQueryClient();
 	const [searchQuery, setSearchQuery] = useState<string>('');
+
 	const {
-		data,
-		isFetching: refreshing,
-		refetch,
-		fetchNextPage,
+		data: resultTypeData,
+		refreshing: refreshingResultTypes,
 		isFetchingNextPage,
-	} = useInfiniteQuery({
-		queryKey: ['getResultTypes'],
-		queryFn: ({ pageParam = 1 }) => getResultTypes(searchQuery, pageParam),
-		staleTime: Infinity,
-		initialPageParam: 1,
-		getNextPageParam: (a, b) =>
-			Func.getNextPageParam(a.end, b[0]?.totalResults),
-		select: d => {
-			const uniqueResults = Array.from(
-				new Map(
-					d.pages
-						.flatMap(page => page.data)
-						.filter(item => !!item.id) // Exclude items with no id cause backend seems blank items
-						.map(item => [item.id, item]),
-				),
-			).map(([, item]) => item);
+		onEndReached,
+	} = useResultTypes(searchQuery);
 
-			return {
-				data: uniqueResults,
-				totalResults: d.pages[0]?.totalResults || 0,
-			};
+	const { data: workoutsData, isLoading: isLoadingWorkouts } = useWorkouts();
+
+	const onTypePress = useCallback(
+		(item: ResultType) => {
+			switch (item.type) {
+				case 'movements': {
+					navigation.navigate('MovementHistory', {
+						movementId: item.id,
+						name: item.name,
+						addResult: true,
+					});
+					break;
+				}
+				case 'benchmarks': {
+					const sectionData = workoutsData?.data.benchmark.find(
+						section => section.id === item.id,
+					);
+					if (!sectionData) {
+						SimpleToast.show(
+							'Section not found, try again later',
+							SimpleToast.SHORT,
+						);
+						break;
+					}
+
+					navigation.navigate('WorkoutHistory', {
+						data: sectionData as WorkoutSchemaType,
+					});
+					break;
+				}
+				default: {
+					SimpleToast.show('Coming soon!', SimpleToast.SHORT);
+					break;
+				}
+			}
 		},
-	});
-
-	useEffect(() => {
-		const handler = debounce(() => {
-			void handleRefresh();
-		}, 500);
-
-		handler();
-		return () => handler.cancel();
-	}, [searchQuery]);
-
-	const onEndReached = () => {
-		if (isFetchingNextPage) return;
-		void fetchNextPage();
-	};
-
-	const handleRefresh = () => {
-		// Manually reset the infinite query data
-		void queryClient.removeQueries({
-			queryKey: ['getPastPerformanceHistory'],
-		});
-
-		void refetch();
-	};
-
-	const onTypePress = (item: ResultType) => {
-		switch (item.type) {
-			case 'movements':
-				navigation.navigate('MovementHistory', {
-					movementId: item.id,
-					name: item.name,
-					addResult: true,
-				});
-				break;
-			default:
-				SimpleToast.show('Coming soon!', SimpleToast.SHORT);
-				break;
-		}
-	};
+		[navigation, workoutsData],
+	);
 
 	const renderItem = ({ item }: { item: ResultType }) => (
 		<Row
@@ -121,8 +98,8 @@ const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
 			</View>
 
 			<FlatList
-				loading={refreshing}
-				data={data?.data || []}
+				loading={refreshingResultTypes || isLoadingWorkouts}
+				data={resultTypeData?.data || []}
 				renderItem={renderItem}
 				extractor={keyExtractor}
 				onEndReached={() => onEndReached()}
@@ -130,7 +107,11 @@ const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
 				ListFooterComponent={
 					<View style={{ paddingBottom: config.metrics.xl }}>
 						{isFetchingNextPage && (
-							<Text center color="gray200">
+							<Text
+								center
+								color="gray200"
+								style={{ marginTop: config.fonts.metrics.sm }}
+							>
 								Loading More...
 							</Text>
 						)}
