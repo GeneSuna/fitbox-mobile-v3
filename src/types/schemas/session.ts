@@ -331,7 +331,7 @@ export const WODSectionSchema = z.object({
 	duration: z.number().nullish(),
 	sequence: z.number().nullish(),
 	created_at: z.string(),
-	updated_at: z.string(),
+	updated_at: z.string().nullish(),
 	deleted_at: z.string().nullish(),
 	text_section: z.string().nullish(),
 	publishing_rule: z.string().nullish(),

@@ -1,5 +1,8 @@
 import { GymClassType, GymVenueType } from '@/types/schemas/gym';
-import { ClassFiltersDataType } from '@/types/schemas/session';
+import {
+	ClassFiltersDataType,
+	WorkoutSchemaType,
+} from '@/types/schemas/session';
 import { FilterTypeEnum } from '@/utils/Enum';
 
 type ClassItemData = {
@@ -41,9 +44,15 @@ interface SessionStateInterface {
 	hasPlaceholder: boolean;
 	venueFiltersToApply: VenueFilter[];
 	classFiltersToApply: ClassFilter[];
+	benchmarks: WorkoutSchemaType[];
+	favorites: WorkoutSchemaType[];
 }
 
 interface SessionInterface extends SessionStateInterface {
+	setWorkoutData: (data: {
+		benchmark: WorkoutSchemaType[];
+		favorite: WorkoutSchemaType[];
+	}) => void;
 	setClasses: (date: string, data: ClassItemData[]) => void;
 	getClassesByDate: (date: string, userId: number, refresh?: boolean) => void;
 	clearClasses: () => void;

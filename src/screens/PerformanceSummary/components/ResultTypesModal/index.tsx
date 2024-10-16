@@ -4,14 +4,13 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { PerformanceSummaryScreenProps } from '@/types/navigation';
 import { ResultType } from '@/types/schemas/leaderboards';
-import { WorkoutSchemaType } from '@/types/schemas/session';
+import useStore from '@/zustand/Store';
 import { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import SimpleToast from 'react-native-simple-toast';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useResultTypes } from './hooks/useResultTypes';
-import { useWorkouts } from './hooks/useWorkouts';
 
 const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
 	const [searchQuery, setSearchQuery] = useState<string>('');
@@ -23,7 +22,10 @@ const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
 		onEndReached,
 	} = useResultTypes(searchQuery);
 
-	const { data: workoutsData, isLoading: isLoadingWorkouts } = useWorkouts();
+	const { benchmarks, favorites } = useStore(s => ({
+		benchmarks: s.benchmarks,
+		favorites: s.favorites,
+	}));
 
 	const onTypePress = useCallback(
 		(item: ResultType) => {
@@ -37,7 +39,7 @@ const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
 					break;
 				}
 				case 'favourites': {
-					const sectionData = workoutsData?.data.favorite.find(
+					const sectionData = favorites.find(
 						section => section.id === item.id,
 					);
 
@@ -50,13 +52,13 @@ const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
 					}
 
 					navigation.navigate('WorkoutHistory', {
-						data: sectionData as WorkoutSchemaType,
+						data: sectionData,
 						addResult: true,
 					});
 					break;
 				}
 				case 'benchmarks': {
-					const sectionData = workoutsData?.data.benchmark.find(
+					const sectionData = benchmarks.find(
 						section => section.id === item.id,
 					);
 
@@ -69,7 +71,7 @@ const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
 					}
 
 					navigation.navigate('WorkoutHistory', {
-						data: sectionData as WorkoutSchemaType,
+						data: sectionData,
 						addResult: true,
 					});
 					break;
@@ -80,7 +82,7 @@ const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
 				}
 			}
 		},
-		[navigation, workoutsData],
+		[navigation],
 	);
 
 	const renderItem = ({ item }: { item: ResultType }) => (
@@ -119,7 +121,7 @@ const ResultTypesModal = ({ navigation }: PerformanceSummaryScreenProps) => {
 			</View>
 
 			<FlatList
-				loading={refreshingResultTypes || isLoadingWorkouts}
+				loading={refreshingResultTypes}
 				data={resultTypeData?.data || []}
 				renderItem={renderItem}
 				extractor={keyExtractor}

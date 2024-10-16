@@ -15,6 +15,7 @@ import { navigate } from '@/navigators/NavigationRef';
 import { betaActive, savePushToken } from '@/services/auth';
 import { getGymClasses, getGymVenues } from '@/services/gym';
 import { getAttendanceReport } from '@/services/leaderboards';
+import getWorkouts from '@/services/leaderboards/getWorkouts';
 import { getClassFilters } from '@/services/session';
 import { getBookedSessions, getUserGymInfo } from '@/services/users';
 import { config } from '@/theme/_config';
@@ -24,7 +25,10 @@ import { ApplicationStackParamList } from '@/types/navigation';
 import { GymVenueType } from '@/types/schemas/gym';
 import { AttendanceReportDataType } from '@/types/schemas/leaderboards';
 import { NotificationSettingsState } from '@/types/schemas/notifications';
-import { ClassFiltersDataType } from '@/types/schemas/session';
+import {
+	ClassFiltersDataType,
+	WorkoutSchemaType,
+} from '@/types/schemas/session';
 import { UserSchemaType } from '@/types/schemas/user';
 import { Constant, Func, Say } from '@/utils';
 import NotificationService from '@/utils/NotificationService';
@@ -110,6 +114,7 @@ const Dashboard = () => {
 		notifSettings,
 		setClassFiltersToApply,
 		setVenueFiltersToApply,
+		setWorkoutData,
 	} = useStore(state => ({
 		setAppState: state.setAppState,
 		classFilters: state.classFilters,
@@ -122,6 +127,7 @@ const Dashboard = () => {
 		setDefaultClassFilter: state.setDefaultClassFilter,
 		pushToken: state.pushToken,
 		notifSettings: state.notifSettings,
+		setWorkoutData: state.setWorkoutData,
 	}));
 
 	const [refreshing, setRefreshing] = useState<boolean>(true);
@@ -152,6 +158,7 @@ const Dashboard = () => {
 		void getUpcomingSessions();
 		void getClassFiltersFn();
 		void fetchAttendanceReport();
+		void fetchWorkouts();
 		checkBetaActive();
 	};
 
@@ -183,6 +190,14 @@ const Dashboard = () => {
 				console.log('checkBetaActive: ', error);
 			});
 	};
+
+	const fetchWorkouts = () =>
+		getWorkouts().then(res =>
+			setWorkoutData({
+				benchmark: res.data.benchmark as WorkoutSchemaType[],
+				favorite: res.data.favorite as WorkoutSchemaType[],
+			}),
+		);
 
 	const initializeAppStates = async () => {
 		const res = await getUserGymInfo();
@@ -472,6 +487,7 @@ const Dashboard = () => {
 	useEffect(() => {
 		void fetchFilterOptions();
 		void onMountTasks();
+		void fetchWorkouts();
 		checkBetaActive();
 		NotificationService.setGymFetcher(initializeAppStates);
 	}, []);

@@ -21,6 +21,12 @@ const createSessionSlice: StateCreator<
 	hasPlaceholder: false,
 	venueFiltersToApply: [],
 	classFiltersToApply: [],
+	benchmarks: [],
+	favorites: [],
+
+	setWorkoutData: data => {
+		setState({ benchmarks: data.benchmark, favorites: data.favorite });
+	},
 
 	setDefaultClassFilter: data => {
 		setState({ defaultClassFilter: data });

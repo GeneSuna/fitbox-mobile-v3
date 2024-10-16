@@ -64,7 +64,7 @@ const WorkoutHistory = ({ route, navigation }: WorkoutHistoryProps) => {
 			.then(res => {
 				if (!res.error) {
 					const section = data.section_wod;
-					if (section.scoring_by === 'movement') {
+					if (section?.scoring_by === 'movement') {
 						let movementResults: MovementResult[] = [];
 						const movements = section?.wod_movements ?? [];
 						movementResults = movements.map(

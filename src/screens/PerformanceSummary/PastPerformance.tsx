@@ -5,8 +5,8 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { PerformanceSummaryScreenProps } from '@/types/navigation';
 import { PastPerformanceHistoryType } from '@/types/schemas/leaderboards';
-import { WorkoutSchemaType } from '@/types/schemas/session';
 import { Func } from '@/utils';
+import useStore from '@/zustand/Store';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { debounce } from 'lodash';
 import moment from 'moment';
@@ -14,13 +14,15 @@ import { useEffect, useState } from 'react';
 import { ListRenderItemInfo, StyleSheet, View } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import SimpleToast from 'react-native-simple-toast';
-import { useWorkouts } from './components/ResultTypesModal/hooks/useWorkouts';
 
 const PastPerformance = ({ navigation }: PerformanceSummaryScreenProps) => {
 	const queryClient = useQueryClient();
 	const [searchQuery, setSearchQuery] = useState<string>('');
 
-	const { data: workoutsData, isLoading: isLoadingWorkouts } = useWorkouts();
+	const { benchmarks, favorites } = useStore(s => ({
+		benchmarks: s.benchmarks,
+		favorites: s.favorites,
+	}));
 
 	const {
 		data,
@@ -90,20 +92,38 @@ const PastPerformance = ({ navigation }: PerformanceSummaryScreenProps) => {
 				break;
 			}
 			case 'benchmark': {
-				const sectionData = workoutsData?.data.benchmark.find(
+				const sectionData = benchmarks.find(
 					workout => workout.id === result.id,
 				);
 
 				if (!sectionData) {
 					SimpleToast.show(
-						'Section not found, try again later',
+						'Benchmark not found, try again later',
 						SimpleToast.SHORT,
 					);
 					break;
 				}
 
 				navigation.navigate('WorkoutHistory', {
-					data: sectionData as WorkoutSchemaType,
+					data: sectionData,
+				});
+				break;
+			}
+			case 'favorite': {
+				const sectionData = favorites.find(
+					workout => workout.id === result.id,
+				);
+
+				if (!sectionData) {
+					SimpleToast.show(
+						'Favorite not found, try again later',
+						SimpleToast.SHORT,
+					);
+					break;
+				}
+
+				navigation.navigate('WorkoutHistory', {
+					data: sectionData,
 				});
 				break;
 			}
@@ -170,7 +190,7 @@ const PastPerformance = ({ navigation }: PerformanceSummaryScreenProps) => {
 			</View>
 
 			<FlatList
-				loading={refreshing || isLoadingWorkouts}
+				loading={refreshing}
 				data={data?.data || []}
 				renderItem={renderItem}
 				extractor={itemExtractor}

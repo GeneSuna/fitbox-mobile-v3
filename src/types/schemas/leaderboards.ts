@@ -9,7 +9,7 @@ export const ScoringTypeSchema = z.object({
 	method: z.string(),
 	default_param: z.unknown().optional(),
 	created_at: z.unknown().optional(),
-	updated_at: z.string().optional(),
+	updated_at: z.string().nullable(),
 	sort_type: z.string(),
 	hidden_to: z.unknown().optional(),
 });
