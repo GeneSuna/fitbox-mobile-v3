@@ -23,7 +23,6 @@ import layout from '@/theme/layout';
 import resources from '@/theme/resources';
 import { ApplicationStackParamList } from '@/types/navigation';
 import { GymVenueType } from '@/types/schemas/gym';
-import { AttendanceReportDataType } from '@/types/schemas/leaderboards';
 import { NotificationSettingsState } from '@/types/schemas/notifications';
 import {
 	ClassFiltersDataType,
@@ -114,7 +113,10 @@ const Dashboard = () => {
 		notifSettings,
 		setClassFiltersToApply,
 		setVenueFiltersToApply,
+		attendanceReportState,
+		classFiltersDataState,
 		setWorkoutData,
+		upcomingSessionsState,
 	} = useStore(state => ({
 		setAppState: state.setAppState,
 		classFilters: state.classFilters,
@@ -127,24 +129,19 @@ const Dashboard = () => {
 		setDefaultClassFilter: state.setDefaultClassFilter,
 		pushToken: state.pushToken,
 		notifSettings: state.notifSettings,
+		attendanceReportState: state.attendanceReportState,
+		classFiltersDataState: state.classFiltersDataState,
 		setWorkoutData: state.setWorkoutData,
+		upcomingSessionsState: state.upcomingSessionsState,
 	}));
 
 	const [refreshing, setRefreshing] = useState<boolean>(true);
 	const [gymBanner, setGymBanner] = useState<string>('');
 	const [gymLogo, setGymLogo] = useState<string>('');
-	const [upcomingSessions, setUpcomingSessions] = useState<
-		BookedSessionCardProps[]
-	>([]);
 
 	const [upcomingSessionsIsLoading, setUpcomingSessionsIsLoading] =
 		useState<boolean>(true);
-	const [classFiltersData, setClassFiltersData] = useState<
-		ClassFiltersDataType[]
-	>([]);
 
-	const [attendanceReport, setAttendanceReport] =
-		useState<AttendanceReportDataType | null>(null);
 	const [attendanceReportIsLoading, setAttendanceReportIsLoading] =
 		useState<boolean>(true);
 
@@ -158,7 +155,7 @@ const Dashboard = () => {
 		void getUpcomingSessions();
 		void getClassFiltersFn();
 		void fetchAttendanceReport();
-		void fetchWorkouts();
+		void getWorkouts();
 		checkBetaActive();
 	};
 
@@ -382,12 +379,10 @@ const Dashboard = () => {
 				return startA && startB && startA > startB ? 1 : -1;
 			});
 
-			setUpcomingSessions(memberSessions);
+			setAppState('upcomingSessionsState', memberSessions);
 			setRefreshing(false);
 
-			setTimeout(() => {
-				setUpcomingSessionsIsLoading(false);
-			}, 1000);
+			setUpcomingSessionsIsLoading(false);
 		}
 
 		const sessionStartEnabled = notifSettings?.settings?.session;
@@ -498,7 +493,7 @@ const Dashboard = () => {
 			getAttendanceReport(user?.user_data.user_id as number)
 				.then(res => {
 					if (!res.error) {
-						setAttendanceReport(res.data);
+						setAppState('attendanceReportState', res.data);
 					}
 				})
 				.catch(err => {
@@ -507,9 +502,7 @@ const Dashboard = () => {
 		} catch (e) {
 			Say.err(e as ICatchError);
 		} finally {
-			setTimeout(() => {
-				setAttendanceReportIsLoading(false);
-			}, 1000);
+			setAttendanceReportIsLoading(false);
 		}
 	};
 
@@ -586,7 +579,7 @@ const Dashboard = () => {
 			const res = await getClassFilters();
 			const newResData = res.data;
 			newResData.splice(1, 0, leaderboards);
-			setClassFiltersData(newResData);
+			setAppState('classFiltersDataState', newResData);
 			const defaultItem = res.data.find(
 				item =>
 					item.isDefault === 1 ||
@@ -688,48 +681,7 @@ const Dashboard = () => {
 		);
 	};
 
-	const allSectionsLoaded = useMemo(() => {
-		return (
-			!upcomingSessionsIsLoading &&
-			presetFiltersIsLoaded &&
-			!attendanceReportIsLoading
-		);
-	}, [
-		upcomingSessionsIsLoading,
-		attendanceReportIsLoading,
-		classFiltersData,
-	]);
-
 	const renderDashboardComponents = () => {
-		if (!allSectionsLoaded) {
-			return (
-				<>
-					<Row align="center" spacing="space-between">
-						<SkeletonView height={40} width="40%" />
-						<SkeletonView
-							height={50}
-							width={50}
-							borderRadius={100}
-						/>
-					</Row>
-					<Spacer size="xxl" />
-					<SkeletonView height={14} width="30%" />
-					<Spacer size="sm" />
-					<Row spacing="space-between">
-						<SkeletonView height={65} width="48%" />
-						<SkeletonView height={65} width="48%" />
-					</Row>
-					<Spacer size="md" />
-					<SkeletonView height={81} width="100%" />
-					<View style={styles.viewMoreButton}>
-						<SkeletonView height={17.2} width="40%" />
-					</View>
-					<Spacer size="md" />
-					<SkeletonView height={165} width="100%" />
-				</>
-			);
-		}
-
 		return (
 			<>
 				<Row
@@ -745,7 +697,7 @@ const Dashboard = () => {
 						</Text>
 					</View>
 
-					{hasSwitchableUsers && allSectionsLoaded ? (
+					{hasSwitchableUsers ? (
 						<TouchableOpacity
 							activeOpacity={1}
 							onPress={() => navigate('SwitchUser')}
@@ -759,106 +711,154 @@ const Dashboard = () => {
 					) : null}
 				</Row>
 
-				{attendanceReport && (
-					<View
-						style={{
-							marginTop: config.metrics.lg,
-							marginBottom: config.metrics.xl,
-						}}
-					>
-						<Text bold style={{ marginBottom: config.metrics.sm }}>
-							Attendance:
-						</Text>
-
-						<Row spacing="space-evenly">
-							<View
-								style={[
-									layout.flex_1,
-									styles.attendanceContainer,
-								]}
-							>
-								<Row align="flex-end">
-									<Image
-										source={resources.icon.monthToDate}
-										style={styles.attendanceIcon}
-									/>
-									<Text
-										style={styles.attendanceValue}
-										bold
-										allowFontScaling={false}
-									>
-										{attendanceReport?.monthToDate}
-									</Text>
-									<Text
-										size="md"
-										style={styles.attendanceText}
-										allowFontScaling={false}
-									>
-										this month
-									</Text>
-								</Row>
-							</View>
-
-							<View
-								style={[
-									layout.flex_1,
-									styles.attendanceContainer,
-								]}
-							>
-								<Row align="flex-end">
-									<Image
-										source={resources.icon.yearToDate}
-										style={styles.attendanceIcon}
-									/>
-									<Text
-										style={styles.attendanceValue}
-										bold
-										allowFontScaling={false}
-									>
-										{attendanceReport?.yearToDate}
-									</Text>
-									<Text
-										size="md"
-										style={styles.attendanceText}
-										allowFontScaling={false}
-									>
-										this year
-									</Text>
-								</Row>
-							</View>
+				{attendanceReportIsLoading && isEmpty(attendanceReportState) ? (
+					<>
+						<Spacer size="xxl" />
+						<SkeletonView height={14} width="30%" />
+						<Spacer size="sm" />
+						<Row spacing="space-between">
+							<SkeletonView height={65} width="48%" />
+							<SkeletonView height={65} width="48%" />
 						</Row>
-					</View>
+					</>
+				) : (
+					!isEmpty(attendanceReportState) && (
+						<View
+							style={{
+								marginTop: config.metrics.lg,
+								marginBottom: config.metrics.xl,
+							}}
+						>
+							<Text
+								bold
+								style={{ marginBottom: config.metrics.sm }}
+							>
+								Attendance:
+							</Text>
+
+							<Row spacing="space-evenly">
+								<View
+									style={[
+										layout.flex_1,
+										styles.attendanceContainer,
+									]}
+								>
+									<Row align="flex-end">
+										<Image
+											source={resources.icon.monthToDate}
+											style={styles.attendanceIcon}
+										/>
+										<Text
+											style={styles.attendanceValue}
+											bold
+											allowFontScaling={false}
+										>
+											{attendanceReportState?.monthToDate}
+										</Text>
+										<Text
+											size="md"
+											style={styles.attendanceText}
+											allowFontScaling={false}
+										>
+											this month
+										</Text>
+									</Row>
+								</View>
+
+								<View
+									style={[
+										layout.flex_1,
+										styles.attendanceContainer,
+									]}
+								>
+									<Row align="flex-end">
+										<Image
+											source={resources.icon.yearToDate}
+											style={styles.attendanceIcon}
+										/>
+										<Text
+											style={styles.attendanceValue}
+											bold
+											allowFontScaling={false}
+										>
+											{attendanceReportState?.yearToDate}
+										</Text>
+										<Text
+											size="md"
+											style={styles.attendanceText}
+											allowFontScaling={false}
+										>
+											this year
+										</Text>
+									</Row>
+								</View>
+							</Row>
+						</View>
+					)
 				)}
 
-				{upcomingSessions.length > 0 && (
+				{upcomingSessionsIsLoading && isEmpty(upcomingSessionsState) ? (
 					<>
 						<Spacer size="md" />
-						<View style={styles.bookedSessionsContainer}>
-							{upcomingSessions // show only 1
-								.slice(0, 1)
-								.map(({ ...rest }, i) => (
-									<BookedSessionCard key={i} {...rest} />
-								))}
+						<SkeletonView height={66} width="100%" />
+						<View style={styles.viewMoreButton}>
+							<SkeletonView height={17.2} width="40%" />
 						</View>
 					</>
+				) : (
+					upcomingSessionsState.length > 0 && (
+						<>
+							<Spacer size="md" />
+							<View style={styles.bookedSessionsContainer}>
+								{upcomingSessionsState // show only 1
+									.slice(0, 1)
+									.map(({ ...rest }, i) => (
+										<BookedSessionCard key={i} {...rest} />
+									))}
+							</View>
+
+							{upcomingSessionsState.length > 1 ? (
+								<TouchableOpacity
+									style={styles.viewMoreButton}
+									onPress={() => navigate('Bookings')}
+								>
+									<Text bold color="info">
+										{t('dashboard:sessions.member.viewAll')}
+									</Text>
+								</TouchableOpacity>
+							) : (
+								<View
+									style={[
+										styles.viewMoreButton,
+										styles.viewMorePlaceholder,
+									]}
+								/>
+							)}
+						</>
+					)
 				)}
 
-				{upcomingSessions.length > 1 && (
-					<TouchableOpacity
-						style={styles.viewMoreButton}
-						onPress={() => navigate('Bookings')}
-					>
-						<Text bold color="info">
-							{t('dashboard:sessions.member.viewAll')}
-						</Text>
-					</TouchableOpacity>
+				{!presetFiltersIsLoaded && isEmpty(classFiltersDataState) ? (
+					<>
+						<Spacer size="xl" />
+						<Spacer size="xl" />
+						<SkeletonView height={165} width="100%" />
+					</>
+				) : (
+					<>
+						<Spacer size="xl" />
+						<Row
+							spacing="space-between"
+							style={styles.presetFilters}
+						>
+							{isEmpty(classFiltersDataState) &&
+								renderActionButtons}
+							{classFiltersDataState.map(item =>
+								renderPresetFilters(item),
+							)}
+						</Row>
+					</>
 				)}
-
-				<Spacer size="xl" />
-				<Row spacing="space-between" style={styles.presetFilters}>
-					{isEmpty(classFiltersData) && renderActionButtons}
-					{classFiltersData.map(item => renderPresetFilters(item))}
-				</Row>
 			</>
 		);
 	};
@@ -973,6 +973,9 @@ const styles = StyleSheet.create({
 		alignItems: 'flex-end',
 		backgroundColor: 'white',
 		padding: 5,
+	},
+	viewMorePlaceholder: {
+		height: 27,
 	},
 	presetFilters: {
 		flexWrap: 'wrap',

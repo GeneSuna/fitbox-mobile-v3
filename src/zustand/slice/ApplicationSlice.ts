@@ -1,5 +1,6 @@
 import type { StateCreator } from 'zustand';
 
+import { AttendanceReportDataType } from '@/types/schemas/leaderboards';
 import type ApplicationSlice from '../interface/ApplicationInterface';
 import { ApplicationStateInterface } from '../interface/ApplicationInterface';
 
@@ -24,6 +25,9 @@ const defaultState: ApplicationStateInterface = {
 	pushToken: '',
 	notifSettings: { enabled: false, settings: {} },
 	unreadMessageCallback: () => {},
+	attendanceReportState: {} as AttendanceReportDataType,
+	classFiltersDataState: [],
+	upcomingSessionsState: [],
 };
 
 const createApplicationSlice: StateCreator<

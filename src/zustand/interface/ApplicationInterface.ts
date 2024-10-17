@@ -1,4 +1,7 @@
+import { BookedSessionCardProps } from '@/screens/Dashboard/components/BookedSessionCard';
+import { AttendanceReportDataType } from '@/types/schemas/leaderboards';
 import { NotificationsType } from '@/types/schemas/notifications';
+import { ClassFiltersDataType } from '@/types/schemas/session';
 
 interface ApplicationStateInterface {
 	appForceUpdate: boolean;
@@ -21,6 +24,9 @@ interface ApplicationStateInterface {
 	pushToken: string;
 	notifSettings: NotifSettingsInterface;
 	unreadMessageCallback: () => void;
+	attendanceReportState: AttendanceReportDataType;
+	classFiltersDataState: ClassFiltersDataType[];
+	upcomingSessionsState: BookedSessionCardProps[];
 }
 
 interface AttachedFilesInterface {
