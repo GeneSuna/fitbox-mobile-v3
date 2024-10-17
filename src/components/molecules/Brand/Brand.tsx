@@ -1,6 +1,6 @@
 import { DimensionValue, View } from 'react-native';
 
-import Logo from '@/theme/assets/images/logo-beta.png';
+import Logo from '@/theme/assets/images/logo.png';
 
 import { ImageVariant } from '@/components/atoms';
 import { useTheme } from '@/theme';
