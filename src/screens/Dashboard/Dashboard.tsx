@@ -339,7 +339,9 @@ const Dashboard = () => {
 							waitlistTime: Number(
 								session.waitlist_info.waitlist_timelimit,
 							),
-							color: session.fb_class.class_colour_hex,
+							color: Func.getHexColorFn(
+								session.fb_class.class_colour_hex,
+							),
 						});
 					}
 				});
@@ -364,7 +366,7 @@ const Dashboard = () => {
 							isCoach: true,
 							waitlistEnabled: false,
 							waitlistTime: 0,
-							color: session.class_colour_hex,
+							color: Func.getHexColorFn(session.class_colour_hex),
 						});
 					}
 				});

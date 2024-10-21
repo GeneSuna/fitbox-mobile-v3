@@ -3,7 +3,7 @@ import useAuth from '@/auth/hooks/useAuth';
 import { ScrollView } from '@/components/atoms';
 import { getBookedSessions } from '@/services/users';
 import { config } from '@/theme/_config';
-import { Say } from '@/utils';
+import { Func, Say } from '@/utils';
 import { ICatchError } from '@/utils/Say';
 import moment from 'moment-timezone';
 import { useEffect, useState } from 'react';
@@ -60,7 +60,9 @@ const BookingScreen = () => {
 							waitlistTime: Number(
 								session.waitlist_info.waitlist_timelimit,
 							),
-							color: session.fb_class.class_colour_hex,
+							color: Func.getHexColorFn(
+								session.fb_class.class_colour_hex,
+							),
 						});
 					}
 				});
@@ -85,7 +87,7 @@ const BookingScreen = () => {
 							isCoach: true,
 							waitlistEnabled: false,
 							waitlistTime: 0,
-							color: session.class_colour_hex,
+							color: Func.getHexColorFn(session.class_colour_hex),
 						});
 					}
 				});

@@ -212,6 +212,13 @@ const getEnv = (url: string) => {
 	return 'PROD';
 };
 
+const getHexColorFn = (color: string) => {
+	if (color.startsWith('#')) {
+		return color;
+	}
+	return `#${color}`;
+};
+
 export default {
 	decodeHtml,
 	stripHtmlTags,
@@ -232,4 +239,5 @@ export default {
 	isHTML,
 	getEnv,
 	addTimeStamp,
+	getHexColorFn,
 };
