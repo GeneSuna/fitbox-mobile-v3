@@ -190,30 +190,44 @@ const PastPerformance = ({ navigation }: PerformanceSummaryScreenProps) => {
 				</Row>
 			</View>
 
-			<FlatList
-				loading={refreshing}
-				data={data?.data || []}
-				renderItem={renderItem}
-				extractor={itemExtractor}
-				onEndReached={() => onEndReached()}
-				onEndReachedThreshold={0.5}
-				ListFooterComponent={
-					<View style={{ paddingBottom: config.metrics.xl }}>
-						{isFetchingNextPage && (
-							<Text center color="gray200">
-								Loading More...
-							</Text>
-						)}
-					</View>
-				}
-			/>
+			{data?.data.length === 0 ? (
+				<View style={styles.noResultsFound}>
+					<Text center>No history found</Text>
+					<Button
+						title="Add New Result"
+						variant="info"
+						style={styles.addBtnNoResults}
+						onPress={() => navigation.navigate('ResultTypesModal')}
+					/>
+				</View>
+			) : (
+				<FlatList
+					loading={refreshing}
+					data={data?.data || []}
+					renderItem={renderItem}
+					extractor={itemExtractor}
+					onEndReached={() => onEndReached()}
+					onEndReachedThreshold={0.5}
+					ListFooterComponent={
+						<View style={{ paddingBottom: config.metrics.xl }}>
+							{isFetchingNextPage && (
+								<Text center color="gray200">
+									Loading More...
+								</Text>
+							)}
+						</View>
+					}
+				/>
+			)}
 
-			<Button
-				title="Add New Result"
-				variant="info"
-				style={styles.addBtn}
-				onPress={() => navigation.navigate('ResultTypesModal')}
-			/>
+			{data?.data.length !== 0 && (
+				<Button
+					title="Add New Result"
+					variant="info"
+					style={styles.addBtn}
+					onPress={() => navigation.navigate('ResultTypesModal')}
+				/>
+			)}
 		</View>
 	);
 };
@@ -240,5 +254,14 @@ const styles = StyleSheet.create({
 	},
 	addBtn: {
 		borderRadius: 0,
+	},
+	addBtnNoResults: {
+		borderRadius: 0,
+		marginTop: config.metrics.xl,
+		marginHorizontal: config.metrics.xl,
+	},
+	noResultsFound: {
+		flex: 1,
+		justifyContent: 'center',
 	},
 });
