@@ -1,15 +1,51 @@
 import { config } from '@/theme/_config';
 import { Constant } from '@/utils';
-import { Alert, Linking } from 'react-native';
+import { Alert, Linking, StyleSheet, View } from 'react-native';
 import RenderHTML, {
+	CustomBlockRenderer,
+	CustomRendererProps,
 	defaultSystemFonts,
 	MixedStyleRecord,
+	TBlock,
 } from 'react-native-render-html';
 
 interface HTMLViewProps {
 	content: string;
 	isMarginBottomLess?: boolean;
 }
+
+const CustomListRenderer: CustomBlockRenderer = ({
+	TDefaultRenderer,
+	...props
+}: CustomRendererProps<TBlock>) => {
+	const { tnode } = props;
+	const isOrderedList = tnode.parent?.tagName === 'ol';
+
+	return (
+		<View
+			style={[
+				styles.li,
+				isOrderedList ? styles.ordered : styles.unordered,
+			]}
+		>
+			<TDefaultRenderer {...props} />
+		</View>
+	);
+};
+
+const styles = StyleSheet.create({
+	li: {
+		flexDirection: 'row',
+		alignItems: 'flex-start',
+		marginBottom: 10,
+	},
+	ordered: {
+		top: -14,
+	},
+	unordered: {
+		top: 0,
+	},
+});
 
 const HTMLRenderer = ({
 	content,
@@ -39,6 +75,10 @@ const HTMLRenderer = ({
 		'Barlow-Bold',
 		'Inter-Variable',
 	];
+
+	const renderers = {
+		li: CustomListRenderer,
+	};
 
 	const classsesStyles = {
 		spacer: {
@@ -100,6 +140,7 @@ const HTMLRenderer = ({
 			tagsStyles={tagsStyles as MixedStyleRecord}
 			systemFonts={systemFonts}
 			classesStyles={classsesStyles}
+			renderers={renderers}
 			renderersProps={{
 				a: {
 					onPress: (_event, href) => {
