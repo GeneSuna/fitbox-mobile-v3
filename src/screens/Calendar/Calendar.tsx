@@ -26,6 +26,8 @@ import {
 	useState,
 } from 'react';
 import {
+	AppState,
+	AppStateStatus,
 	Dimensions,
 	RefreshControl,
 	StyleSheet,
@@ -77,8 +79,6 @@ import { FilterCriteria, shouldIncludeClass } from './utils/functions';
 
 const { height } = Dimensions.get('window');
 
-let TODAYS_DATE = moment().format(Constant.DEFAULT_DATE_FORMAT);
-
 const ListFooterComponent = () => {
 	return <View style={{ height: AGENDA_ITEM_HEIGHT }} />;
 };
@@ -117,13 +117,40 @@ const Calendar = () => {
 		setVenueFiltersToApply: state.setVenueFiltersToApply,
 		toggleModal: state.toggleModal,
 	}));
-
-	const [currentDate, setCurrentDate] = useState<string>(TODAYS_DATE);
+	const [today, setToday] = useState(
+		moment().format(Constant.DEFAULT_DATE_FORMAT),
+	); // State for today
+	const [currentDate, setCurrentDate] = useState<string>(today);
 	const [isInitialLoading, setIsInitialLoading] = useState(true);
 	const [isInitialLoadingComplete, setIsInitialLoadingComplete] =
 		useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const calendarWeekRef = useRef<CalendarWeekRef>(null);
+
+	useEffect(() => {
+		const handleAppStateChange = (nextAppState: AppStateStatus) => {
+			if (nextAppState === 'active') {
+				setToday(moment().format(Constant.DEFAULT_DATE_FORMAT));
+				setCurrentDate(today); // Update today when app comes to foreground
+			}
+		};
+
+		const subscription = AppState.addEventListener(
+			'change',
+			handleAppStateChange,
+		);
+
+		return () => {
+			subscription.remove(); // Clean up the subscription on unmount
+		};
+	}, []);
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setToday(moment().format(Constant.DEFAULT_DATE_FORMAT));
+		}, 60000); // Update every minute
+
+		return () => clearInterval(interval); // Clear interval on unmount
+	}, []);
 
 	const loadClasses = () => {
 		// create a range from current date to 3 days ago and 3 days ahead
@@ -235,7 +262,7 @@ const Calendar = () => {
 		});
 
 		setHasPlaceholder(true);
-		setCurrentDate(TODAYS_DATE);
+		setCurrentDate(today);
 	}, [hasPlaceholder]);
 
 	useEffect(() => {
@@ -247,7 +274,7 @@ const Calendar = () => {
 			return;
 		}
 
-		setCurrentDate(TODAYS_DATE);
+		setCurrentDate(today);
 	}, [isInitialLoadingComplete, currentDate]);
 
 	const [isFromSessions, setIsFromSessions] = useState(false);
@@ -280,6 +307,9 @@ const Calendar = () => {
 		}
 		if (isFocused && isFromSessions) {
 			setIsFromSessions(false);
+		}
+		if (isFocused && !isFromSessions) {
+			setCurrentDate(today);
 		}
 	}, [isFocused]);
 
@@ -371,7 +401,7 @@ const Calendar = () => {
 				setTimeout(() => {
 					setIsInitialLoadingComplete(true);
 					setIsInitialLoading(false);
-					calendarWeekRef.current?.scrollToCurrentDate();
+					// calendarWeekRef.current?.scrollToCurrentDate();
 				}, 2000);
 			}
 		}
@@ -379,6 +409,9 @@ const Calendar = () => {
 
 	const handleDateChange = useCallback((date: SetStateAction<string>) => {
 		setCurrentDate(date);
+		setTimeout(() => {
+			calendarWeekRef.current?.scrollToCurrentDate();
+		}, 500);
 	}, []);
 
 	const isLoadingCurrentDate =
@@ -386,7 +419,7 @@ const Calendar = () => {
 		isLoading ||
 		memoizedClasses.length === 0;
 
-	const showTodayButton = currentDate !== TODAYS_DATE;
+	const showTodayButton = currentDate !== today;
 
 	const listFooterComponent = useMemo(() => {
 		if (showTodayButton) {
@@ -472,10 +505,7 @@ const Calendar = () => {
 			{showTodayButton && (
 				<TouchableOpacity
 					onPress={() => {
-						TODAYS_DATE = moment().format(
-							Constant.DEFAULT_DATE_FORMAT,
-						);
-						handleDateChange(TODAYS_DATE);
+						handleDateChange(today);
 					}}
 					style={[styles.floatingActionBtn]}
 				>

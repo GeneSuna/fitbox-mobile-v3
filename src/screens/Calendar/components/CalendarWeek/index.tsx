@@ -3,6 +3,7 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { Constant } from '@/utils';
 import useStore from '@/zustand/Store';
+import { useIsFocused } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import moment from 'moment';
 import {
@@ -83,12 +84,20 @@ const CalendarWeek = forwardRef<CalendarWeekRef, CalendarWeekProps>(
 		};
 
 		useEffect(() => {
-			scrollToCurrentDate();
+			// scrollToCurrentDate();
 		}, [currentDate]);
 
 		useImperativeHandle(ref, () => ({
 			scrollToCurrentDate,
 		}));
+		const isFocused = useIsFocused();
+		useEffect(() => {
+			if (isFocused) {
+				setTimeout(() => {
+					scrollToCurrentDate();
+				}, 1800);
+			}
+		}, [isFocused]);
 
 		const renderItem = useCallback(
 			// eslint-disable-next-line react/no-unused-prop-types

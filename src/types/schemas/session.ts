@@ -324,7 +324,7 @@ export const WODSectionSchema = z.object({
 	name: z.string(),
 	scored: z.boolean(),
 	scoring_by: z.string(),
-	scoring_type: ScoringTypeSchema,
+	scoring_type: ScoringTypeSchema.optional().nullable(),
 	scoring_type_id: z.number().nullable(),
 	rounds: z.number(),
 	sets: z.number().nullish(),
