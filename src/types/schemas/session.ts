@@ -164,6 +164,7 @@ export const SessionClassSchema = z.object({
 	class_visibility: z.number(),
 	is_free_class: boolOrOneZero,
 	class_waitlist: z.array(z.any()).nullish(),
+	buy_now_flag: boolOrOneZero,
 });
 
 export const AttendanceSchema = z.object({

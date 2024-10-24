@@ -25,6 +25,7 @@ type ClassItemData = {
 	venueId?: number;
 	isCoach?: boolean;
 	color?: string;
+	buyNow?: boolean;
 };
 
 type ClassItem = {

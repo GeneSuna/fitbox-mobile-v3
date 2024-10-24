@@ -37,6 +37,7 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 			classId,
 			isCoach,
 			color,
+			buyNow,
 		},
 		setIsFromSession,
 	}: AgendaItemProps) => {
@@ -110,6 +111,7 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 						isAttending={isAttending}
 						setAttending={setIsAttending}
 						handleViewSession={handleViewSession}
+						showBuyButton={buyNow as boolean}
 					/>
 				</View>
 			</TouchableOpacity>

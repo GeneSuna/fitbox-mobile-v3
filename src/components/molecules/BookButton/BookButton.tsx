@@ -1,4 +1,4 @@
-import { Button } from '@/components/atoms';
+import { Button, Text } from '@/components/atoms';
 import {
 	attendSession,
 	cancelWaitlist,
@@ -30,6 +30,7 @@ interface BookButtonProps {
 	isPreviewMode?: boolean; // If from WOD screen
 	handleViewSession?: () => void;
 	setAttending?: (value: boolean) => void;
+	showBuyButton?: boolean;
 }
 
 const BookButton = ({
@@ -46,6 +47,7 @@ const BookButton = ({
 	isPreviewMode = false,
 	handleViewSession,
 	setAttending = () => {},
+	showBuyButton,
 }: BookButtonProps) => {
 	const navigation =
 		useNavigation<NavigationProp<ApplicationStackParamList>>();
@@ -350,7 +352,7 @@ const BookButton = ({
 
 	if (!isSubscribed && !isCoach && !isAttending && isSessionWithin72Hours) {
 		const isFull = spotsLeft === 0;
-		return (
+		return showBuyButton ? (
 			<Button
 				sm
 				compact
@@ -360,6 +362,10 @@ const BookButton = ({
 				title={isFull ? 'Full' : 'Buy'}
 				onPress={() => (!isFull ? handleBuyNow() : {})}
 			/>
+		) : (
+			<Text center size="xs">
+				Not included in your membership
+			</Text>
 		);
 	}
 

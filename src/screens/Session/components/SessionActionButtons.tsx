@@ -85,8 +85,8 @@ const SessionActionButtons = ({
 
 	return !subscribed ? (
 		<Text style={[styles.warningTxt, styles.container]}>
-			This class is not included in your Subscription, talk to your Gym
-			about upgrading to Book.
+			This class is not included in your membership. Please speak with
+			your gym to upgrade.
 		</Text>
 	) : (
 		<Row spacing="space-around" style={styles.container}>

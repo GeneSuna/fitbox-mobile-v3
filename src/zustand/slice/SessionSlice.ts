@@ -165,6 +165,7 @@ const createSessionSlice: StateCreator<
 							isAttending,
 							spotsLeft,
 							duration,
+							buyNow: item.class.buy_now_flag as boolean,
 						};
 					});
 
