@@ -40,11 +40,12 @@ const createSessionSlice: StateCreator<
 		setState({ activeMonth: date });
 	},
 
-	setClasses: (date, data) => {
+	setClasses: (date, data, fetchedAt) => {
 		// prepare new class item
 		const newClassItem = {
 			title: date,
 			data,
+			fetchedAt,
 		};
 
 		// get classes from state
@@ -84,7 +85,12 @@ const createSessionSlice: StateCreator<
 		const hasData = classes.find(
 			item => item.title === date && !item.data[0]?.isLoading,
 		);
-		if (hasData && !force) {
+		// use FetchedAt to force refresh if data older that 2 minutes
+		const lastFectched = hasData?.fetchedAt ?? '';
+		const needsReresh =
+			lastFectched !== '' &&
+			moment().diff(moment(lastFectched), 'minutes') > 2;
+		if (hasData && !force && !needsReresh) {
 			return;
 		}
 
@@ -92,7 +98,6 @@ const createSessionSlice: StateCreator<
 			.then(res => {
 				if (!res.error) {
 					// TODO: Check if deepequal on everything something is not equal purge everything only when there is data
-
 					const classesData = res.data.map(item => {
 						// Get duration
 
@@ -168,12 +173,13 @@ const createSessionSlice: StateCreator<
 							buyNow: item.class.buy_now_flag as boolean,
 						};
 					});
-
+					const lastFetched = moment().format('YYYY-MM-DD HH:mm:ss');
 					setClasses(
 						date,
 						classesData.length > 0
 							? classesData
 							: [{ isLoading: false }],
+						classesData.length > 0 ? lastFetched : '',
 					);
 				}
 			})

@@ -77,7 +77,7 @@ import { FilterCriteria, shouldIncludeClass } from './utils/functions';
 
 const { height } = Dimensions.get('window');
 
-const TODAYS_DATE = moment().format(Constant.DEFAULT_DATE_FORMAT);
+let TODAYS_DATE = moment().format(Constant.DEFAULT_DATE_FORMAT);
 
 const ListFooterComponent = () => {
 	return <View style={{ height: AGENDA_ITEM_HEIGHT }} />;
@@ -122,7 +122,7 @@ const Calendar = () => {
 	const [isInitialLoading, setIsInitialLoading] = useState(true);
 	const [isInitialLoadingComplete, setIsInitialLoadingComplete] =
 		useState(false);
-
+	const [isLoading, setIsLoading] = useState(true);
 	const calendarWeekRef = useRef<CalendarWeekRef>(null);
 
 	const loadClasses = () => {
@@ -231,7 +231,7 @@ const Calendar = () => {
 		);
 
 		dates.forEach(date => {
-			setClasses(date, [{ isLoading: true } as ClassItemData]);
+			setClasses(date, [{ isLoading: true } as ClassItemData], '');
 		});
 
 		setHasPlaceholder(true);
@@ -330,7 +330,7 @@ const Calendar = () => {
 
 	const memoizedClasses = useMemo(() => {
 		const formattedClasses: (string | ClassItemData)[] = [];
-
+		setIsLoading(true);
 		// Define filter criteria
 		const criteria: FilterCriteria = {
 			selectedClassIds: classFilters
@@ -357,10 +357,11 @@ const Calendar = () => {
 
 			if (filteredClasses.length > 0) {
 				formattedClasses.push(...filteredClasses);
-			} else {
+			} else if (section.fetchedAt !== '') {
 				formattedClasses.push({ isLoading: false } as ClassItemData);
 			}
 		});
+		setIsLoading(false);
 		return formattedClasses;
 	}, [classes, classFilters, venueFilters, currentDate]);
 
@@ -382,6 +383,7 @@ const Calendar = () => {
 
 	const isLoadingCurrentDate =
 		memoizedClasses.some(e => typeof e === 'object' && e.isLoading) ||
+		isLoading ||
 		memoizedClasses.length === 0;
 
 	const showTodayButton = currentDate !== TODAYS_DATE;
@@ -470,6 +472,9 @@ const Calendar = () => {
 			{showTodayButton && (
 				<TouchableOpacity
 					onPress={() => {
+						TODAYS_DATE = moment().format(
+							Constant.DEFAULT_DATE_FORMAT,
+						);
 						handleDateChange(TODAYS_DATE);
 					}}
 					style={[styles.floatingActionBtn]}

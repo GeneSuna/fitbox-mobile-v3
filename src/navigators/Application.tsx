@@ -62,7 +62,7 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Badge } from 'react-native-paper';
-import DashboardStackNavigator from './DashboardStack';
+import DashboardStackNavigator, { ResetToDashboard } from './DashboardStack';
 import MenuStackNavigator from './MenuStack';
 import { navigationRef } from './NavigationRef';
 import HeaderCloseButton from './components/HeaderCloseButton';
@@ -183,6 +183,10 @@ const MainTabNavigator = () => {
 						currentTab === 'Calendar'
 					) {
 						handleRefreshCalendar();
+					}
+					// reset dashboard stack if home tab is pressed
+					if (slRoute.name === 'DashboardStack') {
+						ResetToDashboard();
 					}
 				},
 			})}

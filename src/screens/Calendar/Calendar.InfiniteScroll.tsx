@@ -200,7 +200,7 @@ const Calendar = () => {
 		);
 
 		dates.forEach(date => {
-			setClasses(date, [{ isLoading: true } as ClassItemData]);
+			setClasses(date, [{ isLoading: true } as ClassItemData], '');
 		});
 
 		setHasPlaceholder(true);

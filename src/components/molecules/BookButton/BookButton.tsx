@@ -78,7 +78,7 @@ const BookButton = ({
 		 * Sometimes the data isn't reflected immediately after booking a session.
 		 */
 		if (isPreviewMode) {
-			setClasses(setDate, [{ isLoading: true } as ClassItemData]);
+			setClasses(setDate, [{ isLoading: true } as ClassItemData], '');
 		}
 
 		// get classes by date

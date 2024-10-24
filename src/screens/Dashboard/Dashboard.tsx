@@ -24,10 +24,7 @@ import resources from '@/theme/resources';
 import { ApplicationStackParamList } from '@/types/navigation';
 import { GymVenueType } from '@/types/schemas/gym';
 import { NotificationSettingsState } from '@/types/schemas/notifications';
-import {
-	ClassFiltersDataType,
-	WorkoutSchemaType,
-} from '@/types/schemas/session';
+import { ClassFiltersDataType } from '@/types/schemas/session';
 import { UserSchemaType } from '@/types/schemas/user';
 import { Constant, Func, Say } from '@/utils';
 import NotificationService from '@/utils/NotificationService';
@@ -115,7 +112,6 @@ const Dashboard = () => {
 		setVenueFiltersToApply,
 		attendanceReportState,
 		classFiltersDataState,
-		setWorkoutData,
 		upcomingSessionsState,
 	} = useStore(state => ({
 		setAppState: state.setAppState,
@@ -131,7 +127,6 @@ const Dashboard = () => {
 		notifSettings: state.notifSettings,
 		attendanceReportState: state.attendanceReportState,
 		classFiltersDataState: state.classFiltersDataState,
-		setWorkoutData: state.setWorkoutData,
 		upcomingSessionsState: state.upcomingSessionsState,
 	}));
 
@@ -187,14 +182,6 @@ const Dashboard = () => {
 				console.log('checkBetaActive: ', error);
 			});
 	};
-
-	const fetchWorkouts = () =>
-		getWorkouts().then(res =>
-			setWorkoutData({
-				benchmark: res.data.benchmark as WorkoutSchemaType[],
-				favorite: res.data.favorite as WorkoutSchemaType[],
-			}),
-		);
 
 	const initializeAppStates = async () => {
 		const res = await getUserGymInfo();
@@ -320,8 +307,7 @@ const Dashboard = () => {
 				// Parse the response data
 				res.data.forEach(session => {
 					if (
-						moment
-							.tz(session.calendar_event.end_datetime, timezone)
+						moment(session.calendar_event.end_datetime)
 							.add(30, 'minutes')
 							.isAfter()
 					) {
@@ -347,12 +333,7 @@ const Dashboard = () => {
 
 			if (res.staffSessions && res.staffSessions.length > 0) {
 				res.staffSessions.forEach(session => {
-					if (
-						moment
-							.tz(session.start, timezone)
-							.add(30, 'minutes')
-							.isAfter()
-					) {
+					if (moment(session.start).add(30, 'minutes').isAfter()) {
 						memberSessions.push({
 							id: session.id,
 							startTime: session.start,
@@ -484,7 +465,6 @@ const Dashboard = () => {
 	useEffect(() => {
 		void fetchFilterOptions();
 		void onMountTasks();
-		void fetchWorkouts();
 		checkBetaActive();
 		NotificationService.setGymFetcher(initializeAppStates);
 	}, []);

@@ -46,7 +46,6 @@ const WorkoutHistoryBS = ({
 	const renderScoresData = (data: ScoresData[]) =>
 		Array(data).length &&
 		data
-			.filter(d => d.scored)
 			.sort((a, b) => moment(b.date_input).diff(moment(a.date_input)))
 			.map((values, index) => {
 				const notes = values.comments ? values.comments : values.notes;

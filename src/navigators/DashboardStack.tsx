@@ -1,3 +1,4 @@
+import { navigate } from '@/navigators/NavigationRef';
 import {
 	BookingScreen,
 	ClassResultsScreen,
@@ -9,6 +10,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { CommonHeaderOptions } from './utils/options';
 
 const Stack = createStackNavigator<DashboardParamList>();
+const NavigateToDashboard = () => {
+	navigate('Dashboard');
+};
 
 const DashboardStackNavigator = () => {
 	return (
@@ -49,3 +53,4 @@ const DashboardStackNavigator = () => {
 };
 
 export default DashboardStackNavigator;
+export { NavigateToDashboard as ResetToDashboard };

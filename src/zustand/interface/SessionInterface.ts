@@ -31,6 +31,7 @@ type ClassItemData = {
 type ClassItem = {
 	title: string; // date
 	data: ClassItemData[];
+	fetchedAt: string;
 };
 
 type VenueFilter = GymVenueType & { is_selected: boolean };
@@ -54,7 +55,12 @@ interface SessionInterface extends SessionStateInterface {
 		benchmark: WorkoutSchemaType[];
 		favorite: WorkoutSchemaType[];
 	}) => void;
-	setClasses: (date: string, data: ClassItemData[]) => void;
+	// add nullable date to track last fetched date
+	setClasses: (
+		date: string,
+		data: ClassItemData[],
+		lastFetched: string,
+	) => void;
 	getClassesByDate: (date: string, userId: number, refresh?: boolean) => void;
 	clearClasses: () => void;
 	setActiveMonth: (date: string) => void;
