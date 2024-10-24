@@ -3,6 +3,7 @@ import useSwitchableUsers from '@/hooks/useSwitchableUsers';
 import { resetRoot } from '@/navigators/NavigationRef';
 import { getUserGyms, updateUserProfile } from '@/services/users';
 import { Gym } from '@/types/schemas/gym';
+import { LoginResponseSchemaType } from '@/types/schemas/response';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
 import { useQuery } from '@tanstack/react-query';
@@ -16,6 +17,10 @@ const SwitchGym = () => {
 	const clearClasses = useStore(state => state.clearClasses);
 	const clearFilters = useStore(state => state.clearFilters);
 	const clearStates = useStore(state => state.clearAppState);
+	const { loggedInUser, setLoggedInUser } = useStore(state => ({
+		loggedInUser: state.loggedInUser,
+		setLoggedInUser: state.setLoggedInUser,
+	}));
 	const [switching, setSwitching] = useState(false);
 
 	const { data, isFetching, refetch, isSuccess } = useQuery({
@@ -27,6 +32,8 @@ const SwitchGym = () => {
 
 	const { getSwitchableUsers } = useSwitchableUsers();
 
+	const user = loggedInUser as LoginResponseSchemaType;
+
 	const onSelectGym = useCallback((id: number) => {
 		setSwitching(true);
 
@@ -34,6 +41,14 @@ const SwitchGym = () => {
 		updateUserProfile({ default_team_id: id })
 			.then(res => {
 				if (!res.error) {
+					setLoggedInUser({
+						...user,
+						user_data: {
+							...user.user_data,
+							is_staff: res.user_data.is_staff as boolean,
+						},
+					});
+
 					// clear calendar state
 					clearClasses();
 

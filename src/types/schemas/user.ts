@@ -78,6 +78,7 @@ export const UserProfileSchema = z.object({
 	timezone: z.string(),
 	user_id: z.number(),
 	waiver_accepted: z.number().optional(),
+	is_staff: boolOrOneZero.optional(),
 });
 
 export const ChildrenInfoSchema = z.object({
