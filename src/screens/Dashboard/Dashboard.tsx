@@ -15,7 +15,6 @@ import { navigate } from '@/navigators/NavigationRef';
 import { betaActive, savePushToken } from '@/services/auth';
 import { getGymClasses, getGymVenues } from '@/services/gym';
 import { getAttendanceReport } from '@/services/leaderboards';
-import getWorkouts from '@/services/leaderboards/getWorkouts';
 import { getClassFilters } from '@/services/session';
 import { getBookedSessions, getUserGymInfo } from '@/services/users';
 import { config } from '@/theme/_config';
@@ -144,14 +143,16 @@ const Dashboard = () => {
 		useState<boolean>(false);
 
 	const { hasSwitchableUsers } = useSwitchableUsers();
-
+	const betaBuild = false;
 	const onRefresh = () => {
 		void initializeAppStates();
 		void getUpcomingSessions();
 		void getClassFiltersFn();
 		void fetchAttendanceReport();
-		void getWorkouts();
-		checkBetaActive();
+		// void getWorkouts();
+		if (betaBuild) {
+			checkBetaActive();
+		}
 	};
 
 	const checkBetaActive = () => {
@@ -465,7 +466,9 @@ const Dashboard = () => {
 	useEffect(() => {
 		void fetchFilterOptions();
 		void onMountTasks();
-		checkBetaActive();
+		if (betaBuild) {
+			checkBetaActive();
+		}
 		NotificationService.setGymFetcher(initializeAppStates);
 	}, []);
 

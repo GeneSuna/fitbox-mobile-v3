@@ -131,7 +131,7 @@ const Calendar = () => {
 		const handleAppStateChange = (nextAppState: AppStateStatus) => {
 			if (nextAppState === 'active') {
 				setToday(moment().format(Constant.DEFAULT_DATE_FORMAT));
-				setCurrentDate(today); // Update today when app comes to foreground
+				handleDateChange(today);
 			}
 		};
 
@@ -309,7 +309,7 @@ const Calendar = () => {
 			setIsFromSessions(false);
 		}
 		if (isFocused && !isFromSessions) {
-			setCurrentDate(today);
+			handleDateChange(today);
 		}
 	}, [isFocused]);
 
@@ -502,7 +502,7 @@ const Calendar = () => {
 			<CalendarFilterSelect type={FilterTypeEnum.CLASS} />
 			<CalendarFilterSelect type={FilterTypeEnum.VENUE} />
 
-			{showTodayButton && (
+			{true && (
 				<TouchableOpacity
 					onPress={() => {
 						handleDateChange(today);
@@ -510,7 +510,7 @@ const Calendar = () => {
 					style={[styles.floatingActionBtn]}
 				>
 					<Text size="sm" bold color="brand">
-						Today
+						Go to today
 					</Text>
 				</TouchableOpacity>
 			)}
