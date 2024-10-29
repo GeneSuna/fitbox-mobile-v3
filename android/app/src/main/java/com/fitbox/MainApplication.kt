@@ -1,4 +1,4 @@
-package com.fitbox
+package com.wa.fitbox
 
 import android.app.Application
 import com.facebook.react.PackageList

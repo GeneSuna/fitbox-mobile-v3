@@ -1,4 +1,4 @@
-package com.fitbox
+package com.wa.fitbox
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

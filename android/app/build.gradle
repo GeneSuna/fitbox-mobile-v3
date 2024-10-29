@@ -87,16 +87,16 @@ android {
        }
      }
 
-    namespace "com.fitbox"
+    namespace "com.wa.fitbox"
     defaultConfig {
-        applicationId "com.fitbox"
+        applicationId "com.wa.fitbox"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 91
-        versionName "1.0"
+        versionCode 92
+        versionName "4.0"
         vectorDrawables.useSupportLibrary = true
         // manifestPlaceholders = [
-        //     appAuthRedirectScheme: 'com.fitbox.auth'
+        //     appAuthRedirectScheme: 'com.wa.fitbox.auth'
         // ]
     }
     signingConfigs {
