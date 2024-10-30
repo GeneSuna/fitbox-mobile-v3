@@ -4,7 +4,7 @@ import { navigate } from '@/navigators/NavigationRef';
 import { acceptInvite, validateInvite } from '@/services/auth';
 import { getSubscriptionInfo } from '@/services/subscription';
 import { config } from '@/theme/_config';
-import { MainTabScreenProps } from '@/types/navigation';
+import { InviteParams, MainTabScreenProps } from '@/types/navigation';
 import {
 	UserDetailsType,
 	UserSchemaType,
@@ -66,7 +66,7 @@ const passwordFields = ['password', 'confirm_password'];
 
 const skipPaymentGateways = ['cash', 'bank_transfer'];
 
-const InviteCodeScreen = ({ navigation }: MainTabScreenProps) => {
+const InviteCodeScreen = ({ navigation, route }: MainTabScreenProps) => {
 	const { user, signOut, updateUser, signIn } = useAuth();
 	const { setAppState, clearClasses, clearFilters, clearStates } = useStore(
 		state => ({
@@ -76,9 +76,10 @@ const InviteCodeScreen = ({ navigation }: MainTabScreenProps) => {
 			clearFilters: state.clearFilters,
 		}),
 	);
+
 	const [state, setState] = useState<State>({
 		isLoggedIn: false,
-		code: '',
+		code: (route.params as InviteParams)?.inviteCode || '',
 		details: null,
 		inputFields: [],
 		fields: {} as UserDetailsType,

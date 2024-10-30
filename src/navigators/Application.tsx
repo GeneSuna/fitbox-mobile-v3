@@ -73,15 +73,19 @@ const linking: LinkingOptions<ApplicationStackParamList> = {
 	config: {
 		initialRouteName: 'Main',
 		screens: {
-			Startup: {
-				path: 'home',
+			Login: {
+				path: 'auth/login/:emailFromSignin',
 			},
-			Main: {
-				path: 'main/:personId',
+			SignUp: {
+				path: 'auth/signup/:gymCode',
 			},
-			Auth: {
-				path: 'auth',
+			Invite: {
+				path: 'auth/invite/:inviteCode',
 			},
+			// TODO: Still need to implement this
+			// SignupWithSub: {
+			// 	path: 'auth/signup/:gymCode/:subscriptionId',
+			// },
 		},
 	},
 };

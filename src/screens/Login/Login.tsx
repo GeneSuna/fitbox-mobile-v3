@@ -92,7 +92,7 @@ const Login = ({ navigation, route }: ApplicationScreenProps) => {
 								'You have a pending invite. Please check your email for further instructions.',
 								'Oops!',
 							).then(() => {
-								navigation.navigate('Invite');
+								navigate('Invite');
 							});
 
 							// If pending invite, show alert sample

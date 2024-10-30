@@ -30,7 +30,7 @@ export type ApplicationStackParamList = {
 	Login: LoginParams;
 	ResetPassword: undefined;
 	SignUp: SignUpParams;
-	Invite: undefined;
+	Invite: InviteParams | undefined;
 	Eula: undefined;
 	SwitchGym: undefined;
 	Session: SessionParams;
@@ -53,6 +53,10 @@ export type ApplicationScreenProps =
 
 export type SignUpParams = {
 	gymCode?: string;
+};
+
+export type InviteParams = {
+	inviteCode?: string;
 };
 
 export type ComposeScreenProps = StackScreenProps<
