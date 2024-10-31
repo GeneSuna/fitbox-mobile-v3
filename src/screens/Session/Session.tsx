@@ -27,6 +27,9 @@ import {
 const Session = ({ route }: ApplicationScreenProps) => {
 	const loggedInUser = useStore(state => state.loggedInUser);
 	const allowLeaderboards = useStore(state => state.allowLeaderboards);
+	const setToLeaderboardsCallback = useStore(
+		state => state.setToLeaderboardsCallback,
+	);
 
 	const [firstLoad, setFirstLoad] = useState<boolean>(true);
 	const [activeTab, setActiveTab] = useState<SessionTabsEnum>(
@@ -51,6 +54,12 @@ const Session = ({ route }: ApplicationScreenProps) => {
 		select: res => res.data,
 		enabled: !!eventId,
 	});
+
+	const setToLeaderboardsTab = () => {
+		setActiveTab(SessionTabsEnum.RESULTS);
+	};
+
+	setToLeaderboardsCallback(setToLeaderboardsTab);
 
 	const session = data;
 	const bookedMembers = session?.member_attendance ?? [];

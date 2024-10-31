@@ -25,12 +25,17 @@ const createSessionSlice: StateCreator<
 	favorites: [],
 	bookButtonCallback: () => {},
 	isAttendingCallback: () => {},
+	toLeaderboardsCallback: () => {},
 	setIsAttendingCallback: data => {
 		setState({ isAttendingCallback: data });
 	},
 
 	setBookButtonCallback: data => {
 		setState({ bookButtonCallback: data });
+	},
+
+	setToLeaderboardsCallback: data => {
+		setState({ toLeaderboardsCallback: data });
 	},
 
 	setWorkoutData: data => {

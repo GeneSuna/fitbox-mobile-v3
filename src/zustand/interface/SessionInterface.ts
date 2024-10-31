@@ -76,6 +76,8 @@ interface SessionInterface extends SessionStateInterface {
 	setBookButtonCallback: (callback: () => void) => void;
 	isAttendingCallback: (value: boolean) => void;
 	setIsAttendingCallback: (callback: (value: boolean) => void) => void;
+	toLeaderboardsCallback: () => void;
+	setToLeaderboardsCallback: (callback: () => void) => void;
 }
 
 export type {

@@ -86,11 +86,13 @@ const ScoreComponent = ({
 	wod_id = null,
 	date,
 }: ScoreComponentProps) => {
-	const { allowComments, lastRxValue, setAppState } = useStore(state => ({
-		allowComments: state.allowComments,
-		lastRxValue: state.lastRxValue,
-		setAppState: state.setAppState,
-	}));
+	const { allowComments, lastRxValue, setAppState, toLeaderboardsCallback } =
+		useStore(state => ({
+			allowComments: state.allowComments,
+			lastRxValue: state.lastRxValue,
+			setAppState: state.setAppState,
+			toLeaderboardsCallback: state.toLeaderboardsCallback,
+		}));
 
 	// create input ref
 	const inputRefs: MutableRefObject<{
@@ -435,6 +437,13 @@ const ScoreComponent = ({
 			// Check if there is a callback function
 			if (onSubmitCallback) {
 				onSubmitCallback();
+			} else {
+				goBack();
+			}
+
+			if (enableLeaderboardComment && state.hideOnLeaderboard) {
+				toLeaderboardsCallback();
+				goBack();
 			} else {
 				goBack();
 			}
