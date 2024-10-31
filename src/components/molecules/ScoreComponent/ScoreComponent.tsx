@@ -267,16 +267,18 @@ const ScoreComponent = ({
 
 		if (section.scoring_by === 'movement') {
 			Object.values(section.movements).forEach(mov => {
+				const wodMovement = section.wod_movements?.find(
+					movement => movement.id === mov.id,
+				);
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				let newMovement: { [key: string]: any } = { ...mov };
 
 				// When movement reps is not set, use section reps
-				if (
-					mov.id &&
-					section.reps &&
-					!section.movements[mov.id as keyof typeof section.movements]
-						?.reps
-				) {
+				// if reps set in wodmovement use that
+				if (mov.id && wodMovement?.reps) {
+					newMovement.reps = wodMovement.reps;
+				}
+				if (mov.id && section.reps && !wodMovement?.reps) {
 					newMovement.reps = section.reps;
 				}
 

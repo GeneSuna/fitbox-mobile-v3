@@ -97,9 +97,10 @@ const ScoreInputField = ({
 		? section.movements[movementId]?.value
 		: section.value;
 
-	const displayReps = String(
-		movementId ? section.movements[movementId]?.reps : section.reps,
+	const wodMovement = section.wod_movements?.find(
+		wod => wod.id === movementId,
 	);
+	const displayReps = String(wodMovement?.reps || section.reps);
 
 	if (ENABLE_SCORE_INPUT_LOGGING) {
 		// eslint-disable-next-line no-console
@@ -117,16 +118,14 @@ const ScoreInputField = ({
 						/>
 					)}
 
-					{!!(
-						movementId &&
-						section.reps &&
-						!section.movements[movementId]?.reps
-					) && <FieldInput title="Reps" value={section.reps} />}
+					{!!(movementId && section.reps && !wodMovement?.reps) && (
+						<FieldInput title="Reps" value={section.reps} />
+					)}
 
-					{!!(movementId && section.movements[movementId]?.reps) && (
+					{!!wodMovement?.reps && (
 						<FieldInput
 							title="Reps"
-							value={String(section.movements[movementId]?.reps)}
+							value={String(wodMovement?.reps)}
 						/>
 					)}
 
@@ -136,6 +135,7 @@ const ScoreInputField = ({
 						onChangeText={val => {
 							handler.loadEntered(val, movementId, null);
 						}}
+						keyboardType="numeric"
 					/>
 				</View>
 			);
@@ -384,7 +384,7 @@ const ScoreInputField = ({
 			<View style={styles.inputMainContainer}>
 				<FieldInput
 					title="Distance"
-					keyboardType="numbers-and-punctuation"
+					keyboardType="numeric"
 					value={displayValue}
 					onChangeText={val => {
 						handler.roundsOrDistanceEntered(val, movementId);
