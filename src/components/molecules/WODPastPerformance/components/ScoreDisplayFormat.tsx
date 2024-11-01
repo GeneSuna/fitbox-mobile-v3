@@ -38,11 +38,10 @@ const ScoreDisplayFormat = ({ data }: ScoreDisplayFormatProps) => {
 							rounds{' '}
 						</Text>
 						<Text size="md" color="darkgray" bold>
-							{!data.reps || data.reps === '0'
-								? 1
-								: data.reps ?? data?.wod_score_reps}{' '}
+							{data.wod_score_reps ?? data.reps ?? 1}
 						</Text>
 						<Text size="md" color="darkgray">
+							{' '}
 							reps
 						</Text>
 					</Row>

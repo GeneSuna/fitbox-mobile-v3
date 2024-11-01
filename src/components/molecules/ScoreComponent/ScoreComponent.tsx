@@ -23,6 +23,7 @@ import {
 	MutableRefObject,
 	useCallback,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from 'react';
@@ -479,6 +480,10 @@ const ScoreComponent = ({
 	const parseExistingScore = (record: ScoreResultType) => {
 		const newSection = { ...section };
 		const movementId = record.wod_movement_id ?? null;
+		// check if the sectionids match otherwise skip
+		if (record.wod_section_id !== section.id) {
+			return;
+		}
 
 		if (movementId && newSection.movements[movementId]) {
 			if (record.reps) {
@@ -498,7 +503,7 @@ const ScoreComponent = ({
 				record?.comment_leaderboard_visible;
 
 			if (section.scoring_type!.method !== 'sum') {
-				section.reps = String(record.reps);
+				newSection.reps = String(record.reps);
 			}
 		}
 
@@ -526,17 +531,8 @@ const ScoreComponent = ({
 			getScore(sessionId)
 				.then(res => {
 					if (!res.error) {
-						const parseScores: Record<number, ScoreResultType> = {};
-
 						res.data.forEach(record => {
-							if (record.wod_section_id === section.id) {
-								parseScores[section.id] =
-									record as ScoreResultType;
-							}
-						});
-
-						Object.values(parseScores).forEach(record => {
-							parseExistingScore(record);
+							parseExistingScore(record as ScoreResultType);
 						});
 					}
 				})
@@ -933,6 +929,53 @@ const ScoreComponent = ({
 		setScrollPosition(scrollPercent + 10);
 	};
 
+	const renderInputFields = useMemo(
+		() => (
+			<ScrollView
+				ref={scrollViewRef}
+				contentInset={{
+					bottom: state.isKeyboardVisible ? 100 : 0,
+				}}
+				style={{ padding: config.metrics.rg }}
+				showsVerticalScrollIndicator={false}
+				onLayout={handleLayout}
+				onContentSizeChange={handleContentSizeChange}
+				onScroll={handleScroll}
+				scrollEventThrottle={16}
+			>
+				{section.scoring_by === 'movement' &&
+					isArray(section?.wod_movements) &&
+					section?.wod_movements?.length > 0 &&
+					section.wod_movements.map(movement => {
+						// remove not included movements if 'editMode' is true
+						if (
+							editMode &&
+							editData?.ref_id !== movement.movement_id
+						) {
+							return false;
+						}
+
+						return getScoreSection(
+							section.scoring_type?.unit_type,
+							section.scoring_type?.method,
+							{
+								...movement.movement,
+								movement_id: movement.id,
+							},
+						);
+					})}
+
+				{section.scoring_by === 'section' &&
+					getScoreSection(
+						section.scoring_type?.unit_type,
+						section.scoring_type?.method,
+						null,
+					)}
+			</ScrollView>
+		),
+		[section, state],
+	);
+
 	return (
 		<>
 			<View style={layout.flex_1}>
@@ -944,47 +987,7 @@ const ScoreComponent = ({
 				/>
 
 				<View style={[layout.flex_1, layout.overflowHidden]}>
-					<ScrollView
-						ref={scrollViewRef}
-						contentInset={{
-							bottom: state.isKeyboardVisible ? 100 : 0,
-						}}
-						style={{ padding: config.metrics.rg }}
-						showsVerticalScrollIndicator={false}
-						onLayout={handleLayout}
-						onContentSizeChange={handleContentSizeChange}
-						onScroll={handleScroll}
-						scrollEventThrottle={16}
-					>
-						{section.scoring_by === 'movement' &&
-							isArray(section?.wod_movements) &&
-							section?.wod_movements?.length > 0 &&
-							section.wod_movements.map(movement => {
-								// remove not included movements if 'editMode' is true
-								if (
-									editMode &&
-									editData?.ref_id !== movement.movement_id
-								) {
-									return false;
-								}
-
-								return getScoreSection(
-									section.scoring_type?.unit_type,
-									section.scoring_type?.method,
-									{
-										...movement.movement,
-										movement_id: movement.id,
-									},
-								);
-							})}
-
-						{section.scoring_by === 'section' &&
-							getScoreSection(
-								section.scoring_type?.unit_type,
-								section.scoring_type?.method,
-								null,
-							)}
-					</ScrollView>
+					{renderInputFields}
 
 					{isScrollable ? (
 						<View style={styles.scrollIndicatorContainer}>

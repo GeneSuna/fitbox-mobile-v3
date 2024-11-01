@@ -2,7 +2,7 @@ import { Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { Constant } from '@/utils';
-import { LegacyRef } from 'react';
+import { LegacyRef, memo } from 'react';
 import {
 	StyleSheet,
 	TextInput,
@@ -522,7 +522,7 @@ const ScoreInputField = ({
 	return null;
 };
 
-export default ScoreInputField;
+export default memo(ScoreInputField);
 
 const styles = StyleSheet.create({
 	borderedContainer: {
