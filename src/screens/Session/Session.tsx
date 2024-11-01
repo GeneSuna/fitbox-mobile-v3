@@ -1,4 +1,5 @@
 import { ScrollView, Text } from '@/components/atoms';
+import { goBack } from '@/navigators/NavigationRef';
 import { getScheduleDetail } from '@/services/session';
 import layout from '@/theme/layout';
 import { ApplicationScreenProps, SessionParams } from '@/types/navigation';
@@ -12,8 +13,9 @@ import useStore from '@/zustand/Store';
 import { useQuery } from '@tanstack/react-query';
 import { isArray } from 'lodash';
 import moment from 'moment';
-import { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ClassResultsScreen from '../ClassResultsScreen/ClassResultsScreen';
 import {
 	SessionActionButtons,
@@ -24,12 +26,15 @@ import {
 	SessionTabButtons,
 } from './components';
 
-const Session = ({ route }: ApplicationScreenProps) => {
+const Session = ({ route, navigation }: ApplicationScreenProps) => {
 	const loggedInUser = useStore(state => state.loggedInUser);
 	const allowLeaderboards = useStore(state => state.allowLeaderboards);
 	const setToLeaderboardsCallback = useStore(
 		state => state.setToLeaderboardsCallback,
 	);
+
+	const [isFromLeaderboards, setIsFromLeaderboards] =
+		useState<boolean>(false);
 
 	const [firstLoad, setFirstLoad] = useState<boolean>(true);
 	const [activeTab, setActiveTab] = useState<SessionTabsEnum>(
@@ -56,8 +61,29 @@ const Session = ({ route }: ApplicationScreenProps) => {
 	});
 
 	const setToLeaderboardsTab = () => {
+		setIsFromLeaderboards(true);
 		setActiveTab(SessionTabsEnum.RESULTS);
 	};
+
+	const handleBackButton = () => {
+		if (isFromLeaderboards) {
+			setActiveTab(SessionTabsEnum.SECTIONS);
+			setIsFromLeaderboards(false);
+		} else {
+			goBack();
+		}
+	};
+	const renderBackButton = () => (
+		<TouchableOpacity onPress={handleBackButton}>
+			<Icon name="chevron-left" color="white" size={40} />
+		</TouchableOpacity>
+	);
+
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerLeft: renderBackButton,
+		});
+	}, [isFromLeaderboards]);
 
 	setToLeaderboardsCallback(setToLeaderboardsTab);
 
