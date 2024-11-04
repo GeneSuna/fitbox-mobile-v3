@@ -67,13 +67,6 @@ const Login = ({ navigation, route }: ApplicationScreenProps) => {
 		// check if email is empty then don't continue
 		if (isEmpty(email)) return;
 
-		// check also if its a valid email
-		const reg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-		if (!reg.test(email)) {
-			Say.warn('Invalid email address');
-			return;
-		}
-
 		// show loading indicator
 		setFetching(true);
 
