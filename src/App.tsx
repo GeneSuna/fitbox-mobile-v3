@@ -3,7 +3,9 @@
 import { ThemeProvider } from '@/theme';
 import NotificationService from '@/utils/NotificationService';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import * as Sentry from '@sentry/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import DeviceInfo from 'react-native-device-info';
 import 'react-native-gesture-handler';
 import { configureFonts, Provider } from 'react-native-paper';
 import PushNotification from 'react-native-push-notification';
@@ -15,6 +17,17 @@ import ApplicationNavigator from './navigators/Application';
 import { mmkvStorage } from './storage';
 import './translations';
 import { NotificationsType } from './types/schemas/notifications';
+
+const version = DeviceInfo.getVersion();
+const build = DeviceInfo.getBuildNumber();
+
+Sentry.init({
+	dsn: 'https://19b5c61b50338b655de3d662a7b7d995@o4503926725607424.ingest.us.sentry.io/4508237654982657',
+	release: `fitbox@${version}+${build}`,
+
+	// uncomment the line below to enable Spotlight (https://spotlightjs.com)
+	// enableSpotlight: __DEV__,
+});
 
 const queryClient = new QueryClient();
 
