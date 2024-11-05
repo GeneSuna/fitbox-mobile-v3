@@ -24,6 +24,11 @@ const build = DeviceInfo.getBuildNumber();
 Sentry.init({
 	dsn: 'https://19b5c61b50338b655de3d662a7b7d995@o4503926725607424.ingest.us.sentry.io/4508237654982657',
 	release: `fitbox@${version}+${build}`,
+	_experiments: {
+		replaysOnErrorSampleRate: 1.0,
+		replaysSessionSampleRate: 1.0,
+	},
+	integrations: [Sentry.mobileReplayIntegration],
 
 	// uncomment the line below to enable Spotlight (https://spotlightjs.com)
 	// enableSpotlight: __DEV__,

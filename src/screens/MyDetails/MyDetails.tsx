@@ -20,7 +20,7 @@ import layout from '@/theme/layout';
 import { MenuStackNavigatorProps } from '@/types/navigation';
 import { GenderType } from '@/types/schemas/common';
 import { UserProfileType, UserSchemaType } from '@/types/schemas/user';
-import { Say } from '@/utils';
+import { Constant, Say } from '@/utils';
 import { ICatchError } from '@/utils/Say';
 import useStore from '@/zustand/Store';
 import { isEmpty } from 'lodash';
@@ -232,7 +232,7 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 			} else {
 				const { user: details } = data;
 				const formattedDOB = moment(details.dob.date).format(
-					'YYYY-MM-DD',
+					Constant.DEFAULT_DATE_FORMAT,
 				);
 				const payload = {
 					id: details.user_id,
@@ -301,7 +301,9 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 
 	const setDOBFn = (date: string | Date) => {
 		const newDate: Date = new Date(date);
-		const formattedDate = moment(newDate).format('YYYY-MM-DD');
+		const formattedDate = moment(newDate).format(
+			Constant.DEFAULT_DATE_FORMAT,
+		);
 		setDob(formattedDate);
 		setData({
 			...data,

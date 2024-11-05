@@ -53,7 +53,7 @@ const WorkoutHistory = ({ route, navigation }: WorkoutHistoryProps) => {
 	const sheetRef = useRef<BottomSheet>(null);
 
 	const setDatePickerVal = (date: moment.MomentInput) => {
-		setDateInput(moment(date).format('YYYY-MM-DD'));
+		setDateInput(moment(date).format(Constant.DEFAULT_DATE_FORMAT));
 		setShowDatePicker(false);
 	};
 

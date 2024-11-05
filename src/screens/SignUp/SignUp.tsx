@@ -557,7 +557,7 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 					onConfirm={date => {
 						handleTextOnChange(
 							activeFieldInput?.id as string,
-							moment(date).format('YYYY-DD-MM'),
+							moment(date).format(Constant.DEFAULT_DATE_FORMAT),
 						);
 						clearActiveField();
 					}}

@@ -20,7 +20,7 @@ import {
 	SubscriptionType,
 	UserSubscriptionProductsType,
 } from '@/types/schemas/subscription';
-import { Say } from '@/utils';
+import { Constant, Say } from '@/utils';
 import { PaymentGateways } from '@/utils/Enum';
 import useStore from '@/zustand/Store';
 import { isEmpty, isNil } from 'lodash';
@@ -63,7 +63,7 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 			clearClasses: state.clearClasses,
 		}),
 	);
-	const initialStartDate = moment().format('YYYY-MM-DD');
+	const initialStartDate = moment().format(Constant.DEFAULT_DATE_FORMAT);
 	const { user, updateUser } = useAuth();
 	const { fromSubscription, onSuccessPurchase, sessionDate, sessionId } =
 		route.params as SubscriptionSetupParams;
@@ -192,10 +192,12 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 		const { selectedProductId, startDate } = state;
 		const product = data?.data.find(p => p.id === selectedProductId);
 
-		const submitStartDate = moment(startDate).format('YYYY-MM-DD');
+		const submitStartDate = moment(startDate).format(
+			Constant.DEFAULT_DATE_FORMAT,
+		);
 		const recurringStartDate = moment(submitStartDate)
 			.add(1, 'day')
-			.format('YYYY-MM-DD');
+			.format(Constant.DEFAULT_DATE_FORMAT);
 
 		const payload = {
 			customer_id: user?.user_data.user_id,
@@ -414,7 +416,9 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 			state;
 		const datePickerVal = new Date(startDate);
 		const minDate = new Date(initialStartDate);
-		const formattedDate = moment(startDate).format('YYYY-MM-DD');
+		const formattedDate = moment(startDate).format(
+			Constant.DEFAULT_DATE_FORMAT,
+		);
 		const selectedProduct = data?.data.find(
 			p => p.id === selectedProductId,
 		);
@@ -428,7 +432,9 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 					onConfirm={date =>
 						setState({
 							...state,
-							startDate: moment(date).format('YYYY-MM-DD'),
+							startDate: moment(date).format(
+								Constant.DEFAULT_DATE_FORMAT,
+							),
 							showDatePicker: false,
 						})
 					}

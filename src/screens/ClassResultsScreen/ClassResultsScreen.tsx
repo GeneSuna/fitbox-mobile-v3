@@ -69,7 +69,7 @@ type Sections = {
 	};
 };
 
-const defaultTimeFormat = 'YYYY-MM-DD';
+const defaultTimeFormat = Constant.DEFAULT_DATE_FORMAT;
 const genderOptions = [
 	{ id: '', name: 'All' },
 	{ id: 'Male', name: 'Male' },

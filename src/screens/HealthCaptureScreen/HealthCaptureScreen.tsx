@@ -11,7 +11,7 @@ import {
 } from '@/types/navigation';
 import { GymInfoType } from '@/types/schemas/gym';
 import { UserHealthInfoType, UserSchemaType } from '@/types/schemas/user';
-import { Say } from '@/utils';
+import { Constant, Say } from '@/utils';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { navigate } from '@/navigators/NavigationRef';
@@ -697,7 +697,7 @@ const HealthCaptureScreen = ({
 				isVisible={checkType() === 'date'}
 				onConfirm={val => {
 					handleChange(
-						moment(val).format('YYYY-DD-MM'),
+						moment(val).format(Constant.DEFAULT_DATE_FORMAT),
 						state.focusedInput?.colIndex as number,
 						state.focusedInput?.qIndex as number,
 						state.focusedInput?.rowIndex as number,

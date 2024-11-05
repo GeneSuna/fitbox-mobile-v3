@@ -7,7 +7,7 @@ import {
 	SessionDetailSchemaType,
 	SessionMemberAttendanceSchemaType,
 } from '@/types/schemas/session';
-import { Func } from '@/utils';
+import { Constant, Func } from '@/utils';
 import { SessionTabsEnum, VisibilityOptions } from '@/utils/Enum';
 import useStore from '@/zustand/Store';
 import { useQuery } from '@tanstack/react-query';
@@ -238,7 +238,7 @@ const Session = ({ route, navigation }: ApplicationScreenProps) => {
 				<ClassResultsScreen
 					selectClass={classId}
 					dateFromParams={moment(session?.start_datetime).format(
-						'YYYY-MM-DD',
+						Constant.DEFAULT_DATE_FORMAT,
 					)}
 				/>
 			) : null}

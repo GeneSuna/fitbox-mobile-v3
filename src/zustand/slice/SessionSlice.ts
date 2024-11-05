@@ -1,5 +1,5 @@
 import { getScheduleList } from '@/services/session';
-import { Func } from '@/utils';
+import { Constant, Func } from '@/utils';
 import { FilterTypeEnum, VisibilityOptions } from '@/utils/Enum';
 import { produce } from 'immer';
 import moment from 'moment';
@@ -12,7 +12,7 @@ const createSessionSlice: StateCreator<
 	[],
 	SessionInterface
 > = (setState, getState) => ({
-	activeMonth: moment().format('YYYY-MM-DD'),
+	activeMonth: moment().format(Constant.DEFAULT_DATE_FORMAT),
 	classes: [],
 	venueFilters: [],
 	classFilters: [],

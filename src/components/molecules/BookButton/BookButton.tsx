@@ -5,7 +5,7 @@ import {
 	joinWaitlist,
 } from '@/services/session';
 import { ApplicationStackParamList } from '@/types/navigation';
-import { Func, Say } from '@/utils';
+import { Constant, Func, Say } from '@/utils';
 import { ClassItemData } from '@/zustand/interface/SessionInterface';
 import useStore from '@/zustand/Store';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
@@ -79,7 +79,7 @@ const BookButton = ({
 			queryKey: ['sessionGetScheduleDetail'],
 		});
 
-		const setDate = moment(startDate).format('YYYY-MM-DD');
+		const setDate = moment(startDate).format(Constant.DEFAULT_DATE_FORMAT);
 
 		/**
 		 * WORKAROUND: If the user is in preview mode, set the classes to loading.
@@ -244,7 +244,9 @@ const BookButton = ({
 	 */
 	const handleBuyNow = () => {
 		const redirectToBuyNow = () => {
-			const sessionDate = moment(startDate).format('YYYY-MM-DD');
+			const sessionDate = moment(startDate).format(
+				Constant.DEFAULT_DATE_FORMAT,
+			);
 
 			navigation.navigate('BuyNow', {
 				sessionId: eventId,

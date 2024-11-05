@@ -95,7 +95,9 @@ const ScoreMovementComponent = ({
 	const [searchQuery, setSearchQuery] = useState('');
 	const [scoringTypes, setScoringTypes] = useState<IScoringType[]>([]);
 	const [selectedScoringType, setSelectedScoringType] = useState<number>(0);
-	const [dateInput, setDateInput] = useState(moment().format('YYYY-MM-DD'));
+	const [dateInput, setDateInput] = useState(
+		moment().format(Constant.DEFAULT_DATE_FORMAT),
+	);
 	const [fields, setFields] = useState<IFields>({});
 
 	const toggleSearchModal = () => setSearchModal(visible => !visible);
@@ -106,7 +108,7 @@ const ScoreMovementComponent = ({
 		scoringTypes.find(type => type?.id === id);
 
 	const setDatePickerVal = (date: moment.MomentInput) => {
-		setDateInput(moment(date).format('YYYY-MM-DD'));
+		setDateInput(moment(date).format(Constant.DEFAULT_DATE_FORMAT));
 		setDatePicker(visible => !visible);
 	};
 
