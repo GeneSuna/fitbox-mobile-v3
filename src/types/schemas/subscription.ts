@@ -105,7 +105,7 @@ export const SubscriptionSaveMemberSchema = z.object({
 	address1: z.string(),
 	address2: z.string(),
 	allow_skip_payment_form: z.string(),
-	archived_at: z.string(),
+	archived_at: z.string().nullable(),
 	billing_agreement_accepted: z.number(),
 	can_cancel_membership: z.number(),
 	city: z.string(),
