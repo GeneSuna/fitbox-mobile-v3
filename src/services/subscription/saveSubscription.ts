@@ -9,6 +9,7 @@ export default async (payload: SaveSubscriptionPayloadType) => {
 	const response = await securedInstance()
 		.post(url, {
 			body: JSON.stringify(payload),
+			throwHttpErrors: false,
 		})
 		.json();
 

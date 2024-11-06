@@ -216,6 +216,7 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 			const res = await saveSubscription(
 				payload as SaveSubscriptionPayloadType,
 			);
+
 			if (res.error) {
 				Say.err(res.message);
 			} else {
@@ -264,19 +265,15 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 
 				<Spacer />
 
-				<Text center style={styles.fontAlata}>
-					Your subscription will start on
-				</Text>
-				<Text size="lg" center color="info" style={styles.fontAlata}>
+				<Text center>Your subscription will start on</Text>
+				<Text size="lg" center color="info">
 					{startDate}
 				</Text>
 
 				<Spacer />
 
-				<Text style={styles.fontAlata} center>
-					Next Payment Date will be on
-				</Text>
-				<Text size="lg" center color="info" style={styles.fontAlata}>
+				<Text center>Next Payment Date will be on</Text>
+				<Text size="lg" center color="info">
 					{nextPaymentDate}
 				</Text>
 
@@ -397,12 +394,7 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 						onPress={() => handleSkip()}
 						style={{ paddingVertical: config.metrics.md }}
 					>
-						<Text
-							size="lg"
-							style={styles.fontAlata}
-							color="darkgray"
-							center
-						>
+						<Text size="lg" color="darkgray" center>
 							None of the above
 						</Text>
 					</TouchableOpacity>
@@ -515,6 +507,7 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 					labelStyle={styles.buttonLabelStyle}
 					onPress={() => void handleSubmit()}
 					loading={processing}
+					disabled={processing}
 				/>
 
 				<Spacer />
@@ -525,12 +518,7 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 							setState({ ...state, selectedProductId: null })
 						}
 					>
-						<Text
-							size="rg"
-							style={styles.fontAlata}
-							color="darkgray"
-							center
-						>
+						<Text size="rg" color="darkgray" center>
 							Go back
 						</Text>
 					</TouchableOpacity>
@@ -564,14 +552,10 @@ const styles = StyleSheet.create({
 	headerStyle: {
 		width: '70%',
 		alignSelf: 'center',
-		fontFamily: 'Alata-Regular',
 	},
 	loader: {
 		flex: 1,
 		justifyContent: 'center',
-	},
-	fontAlata: {
-		fontFamily: 'Alata-Regular',
 	},
 	buttonStyle: {
 		...layout.shadowLight,

@@ -112,14 +112,8 @@ const SubscriptionCard = ({
 				{!isNull(data.sessions_limit) &&
 					!isNull(data.sessions_limit_frequency) && (
 						<Row spacing="space-between">
-							<Text size="rg" style={styles.fontAlata}>
-								Session:
-							</Text>
-							<Text
-								size="rg"
-								color="darkgray"
-								style={styles.fontAlata}
-							>
+							<Text size="rg">Session:</Text>
+							<Text size="rg" color="darkgray">
 								{data.sessions_limit} /{' '}
 								{data.sessions_limit_frequency}
 							</Text>
@@ -145,13 +139,9 @@ const styles = StyleSheet.create({
 	headerStyle: {
 		width: '70%',
 		alignSelf: 'center',
-		fontFamily: 'Alata-Regular',
 	},
 	monthlyFeeContainer: {
 		alignItems: 'flex-start',
-	},
-	fontAlata: {
-		fontFamily: 'Alata-Regular',
 	},
 	fees: {
 		marginBottom: config.metrics.sm,

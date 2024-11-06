@@ -193,10 +193,12 @@ export type GetUserSubscriptionProductsType = z.infer<
 >;
 
 export const SaveSubscriptionSchema = apiResponseSchema(
-	z.object({
-		product: UserSubscriptionProductsSchema,
-		subscription: SubscriptionSaveSchema,
-	}),
+	z
+		.object({
+			product: UserSubscriptionProductsSchema,
+			subscription: SubscriptionSaveSchema,
+		})
+		.optional(),
 );
 export const GetGymVenuesResponseSchema = z.array(GymVenueSchema);
 export const GeyGymClassesResponseSchema = apiResponseSchema(
