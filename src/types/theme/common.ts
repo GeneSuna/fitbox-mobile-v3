@@ -34,21 +34,21 @@ export type HasProperty<
 					? HasProperty<
 							Extract<Config, { [__ in Key]: unknown }>[Key],
 							Rest
-					  >
+						>
 					: HasProperty<
 							Extract<
 								typeof config,
 								{ [___ in Key]: unknown }
 							>[Key],
 							Rest
-					  >;
-		  }
+						>;
+			}
 		: never
 	: KeyPath extends KeysOfUnion<Config>
-	? {
-			readonly [_ in KeyPath]: Extract<
-				Config,
-				{ [__ in KeyPath]: unknown }
-			>[KeyPath];
-	  }
-	: { readonly [_ in KeyPath]: never };
+		? {
+				readonly [_ in KeyPath]: Extract<
+					Config,
+					{ [__ in KeyPath]: unknown }
+				>[KeyPath];
+			}
+		: { readonly [_ in KeyPath]: never };

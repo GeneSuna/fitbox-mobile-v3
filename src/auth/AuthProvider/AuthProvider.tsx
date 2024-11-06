@@ -89,14 +89,12 @@ const AuthProvider = ({ children, storage }: Props) => {
 	};
 
 	const signOut = async () => {
-		const { id } = loggedInUser as LoginResponseSchemaType;
-
 		// remove push token from server
 		try {
-			if (pushToken) {
+			if (pushToken && loggedInUser?.id) {
 				await deletePushToken(
 					pushToken,
-					id,
+					loggedInUser.id,
 					Func.getEnv(
 						storage.getString('apiUrl') || Constant.API_URL,
 					),

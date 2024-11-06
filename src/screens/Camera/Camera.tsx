@@ -1,11 +1,9 @@
 // OBSOLETE: hide record video feature as it is not working in some devices
-// TODO: fix record video feature
+// TODO: fix record video feature; fix react-native-compressor library issue
 import { Row, Spacer, Text } from '@/components/atoms';
-import { goBack } from '@/navigators/NavigationRef';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import { Func, Say } from '@/utils';
-import useStore from '@/zustand/Store';
+import { Say } from '@/utils';
 import { useEffect, useRef, useState } from 'react';
 import {
 	Alert,
@@ -14,7 +12,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
-import { Video as VideoCompressor } from 'react-native-compressor';
+// import { Video as VideoCompressor } from 'react-native-compressor';
 import { ProgressBar } from 'react-native-paper';
 import {
 	PERMISSIONS,
@@ -49,9 +47,9 @@ const Camera = () => {
 		viewType: 'front',
 	});
 
-	const { setAppState } = useStore(store => ({
-		setAppState: store.setAppState,
-	}));
+	// const { setAppState } = useStore(store => ({
+	// 	setAppState: store.setAppState,
+	// }));
 
 	const device = useCameraDevice(state.viewType);
 	const camera = useRef<VideoCamera>(null);
@@ -176,28 +174,28 @@ const Camera = () => {
 	const handleRetake = () =>
 		setState(prevState => ({ ...prevState, source: null }));
 
-	const handleConfirm = async () => {
-		if (state.confirming) return false;
+	// const handleConfirm = async () => {
+	// 	if (state.confirming) return false;
 
-		try {
-			setState(prevState => ({ ...prevState, confirming: true }));
-			const compressedVideo = await VideoCompressor.compress(
-				state.source as string,
-			);
-			const base64 = (await Func.getBase64(compressedVideo)) as string;
-			const data = `data:video/${Func.getFileExt(
-				state.source as string,
-			)};base64,${base64}`;
+	// 	try {
+	// 		setState(prevState => ({ ...prevState, confirming: true }));
+	// 		const compressedVideo = await VideoCompressor.compress(
+	// 			state.source as string,
+	// 		);
+	// 		const base64 = (await Func.getBase64(compressedVideo)) as string;
+	// 		const data = `data:video/${Func.getFileExt(
+	// 			state.source as string,
+	// 		)};base64,${base64}`;
 
-			setAppState('attachedFiles', [{ fileName: 'Video', base64: data }]);
+	// 		setAppState('attachedFiles', [{ fileName: 'Video', base64: data }]);
 
-			goBack();
-		} catch (e) {
-			Alert.alert('Error: ', e as string);
-		}
+	// 		goBack();
+	// 	} catch (e) {
+	// 		Alert.alert('Error: ', e as string);
+	// 	}
 
-		return setState(prevState => ({ ...prevState, confirming: false }));
-	};
+	// 	return setState(prevState => ({ ...prevState, confirming: false }));
+	// };
 	return (
 		<>
 			<View style={styles.container}>
@@ -271,7 +269,8 @@ const Camera = () => {
 						<TouchableOpacity onPress={() => void handleRetake()}>
 							<Text>Retake</Text>
 						</TouchableOpacity>
-						<TouchableOpacity onPress={() => void handleConfirm()}>
+						<TouchableOpacity onPress={() => {}}>
+							{/* <TouchableOpacity onPress={() => void handleConfirm()}> */}
 							<Text>Confirm</Text>
 						</TouchableOpacity>
 					</Row>

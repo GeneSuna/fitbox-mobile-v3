@@ -99,7 +99,7 @@ const ScoreDisplayFormat = ({ data }: ScoreDisplayFormatProps) => {
 							? data.value
 							: `${data.weight} ${
 									data.weight_unit ? data.weight_unit : ''
-							  }`}
+								}`}
 					</Text>
 				</Row>
 			);

@@ -352,7 +352,7 @@ const ScoreComponent = ({
 							? checkValueFormat(
 									section.value,
 									section.scoring_type?.unit_type,
-							  )
+								)
 							: getDummyValue(),
 					reps: section.reps,
 					comments: section.comments,
@@ -381,7 +381,7 @@ const ScoreComponent = ({
 						? checkValueFormat(
 								section.value,
 								section.scoring_type?.unit_type,
-						  )
+							)
 						: getDummyValue(),
 				reps: section.reps,
 				comments: section.comments,
@@ -627,9 +627,8 @@ const ScoreComponent = ({
 					},
 				);
 
-				newSection.movements[
-					movementId
-				]!.value = `${totalMin}:${totalSec}`;
+				newSection.movements[movementId]!.value =
+					`${totalMin}:${totalSec}`;
 			} else {
 				newSection.movements[movementId]!.value = `${val}:${time[1]}`;
 			}
@@ -716,9 +715,8 @@ const ScoreComponent = ({
 					totalSec += isNaN(parseInt(sec)) ? 0 : parseInt(sec);
 				});
 
-				newSection.movements[
-					movementId
-				]!.value = `${totalMin}:${totalSec}`;
+				newSection.movements[movementId]!.value =
+					`${totalMin}:${totalSec}`;
 			} else {
 				newSection.movements[movementId]!.value = `${time[0]}:${val}`;
 			}

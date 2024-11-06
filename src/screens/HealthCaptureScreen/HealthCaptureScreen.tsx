@@ -87,7 +87,7 @@ const HealthCaptureScreen = ({
 					...question,
 					data: [],
 					value: null,
-				} as QuestionType),
+				}) as QuestionType,
 		),
 		focusedRow: null,
 		focusedInput: null,

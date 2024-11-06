@@ -68,10 +68,10 @@ const WODPastPerformance = ({
 								{values.date_input
 									? moment(values.date_input).format(
 											'DD MMM YYYY',
-									  )
+										)
 									: moment(values.created_at).format(
 											'DD MMM YYYY',
-									  )}
+										)}
 							</Text>
 						</Row>
 					);

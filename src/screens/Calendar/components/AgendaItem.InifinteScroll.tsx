@@ -41,9 +41,8 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 		const navigation =
 			useNavigation<NavigationProp<ApplicationStackParamList>>();
 
-		const [isAttending, setIsAttending] = useState<boolean>(
-			!!isAttendingProp,
-		);
+		const [isAttending, setIsAttending] =
+			useState<boolean>(!!isAttendingProp);
 
 		const handleViewSession = useCallback(() => {
 			navigation.navigate('Session', {

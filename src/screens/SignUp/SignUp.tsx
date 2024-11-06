@@ -218,7 +218,7 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 							field in SIGNUP_CUSTOM_INPUT_FIELDS
 								? SIGNUP_CUSTOM_INPUT_FIELDS[
 										field as keyof CustomFields
-								  ]?.label
+									]?.label
 								: capitalize(field.replace(/_/g, ' ')),
 						type:
 							SIGNUP_CUSTOM_INPUT_FIELDS[
@@ -228,7 +228,7 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 							SIGNUP_CUSTOM_INPUT_FIELDS[
 								field as keyof CustomFields
 							] || null,
-					} as RequiredFields),
+					}) as RequiredFields,
 			);
 		}
 
@@ -380,7 +380,7 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 					}));
 
 					const reg =
-						/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+						/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 					if (!reg.test(email)) {
 						Say.warn('Invalid email address');

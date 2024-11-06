@@ -65,7 +65,7 @@ const CalendarFilterPanel = () => {
 						(c, cIndex) =>
 							c.name +
 							(cIndex !== filters.length - 1 ? ', ' : ''),
-				  )
+					)
 				: 'All';
 
 		const renderClearIcon = filters.length > 0 && (

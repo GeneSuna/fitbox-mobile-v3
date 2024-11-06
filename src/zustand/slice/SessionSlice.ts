@@ -143,7 +143,7 @@ const createSessionSlice: StateCreator<
 							? Func.getSpotLeft(
 									item.attendance_limit as number,
 									item.member_attendance?.length as number,
-							  )
+								)
 							: null;
 
 						// Waitlist button

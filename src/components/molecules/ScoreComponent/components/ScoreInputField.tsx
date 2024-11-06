@@ -441,7 +441,7 @@ const ScoreInputField = ({
 		if (method === 'sum') {
 			const num =
 				section.sets === null || section.sets === 0
-					? section.rounds ?? 0
+					? (section.rounds ?? 0)
 					: section.sets;
 			const name = section.sets === null ? 'Round' : 'Set';
 
@@ -469,7 +469,7 @@ const ScoreInputField = ({
 												name === 'Set'
 													? sectionReps.split('-')[
 															field
-													  ]
+														]
 													: sectionReps
 											}
 										/>
@@ -484,7 +484,7 @@ const ScoreInputField = ({
 												name === 'Set'
 													? sectionReps.split('-')[
 															field
-													  ]
+														]
 													: sectionReps
 											}
 										/>

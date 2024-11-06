@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="17" />
+    <bytecodeTargetLevel target="17">
+      <module name="RnDiffApp.react-native-app-auth" target="21" />
+      <module name="RnDiffApp.react-native-blob-util" target="21" />
+      <module name="RnDiffApp.react-native-clipboard_clipboard" target="21" />
+      <module name="RnDiffApp.react-native-community_datetimepicker" target="21" />
+      <module name="RnDiffApp.react-native-device-info" target="21" />
+      <module name="RnDiffApp.react-native-firebase_app" target="21" />
+      <module name="RnDiffApp.react-native-firebase_messaging" target="21" />
+      <module name="RnDiffApp.react-native-image-crop-picker" target="21" />
+      <module name="RnDiffApp.react-native-masked-view_masked-view" target="21" />
+      <module name="RnDiffApp.react-native-mmkv" target="21" />
+      <module name="RnDiffApp.react-native-push-notification" target="21" />
+      <module name="RnDiffApp.react-native-reanimated" target="21" />
+      <module name="RnDiffApp.react-native-vector-icons" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>

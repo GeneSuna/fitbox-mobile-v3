@@ -267,7 +267,7 @@ const InboxStackNavigator = () => {
 						? {
 								cardStyleInterpolator:
 									CardStyleInterpolators.forModalPresentationIOS,
-						  }
+							}
 						: {}),
 				}}
 			>
@@ -498,7 +498,7 @@ const ApplicationNavigator = () => {
 									? {
 											cardStyleInterpolator:
 												CardStyleInterpolators.forModalPresentationIOS,
-									  }
+										}
 									: {}),
 							}}
 						>

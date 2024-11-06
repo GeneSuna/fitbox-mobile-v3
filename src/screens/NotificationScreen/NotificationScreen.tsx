@@ -93,7 +93,7 @@ const NotificationScreen = () => {
 					: Say.err(
 							'Unable to change this setting as of the moment',
 							'Sorry',
-					  );
+						);
 			return (
 				<Row
 					key={key}

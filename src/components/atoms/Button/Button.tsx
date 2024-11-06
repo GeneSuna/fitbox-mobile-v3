@@ -52,7 +52,7 @@ const Button = ({
 		...(!isOutlined
 			? {
 					backgroundColor: colors[variant].color,
-			  }
+				}
 			: { borderColor: colors[variant].color }),
 
 		...(!rounded ? { borderRadius: 6 } : {}),
@@ -73,7 +73,15 @@ const Button = ({
 	};
 
 	return (
-		<Btn {...rest} style={customStyle} labelStyle={labelStyle} mode={mode}>
+		<Btn
+			// Force the button to re-render, this is a bad approach, keep an eye of react-native-paper updates
+			// Workaround from: https://github.com/callstack/react-native-paper/issues/4520#issuecomment-2442647417
+			key={Math.random()}
+			{...rest}
+			style={customStyle}
+			labelStyle={labelStyle}
+			mode={mode}
+		>
 			{title}
 		</Btn>
 	);

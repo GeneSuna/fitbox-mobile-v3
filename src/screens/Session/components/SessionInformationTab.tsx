@@ -69,7 +69,7 @@ const SessionInformationTab = ({ session }: SessionInformationTabProps) => {
 					coach[1] && coach[2]
 						? `${String(coach[1]).trim()} ${String(
 								coach[2],
-						  ).trim()}`
+							).trim()}`
 						: '',
 				isMe: coach[0] === loggedInUser?.id,
 			}));
