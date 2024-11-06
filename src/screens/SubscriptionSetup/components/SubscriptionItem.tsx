@@ -28,23 +28,15 @@ const SubscriptionItem = ({
 			onPress={onPress}
 		>
 			<Row spacing="space-between">
-				<Text
-					size="lg"
-					style={{ ...layout.flex_1, ...styles.textStyle }}
-					color={textColor}
-				>
+				<Text size="md" style={layout.flex_1} color={textColor}>
 					{title}
 				</Text>
 				<View style={styles.feesContainer}>
-					<Text size="lg" style={styles.textStyle} color={textColor}>
+					<Text size="md" color={textColor}>
 						{price ? `$${price}` : ''}
 					</Text>
 					{plusFees ? (
-						<Text
-							size="xs"
-							style={styles.textStyle}
-							color={textColor}
-						>
+						<Text size="xs" color={textColor}>
 							+ fees
 						</Text>
 					) : null}
@@ -52,7 +44,7 @@ const SubscriptionItem = ({
 			</Row>
 
 			{description ? (
-				<Text size="rg" style={styles.textStyle} color={textColor}>
+				<Text size="rg" color={textColor}>
 					{description}
 				</Text>
 			) : null}
@@ -69,9 +61,6 @@ const styles = StyleSheet.create({
 		paddingVertical: config.metrics.rg,
 		marginBottom: config.metrics.md,
 		...layout.shadowLight,
-	},
-	textStyle: {
-		fontFamily: 'Alata-Regular',
 	},
 	feesContainer: {
 		alignItems: 'flex-end',
