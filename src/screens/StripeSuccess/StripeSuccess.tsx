@@ -21,9 +21,7 @@ const StripeSuccess = () => {
 					buttonColor={config.colors.info}
 					labelStyle={styles.returnBtn}
 					title="Return to home"
-					onPress={() =>
-						navigate('ApplicationNavigator', { screen: 'Startup' })
-					}
+					onPress={() => navigate('Startup')}
 				/>
 			</View>
 		</Modal>

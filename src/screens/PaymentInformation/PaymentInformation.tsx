@@ -1,33 +1,44 @@
 /* eslint-disable no-console */
 import useAuth from '@/auth/hooks/useAuth';
 import { Button, Row, Spacer, Text } from '@/components/atoms';
-import { goBack } from '@/navigators/NavigationRef';
+import { goBack, navigate } from '@/navigators/NavigationRef';
 import {
 	confirmSetupIntent,
 	getPaymentInfo,
 	getPaymentMethod,
 	setupPaymentIntent,
 } from '@/services/payment';
+import { getSubscriptionInfo } from '@/services/subscription';
 import { config } from '@/theme/_config';
+import stripeLogo from '@/theme/assets/images/stripe-logo.png';
 import layout from '@/theme/layout';
 import {
 	ApplicationScreenProps,
 	MenuStackNavigatorProps,
-	PaymentInformationModalParams,
+	PaymentInformationParams,
 } from '@/types/navigation';
 import {
 	CardDetailsType,
 	PaymentMethodType,
 	PaymetInfoDatatype,
 } from '@/types/schemas/payment';
+import { SubscriptionType } from '@/types/schemas/subscription';
 import { UserSchemaType } from '@/types/schemas/user';
 import { Say } from '@/utils';
+import { PaymentGateways } from '@/utils/Enum';
 import { ICatchError } from '@/utils/Say';
 import Stripe from '@/utils/Stripe';
 import { PaymentSheet, useStripe } from '@stripe/stripe-react-native';
 import { isEmpty } from 'lodash';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import {
+	ActivityIndicator,
+	Image,
+	ImageSourcePropType,
+	StyleSheet,
+	View,
+} from 'react-native';
+import SimpleToast from 'react-native-simple-toast';
 
 type PaymentStateType = {
 	isLoading: boolean;
@@ -36,13 +47,13 @@ type PaymentStateType = {
 	method: string;
 	name: string | null | undefined;
 	country: string | undefined;
+	allowSkip: boolean;
 };
 
 const PaymentInformation = ({
 	route,
 }: MenuStackNavigatorProps | ApplicationScreenProps) => {
-	const routeParams = route.params as PaymentInformationModalParams;
-
+	const routeParams = route.params as PaymentInformationParams;
 	const { user, updateUser } = useAuth();
 
 	const [state, setState] = useState<PaymentStateType>({
@@ -52,17 +63,44 @@ const PaymentInformation = ({
 		lastDigits: '',
 		name: '',
 		country: 'AU',
+		allowSkip: true,
 	});
 
 	const [setupPaymentId, setSetupPaymentId] = useState<string>();
 
 	useEffect(() => {
-		void getPaymentInfoFn();
+		void (async () => {
+			await checkSubscription();
+			await getPaymentInfoFn();
+		})();
 	}, []);
 
 	useEffect(() => {
 		void setUpPaymentIntent();
 	}, [state.name, state.country]);
+
+	const checkSubscription = async () => {
+		try {
+			const subInfoRes = await getSubscriptionInfo();
+
+			if (subInfoRes.current.length) {
+				const currentSubscription =
+					subInfoRes.current.reverse()[0] as SubscriptionType;
+
+				const { payment_gateway: paymentGateway } = currentSubscription;
+
+				if (
+					Object.values(PaymentGateways).includes(
+						paymentGateway as PaymentGateways,
+					)
+				) {
+					setState({ ...state, allowSkip: false });
+				}
+			}
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
 	const getPaymentInfoFn = async () => {
 		setState({ ...state, isLoading: true, hasPaymentMethod: true });
@@ -145,9 +183,10 @@ const PaymentInformation = ({
 		} else {
 			await confirmSetupIntent(setupPaymentId as string)
 				.then(() => {
-					void getPaymentInfoFn();
-
-					Say.ok('Successfully Added/Updated Payment Details');
+					SimpleToast.show(
+						'Successfully Added/Updated Payment Details',
+						SimpleToast.SHORT,
+					);
 
 					// update session
 					updateUser({
@@ -165,6 +204,12 @@ const PaymentInformation = ({
 							routeParams?.onSuccessCallback!();
 						}, 500);
 					}
+
+					if (routeParams?.setup) {
+						void handleSkip();
+					}
+
+					void getPaymentInfoFn();
 				})
 				.catch(e => {
 					Say.err(e as ICatchError);
@@ -221,33 +266,68 @@ const PaymentInformation = ({
 		}
 	};
 
+	const handleSkip = () => {
+		const session = user?.user_data;
+
+		if (session) {
+			session.has_payment_details = 'skipped';
+
+			updateUser(session);
+			navigate('Startup');
+		}
+	};
+
+	const renderPaymentInfo = useMemo(() => {
+		if (routeParams?.setup) {
+			return (
+				<View style={{ marginBottom: config.metrics.sm }}>
+					<Image
+						style={styles.logo}
+						source={stripeLogo as ImageSourcePropType}
+						resizeMode="contain"
+					/>
+
+					<Spacer size="md" />
+
+					<Text size="md" center color="darkgray">
+						Setup Payment Details this will be used for all future
+						payments
+					</Text>
+				</View>
+			);
+		}
+
+		return state?.hasPaymentMethod ? (
+			<>
+				<Text size="md" bold center>
+					Your current Payment Details:
+				</Text>
+				<Spacer size="lg" />
+				<Row spacing="space-between">
+					<Text size="md">Payment Type:</Text>
+					<Text size="md">{state.method}</Text>
+				</Row>
+				<Spacer size="md" />
+				<Row spacing="space-between">
+					<Text size="md">Last 4 digits:</Text>
+					<Text size="md">{state.lastDigits}</Text>
+				</Row>
+			</>
+		) : (
+			<Text size="md" bold center color="darkgray">
+				You havent setup any payments yet
+			</Text>
+		);
+	}, [state?.hasPaymentMethod, routeParams?.setup]);
+
 	return state?.isLoading ? (
 		<View style={styles.loaderStyle}>
 			<ActivityIndicator size="large" color={config.colors.brand} />
 		</View>
 	) : (
 		<View style={{ ...layout.flex_1, padding: config.metrics.xl }}>
-			{state?.hasPaymentMethod ? (
-				<>
-					<Text size="md" bold center>
-						Your current Payment Details:
-					</Text>
-					<Spacer size="lg" />
-					<Row spacing="space-between">
-						<Text size="md">Payment Type:</Text>
-						<Text size="md">{state.method}</Text>
-					</Row>
-					<Spacer size="md" />
-					<Row spacing="space-between">
-						<Text size="md">Last 4 digits:</Text>
-						<Text size="md">{state.lastDigits}</Text>
-					</Row>
-				</>
-			) : (
-				<Text size="md" bold center color="darkgray">
-					You havent setup any payments yet
-				</Text>
-			)}
+			{renderPaymentInfo}
+
 			<Spacer size="lg" />
 
 			<Button
@@ -256,15 +336,24 @@ const PaymentInformation = ({
 				labelStyle={styles.buttonTextStyle}
 				onPress={() => void openPaymentSheet()}
 			/>
+
+			{routeParams?.setup && state?.allowSkip && (
+				<>
+					<Spacer size="md" />
+					<Button title="Skip" onPress={() => void handleSkip()} />
+				</>
+			)}
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
+	logo: {
+		width: '100%',
+		height: 50,
+	},
 	buttonTextStyle: {
-		fontWeight: 'bold',
 		fontSize: config.metrics.md,
-		textTransform: 'capitalize',
 		color: config.backgrounds.darkgray,
 	},
 	buttonColor: {

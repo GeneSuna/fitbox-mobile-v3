@@ -81,8 +81,18 @@ const AuthProvider = ({ children, storage }: Props) => {
 		// call login service
 		const res = await login(email, password);
 
+		const storageAuth = {
+			...res,
+			user_data: {
+				...res.user_data,
+				show_subscription_form:
+					res.user_data?.last_login === null &&
+					!res.user_data?.has_paid_subscriptions,
+			},
+		};
+
 		// Store the access token, refresh token, and expiration time in storage
-		setStorageAuth(res);
+		setStorageAuth(storageAuth);
 
 		// return the user
 		return res;

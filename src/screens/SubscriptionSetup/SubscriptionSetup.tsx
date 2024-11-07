@@ -53,8 +53,16 @@ type StateProps = {
 };
 
 const iosVersion = parseInt(Platform.Version as string, 10);
+const initialStartDate = moment().format(Constant.DEFAULT_DATE_FORMAT);
 
 const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
+	const params = route.params as SubscriptionSetupParams;
+
+	const fromSubscription = params?.fromSubscription ?? false;
+	const onSuccessPurchase = params?.onSuccessPurchase ?? (() => {});
+	const sessionDate = params?.sessionDate ?? initialStartDate;
+	const sessionId = params?.sessionId ?? undefined;
+
 	const { fromAcceptInvite, setupSubscriptionId, setAppState } = useStore(
 		state => ({
 			fromAcceptInvite: state.fromAcceptInvite,
@@ -63,10 +71,7 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 			clearClasses: state.clearClasses,
 		}),
 	);
-	const initialStartDate = moment().format(Constant.DEFAULT_DATE_FORMAT);
 	const { user, updateUser } = useAuth();
-	const { fromSubscription, onSuccessPurchase, sessionDate, sessionId } =
-		route.params as SubscriptionSetupParams;
 	const [data, setData] = useState<GetUserSubscriptionProductsType>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [state, setState] = useState<StateProps>({
@@ -173,13 +178,13 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 		const session = user?.user_data;
 
 		if (session) {
-			session.show_subscription_from = false;
+			session.show_subscription_form = false;
 			session.show_payment_form = Boolean(!isFree);
 			session.has_paid_subscriptions = Boolean(!isFree);
 
 			setAppState('fromAcceptInvite', false);
 			updateUser(session);
-			navigate('ApplicationNavigator', { screen: 'Startup' });
+			navigate('Startup');
 		}
 	};
 

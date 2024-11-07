@@ -10,16 +10,17 @@ import { useTheme } from '@/theme';
 import useAuth from '@/auth/hooks/useAuth';
 import { getApiToken } from '@/services/instance';
 import type { ApplicationScreenProps } from '@/types/navigation';
+import useStore from '@/zustand/Store';
 
 const Startup = ({ navigation }: ApplicationScreenProps) => {
 	const { layout, gutters, fonts } = useTheme();
-	const {
-		// getToken,
-		isLoggedIn,
-		user,
-		signOut,
-	} = useAuth();
 	const { t } = useTranslation(['startup']);
+
+	const { fromAcceptInvite } = useStore(state => ({
+		fromAcceptInvite: state.fromAcceptInvite,
+	}));
+
+	const { isLoggedIn, user, signOut } = useAuth();
 
 	const { isSuccess, isFetching, isError } = useQuery({
 		queryKey: ['startup'],
@@ -68,7 +69,35 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 						});
 					}
 
-					// TODO: Additional conditions here.
+					if (
+						user.user_data.show_subscription_form ||
+						fromAcceptInvite
+					) {
+						return navigation.reset({
+							index: 0,
+							routes: [{ name: 'SubscriptionSetup' }],
+						});
+					}
+
+					if (
+						((user.user_data.show_payment_form &&
+							!user.user_data.has_payment_details &&
+							!user.user_data.has_waived_subscriptions) ||
+							fromAcceptInvite) &&
+						user?.user_data?.parent_id === 0
+					) {
+						return navigation.reset({
+							index: 0,
+							routes: [
+								{
+									name: 'PaymentSetup',
+									params: { setup: true },
+								},
+							],
+						});
+					}
+
+					// Note: Additional conditions here.
 				}
 
 				return navigation.reset({
