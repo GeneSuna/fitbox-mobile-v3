@@ -104,6 +104,7 @@ export type SubscriptionDetailsParams = {
 
 export type SubscriptionSetupParams = {
 	fromSubscription?: boolean;
+	setupSubscription?: boolean;
 	sessionId?: number;
 	sessionDate?: string;
 	onSuccessPurchase?: () => void;
