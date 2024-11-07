@@ -26,7 +26,12 @@ import {
 	useMemo,
 	useState,
 } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+	ActivityIndicator,
+	StyleSheet,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import GymItem from './components/GymItem';
@@ -182,6 +187,7 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 			if (gyms.length === 0) {
 				void fetchGyms();
 			}
+			handleRefresh(false);
 		}, []),
 	);
 
@@ -190,12 +196,6 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 		handleRefresh(false);
 		setAppState('teamId', activeGymId);
 	}, [activeGymId]);
-
-	useFocusEffect(
-		useCallback(() => {
-			handleRefresh();
-		}, []),
-	);
 
 	const renderInboxItem = (item: MessageItemType, index: number) => {
 		const itemData = {
@@ -279,22 +279,32 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 				}}
 			/>
 
-			<FlatList
-				data={list}
-				style={layout.flex_1}
-				loading={loading}
-				refreshing={refreshing}
-				onRefresh={handleRefresh}
-				placeholder={renderPlaceholder}
-				onEndReached={handleOnEndReach}
-				onEndReachedThreshold={0.01}
-				extractor={({ id, convo_id }: MessageItemType, index: number) =>
-					`${id}-${convo_id}-${index}`
-				}
-				renderItem={({ item, index }) =>
-					renderInboxItem(item as MessageItemType, index)
-				}
-			/>
+			{refreshing ? (
+				<View style={styles.inboxLoader}>
+					<ActivityIndicator
+						size="large"
+						color={config.colors.brand}
+					/>
+				</View>
+			) : (
+				<FlatList
+					data={list}
+					style={layout.flex_1}
+					loading={loading}
+					refreshing={refreshing}
+					onRefresh={handleRefresh}
+					placeholder={renderPlaceholder}
+					onEndReached={handleOnEndReach}
+					onEndReachedThreshold={0.01}
+					extractor={(
+						{ id, convo_id }: MessageItemType,
+						index: number,
+					) => `${id}-${convo_id}-${index}`}
+					renderItem={({ item, index }) =>
+						renderInboxItem(item as MessageItemType, index)
+					}
+				/>
+			)}
 
 			{loadingMore && (
 				<Row spacing="center" align="center">
@@ -312,6 +322,10 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 const styles = StyleSheet.create({
 	loaderContainer: {
 		paddingVertical: 15,
+	},
+	inboxLoader: {
+		flex: 1,
+		justifyContent: 'center',
 	},
 });
 
