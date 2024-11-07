@@ -90,7 +90,7 @@ const PaymentInformation = ({
 				const { payment_gateway: paymentGateway } = currentSubscription;
 
 				if (
-					Object.values(PaymentGateways).includes(
+					!Object.values(PaymentGateways).includes(
 						paymentGateway as PaymentGateways,
 					)
 				) {
