@@ -47,7 +47,6 @@ type PaymentStateType = {
 	method: string;
 	name: string | null | undefined;
 	country: string | undefined;
-	allowSkip: boolean;
 };
 
 const PaymentInformation = ({
@@ -64,10 +63,10 @@ const PaymentInformation = ({
 		lastDigits: '',
 		name: '',
 		country: 'AU',
-		allowSkip: true,
 	});
 
 	const [setupPaymentId, setSetupPaymentId] = useState<string>();
+	const [allowSkip, setAllowSkip] = useState<boolean>(true);
 
 	useEffect(() => {
 		void (async () => {
@@ -95,7 +94,7 @@ const PaymentInformation = ({
 						paymentGateway as PaymentGateways,
 					)
 				) {
-					setState({ ...state, allowSkip: false });
+					setAllowSkip(false);
 				}
 			}
 		} catch (e) {
@@ -321,6 +320,14 @@ const PaymentInformation = ({
 		);
 	}, [state?.hasPaymentMethod, routeParams?.setup]);
 
+	const renderSkipButton = useMemo(() => {
+		if (routeParams?.setup && allowSkip) {
+			return <Button title="Skip" onPress={() => void handleSkip()} />;
+		}
+
+		return null;
+	}, [routeParams?.setup, allowSkip]);
+
 	return state?.isLoading ? (
 		<View style={styles.loaderStyle}>
 			<ActivityIndicator size="large" color={config.colors.brand} />
@@ -338,12 +345,7 @@ const PaymentInformation = ({
 				onPress={() => void openPaymentSheet()}
 			/>
 
-			{routeParams?.setup && state?.allowSkip && (
-				<>
-					<Spacer size="md" />
-					<Button title="Skip" onPress={() => void handleSkip()} />
-				</>
-			)}
+			{renderSkipButton}
 		</View>
 	);
 };
