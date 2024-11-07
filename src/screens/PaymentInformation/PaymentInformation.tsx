@@ -24,7 +24,7 @@ import {
 } from '@/types/schemas/payment';
 import { SubscriptionType } from '@/types/schemas/subscription';
 import { UserSchemaType } from '@/types/schemas/user';
-import { Say } from '@/utils';
+import { Constant, Say } from '@/utils';
 import { PaymentGateways } from '@/utils/Enum';
 import { ICatchError } from '@/utils/Say';
 import Stripe from '@/utils/Stripe';
@@ -54,7 +54,8 @@ const PaymentInformation = ({
 	route,
 }: MenuStackNavigatorProps | ApplicationScreenProps) => {
 	const routeParams = route.params as PaymentInformationParams;
-	const { user, updateUser } = useAuth();
+	const { user, updateUser, getApiUrl } = useAuth();
+	const currentApi = getApiUrl();
 
 	const [state, setState] = useState<PaymentStateType>({
 		isLoading: true,
@@ -161,7 +162,7 @@ const PaymentInformation = ({
 				googlePay: {
 					merchantCountryCode: state.country as string,
 					currencyCode: getCurrency(state.country as string),
-					testEnv: true,
+					testEnv: currentApi !== Constant.API_BASE_URLS.PROD,
 				},
 			});
 
