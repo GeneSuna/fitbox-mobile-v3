@@ -6,6 +6,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { Card } from 'react-native-paper';
 
 import { config } from '@/theme/_config';
@@ -18,19 +19,21 @@ const Modal = ({
 	children,
 	...rest
 }: ComponentProps<typeof RnModal>) => {
+	const SafeAreaViewWithGestures = gestureHandlerRootHOC(SafeAreaView);
+
 	return (
 		<RnModal
 			{...rest}
 			transparent={transparent}
 			animationType={animationType}
 		>
-			<SafeAreaView style={styles.safeArea}>
+			<SafeAreaViewWithGestures style={styles.safeArea}>
 				<TouchableOpacity onPress={onDismiss} style={styles.backDrop}>
 					<View style={layout.flex_1} />
 				</TouchableOpacity>
 
 				<Card style={styles.card}>{children}</Card>
-			</SafeAreaView>
+			</SafeAreaViewWithGestures>
 		</RnModal>
 	);
 };

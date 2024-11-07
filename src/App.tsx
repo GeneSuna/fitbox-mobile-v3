@@ -6,7 +6,7 @@ import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import * as Sentry from '@sentry/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import DeviceInfo from 'react-native-device-info';
-import 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { configureFonts, Provider } from 'react-native-paper';
 import PushNotification from 'react-native-push-notification';
 import 'react-native-reanimated';
@@ -15,6 +15,7 @@ import KeyboardVisibilityProvider from './context/KeyboardProvider';
 import SwitchableUserProvider from './context/SwitchableUser';
 import ApplicationNavigator from './navigators/Application';
 import { mmkvStorage } from './storage';
+import layout from './theme/layout';
 import './translations';
 import { NotificationsType } from './types/schemas/notifications';
 
@@ -87,19 +88,21 @@ const customTheme = {
 // eslint-disable-next-line react/function-component-definition
 function App() {
 	return (
-		<QueryClientProvider client={queryClient}>
-			<AuthProvider storage={mmkvStorage}>
-				<ThemeProvider storage={mmkvStorage}>
-					<Provider theme={customTheme}>
-						<KeyboardVisibilityProvider>
-							<SwitchableUserProvider>
-								<ApplicationNavigator />
-							</SwitchableUserProvider>
-						</KeyboardVisibilityProvider>
-					</Provider>
-				</ThemeProvider>
-			</AuthProvider>
-		</QueryClientProvider>
+		<GestureHandlerRootView style={layout.flex_1}>
+			<QueryClientProvider client={queryClient}>
+				<AuthProvider storage={mmkvStorage}>
+					<ThemeProvider storage={mmkvStorage}>
+						<Provider theme={customTheme}>
+							<KeyboardVisibilityProvider>
+								<SwitchableUserProvider>
+									<ApplicationNavigator />
+								</SwitchableUserProvider>
+							</KeyboardVisibilityProvider>
+						</Provider>
+					</ThemeProvider>
+				</AuthProvider>
+			</QueryClientProvider>
+		</GestureHandlerRootView>
 	);
 }
 
