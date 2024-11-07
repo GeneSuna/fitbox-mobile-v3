@@ -166,7 +166,7 @@ const InviteCodeScreen = ({ navigation, route }: MainTabScreenProps) => {
 				}
 
 				userData.show_payment_form = showPaymentForm;
-				userData.show_subscription_from = showSubscriptionForm;
+				userData.show_subscription_form = showSubscriptionForm;
 				userData.waiver_accepted = false;
 
 				updateUser(userData);

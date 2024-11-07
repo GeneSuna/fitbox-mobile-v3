@@ -485,6 +485,20 @@ const ApplicationNavigator = () => {
 									title: 'Invite Code',
 								})}
 							/>
+							<Stack.Screen
+								name="SubscriptionSetup"
+								component={SubscriptionSetup}
+								options={{ title: 'Buy Subscription' }}
+							/>
+							<Stack.Screen
+								name="PaymentSetup"
+								component={PaymentInformation}
+								options={{
+									...TabHeaderOptions,
+									headerBackTitleVisible: false,
+									title: 'Payment Setup',
+								}}
+							/>
 						</Stack.Group>
 
 						<Stack.Group

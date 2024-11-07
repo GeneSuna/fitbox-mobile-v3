@@ -122,7 +122,7 @@ const CardInfoScreen = () => {
 			session.has_payment_details = 'skipped';
 
 			updateUser(session);
-			navigate('ApplicationNavigator', { screen: 'Startup' });
+			navigate('Startup');
 		}
 	};
 
@@ -225,7 +225,7 @@ const CardInfoScreen = () => {
 						title="Skip"
 						labelStyle={styles.skipButtonStyle}
 						dark
-						onPress={void handleskip}
+						onPress={() => handleskip()}
 					/>
 				</View>
 			)}

@@ -41,9 +41,11 @@ export type ApplicationStackParamList = {
 	AddAttendance: AddAttendanceParams;
 	Webview: WebViewParams;
 	HealthCapture: HealthCaptureParams;
+	SubscriptionSetup: SubscriptionSetupParams;
+	PaymentSetup: PaymentInformationParams;
 	Scoring: ScoringParams;
 	ScoreComments: ScoreCommentsParams;
-	PaymentInformationModal: PaymentInformationModalParams;
+	PaymentInformationModal: PaymentInformationParams;
 	BuyNow: SubscriptionSetupParams;
 	ResultTypesModal: undefined;
 	MovementHistory: MovementHistoryParams;
@@ -161,8 +163,9 @@ export type ScoreCommentsParams = {
 	showComments: boolean;
 };
 
-export type PaymentInformationModalParams = {
+export type PaymentInformationParams = {
 	onSuccessCallback?: () => void;
+	setup?: boolean;
 };
 
 export type DashboardStackNavigatorProps = StackScreenProps<DashboardParamList>;
