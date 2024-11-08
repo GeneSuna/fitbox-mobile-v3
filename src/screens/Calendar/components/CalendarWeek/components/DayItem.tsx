@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
 		marginTop: config.metrics.sm,
 		justifyContent: 'center',
 		alignItems: 'center',
+		overflow: 'hidden',
 	},
 	itemDayActive: {
 		backgroundColor: config.fonts.colors.brand,

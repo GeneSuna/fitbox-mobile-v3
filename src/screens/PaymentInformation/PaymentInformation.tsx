@@ -182,6 +182,17 @@ const PaymentInformation = ({
 		}
 	};
 
+	const handleAddPaymentClick = async () => {
+		if (hasDirecDebitMethod) {
+			await Say.okThen(
+				'If you select Direct Debit, Stripe requires at least 9 digits for account numbers. Please add 0s at the front of your account number as required.',
+				'Direct Debit',
+			);
+		}
+
+		void openPaymentSheet();
+	};
+
 	const openPaymentSheet = async () => {
 		const { error } = await presentPaymentSheet();
 
@@ -358,17 +369,7 @@ const PaymentInformation = ({
 				}
 				style={styles.buttonColor}
 				labelStyle={styles.buttonTextStyle}
-				onPress={() => {
-					void openPaymentSheet();
-					if (hasDirecDebitMethod) {
-						setTimeout(() => {
-							Say.ok(
-								'If you select Direct Debit, Stripe requires at least 9 digits for account numbers. Please add 0s at the front of your account number as required.',
-								'Direct Debit',
-							);
-						}, 1000);
-					}
-				}}
+				onPress={() => void handleAddPaymentClick()}
 			/>
 
 			<Spacer />

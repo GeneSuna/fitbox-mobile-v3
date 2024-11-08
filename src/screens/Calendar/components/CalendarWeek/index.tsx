@@ -167,19 +167,6 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		padding: config.metrics.md,
 	},
-	itemDay: {
-		borderRadius: 100,
-		padding: 5,
-		height: config.fonts.metrics.md * 2,
-		width: config.fonts.metrics.md * 2,
-		marginTop: config.metrics.sm,
-		justifyContent: 'center',
-		display: 'flex',
-		alignItems: 'center',
-	},
-	itemDayActive: {
-		backgroundColor: config.fonts.colors.brand,
-	},
 	itemRow: {
 		width: Constant.DEVICEWIDTH,
 		flexDirection: 'row',
