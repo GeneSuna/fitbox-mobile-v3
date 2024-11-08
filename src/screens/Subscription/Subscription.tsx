@@ -9,9 +9,10 @@ import layout from '@/theme/layout';
 import { GetSubscriptionInfoType } from '@/types/schemas/response';
 import { TransactionsType } from '@/types/schemas/subscription';
 import { Say } from '@/utils';
+import { useFocusEffect } from '@react-navigation/native';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
 	ActivityIndicator,
 	StyleSheet,
@@ -29,20 +30,24 @@ const Subscription = () => {
 	const [isToggleLoading, setIsToggleLoading] = useState<boolean>(false);
 	const [toggledSections, setToggledSections] = useState<string[]>([]);
 
-	useEffect(() => {
-		void (async () => {
-			setIsLoading(true);
-			try {
-				const res = await getSubscriptionInfo();
-				setData(res);
-				setIsLoading(false);
-			} catch (e) {
-				// eslint-disable-next-line no-console
-				console.log('error', e);
-				setIsLoading(false);
-			}
-		})();
-	}, []);
+	useFocusEffect(
+		useCallback(() => {
+			const loadSubscriptionInfo = async () => {
+				setIsLoading(true);
+				try {
+					const res = await getSubscriptionInfo();
+					setData(res);
+					setIsLoading(false);
+				} catch (e) {
+					// eslint-disable-next-line no-console
+					console.log('error', e);
+					setIsLoading(false);
+				}
+			};
+
+			void loadSubscriptionInfo();
+		}, []),
+	);
 
 	// functions
 	const onToggleSwitch = async () => {
