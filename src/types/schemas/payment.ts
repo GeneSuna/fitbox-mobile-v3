@@ -131,8 +131,8 @@ export const CardDetailsSchema = z
 export type CardDetailsType = z.infer<typeof CardDetailsSchema>;
 
 export const PaymentIntentSchema = z.object({
-	clientSecret: z.string(),
-	paymentMethodType: z.array(z.string()),
-	id: z.string(),
+	clientSecret: z.string().nullish(),
+	paymentMethodType: z.array(z.string()).nullish(),
+	id: z.string().nullish(),
 	success: z.boolean(),
 });

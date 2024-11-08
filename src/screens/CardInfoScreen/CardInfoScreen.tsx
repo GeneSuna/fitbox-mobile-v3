@@ -95,7 +95,7 @@ const CardInfoScreen = () => {
 			const res = await setupPaymentIntent();
 
 			const queryParams: QueryParamsTypes = {
-				cs: res.clientSecret,
+				cs: res.clientSecret || '',
 				pmt: JSON.stringify(res.paymentMethodType),
 				uid: user?.user_data.user_id as number,
 			};

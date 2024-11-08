@@ -143,7 +143,7 @@ const PaymentInformation = ({
 
 			const initResponse = await initPaymentSheet({
 				merchantDisplayName: 'fitbox',
-				setupIntentClientSecret: res.clientSecret,
+				setupIntentClientSecret: res.clientSecret || '',
 				billingDetailsCollectionConfiguration: {
 					name: PaymentSheet.CollectionMode.ALWAYS,
 				},
@@ -165,7 +165,9 @@ const PaymentInformation = ({
 				},
 			});
 
-			setSetupPaymentId(res.id);
+			if (res.id) {
+				setSetupPaymentId(res.id);
+			}
 
 			if (initResponse.error) {
 				Say.err('Something went wrong');

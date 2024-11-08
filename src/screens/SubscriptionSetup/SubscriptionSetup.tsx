@@ -173,8 +173,8 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 		})();
 	}, []);
 
-	const handleSkip = (isFree = false) => {
-		if (fromSubscription) {
+	const handleSkip = (isFree = false, navigateToStartup = true) => {
+		if (fromSubscription && navigateToStartup) {
 			navigation.pop();
 		}
 
@@ -187,7 +187,7 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 
 			setAppState('fromAcceptInvite', false);
 			updateUser(session);
-			navigate('Startup');
+			if (navigateToStartup) navigate('Startup');
 		}
 	};
 
@@ -239,19 +239,28 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 
 				// purchase now callback
 				// go back to subscription screen if from subscription
+				let popScreen = false;
+
 				if (state.isBuyNow) {
 					onSuccessPurchase?.();
-					navigation.pop();
+					popScreen = true;
 				}
 
-				if (fromSubscription) navigation.pop();
+				if (fromSubscription) {
+					popScreen = true;
+				}
+
+				if (popScreen) navigation.pop();
 			}
 
 			setState({ ...state, processing: false });
 
 			// handle skip
 			if (!state.isBuyNow) {
-				handleSkip(Boolean(product?.type === 'free'));
+				handleSkip(
+					Boolean(product?.type === 'free'),
+					!fromSubscription,
+				);
 			}
 		} catch (e) {
 			// eslint-disable-next-line no-console

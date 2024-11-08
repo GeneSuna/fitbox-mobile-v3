@@ -1,19 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { Brand } from '@/components/molecules';
+import { Brand, Loader } from '@/components/molecules';
 import { SafeScreen } from '@/components/template';
 import { useTheme } from '@/theme';
 
 import useAuth from '@/auth/hooks/useAuth';
+import { Spacer } from '@/components/atoms';
 import { getApiToken } from '@/services/instance';
 import type { ApplicationScreenProps } from '@/types/navigation';
 import useStore from '@/zustand/Store';
 
 const Startup = ({ navigation }: ApplicationScreenProps) => {
-	const { layout, gutters, fonts } = useTheme();
+	const { layout, fonts } = useTheme();
 	const { t } = useTranslation(['startup']);
 
 	const { fromAcceptInvite } = useStore(state => ({
@@ -22,7 +23,7 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 
 	const { isLoggedIn, user, signOut } = useAuth();
 
-	const { isSuccess, isFetching, isError } = useQuery({
+	const { isSuccess, isError } = useQuery({
 		queryKey: ['startup'],
 		queryFn: () => {
 			return Promise.resolve(true);
@@ -131,12 +132,11 @@ const Startup = ({ navigation }: ApplicationScreenProps) => {
 				]}
 			>
 				<Brand />
-				{isFetching && (
-					<ActivityIndicator
-						size="large"
-						style={[gutters.marginVertical_24]}
-					/>
-				)}
+
+				<Spacer size="lg" />
+
+				<Loader size="xxl" />
+
 				{isError && (
 					<Text style={[fonts.size_16, fonts.red500]}>
 						{t('startup:error')}
