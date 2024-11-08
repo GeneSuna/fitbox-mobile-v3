@@ -55,6 +55,8 @@ const PaymentInformation = ({
 	const routeParams = route.params as PaymentInformationParams;
 	const { user, updateUser, getApiUrl } = useAuth();
 	const currentApi = getApiUrl();
+	const [hasDirecDebitMethod, setHasDirecDebitMethod] =
+		useState<boolean>(false);
 
 	const [state, setState] = useState<PaymentStateType>({
 		isLoading: true,
@@ -140,6 +142,9 @@ const PaymentInformation = ({
 	const setUpPaymentIntent = async () => {
 		try {
 			const res = await setupPaymentIntent();
+			const hasDirectDebit =
+				res?.paymentMethodType?.includes('au_becs_debit');
+			setHasDirecDebitMethod(hasDirectDebit as boolean);
 
 			const initResponse = await initPaymentSheet({
 				merchantDisplayName: 'fitbox',
@@ -283,17 +288,9 @@ const PaymentInformation = ({
 		if (routeParams?.setup) {
 			return (
 				<View style={{ marginBottom: config.metrics.sm }}>
-					<Image
-						style={styles.logo}
-						source={stripeLogo as ImageSourcePropType}
-						resizeMode="contain"
-					/>
-
-					<Spacer size="md" />
-
 					<Text size="md" center color="darkgray">
-						Setup Payment Details this will be used for all future
-						payments
+						Setup your payment details. You can change these any
+						time in the future.
 					</Text>
 				</View>
 			);
@@ -302,7 +299,7 @@ const PaymentInformation = ({
 		return state?.hasPaymentMethod ? (
 			<>
 				<Text size="md" bold center>
-					Your current Payment Details:
+					Your Current Payment Details:
 				</Text>
 				<Spacer size="lg" />
 				<Row spacing="space-between">
@@ -320,7 +317,12 @@ const PaymentInformation = ({
 				You havent setup any payments yet
 			</Text>
 		);
-	}, [state?.hasPaymentMethod, routeParams?.setup]);
+	}, [
+		state?.hasPaymentMethod,
+		routeParams?.setup,
+		state.lastDigits,
+		state.method,
+	]);
 
 	const renderSkipButton = useMemo(() => {
 		if (routeParams?.setup && allowSkip) {
@@ -336,15 +338,37 @@ const PaymentInformation = ({
 		</View>
 	) : (
 		<View style={{ ...layout.flex_1, padding: config.metrics.xl }}>
+			<Image
+				style={styles.logo}
+				source={stripeLogo as ImageSourcePropType}
+				resizeMode="contain"
+			/>
+
+			<Spacer size="md" />
 			{renderPaymentInfo}
 
 			<Spacer size="lg" />
 
 			<Button
-				title="Add/Update Payment Details"
+				title={
+					routeParams?.setup ||
+					(state.method === '' && state.lastDigits === '')
+						? 'Add Payment Details'
+						: 'Add/Update Payment Details'
+				}
 				style={styles.buttonColor}
 				labelStyle={styles.buttonTextStyle}
-				onPress={() => void openPaymentSheet()}
+				onPress={() => {
+					void openPaymentSheet();
+					if (hasDirecDebitMethod) {
+						setTimeout(() => {
+							Say.ok(
+								'If you select Direct Debit, Stripe requires at least 9 digits for account numbers. Please add 0s at the front of your account number as required.',
+								'Direct Debit',
+							);
+						}, 1000);
+					}
+				}}
 			/>
 
 			{renderSkipButton}
@@ -359,10 +383,10 @@ const styles = StyleSheet.create({
 	},
 	buttonTextStyle: {
 		fontSize: config.metrics.md,
-		color: config.backgrounds.darkgray,
+		color: config.backgrounds.light,
 	},
 	buttonColor: {
-		backgroundColor: '#ABEDFF',
+		backgroundColor: config.colors.brand,
 	},
 	loaderStyle: {
 		flex: 1,

@@ -540,7 +540,7 @@ const ApplicationNavigator = () => {
 								name="PaymentInformationModal"
 								component={PaymentInformation}
 								options={{
-									title: 'Payment Information',
+									title: 'Payment Details',
 									headerRight: HeaderCloseButton,
 									headerLeft: () => null,
 								}}

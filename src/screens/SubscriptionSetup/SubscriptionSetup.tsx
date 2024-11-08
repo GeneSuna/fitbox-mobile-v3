@@ -99,7 +99,7 @@ const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
 			};
 		} else if (fromSubscription) {
 			navOptions = {
-				title: 'New Subscription',
+				title: 'New Membership',
 			};
 		} else if (state.isBuyNow) {
 			navOptions = {

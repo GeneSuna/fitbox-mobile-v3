@@ -1377,7 +1377,7 @@ PODS:
     - Yoga
   - react-native-render-html (6.3.4):
     - React-Core
-  - react-native-safe-area-context (4.13.1):
+  - react-native-safe-area-context (4.14.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1390,8 +1390,8 @@ PODS:
     - React-featureflags
     - React-graphics
     - React-ImageManager
-    - react-native-safe-area-context/common (= 4.13.1)
-    - react-native-safe-area-context/fabric (= 4.13.1)
+    - react-native-safe-area-context/common (= 4.14.0)
+    - react-native-safe-area-context/fabric (= 4.14.0)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-rendererdebug
@@ -1400,7 +1400,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context/common (4.13.1):
+  - react-native-safe-area-context/common (4.14.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1421,7 +1421,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context/fabric (4.13.1):
+  - react-native-safe-area-context/fabric (4.14.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1817,8 +1817,27 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNCMaskedView (0.3.1):
+  - RNCMaskedView (0.3.2):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNCPushNotificationIOS (1.11.0):
     - React-Core
   - RNDateTimePicker (8.2.0):
@@ -2501,7 +2520,7 @@ SPEC CHECKSUMS:
   react-native-blob-util: 356047c561b3506396852bc0d7988243f74dd77d
   react-native-mmkv: fb501d25ce65d16a1fad3296f7fc69150a1f0788
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
-  react-native-safe-area-context: b7c0ac799a7718ed070974ad6d0c8045c455838a
+  react-native-safe-area-context: f826417dadd1c1042c59355fb050682a9839f990
   react-native-simple-toast: 4abe0a2cf59e2e4617720752ce8da62c659c1df7
   react-native-video: 88a9199e21fed8ef57841c4837eacb504c4f1af9
   react-native-webview: 64479bd56c0730e2be2908835ee968d6d83b1fb3
@@ -2533,7 +2552,7 @@ SPEC CHECKSUMS:
   ReactCodegen: ee779c5ae16faa2d22fddc1d85d8f5e87999f460
   ReactCommon: 0e529e04289b43b55281c109c19e9141f4f8d2e2
   RNCClipboard: df38bb41ad5b85865af186f060591536417c8b73
-  RNCMaskedView: 090213d32d8b3bb83a4dcb7d12c18f0152591906
+  RNCMaskedView: 381d041f80e6bf7983d2c058a34362e6a362ce01
   RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
   RNDateTimePicker: b4dbbbe7a49cf4c9d9c01179f6d30242018e20da
   RNDeviceInfo: b899ce37a403a4dea52b7cb85e16e49c04a5b88e

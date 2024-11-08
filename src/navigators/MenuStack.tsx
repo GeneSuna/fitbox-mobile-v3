@@ -37,14 +37,14 @@ const MenuStackNavigator = () => {
 				name="Subscription"
 				component={Subscription}
 				options={{
-					title: 'Membership Information',
+					title: 'Memberships',
 				}}
 			/>
 			<Stack.Screen
 				name="SubscriptionDetails"
 				component={SubscriptionDetails}
 				options={{
-					title: 'Membership Information',
+					title: 'Memberships',
 				}}
 			/>
 			<Stack.Screen
@@ -55,7 +55,7 @@ const MenuStackNavigator = () => {
 				name="PaymentInformation"
 				component={PaymentInformation}
 				options={{
-					title: 'Payment Information',
+					title: 'Payment Details',
 				}}
 			/>
 			<Stack.Screen
