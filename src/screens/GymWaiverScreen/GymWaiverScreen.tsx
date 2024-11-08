@@ -5,7 +5,7 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ApplicationScreenProps } from '@/types/navigation';
 import { UserSchemaType } from '@/types/schemas/user';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
 	ActivityIndicator,
 	Alert,
@@ -22,7 +22,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import WebView from 'react-native-webview';
 
 type StateTypes = {
-	waiver: string;
 	loading: boolean;
 	accepting: boolean;
 	downloading: boolean;
@@ -31,21 +30,24 @@ type StateTypes = {
 const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 	const { signOut, user, updateUser } = useAuth();
 	const [state, setState] = useState<StateTypes>({
-		waiver: '',
-		accepting: false,
 		loading: true,
+		accepting: false,
 		downloading: false,
 	});
+
+	const [isLoading, setIsLoading] = useState(true);
+	const waiverRef = useRef<string>('');
 
 	useEffect(() => {
 		void (async () => {
 			try {
 				const res = await getWaiver();
-				if (!res.error && res.url && res.url !== '')
-					setState({ ...state, loading: false, waiver: res.url });
+				if (!res.error && res.url && res.url !== '') {
+					waiverRef.current = res.url;
+					setState(prevState => ({ ...prevState, loading: false }));
+				}
 			} catch (e) {
 				Alert.alert(e as string);
-				setState({ ...state, loading: false });
 			}
 		})();
 	}, []);
@@ -75,7 +77,8 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 	}, []);
 
 	const handleDownload = async () => {
-		if (!state.waiver || state.waiver === '') {
+		const waiverUrl = waiverRef.current;
+		if (!waiverUrl || waiverUrl === '') {
 			Alert.alert('No waiver to download');
 			return false;
 		}
@@ -105,7 +108,7 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 					? fs.dirs.DocumentDir
 					: fs.dirs.PictureDir;
 
-			const pathPieces = state.waiver.split('.');
+			const pathPieces = waiverRef.current.split('.');
 
 			const ext = pathPieces[pathPieces.length - 1];
 
@@ -119,7 +122,7 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 			};
 
 			configFunction(options)
-				.fetch('GET', state.waiver)
+				.fetch('GET', waiverRef.current)
 				.then(() => {
 					SimpleToast.show(
 						'Waiver downloaded successfully',
@@ -171,14 +174,24 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 		</View>
 	) : (
 		<View style={styles.container}>
+			{isLoading && (
+				<View style={styles.loader}>
+					<ActivityIndicator
+						size="large"
+						color={config.colors.brand}
+					/>
+				</View>
+			)}
 			<View style={layout.flex_1}>
 				<WebView
 					style={layout.flex_1}
 					source={{
 						uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(
-							state.waiver,
+							waiverRef.current,
 						)}`,
 					}}
+					onLoadStart={() => setIsLoading(true)}
+					onLoadEnd={() => setIsLoading(false)}
 				/>
 			</View>
 			<Spacer size="lg" />

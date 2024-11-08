@@ -371,6 +371,8 @@ const PaymentInformation = ({
 				}}
 			/>
 
+			<Spacer />
+
 			{renderSkipButton}
 		</View>
 	);
