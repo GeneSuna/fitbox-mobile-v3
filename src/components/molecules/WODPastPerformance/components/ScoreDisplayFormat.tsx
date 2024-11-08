@@ -116,11 +116,17 @@ const ScoreDisplayFormat = ({ data }: ScoreDisplayFormatProps) => {
 		case 20: {
 			// For Load
 			const weight = data?.weight ?? data.value;
+			const reps = data.reps === '0' ? 1 : data.reps;
+			const isRepsSameValue =
+				typeof reps === 'string' &&
+				reps.includes('-') &&
+				reps.split('-').every(val => val === reps.split('-')[0]);
+			const displayReps = isRepsSameValue ? reps.split('-')[0] : reps;
+
 			return (
 				<Row>
 					<Text size="md" color="darkgray">
-						{data.rounds ?? data.sets ?? 1} x{' '}
-						{data.reps === '0' ? 1 : data.reps} @
+						{data.rounds ?? data.sets ?? 1} x {displayReps} @
 					</Text>
 					<Text size="md" color="darkgray" bold>
 						{` ${weight} ${data.weight_unit || 'kg'}`}
