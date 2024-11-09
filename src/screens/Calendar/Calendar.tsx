@@ -153,9 +153,8 @@ const Calendar = () => {
 	}, []);
 
 	const loadClasses = () => {
-		// create a range from current date to 3 days ago and 3 days ahead
-		const startDate = moment(currentDate).startOf('isoWeek');
-		const endDate = moment(currentDate).endOf('isoWeek');
+		const startDate = moment(currentDate);
+		const endDate = moment(startDate).add(1, 'days');
 
 		// Generate an array of dates from startDate to endDate
 		const week = [];
