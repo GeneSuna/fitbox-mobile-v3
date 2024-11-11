@@ -23,7 +23,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
 import { isArray, isEmpty, parseInt } from 'lodash';
 import { useCallback, useState } from 'react';
-import { StyleSheet, TouchableOpacity, Text as Txt, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import WebView from 'react-native-webview';
 
@@ -36,7 +36,7 @@ const WarningText = ({ text }: { text: string }) => (
 		style={{
 			marginTop: metrics.xl,
 			paddingHorizontal: metrics.xl,
-			...styles.warningTxt,
+			...styles.warningText,
 		}}
 	>
 		{text}
@@ -233,16 +233,17 @@ const SessionsSectionsTab = ({
 									</View>
 								)}
 								<Row>
-									<Txt
+									<Text
 										style={{
 											...layout.fontInterBold,
 											fontSize: fonts.metrics.lg,
 
 											...layout.flex_1,
 										}}
+										allowFontScaling={false}
 									>
 										{section.name}
-									</Txt>
+									</Text>
 
 									<MIcon
 										name={
@@ -260,7 +261,7 @@ const SessionsSectionsTab = ({
 								<View style={styles.sessionContainer}>
 									{section.scoring_type &&
 										section.scoring_by === 'section' && (
-											<Txt
+											<Text
 												style={{
 													...layout.fontInterRegular,
 													fontSize:
@@ -270,13 +271,13 @@ const SessionsSectionsTab = ({
 												}}
 											>
 												{section.scoring_type.name}
-											</Txt>
+											</Text>
 										)}
 
 									<Row>
 										{section.sets !== 0 &&
 											section.sets != null && (
-												<Txt
+												<Text
 													style={{
 														...layout.fontInterRegular,
 														fontSize:
@@ -287,11 +288,11 @@ const SessionsSectionsTab = ({
 													}}
 												>
 													{section.sets} Set(s){' '}
-												</Txt>
+												</Text>
 											)}
 										{section.rounds !== 0 &&
 											section.rounds != null && (
-												<Txt
+												<Text
 													style={{
 														...layout.fontInterRegular,
 														fontSize:
@@ -302,10 +303,10 @@ const SessionsSectionsTab = ({
 													}}
 												>
 													{section.rounds} Round(s){' '}
-												</Txt>
+												</Text>
 											)}
 										{section.reps !== '' && (
-											<Txt
+											<Text
 												style={{
 													...layout.fontInterRegular,
 													fontSize:
@@ -316,13 +317,13 @@ const SessionsSectionsTab = ({
 											>
 												{' '}
 												{section.reps} reps
-											</Txt>
+											</Text>
 										)}
 									</Row>
 
 									{section.duration !== 0 &&
 										section.duration != null && (
-											<Txt
+											<Text
 												style={{
 													...layout.fontInterRegular,
 													fontSize:
@@ -332,7 +333,7 @@ const SessionsSectionsTab = ({
 												}}
 											>
 												{section.duration} min(s)
-											</Txt>
+											</Text>
 										)}
 
 									{isShowEmbed && (
@@ -408,7 +409,7 @@ const SessionsSectionsTab = ({
 														{reps &&
 															reps !== '' && (
 																<>
-																	<Txt
+																	<Text
 																		style={{
 																			...layout.fontInterBold,
 																			fontSize:
@@ -422,14 +423,14 @@ const SessionsSectionsTab = ({
 																		}}
 																	>
 																		{reps}
-																	</Txt>
+																	</Text>
 																	<Spacer
 																		size="sm"
 																		horizontal
 																	/>
 																</>
 															)}
-														<Txt
+														<Text
 															style={{
 																...layout.fontInterBold,
 																fontSize:
@@ -441,7 +442,7 @@ const SessionsSectionsTab = ({
 															{
 																movementDetails.name
 															}
-														</Txt>
+														</Text>
 													</Row>
 
 													<Row>
@@ -508,7 +509,7 @@ const SessionsSectionsTab = ({
 												{section.scoring_type &&
 													section.scoring_by ===
 														'movement' && (
-														<Txt
+														<Text
 															style={{
 																...layout.fontInterRegular,
 																fontSize:
@@ -526,7 +527,7 @@ const SessionsSectionsTab = ({
 																	.scoring_type
 																	.name
 															}
-														</Txt>
+														</Text>
 													)}
 
 												{movementParams.map(
@@ -544,7 +545,7 @@ const SessionsSectionsTab = ({
 																		],
 																	),
 																) > 0 && (
-																	<Txt
+																	<Text
 																		key={
 																			mov_param.key
 																		}
@@ -573,7 +574,7 @@ const SessionsSectionsTab = ({
 																				`${mov_param.key}_unit`
 																			],
 																		)}
-																	</Txt>
+																	</Text>
 																)
 															);
 														}
@@ -671,7 +672,7 @@ const SessionsSectionsTab = ({
 												size={fonts.metrics.xxl}
 											/>
 											<Spacer horizontal size="xs" />
-											<Txt
+											<Text
 												style={{
 													...layout.fontInterBold,
 													color: config.colors.info,
@@ -680,7 +681,7 @@ const SessionsSectionsTab = ({
 												}}
 											>
 												Coach Notes
-											</Txt>
+											</Text>
 										</Row>
 									) : null}
 
@@ -704,7 +705,7 @@ const SessionsSectionsTab = ({
 												size={fonts.metrics.xxl}
 											/>
 											<Spacer horizontal size="xs" />
-											<Txt
+											<Text
 												style={{
 													...layout.fontInterBold,
 													color: config.colors.info,
@@ -713,7 +714,7 @@ const SessionsSectionsTab = ({
 												}}
 											>
 												Member Notes
-											</Txt>
+											</Text>
 										</Row>
 									) : null}
 
@@ -859,7 +860,7 @@ const styles = StyleSheet.create({
 		right: metrics.md,
 		backgroundColor: fonts.colors.brand,
 	},
-	warningTxt: {
+	warningText: {
 		color: '#595959',
 		textAlign: 'center',
 		fontSize: 16,
