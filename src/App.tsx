@@ -27,11 +27,11 @@ Sentry.init({
 	release: `fitbox@${version}+${build}`,
 
 	// start - disable this lines for HMD devices
-	_experiments: {
-		replaysOnErrorSampleRate: 1.0,
-		replaysSessionSampleRate: 1.0,
-	},
-	integrations: [Sentry.mobileReplayIntegration],
+	// _experiments: {
+	// 	replaysOnErrorSampleRate: 1.0,
+	// 	replaysSessionSampleRate: 1.0,
+	// },
+	// integrations: [Sentry.mobileReplayIntegration],
 	// end - disable this lines for HMD devices
 
 	// uncomment the line below to enable Spotlight (https://spotlightjs.com)
