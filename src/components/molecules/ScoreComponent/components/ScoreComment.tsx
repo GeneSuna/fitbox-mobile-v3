@@ -70,7 +70,7 @@ const ScoreComment = ({
 						val => onCommentChange(val)
 						// this.setState({ commentValue: val })
 					}
-					value={commentValue || ''}
+					defaultValue={commentValue || ''}
 					placeholder="Comments/Notes"
 					multiline
 					allowFontScaling={false}
