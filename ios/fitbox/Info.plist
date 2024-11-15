@@ -114,5 +114,7 @@
 	<false/>
 	<key>MinimumOSVersion</key>
     <string>14.0</string>
+	<key>UIUserInterfaceStyle</key>
+    <string>Light</string>
 </dict>
 </plist>
