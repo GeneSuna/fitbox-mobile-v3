@@ -231,8 +231,8 @@ const Dashboard = () => {
 			setAppState('logo', gymInfo.logo);
 
 			// set gym logo and banner
-			setGymLogo(Func.addTimeStamp(gymInfo.logo));
-			setGymBanner(Func.addTimeStamp(String(gymInfo.banner)));
+			setGymLogo(gymInfo.logo);
+			setGymBanner(String(gymInfo.banner));
 
 			setShowAttendanceReport(gymInfo.allow_attendance_report);
 		}

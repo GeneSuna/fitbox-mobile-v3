@@ -52,7 +52,11 @@ import {
 } from './subscription';
 import {
 	ChildDataSchema,
+	FialedInvoiceSchema,
+	HealthSchema,
+	InjuriesSchema,
 	ParentInfoSchema,
+	ProfileSchema,
 	RegisterUserDataSchema,
 	UserHealthInfoSchema,
 	UserProfileSchema,
@@ -380,6 +384,13 @@ export const GetWorkoutResponseSchema = apiResponseSchema(
 		favorite: z.array(WorkoutSchema),
 	}),
 );
+
+export const GetAttendanceProfileResponseSchema = z.object({
+	failedInvoices: FialedInvoiceSchema,
+	health: HealthSchema,
+	injuries: InjuriesSchema,
+	profile: ProfileSchema,
+});
 
 export const GetMinVersionSchema = z.object({
 	minVersion: z.string(),

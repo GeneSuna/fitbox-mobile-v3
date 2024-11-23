@@ -16,6 +16,7 @@ import {
 	InviteCodeScreen,
 	Landing,
 	Login,
+	MyDetails,
 	PDFViewerScreen,
 	PaymentInformation,
 	ResetPassword,
@@ -25,6 +26,8 @@ import {
 	Shop,
 	SignUp,
 	Startup,
+	Subscription,
+	SubscriptionDetails,
 	SubscriptionSetup,
 	WebView,
 } from '@/screens';
@@ -550,6 +553,32 @@ const ApplicationNavigator = () => {
 									...TabHeaderOptions,
 									headerBackTitleVisible: false,
 									title: 'Payment Setup',
+								}}
+							/>
+							<Stack.Screen
+								name="MyDetails"
+								component={MyDetails}
+								options={{
+									...TabHeaderOptions,
+									headerBackTitleVisible: false,
+								}}
+							/>
+							<Stack.Screen
+								name="Subscription"
+								component={Subscription}
+								options={{
+									title: 'Memberships',
+									...TabHeaderOptions,
+									headerBackTitleVisible: false,
+								}}
+							/>
+							<Stack.Screen
+								name="SubscriptionDetails"
+								component={SubscriptionDetails}
+								options={{
+									title: 'Memberships',
+									...TabHeaderOptions,
+									headerBackTitleVisible: false,
 								}}
 							/>
 						</Stack.Group>

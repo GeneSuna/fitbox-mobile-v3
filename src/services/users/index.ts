@@ -1,5 +1,6 @@
 export { default as changeProfileImage } from './changeProfileimage';
 export { default as fetchOne } from './fetchOne';
+export { default as getAttendanceProfile } from './getAttendanceProfile';
 export { default as getBookedSessions } from './getBookedSessions';
 export { default as getChildInfo } from './getChildInfo';
 export { default as getParentInfo } from './getParentInfo';
