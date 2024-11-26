@@ -148,7 +148,7 @@ const BETA_ACTIVE = 'https://fitbox.iq/beta_active';
  * Min Version URL
  * just put empty string if you don't want to check for min version
  */
-const MIN_VERSION_URL = '';
+const MIN_VERSION_URL = 'https://fitbox.iq/appVersionConfig.json';
 
 export default {
 	ENABLE_ENV_PICKER,
