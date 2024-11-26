@@ -69,7 +69,7 @@ import { Constant, Func } from '@/utils';
 import useStore from '@/zustand/Store';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { Badge } from 'react-native-paper';
 import DashboardStackNavigator, { ResetToDashboard } from './DashboardStack';
@@ -669,7 +669,7 @@ const styles = StyleSheet.create({
 	badgeStyle: {
 		position: 'absolute',
 		top: 10,
-		right: 23,
+		right: Platform.OS === 'ios' && Platform.isPad ? -5 : 23,
 		backgroundColor: config.colors.brand,
 	},
 });
