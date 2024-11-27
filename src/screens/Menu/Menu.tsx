@@ -1,7 +1,7 @@
 import useAuth from '@/auth/hooks/useAuth';
 import { ScrollView, Text } from '@/components/atoms';
 import useSwitchableUsers from '@/hooks/useSwitchableUsers';
-import { resetRoot } from '@/navigators/NavigationRef';
+import { navigate, resetRoot } from '@/navigators/NavigationRef';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
@@ -173,13 +173,13 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 	const onClick = (id: string) => {
 		switch (id) {
 			case 'information':
-				navigation.navigate('MyDetails');
+				navigate('MyDetails');
 				break;
 			case 'child-account':
 				navigation.navigate('SwitchUser');
 				break;
 			case 'subscription':
-				navigation.navigate('Subscription');
+				navigate('Subscription');
 				break;
 			case 'payments':
 				navigation.navigate('PaymentInformation');

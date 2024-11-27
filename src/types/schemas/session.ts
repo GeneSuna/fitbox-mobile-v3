@@ -480,6 +480,10 @@ const SessionMemberAttendanceUseSchema = z.object({
 	profile_image: z.string().url(),
 	email: z.string().optional(),
 	payments: z.array(paymentSchema),
+	hasHealth: z.boolean().optional(),
+	hasInjury: z.boolean().optional(),
+	hasFailedInvoices: z.boolean().optional(),
+	dob: z.string().optional(),
 });
 
 export type SessionMemberAttendanceSchemaType = z.infer<

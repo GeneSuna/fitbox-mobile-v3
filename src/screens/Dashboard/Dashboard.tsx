@@ -92,6 +92,8 @@ const Dashboard = () => {
 	const timezone = user?.user_data.dob.timezone as string;
 	// const headerHeight = useHeaderHeight();
 
+	const headerMarginTop = Platform.OS === 'ios' && Platform.isPad ? 50 : 0;
+
 	const url = getApiUrl();
 
 	const navigationTest =
@@ -231,8 +233,8 @@ const Dashboard = () => {
 			setAppState('logo', gymInfo.logo);
 
 			// set gym logo and banner
-			setGymLogo(Func.addTimeStamp(gymInfo.logo));
-			setGymBanner(Func.addTimeStamp(String(gymInfo.banner)));
+			setGymLogo(gymInfo.logo);
+			setGymBanner(String(gymInfo.banner));
 
 			setShowAttendanceReport(gymInfo.allow_attendance_report);
 		}
@@ -873,7 +875,11 @@ const Dashboard = () => {
 
 			<Spacer />
 
-			<ScrollView refreshing={refreshing} onRefresh={onRefresh}>
+			<ScrollView
+				refreshing={refreshing}
+				onRefresh={onRefresh}
+				style={{ marginTop: headerMarginTop }}
+			>
 				<View style={styles.section}>
 					<View>
 						{renderDashboardComponents()}

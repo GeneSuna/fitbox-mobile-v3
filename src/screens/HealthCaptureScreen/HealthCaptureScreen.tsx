@@ -77,6 +77,8 @@ const HealthCaptureScreen = ({
 }: MenuStackNavigatorProps | ApplicationScreenProps) => {
 	const { user, updateUser } = useAuth();
 
+	const params = route.params as HealthCaptureParams;
+
 	const [state, setState] = useState<StateProps>({
 		gymInfo: null,
 		loading: true,
@@ -92,6 +94,12 @@ const HealthCaptureScreen = ({
 		focusedRow: null,
 		focusedInput: null,
 	});
+
+	if (params?.fromAttendance) {
+		navigation.setOptions({
+			headerLeft: () => null,
+		});
+	}
 
 	useEffect(() => {
 		void (async () => {
@@ -294,9 +302,11 @@ const HealthCaptureScreen = ({
 		newUserInfo.is_health_captured = true;
 
 		updateUser(newUserInfo);
-
-		if ((route.params as HealthCaptureParams)?.fromMenu) {
+		if (params?.fromMenu) {
 			navigate('Menu');
+		} else if (params?.fromAttendance && params?.updateAttendanceProfile) {
+			navigation.goBack();
+			params.updateAttendanceProfile(true);
 		} else {
 			navigation.dispatch(
 				CommonActions.reset({
@@ -313,6 +323,13 @@ const HealthCaptureScreen = ({
 
 	const handleSelectRow = (focusedRow: number) => {
 		setState(prevState => ({ ...prevState, focusedRow }));
+	};
+
+	const goBackToAttendanceProfile = () => {
+		if (params?.updateAttendanceProfile) {
+			navigation.goBack();
+			params.updateAttendanceProfile(false);
+		}
 	};
 
 	const handleSubmit = async () => {
@@ -335,11 +352,11 @@ const HealthCaptureScreen = ({
 
 			const saveData: DataObject[] = [];
 			question.data.forEach(thatData => {
-				const params: DataObject = {};
+				const paramsObj: DataObject = {};
 				thatData.forEach(theData => {
-					params[theData.slug] = theData.value as string | number;
+					paramsObj[theData.slug] = theData.value as string | number;
 				});
-				saveData.push(params);
+				saveData.push(paramsObj);
 			});
 
 			payload[question.qid] = {
@@ -725,15 +742,18 @@ const HealthCaptureScreen = ({
 					style={styles.submitButtonStyle}
 					loading={state.submitting}
 				/>
-				{user?.user_data.is_health_captured ||
-				(route.params as HealthCaptureParams)?.fromMenu ? (
+				{user?.user_data.is_health_captured || params?.fromMenu ? (
 					<Button
 						labelStyle={{
 							...styles.submitLabelStyle,
 							color: config.backgrounds.darkgray,
 						}}
 						title="Go back"
-						onPress={() => void goToMainMenu()}
+						onPress={() =>
+							params?.fromAttendance
+								? void goBackToAttendanceProfile()
+								: void goToMainMenu()
+						}
 						style={styles.goBackButtonStyle}
 					/>
 				) : null}

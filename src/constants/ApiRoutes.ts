@@ -12,6 +12,7 @@ export default {
 	checkEmail: `${v2}user/checkEmail`,
 	validateInvite: `${v2}user/validateInvite`,
 	acceptInvite: `${v2}user/acceptInvite`,
+	attendanceProfile: `${v1}user/attendanceProfile`,
 	wod: `${v1}wod`,
 	attendStatus: `${v1}fitbox/leaderboard/attend-sessions`,
 	scoreMissingWods: `${v1}fitbox/leaderboard/wod-attended`,

@@ -49,6 +49,9 @@ export type ApplicationStackParamList = {
 	BuyNow: SubscriptionSetupParams;
 	ResultTypesModal: undefined;
 	MovementHistory: MovementHistoryParams;
+	MyDetails: MyDetailsParams;
+	Subscription: SubscriptionParams;
+	SubscriptionDetails: SubscriptionDetailsParams;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
@@ -112,6 +115,18 @@ export type SubscriptionSetupParams = {
 
 export type HealthCaptureParams = {
 	fromMenu?: boolean;
+	fromAttendance?: boolean;
+	updateAttendanceProfile?: (toUpdate?: boolean) => void;
+};
+
+export type MyDetailsParams = {
+	fromAttendance?: boolean;
+	updateAttendanceProfile?: (toUpdate?: boolean) => void;
+};
+
+export type SubscriptionParams = {
+	fromAttendance?: boolean;
+	updateAttendanceProfile?: (toUpdate?: boolean) => void;
 };
 
 export type MenuStackParamList = {
@@ -122,8 +137,8 @@ export type MenuStackParamList = {
 	AboutUs: undefined;
 	Waivers: undefined;
 	Help: undefined;
-	MyDetails: undefined;
-	Subscription: undefined;
+	MyDetails: MyDetailsParams;
+	Subscription: SubscriptionParams;
 	SubscriptionDetails: SubscriptionDetailsParams;
 	SubscriptionSetup: SubscriptionSetupParams;
 	PaymentInformation: undefined;

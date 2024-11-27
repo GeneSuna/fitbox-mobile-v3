@@ -18,6 +18,7 @@ import {
 } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
 import { isNil, sortBy } from 'lodash';
+import moment from 'moment';
 import { useCallback, useRef, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import SimpleToast from 'react-native-simple-toast';
@@ -276,6 +277,43 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 				user_id: userId,
 				attendance,
 			} = item as SessionMemberAttendanceSchemaType;
+
+			const infoFlags = [];
+
+			const isBirthday =
+				moment(user.dob).format('MM-DD') ===
+				moment(session.start_datetime).format('MM-DD');
+
+			if (isBirthday) {
+				infoFlags.push({
+					name: 'birthday',
+					icon: '',
+					color: '',
+				});
+			}
+
+			if (user.hasInjury) {
+				infoFlags.push({
+					name: 'injury',
+					icon: '',
+					color: '',
+				});
+			}
+			if (user.hasHealth) {
+				infoFlags.push({
+					name: 'health',
+					icon: 'hospital-box',
+					color: config.colors.danger,
+				});
+			}
+			if (user.hasFailedInvoices) {
+				infoFlags.push({
+					name: 'payment',
+					icon: '',
+					color: '',
+				});
+			}
+
 			return (
 				<AttendanceItem
 					id={userId}
@@ -286,6 +324,8 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 					handleCheckInUser={handleCheckInUser}
 					handleToggleUserAttendance={handleToggleUserAttendance}
 					loading={processingMembers.includes(userId)}
+					infoFlags={infoFlags}
+					isBirthday={isBirthday}
 				/>
 			);
 		},

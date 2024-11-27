@@ -18,7 +18,7 @@ import {
 } from '@/services/users';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import { MenuStackNavigatorProps } from '@/types/navigation';
+import { MenuStackNavigatorProps, MyDetailsParams } from '@/types/navigation';
 import { GenderType } from '@/types/schemas/common';
 import { UserProfileType, UserSchemaType } from '@/types/schemas/user';
 import { Constant, Say } from '@/utils';
@@ -67,7 +67,34 @@ type DataTypes = {
 	user: UserProfileType;
 };
 
-const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
+const MyDetails = ({ navigation, route }: MenuStackNavigatorProps) => {
+	const params = route.params as MyDetailsParams;
+
+	// render back button if from attendance
+	const renderBackButton = () => (
+		<TouchableOpacity
+			onPress={() => {
+				if (params.updateAttendanceProfile) {
+					navigation.goBack();
+					params.updateAttendanceProfile(false);
+				}
+			}}
+		>
+			<Icon
+				name="chevron-left"
+				size={config.metrics.lg}
+				color="white"
+				style={{ marginLeft: config.metrics.rg }}
+			/>
+		</TouchableOpacity>
+	);
+
+	if (params?.fromAttendance) {
+		navigation.setOptions({
+			headerLeft: renderBackButton,
+		});
+	}
+
 	const { emptyRequiredFields, setAppState } = useStore(state => ({
 		emptyRequiredFields: state.emptyRequiredFields,
 		setAppState: state.setAppState,
@@ -93,8 +120,8 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 	const imageOptions: Options = {
 		cropperToolbarTitle: 'Crop Image',
 		includeBase64: true,
-		compressImageMaxHeight: 200,
-		compressImageMaxWidth: 200,
+		compressImageMaxHeight: 300,
+		compressImageMaxWidth: 300,
 		mediaType: 'photo',
 		cropping: true,
 		cropperCircleOverlay: true,
@@ -261,6 +288,13 @@ const MyDetails = ({ navigation }: MenuStackNavigatorProps) => {
 
 					// clear the empty required fields
 					setAppState('emptyRequiredFields', []);
+					if (
+						params?.fromAttendance &&
+						params?.updateAttendanceProfile
+					) {
+						navigation.goBack();
+						params.updateAttendanceProfile(true);
+					}
 
 					if (response.error) {
 						throw new Error(response.message);

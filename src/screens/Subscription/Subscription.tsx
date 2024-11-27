@@ -6,6 +6,10 @@ import {
 } from '@/services/subscription';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
+import {
+	MenuStackNavigatorProps,
+	SubscriptionParams,
+} from '@/types/navigation';
 import { GetSubscriptionInfoType } from '@/types/schemas/response';
 import { TransactionsType } from '@/types/schemas/subscription';
 import { Say } from '@/utils';
@@ -23,12 +27,39 @@ import { Switch } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import SubscriptionList from './components/SubscriptionList';
 
-const Subscription = () => {
+const Subscription = ({ navigation, route }: MenuStackNavigatorProps) => {
 	// states
 	const [data, setData] = useState<GetSubscriptionInfoType>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [isToggleLoading, setIsToggleLoading] = useState<boolean>(false);
 	const [toggledSections, setToggledSections] = useState<string[]>([]);
+
+	const params = route.params as SubscriptionParams;
+
+	// render back button if from attendance
+	const renderBackButton = () => (
+		<TouchableOpacity
+			onPress={() => {
+				if (params.updateAttendanceProfile) {
+					navigation.goBack();
+					params.updateAttendanceProfile(true);
+				}
+			}}
+		>
+			<Icon
+				name="chevron-left"
+				size={config.metrics.lg}
+				color="white"
+				style={{ marginLeft: config.metrics.rg }}
+			/>
+		</TouchableOpacity>
+	);
+
+	if (params?.fromAttendance) {
+		navigation.setOptions({
+			headerLeft: renderBackButton,
+		});
+	}
 
 	useFocusEffect(
 		useCallback(() => {

@@ -181,3 +181,96 @@ export type ValidateInviteCodeResponseType = {
 	message: string;
 	error: boolean;
 };
+
+export const FialedInvoiceSchema = z.array(
+	z.object({
+		name: z.string(),
+		id: z.number(),
+		created_at: z.string(),
+		amount: z.number(),
+		apply_transaction_fees_to_member: boolOrOneZero,
+	}),
+);
+
+export const HealthSchema = z.object({
+	allergies: z.array(
+		z.object({
+			id: z.number(),
+			user_id: z.number(),
+			allergy: z.string(),
+			requires_treatment_plan: boolOrOneZero,
+			notes: z.string(),
+			deleted_at: z.string().nullish(),
+			created_at: z.string(),
+			updated_at: z.string(),
+		}),
+	),
+	pre_existing_conditions: z.array(
+		z.object({
+			advised_to_limit_activities: boolOrOneZero,
+			condition: z.string(),
+			created_at: z.string(),
+			deleted_at: z.string().nullish(),
+			id: z.number(),
+			notes_and_limitations: z.string(),
+			updated_at: z.string(),
+			user_id: z.number(),
+		}),
+	),
+	prescriptions: z.array(
+		z.object({
+			advised_to_limit_activities: boolOrOneZero,
+			medication: z.string(),
+			created_at: z.string(),
+			deleted_at: z.string().nullable(),
+			id: z.number(),
+			notes_and_limitations: z.string(),
+			updated_at: z.string(),
+			user_id: z.number(),
+		}),
+	),
+	has_permission: z.boolean(),
+});
+
+export const InjuriesSchema = z.object({
+	has_permission: z.boolean(),
+	injuries: z.array(
+		z.object({
+			id: z.number(),
+			user_id: z.number(),
+			body_side: z.string(),
+			body_part: z.string(),
+			description: z.string(),
+			when_injury_occured: z.string(),
+			advised_to_limit_activities: boolOrOneZero,
+			activity_limitations: z.string(),
+			deleted_at: z.string().nullable(),
+			created_at: z.string(),
+			updated_at: z.string(),
+		}),
+	),
+});
+
+export const ProfileSchema = z.object({
+	dob: z.string().nullish(),
+	gender: z.string().nullish(),
+	contact_phone: z.string().nullish(),
+	emergency_contact_name: z.string().nullish(),
+	emergency_contact_number: z.string().nullish(),
+	height: z.number().optional(),
+	payment_method: z.string().nullish(),
+	weight: z.number().optional(),
+	memberships: z.array(
+		z.object({
+			name: z.string(),
+			start_date: z.string(),
+			expiration_date: z.string().nullish(),
+			status: z.string(),
+		}),
+	),
+});
+
+export type FailedInvoiceType = z.infer<typeof FialedInvoiceSchema>;
+export type HealthType = z.infer<typeof HealthSchema>;
+export type InjuriesType = z.infer<typeof InjuriesSchema>;
+export type ProfileType = z.infer<typeof ProfileSchema>;
