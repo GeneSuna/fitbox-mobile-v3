@@ -96,6 +96,7 @@ export const GetConversationListResponseSchema = z.object({
 	message: z.string(),
 	error: z.boolean(),
 	total_items: z.number(),
+	total_pages: z.number(),
 });
 
 export const GetUserGymInfoResponseSchema = z.object({

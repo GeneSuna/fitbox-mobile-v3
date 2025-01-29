@@ -2,8 +2,7 @@ import { ApiRoutes } from '@/constants';
 import { GetConversationListResponseSchema } from '@/types/schemas/response';
 import { securedInstance } from '../instance';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default async (teamId: number, ...payload: any) => {
+export default async (teamId: number, payload: { page: number }) => {
 	const response = await securedInstance()
 		.post(`${ApiRoutes.conversationList}`, {
 			body: JSON.stringify(payload),
