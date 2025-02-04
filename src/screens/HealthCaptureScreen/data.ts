@@ -5,6 +5,7 @@ const BODY_PARTS = [
 	{ label: 'Elbow', value: 'Elbow' },
 	{ label: 'Wrist', value: 'Wrist' },
 	{ label: 'Hand', value: 'Hand' },
+	{ label: 'Back', value: 'Back' },
 	{ label: 'Chest', value: 'Chest' },
 	{ label: 'Abdomen', value: 'Abdomen' },
 	{ label: 'Hip', value: 'Hip' },
