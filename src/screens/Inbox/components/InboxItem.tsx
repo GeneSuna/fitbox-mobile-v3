@@ -139,9 +139,14 @@ const InboxItem = ({ index, data, onPress }: InboxItemProps) => {
 									{displayName + othersNumber}
 								</Text>
 							</View>
-							<Text size="xs" color="mute">
-								{moment(data.created_at).format('DD MMM')}
-							</Text>
+							<View style={layout.itemsEnd}>
+								<Text size="xs" color="mute">
+									{moment(data.created_at).format('DD MMM')}
+								</Text>
+								<Text size="xs" color="mute">
+									{moment(data.created_at).format('YYYY')}
+								</Text>
+							</View>
 						</Row>
 						<Text size="md" bold numberOfLines={1}>
 							{data.subject}
