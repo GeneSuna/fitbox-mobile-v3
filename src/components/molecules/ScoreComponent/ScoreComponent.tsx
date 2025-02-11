@@ -14,7 +14,7 @@ import {
 	SessionWODMovementDetailsSchemaType,
 	WODSectionSchemaType,
 } from '@/types/schemas/session';
-import { Constant, Say } from '@/utils';
+import { Constant, Func, Say } from '@/utils';
 import { ICatchError } from '@/utils/Say';
 import useStore from '@/zustand/Store';
 import { useFocusEffect } from '@react-navigation/native';
@@ -237,19 +237,19 @@ const ScoreComponent = ({
 
 				// add delay to show toast for better UX
 				setTimeout(() => {
-					SimpleToast.showWithGravity(
-						'Congratulations on your new PR!',
-						SimpleToast.LONG,
-						SimpleToast.CENTER,
-					);
+					void Say.okThen(
+						// eslint-disable-next-line quotes
+						"You've just scored a personal best!",
+						'Congratulations!',
+					).then(() => setAppState('showConfetti', false));
 				}, 4000);
 			} else {
 				setTimeout(() => {
-					SimpleToast.showWithGravity(
-						'Congratulations on your first PR!',
-						SimpleToast.LONG,
-						SimpleToast.CENTER,
-					);
+					void Say.okThen(
+						// eslint-disable-next-line quotes
+						"You've just scored your first result!",
+						'Congratulations!',
+					).then(() => setAppState('showConfetti', false));
 				}, 4000);
 			}
 
@@ -266,6 +266,8 @@ const ScoreComponent = ({
 	const submitScore = async () => {
 		setSubmitting(true);
 
+		const randomPRAnimation = Func.getRandomAnimation();
+		setAppState('randomAnimation', randomPRAnimation);
 		const saveMovements: { [x: string]: string | number }[] = [];
 
 		if (section.scoring_by === 'movement') {

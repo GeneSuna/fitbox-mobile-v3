@@ -1,6 +1,7 @@
 import type { StateCreator } from 'zustand';
 
 import { AttendanceReportDataType } from '@/types/schemas/leaderboards';
+import { AnimationObject } from 'lottie-react-native';
 import type ApplicationSlice from '../interface/ApplicationInterface';
 import { ApplicationStateInterface } from '../interface/ApplicationInterface';
 
@@ -28,6 +29,7 @@ const defaultState: ApplicationStateInterface = {
 	attendanceReportState: {} as AttendanceReportDataType,
 	classFiltersDataState: [],
 	upcomingSessionsState: [],
+	randomAnimation: { uri: {} as AnimationObject, index: 0 },
 };
 
 const createApplicationSlice: StateCreator<

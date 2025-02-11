@@ -69,10 +69,12 @@ import type {
 import { Constant, Func } from '@/utils';
 import useStore from '@/zustand/Store';
 import { StripeProvider } from '@stripe/stripe-react-native';
+import LottieView from 'lottie-react-native';
 import { useEffect, useState } from 'react';
 import { Platform, StyleSheet } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { Badge } from 'react-native-paper';
+import confettiAnimation from '../theme/animations/confetti.json';
 import DashboardStackNavigator, { ResetToDashboard } from './DashboardStack';
 import MenuStackNavigator from './MenuStack';
 import { navigationRef } from './NavigationRef';
@@ -346,9 +348,16 @@ const ApplicationNavigator = () => {
 	const { variant, navigationTheme, colors } = useTheme();
 	const { getApiUrl } = useAuth();
 
-	const { notifications, showModalNotification } = useStore(state => ({
+	const {
+		notifications,
+		showModalNotification,
+		showConfetti,
+		randomAnimation,
+	} = useStore(state => ({
 		notifications: state.notifications,
 		showModalNotification: state.showModalNotification,
+		showConfetti: state.showConfetti,
+		randomAnimation: state.randomAnimation,
 	}));
 
 	const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
@@ -666,6 +675,26 @@ const ApplicationNavigator = () => {
 				)}
 
 				{showUpdateDialog && <UpdateDialog />}
+
+				{showConfetti && (
+					<>
+						<LottieView
+							source={confettiAnimation}
+							style={styles.lottieStyle}
+							autoPlay
+						/>
+						<LottieView
+							source={randomAnimation.uri}
+							style={
+								randomAnimation.index === 2 ||
+								randomAnimation.index === 4
+									? styles.lottieSmallSizeStyle
+									: styles.lottieStyle
+							}
+							autoPlay
+						/>
+					</>
+				)}
 			</>
 		</StripeProvider>
 	);
@@ -677,6 +706,21 @@ const styles = StyleSheet.create({
 		top: 10,
 		right: Platform.OS === 'ios' && Platform.isPad ? -5 : 23,
 		backgroundColor: config.colors.brand,
+	},
+	lottieStyle: {
+		width: '100%',
+		height: '100%',
+		backgroundColor: 'transparent',
+		position: 'absolute',
+	},
+	lottieSmallSizeStyle: {
+		width: '50%',
+		height: '50%',
+		backgroundColor: 'transparent',
+		position: 'absolute',
+		alignSelf: 'center',
+		top: '25%',
+		bottom: '25%',
 	},
 });
 

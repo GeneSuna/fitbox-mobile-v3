@@ -4,6 +4,7 @@ import {
 	BookableSchemaType,
 	SessionSectionSchemaType,
 } from '@/types/schemas/session';
+import { AnimationObject } from 'lottie-react-native';
 import moment from 'moment';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import Constant from './Constant';
@@ -232,6 +233,23 @@ const isVersionOutdated = (
 	return false;
 };
 
+const getRandomAnimation = () => {
+	const animations = [
+		require('../theme/animations/balloons.json'),
+		require('../theme/animations/fistbump.json'),
+		require('../theme/animations/medal.json'),
+		require('../theme/animations/thumbsup.json'),
+		require('../theme/animations/lift.json'),
+		require('../theme/animations/stars.json'),
+	];
+
+	const randomIndex = Math.floor(Math.random() * animations.length);
+	return {
+		uri: animations[randomIndex] as AnimationObject,
+		index: randomIndex,
+	};
+};
+
 export default {
 	decodeHtml,
 	stripHtmlTags,
@@ -253,4 +271,5 @@ export default {
 	getEnv,
 	addTimeStamp,
 	isVersionOutdated,
+	getRandomAnimation,
 };
