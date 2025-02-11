@@ -1,4 +1,5 @@
 const BODY_PARTS = [
+	{ label: 'Head', value: 'Head' },
 	{ label: 'Neck', value: 'Neck' },
 	{ label: 'Shoulder', value: 'Shoulder' },
 	{ label: 'Arm', value: 'Arm' },
@@ -13,6 +14,7 @@ const BODY_PARTS = [
 	{ label: 'Knee', value: 'Knee' },
 	{ label: 'Ankle', value: 'Ankle' },
 	{ label: 'Foot', value: 'Foot' },
+	{ label: 'Other', value: 'Other' },
 ];
 
 const QUESTIONS_LIST = [
@@ -102,20 +104,21 @@ const QUESTIONS_LIST = [
 		singleData: true,
 		tableColumns: [
 			{
+				slug: 'body_part',
+				title: 'Body Part:',
+				type: 'select',
+				selectItems: BODY_PARTS,
+				required: true,
+			},
+			{
 				slug: 'body_side',
 				title: 'Body Side:',
 				type: 'select',
 				selectItems: [
 					{ label: 'Left', value: 'left' },
 					{ label: 'Right', value: 'right' },
+					{ label: 'Not Applicable', value: 'NA' },
 				],
-				required: true,
-			},
-			{
-				slug: 'body_part',
-				title: 'Body Part:',
-				type: 'select',
-				selectItems: BODY_PARTS,
 				required: true,
 			},
 			{
