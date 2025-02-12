@@ -71,7 +71,7 @@ import useStore from '@/zustand/Store';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import LottieView from 'lottie-react-native';
 import { useEffect, useState } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { Badge } from 'react-native-paper';
 import confettiAnimation from '../theme/animations/confetti.json';
@@ -376,6 +376,21 @@ const ApplicationNavigator = () => {
 		return '';
 	};
 
+	const getTrimmedTitle = (title: string) => {
+		const { width } = Dimensions.get('window');
+
+		if (Platform.OS === 'ios') {
+			const maxTitleLength = Math.floor((width - 100) / 8); // Adjust for iOS screen size
+
+			// Trim the title if it exceeds the available space
+			if (title.length > maxTitleLength) {
+				return `${title.substring(0, maxTitleLength - 5)}...`; // Trim title and add ellipsis
+			}
+		}
+
+		return title;
+	};
+
 	useEffect(() => {
 		const checkIfUpdateNeeded = async () => {
 			const needUpdateConfig: Record<string, string | number> = {
@@ -469,7 +484,7 @@ const ApplicationNavigator = () => {
 								name="Session"
 								component={Session}
 								options={({ route }) => ({
-									title: route.params.title,
+									title: getTrimmedTitle(route.params.title),
 									...TabHeaderOptions,
 								})}
 							/>

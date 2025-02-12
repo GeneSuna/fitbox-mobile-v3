@@ -185,7 +185,7 @@ const SessionsSectionsTab = ({
 							String(fbWod.wod_section.text_section) +
 							(fbWod.notes ? `<br/> ${fbWod.notes}` : '');
 					} else {
-						useTextSection = Func.decodeHtml(fbWod.summary);
+						useTextSection = String(fbWod.notes);
 					}
 
 					// setup section
