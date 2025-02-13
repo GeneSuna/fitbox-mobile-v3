@@ -363,6 +363,7 @@ const ApplicationNavigator = () => {
 	const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
 
 	const url = getApiUrl();
+
 	const getKeyBasedOnEnv = () => {
 		if (url.includes('dev.fitbox.iq')) {
 			return Constant.STRIPE_PUBLISHABLE_KEY.TEST;

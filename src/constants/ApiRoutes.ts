@@ -97,4 +97,7 @@ export default {
 	switchAccount: `${v1}user/switch`,
 	classFilters: `${v1}classFilters`,
 	PushNotificationService: Constant.NOTIFICATION_SERVICE_URL.PROD,
+	failedPayments: `${v1}user/failedPayments`,
+	paymentIntentForInvoice: `${v1}user/createPaymentIntentForInvoice`,
+	checkPaymentIntentForInvoice: `${v1}user/checkPaymentIntentForInvoice`,
 };

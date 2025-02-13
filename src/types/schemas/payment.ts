@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { boolOrOneZero } from './common';
 
 export const PaymentInfoDataSchema = z.object({
 	account_id: z.string(),
@@ -143,3 +144,45 @@ export const PaymentIntentSchema = z.object({
 	id: z.string().nullish(),
 	success: z.boolean(),
 });
+
+export const InvoicesSchema = z.object({
+	description: z.string(),
+	id: z.number(),
+	date: z.string(),
+	amount: z.number(),
+	calculatedFee: z.number().optional(),
+	apply_transaction_fees_to_member: boolOrOneZero,
+});
+
+export const InsufficientFundsInvoicesSchema = z.object({
+	amount: z.number(),
+	forInvoice: z.number(),
+});
+
+export const FailedInvoicesSchema = z.object({
+	invoices: z.array(InvoicesSchema),
+	insufficientFundsInvoices: z.array(InsufficientFundsInvoicesSchema),
+	failedInvoiesDayThreshold: z.number().optional(),
+});
+
+export const PaymentIntentForInvoiceSchema = z.object({
+	customerEphemeralSecret: z.string(),
+	paymentIntentId: z.string(),
+	paymentIntentSecret: z.string(),
+	stripeCustomerId: z.string(),
+});
+
+export const CheckPaymentIntentForInvoice = z.object({
+	amountCaptured: z.number(),
+	error: z.boolean(),
+	userPaymentDetailsUpdated: z.boolean(),
+});
+
+export type FailedInvoicesType = z.infer<typeof FailedInvoicesSchema>;
+export type InsufficientFundsInvoicesType = z.infer<
+	typeof InsufficientFundsInvoicesSchema
+>;
+export type InvoicesType = z.infer<typeof InvoicesSchema>;
+export type PaymentIntentForInvoiceType = z.infer<
+	typeof PaymentIntentForInvoiceSchema
+>;

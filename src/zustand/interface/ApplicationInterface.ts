@@ -28,6 +28,7 @@ interface ApplicationStateInterface {
 	attendanceReportState: AttendanceReportDataType;
 	classFiltersDataState: ClassFiltersDataType[];
 	upcomingSessionsState: BookedSessionCardProps[];
+	countryCode: string;
 	randomAnimation: { uri: AnimationObject; index: number };
 }
 

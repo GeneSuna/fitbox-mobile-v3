@@ -19,7 +19,7 @@ export const GymInfoSchema = z.object({
 	required_profile_fields: z.array(z.string()),
 	allow_leaderboards: boolOrOneZero,
 	mobile_force_update: boolOrOneZero,
-	country: z.optional(z.string()),
+	country: z.string().default('AU'),
 	gym_lookup: z.union([z.number(), z.string()]),
 	logo: z.string(),
 	banner: z.string().nullable(),

@@ -29,6 +29,7 @@ const defaultState: ApplicationStateInterface = {
 	attendanceReportState: {} as AttendanceReportDataType,
 	classFiltersDataState: [],
 	upcomingSessionsState: [],
+	countryCode: '',
 	randomAnimation: { uri: {} as AnimationObject, index: 0 },
 };
 
