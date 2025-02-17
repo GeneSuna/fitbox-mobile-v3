@@ -306,12 +306,13 @@ export const RegisterUserSchema = apiResponseSchema(RegisterUserDataSchema);
 
 export type PrResultDataType = z.infer<typeof PrResultData>;
 export const PrResultData = z
-	.union([PrResultSchema, z.array(PrResultSchema)])
+	.union([PrResultSchema.nullable(), z.array(PrResultSchema.nullable())])
 	.optional();
 
 export const AddScoreResponseSchema = z.object({
 	error: z.boolean(),
 	message: z.string(),
+	prResults: PrResultData,
 	prResult: PrResultData,
 	data: z
 		.object({

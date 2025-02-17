@@ -343,7 +343,7 @@ const Dashboard = () => {
 
 			setFailedInvoices(res);
 		} catch (e) {
-			Say.err(e as ICatchError);
+			// Say.err(e as ICatchError);
 		} finally {
 			setFailedInvoicesRefreshing(false);
 		}
@@ -510,6 +510,7 @@ const Dashboard = () => {
 	// }, [notifSettings]);
 
 	const onMountTasks = async () => {
+		setAppState('showConfetti', false);
 		await savePushNotificationToken();
 		await initializeNotificationSettings();
 		AppState.addEventListener('change', () => {

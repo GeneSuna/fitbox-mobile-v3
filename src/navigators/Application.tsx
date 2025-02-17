@@ -71,7 +71,13 @@ import useStore from '@/zustand/Store';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import LottieView from 'lottie-react-native';
 import { useEffect, useState } from 'react';
-import { Dimensions, Platform, StyleSheet } from 'react-native';
+import {
+	Dimensions,
+	Platform,
+	StyleSheet,
+	TouchableWithoutFeedback,
+	View,
+} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { Badge } from 'react-native-paper';
 import confettiAnimation from '../theme/animations/confetti.json';
@@ -353,14 +359,20 @@ const ApplicationNavigator = () => {
 		showModalNotification,
 		showConfetti,
 		randomAnimation,
+		setAppState,
 	} = useStore(state => ({
 		notifications: state.notifications,
 		showModalNotification: state.showModalNotification,
 		showConfetti: state.showConfetti,
 		randomAnimation: state.randomAnimation,
+		setAppState: state.setAppState,
 	}));
 
 	const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
+
+	const dismissAnimation = () => {
+		setAppState('showConfetti', false);
+	};
 
 	const url = getApiUrl();
 
@@ -691,25 +703,31 @@ const ApplicationNavigator = () => {
 				)}
 
 				{showUpdateDialog && <UpdateDialog />}
-
 				{showConfetti && (
-					<>
-						<LottieView
-							source={confettiAnimation}
-							style={styles.lottieStyle}
-							autoPlay
-						/>
-						<LottieView
-							source={randomAnimation.uri}
-							style={
-								randomAnimation.index === 2 ||
-								randomAnimation.index === 4
-									? styles.lottieSmallSizeStyle
-									: styles.lottieStyle
-							}
-							autoPlay
-						/>
-					</>
+					<TouchableWithoutFeedback
+						onPress={dismissAnimation}
+						style={styles.touchableStyle}
+					>
+						<View style={styles.viewAnimationStyle}>
+							<>
+								<LottieView
+									source={confettiAnimation}
+									style={styles.lottieStyle}
+									autoPlay
+								/>
+								<LottieView
+									source={randomAnimation.uri}
+									style={
+										randomAnimation.index === 2 ||
+										randomAnimation.index === 4
+											? styles.lottieSmallSizeStyle
+											: styles.lottieStyle
+									}
+									autoPlay
+								/>
+							</>
+						</View>
+					</TouchableWithoutFeedback>
 				)}
 			</>
 		</StripeProvider>
@@ -737,6 +755,16 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		top: '25%',
 		bottom: '25%',
+	},
+	touchableStyle: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	viewAnimationStyle: {
+		width: '100%',
+		height: ' 100%',
+		position: 'absolute',
 	},
 });
 

@@ -216,13 +216,13 @@ const ScoreComponent = ({
 
 			// check if result has attribute isPR
 			userPR = prResults.find(
-				result => result.isPR,
+				result => result?.isPR,
 			) as PrResultSchemaType;
 		} else {
 			userPR = prResults as PrResultSchemaType;
 		}
 
-		if (userPR.isPR) {
+		if (userPR?.isPR) {
 			// remove keyboard
 			Keyboard.dismiss();
 
@@ -426,10 +426,9 @@ const ScoreComponent = ({
 			setSubmitting(false);
 
 			if (res?.error) throw new Error(res.message);
-
 			// check if has pr
 			const hasPr = checkIfScoreIsPR(
-				res?.prResult ?? res?.data?.prResult,
+				res?.prResults ?? res?.prResult ?? res?.data?.prResult,
 			);
 
 			// show toast if no pr

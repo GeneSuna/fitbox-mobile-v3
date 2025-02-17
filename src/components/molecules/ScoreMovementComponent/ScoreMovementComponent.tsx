@@ -332,13 +332,13 @@ const ScoreMovementComponent = ({
 
 			// check if result has attribute isPR
 			userPR = prResults.find(
-				result => result.isPR,
+				result => result?.isPR,
 			) as PrResultSchemaType;
 		} else {
 			userPR = prResults as PrResultSchemaType;
 		}
 
-		if (userPR.isPR) {
+		if (userPR?.isPR) {
 			// remove keyboard
 			Keyboard.dismiss();
 
