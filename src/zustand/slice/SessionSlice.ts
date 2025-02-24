@@ -24,6 +24,10 @@ const createSessionSlice: StateCreator<
 	benchmarks: [],
 	favorites: [],
 	sections: [],
+	scoringBottomSheet: false,
+	setScoringBottomSheet: data => {
+		setState({ scoringBottomSheet: data });
+	},
 	setSections: data => {
 		setState({ sections: data });
 	},

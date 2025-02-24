@@ -50,6 +50,7 @@ interface SessionStateInterface {
 	benchmarks: WorkoutSchemaType[];
 	favorites: WorkoutSchemaType[];
 	sections: SessionSectionSchemaType[];
+	scoringBottomSheet: boolean;
 }
 
 interface SessionInterface extends SessionStateInterface {
@@ -81,6 +82,7 @@ interface SessionInterface extends SessionStateInterface {
 	toLeaderboardsCallback: () => void;
 	setToLeaderboardsCallback: (callback: () => void) => void;
 	setSections: (data: SessionSectionSchemaType[]) => void;
+	setScoringBottomSheet: (data: boolean) => void;
 }
 
 export type {
