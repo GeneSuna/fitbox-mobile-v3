@@ -14,7 +14,7 @@ import {
 	SessionWODMovementDetailsSchemaType,
 	WODSectionSchemaType,
 } from '@/types/schemas/session';
-import { Constant, Say } from '@/utils';
+import { Constant, Func, Say } from '@/utils';
 import { ICatchError } from '@/utils/Say';
 import useStore from '@/zustand/Store';
 import { useFocusEffect } from '@react-navigation/native';
@@ -216,13 +216,13 @@ const ScoreComponent = ({
 
 			// check if result has attribute isPR
 			userPR = prResults.find(
-				result => result.isPR,
+				result => result?.isPR,
 			) as PrResultSchemaType;
 		} else {
 			userPR = prResults as PrResultSchemaType;
 		}
 
-		if (userPR.isPR) {
+		if (userPR?.isPR) {
 			// remove keyboard
 			Keyboard.dismiss();
 
@@ -237,19 +237,19 @@ const ScoreComponent = ({
 
 				// add delay to show toast for better UX
 				setTimeout(() => {
-					SimpleToast.showWithGravity(
-						'Congratulations on your new PR!',
-						SimpleToast.LONG,
-						SimpleToast.CENTER,
-					);
+					void Say.okThen(
+						// eslint-disable-next-line quotes
+						"You've just scored a personal best!",
+						'Congratulations!',
+					).then(() => setAppState('showConfetti', false));
 				}, 4000);
 			} else {
 				setTimeout(() => {
-					SimpleToast.showWithGravity(
-						'Congratulations on your first PR!',
-						SimpleToast.LONG,
-						SimpleToast.CENTER,
-					);
+					void Say.okThen(
+						// eslint-disable-next-line quotes
+						"You've just scored your first result!",
+						'Congratulations!',
+					).then(() => setAppState('showConfetti', false));
 				}, 4000);
 			}
 
@@ -266,6 +266,8 @@ const ScoreComponent = ({
 	const submitScore = async () => {
 		setSubmitting(true);
 
+		const randomPRAnimation = Func.getRandomAnimation();
+		setAppState('randomAnimation', randomPRAnimation);
 		const saveMovements: { [x: string]: string | number }[] = [];
 
 		if (section.scoring_by === 'movement') {
@@ -424,10 +426,9 @@ const ScoreComponent = ({
 			setSubmitting(false);
 
 			if (res?.error) throw new Error(res.message);
-
 			// check if has pr
 			const hasPr = checkIfScoreIsPR(
-				res?.prResult ?? res?.data?.prResult,
+				res?.prResults ?? res?.prResult ?? res?.data?.prResult,
 			);
 
 			// show toast if no pr
@@ -976,7 +977,7 @@ const ScoreComponent = ({
 
 	return (
 		<>
-			<View style={layout.flex_1}>
+			<View style={styles.scoreCommentHeight}>
 				<ScoreHeader
 					title={section.name}
 					hideRxSwitch={hideRxSwitch}
@@ -1030,7 +1031,11 @@ const ScoreComponent = ({
 					</TouchableOpacity>
 				) : null}
 
-				<View style={{ padding: config.metrics.rg }}>
+				<View
+					style={{
+						padding: config.metrics.rg,
+					}}
+				>
 					<Button
 						onPress={() => void submitScore()}
 						loading={submitting}
@@ -1159,5 +1164,8 @@ const styles = StyleSheet.create({
 	scrollIndicator: {
 		width: '100%',
 		backgroundColor: config.fonts.colors.info,
+	},
+	scoreCommentHeight: {
+		height: '55%',
 	},
 });

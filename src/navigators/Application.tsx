@@ -55,6 +55,7 @@ import {
 	UpdateDialog,
 } from '@/components/molecules';
 import MovementHistory from '@/screens/PerformanceSummary/MovementHistory';
+import WorkoutHistory from '@/screens/PerformanceSummary/WorkoutHistory';
 import ResultTypesModal from '@/screens/PerformanceSummary/components/ResultTypesModal';
 import { minVersion } from '@/services/auth';
 import { config } from '@/theme/_config';
@@ -68,10 +69,18 @@ import type {
 import { Constant, Func } from '@/utils';
 import useStore from '@/zustand/Store';
 import { StripeProvider } from '@stripe/stripe-react-native';
+import LottieView from 'lottie-react-native';
 import { useEffect, useState } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import {
+	Dimensions,
+	Platform,
+	StyleSheet,
+	TouchableWithoutFeedback,
+	View,
+} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { Badge } from 'react-native-paper';
+import confettiAnimation from '../theme/animations/confetti.json';
 import DashboardStackNavigator, { ResetToDashboard } from './DashboardStack';
 import MenuStackNavigator from './MenuStack';
 import { navigationRef } from './NavigationRef';
@@ -345,14 +354,28 @@ const ApplicationNavigator = () => {
 	const { variant, navigationTheme, colors } = useTheme();
 	const { getApiUrl } = useAuth();
 
-	const { notifications, showModalNotification } = useStore(state => ({
+	const {
+		notifications,
+		showModalNotification,
+		showConfetti,
+		randomAnimation,
+		setAppState,
+	} = useStore(state => ({
 		notifications: state.notifications,
 		showModalNotification: state.showModalNotification,
+		showConfetti: state.showConfetti,
+		randomAnimation: state.randomAnimation,
+		setAppState: state.setAppState,
 	}));
 
 	const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
 
+	const dismissAnimation = () => {
+		setAppState('showConfetti', false);
+	};
+
 	const url = getApiUrl();
+
 	const getKeyBasedOnEnv = () => {
 		if (url.includes('dev.fitbox.iq')) {
 			return Constant.STRIPE_PUBLISHABLE_KEY.TEST;
@@ -364,6 +387,21 @@ const ApplicationNavigator = () => {
 			return Constant.STRIPE_PUBLISHABLE_KEY.LIVE;
 		}
 		return '';
+	};
+
+	const getTrimmedTitle = (title: string) => {
+		const { width } = Dimensions.get('window');
+
+		if (Platform.OS === 'ios') {
+			const maxTitleLength = Math.floor((width - 100) / 8); // Adjust for iOS screen size
+
+			// Trim the title if it exceeds the available space
+			if (title.length > maxTitleLength) {
+				return `${title.substring(0, maxTitleLength - 5)}...`; // Trim title and add ellipsis
+			}
+		}
+
+		return title;
 	};
 
 	useEffect(() => {
@@ -459,7 +497,7 @@ const ApplicationNavigator = () => {
 								name="Session"
 								component={Session}
 								options={({ route }) => ({
-									title: route.params.title,
+									title: getTrimmedTitle(route.params.title),
 									...TabHeaderOptions,
 								})}
 							/>
@@ -639,6 +677,11 @@ const ApplicationNavigator = () => {
 								component={MovementHistory}
 								options={{ title: 'Past Performance' }}
 							/>
+							<Stack.Screen
+								name="WorkoutHistory"
+								component={WorkoutHistory}
+								options={{ title: 'Past Performance' }}
+							/>
 						</Stack.Group>
 
 						<Stack.Screen
@@ -660,6 +703,32 @@ const ApplicationNavigator = () => {
 				)}
 
 				{showUpdateDialog && <UpdateDialog />}
+				{showConfetti && (
+					<TouchableWithoutFeedback
+						onPress={dismissAnimation}
+						style={styles.touchableStyle}
+					>
+						<View style={styles.viewAnimationStyle}>
+							<>
+								<LottieView
+									source={confettiAnimation}
+									style={styles.lottieStyle}
+									autoPlay
+								/>
+								<LottieView
+									source={randomAnimation.uri}
+									style={
+										randomAnimation.index === 2 ||
+										randomAnimation.index === 4
+											? styles.lottieSmallSizeStyle
+											: styles.lottieStyle
+									}
+									autoPlay
+								/>
+							</>
+						</View>
+					</TouchableWithoutFeedback>
+				)}
 			</>
 		</StripeProvider>
 	);
@@ -671,6 +740,31 @@ const styles = StyleSheet.create({
 		top: 10,
 		right: Platform.OS === 'ios' && Platform.isPad ? -5 : 23,
 		backgroundColor: config.colors.brand,
+	},
+	lottieStyle: {
+		width: '100%',
+		height: '100%',
+		backgroundColor: 'transparent',
+		position: 'absolute',
+	},
+	lottieSmallSizeStyle: {
+		width: '50%',
+		height: '50%',
+		backgroundColor: 'transparent',
+		position: 'absolute',
+		alignSelf: 'center',
+		top: '25%',
+		bottom: '25%',
+	},
+	touchableStyle: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	viewAnimationStyle: {
+		width: '100%',
+		height: ' 100%',
+		position: 'absolute',
 	},
 });
 

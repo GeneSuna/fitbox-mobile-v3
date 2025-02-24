@@ -1,6 +1,11 @@
 import type { StackScreenProps } from '@react-navigation/stack';
 import { ContactMembersType, MessageItemType } from './schemas/message';
 import {
+	FailedInvoicesType,
+	InsufficientFundsInvoicesType,
+	InvoicesType,
+} from './schemas/payment';
+import {
 	SessionDetailSchemaType,
 	SessionSectionSchemaType,
 	WorkoutSchemaType,
@@ -52,6 +57,7 @@ export type ApplicationStackParamList = {
 	MyDetails: MyDetailsParams;
 	Subscription: SubscriptionParams;
 	SubscriptionDetails: SubscriptionDetailsParams;
+	WorkoutHistory: WorkoutHistoryParams;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
@@ -166,11 +172,22 @@ export type DashboardParamList = {
 	ClassResults: ClassResultsParams;
 	ScoreComments: ScoreCommentsParams;
 	Bookings: undefined;
+	FailedInvoices: FailedInvoicesParams;
+	FailedInvoicesDetails: FailedInvoicesDetailsParams;
 };
 
 export type ClassResultsParams = {
 	selectClass?: number;
 	dateFromParams?: string;
+};
+
+export type FailedInvoicesParams = {
+	failedInvoices: FailedInvoicesType;
+};
+
+export type FailedInvoicesDetailsParams = {
+	charges: InsufficientFundsInvoicesType[];
+	item: InvoicesType;
 };
 
 export type ScoreCommentsParams = {

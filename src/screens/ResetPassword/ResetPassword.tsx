@@ -4,6 +4,7 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { Say } from '@/utils';
 import { ICatchError } from '@/utils/Say';
+import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
@@ -11,6 +12,10 @@ import { TextInput } from 'react-native-paper';
 const ResetPassword = () => {
 	const [email, setEmail] = useState<string>('');
 	const [processing, setProcessing] = useState<boolean>(false);
+	const navigation = useNavigation();
+
+	const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+	const isValidEmail = (input: string) => emailRegex.test(input);
 
 	const handleChangeEmail = (userEmail: string) => setEmail(userEmail);
 
@@ -22,11 +27,20 @@ const ResetPassword = () => {
 
 			const userEmail = email.trim();
 			if (!userEmail) {
+				setProcessing(false);
 				return Say.warn('Please enter your email adddress');
+			}
+
+			if (userEmail && !isValidEmail(userEmail)) {
+				setProcessing(false);
+				return Say.warn('Please enter a valid email adddress');
 			}
 			const res = await resetPassword(userEmail);
 			setProcessing(false);
-			return Say.some(res.message);
+			return await Say.okThen(
+				res.message,
+				'Password Reset Requested',
+			).then(() => navigation.goBack());
 		} catch (e) {
 			setProcessing(false);
 			return Say.err(e as ICatchError);
@@ -59,6 +73,7 @@ const ResetPassword = () => {
 					style={styles.submitButton}
 					buttonColor={config.colors.brand}
 					onPress={() => void handleSubmit()}
+					loading={processing}
 				/>
 			</View>
 		</SafeAreaView>

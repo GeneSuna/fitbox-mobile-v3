@@ -121,25 +121,20 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 	};
 
 	const fetchMessages = async () => {
-		if (!hasMore) {
-			return;
-		}
-
 		let finalList: MessageItemType[] | ConversationArchivedListDataType[] =
 			[];
 
 		if (view === '') {
 			const res = await getConversationList(activeGymId, { page });
 			if (!res.error) {
+				finalList = [...list, ...res.data];
+
 				if (res.data.length) {
 					setPage(page + 1);
 				}
-
-				if (res.total_items === list.length) {
+				if (res.total_items === finalList.length) {
 					setHasMore(false);
 				}
-
-				finalList = [...list, ...res.data];
 			}
 		} else if (view === 'archived') {
 			// OBSOLETE: Archiving feature is disabled for now since its not working
@@ -164,36 +159,40 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 		navigation.navigate('Conversation', { conversation: item, index });
 	};
 
-	const handleRefresh = (reset = true) => {
+	const handleRefresh = async (reset = true) => {
 		setRefreshing(true);
 		setList([]);
-		setPage(1);
+		setPage(0);
+		setHasMore(true);
 
 		if (reset) {
-			setHasMore(true);
-			void fetchGyms();
+			await fetchGyms();
 		} else {
-			void fetchMessages();
+			await fetchMessages();
 		}
 	};
 
 	const handleOnEndReach = () => {
 		setLoadingMore(!!hasMore);
-		void fetchMessages(); // run this when loadingMore is done
+		if (hasMore) {
+			void fetchMessages(); // run this when loadingMore is done
+		}
 	};
 
 	useFocusEffect(
 		useCallback(() => {
-			if (gyms.length === 0) {
-				void fetchGyms();
-			}
-			handleRefresh(false);
-		}, []),
+			const fetchData = async () => {
+				if (gyms.length === 0) {
+					void fetchGyms();
+				} else {
+					await handleRefresh(false);
+				}
+			};
+			void fetchData();
+		}, [gyms]),
 	);
 
 	useEffect(() => {
-		setHasMore(true);
-		handleRefresh(false);
 		setAppState('teamId', activeGymId);
 	}, [activeGymId]);
 
@@ -275,7 +274,7 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 					setActiveGymId(id);
 					setSelectGymModal(false);
 					setList([]);
-					void fetchGyms();
+					void handleRefresh();
 				}}
 			/>
 
@@ -292,7 +291,7 @@ const Inbox = ({ navigation }: InboxScreenProps) => {
 					style={layout.flex_1}
 					loading={loading}
 					refreshing={refreshing}
-					onRefresh={handleRefresh}
+					onRefresh={() => void handleRefresh()}
 					placeholder={renderPlaceholder}
 					onEndReached={handleOnEndReach}
 					onEndReachedThreshold={0.01}

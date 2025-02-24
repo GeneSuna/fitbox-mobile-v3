@@ -2,6 +2,7 @@ import { BookedSessionCardProps } from '@/screens/Dashboard/components/BookedSes
 import { AttendanceReportDataType } from '@/types/schemas/leaderboards';
 import { NotificationsType } from '@/types/schemas/notifications';
 import { ClassFiltersDataType } from '@/types/schemas/session';
+import { AnimationObject } from 'lottie-react-native';
 
 interface ApplicationStateInterface {
 	appForceUpdate: boolean;
@@ -27,6 +28,8 @@ interface ApplicationStateInterface {
 	attendanceReportState: AttendanceReportDataType;
 	classFiltersDataState: ClassFiltersDataType[];
 	upcomingSessionsState: BookedSessionCardProps[];
+	countryCode: string;
+	randomAnimation: { uri: AnimationObject; index: number };
 }
 
 interface AttachedFilesInterface {

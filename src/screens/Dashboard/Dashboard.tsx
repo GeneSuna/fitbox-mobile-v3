@@ -15,15 +15,24 @@ import { navigate } from '@/navigators/NavigationRef';
 import { betaActive, savePushToken } from '@/services/auth';
 import { getGymClasses, getGymVenues } from '@/services/gym';
 import { getAttendanceReport } from '@/services/leaderboards';
+import getWorkouts from '@/services/leaderboards/getWorkouts';
 import { getClassFilters } from '@/services/session';
-import { getBookedSessions, getUserGymInfo } from '@/services/users';
+import {
+	getBookedSessions,
+	getFailedPayments,
+	getUserGymInfo,
+} from '@/services/users';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import resources from '@/theme/resources';
 import { ApplicationStackParamList } from '@/types/navigation';
 import { GymVenueType } from '@/types/schemas/gym';
 import { NotificationSettingsState } from '@/types/schemas/notifications';
-import { ClassFiltersDataType } from '@/types/schemas/session';
+import { FailedInvoicesType } from '@/types/schemas/payment';
+import {
+	ClassFiltersDataType,
+	WorkoutSchemaType,
+} from '@/types/schemas/session';
 import { UserSchemaType } from '@/types/schemas/user';
 import { Constant, Func, Say } from '@/utils';
 import NotificationService from '@/utils/NotificationService';
@@ -58,6 +67,7 @@ import BookedSessionCard, {
 } from './components/BookedSessionCard';
 import DashboardActionButton from './components/DashboardActionButton';
 import DashboardHeader from './components/DashboardHeader';
+import FailedInvoicesModal from './components/FailedInvoicesModal';
 import LoggedInUserInfo from './components/LoggedInUserInfo';
 
 // List of action buttons to be displayed on the dashboard screen
@@ -114,6 +124,7 @@ const Dashboard = () => {
 		attendanceReportState,
 		classFiltersDataState,
 		upcomingSessionsState,
+		setWorkoutData,
 	} = useStore(state => ({
 		setAppState: state.setAppState,
 		classFilters: state.classFilters,
@@ -129,8 +140,11 @@ const Dashboard = () => {
 		attendanceReportState: state.attendanceReportState,
 		classFiltersDataState: state.classFiltersDataState,
 		upcomingSessionsState: state.upcomingSessionsState,
+		setWorkoutData: state.setWorkoutData,
 	}));
 
+	const [failedInvoicesRefreshing, setFailedInvoicesRefreshing] =
+		useState<boolean>(true);
 	const [refreshing, setRefreshing] = useState<boolean>(true);
 	const [gymBanner, setGymBanner] = useState<string>('');
 	const [gymLogo, setGymLogo] = useState<string>('');
@@ -146,10 +160,15 @@ const Dashboard = () => {
 	const [presetFiltersIsLoaded, setPresetFiltersIsLoaded] =
 		useState<boolean>(false);
 
+	const [failedInvoices, setFailedInvoices] = useState<FailedInvoicesType>();
+	const [showFailedInvoicesModal, setShowFailedInvoicesModal] =
+		useState<boolean>(false);
+
 	const { hasSwitchableUsers } = useSwitchableUsers();
 	const betaBuild = false;
 	const onRefresh = () => {
 		void initializeAppStates();
+		void getFailedInvoices();
 		void getUpcomingSessions();
 		void getClassFiltersFn();
 		void fetchAttendanceReport();
@@ -158,6 +177,14 @@ const Dashboard = () => {
 			checkBetaActive();
 		}
 	};
+
+	const fetchWorkouts = () =>
+		getWorkouts().then(res =>
+			setWorkoutData({
+				benchmark: res.data.benchmark as WorkoutSchemaType[],
+				favorite: res.data.favorite as WorkoutSchemaType[],
+			}),
+		);
 
 	const checkBetaActive = () => {
 		betaActive()
@@ -231,6 +258,7 @@ const Dashboard = () => {
 			setAppState('allowComments', !!gymInfo.allow_leaderboards_comment);
 			setAppState('appForceUpdate', !!gymInfo.mobile_force_update);
 			setAppState('logo', gymInfo.logo);
+			setAppState('countryCode', gymInfo.country);
 
 			// set gym logo and banner
 			setGymLogo(gymInfo.logo);
@@ -300,6 +328,25 @@ const Dashboard = () => {
 		};
 
 		setAppState('notifSettings', notificationSettings);
+	};
+
+	const getFailedInvoices = async () => {
+		setFailedInvoicesRefreshing(true);
+		try {
+			const res = await getFailedPayments();
+
+			if (res.invoices.length > 0) {
+				setShowFailedInvoicesModal(true);
+			} else {
+				setShowFailedInvoicesModal(false);
+			}
+
+			setFailedInvoices(res);
+		} catch (e) {
+			// Say.err(e as ICatchError);
+		} finally {
+			setFailedInvoicesRefreshing(false);
+		}
 	};
 
 	const getUpcomingSessions = async () => {
@@ -438,6 +485,7 @@ const Dashboard = () => {
 
 	const onFocusTasks = async () => {
 		await initializeAppStates();
+		await getFailedInvoices();
 		await getUpcomingSessions();
 		await getClassFiltersFn();
 		PushNotification.cancelAllLocalNotifications();
@@ -445,6 +493,7 @@ const Dashboard = () => {
 
 	useFocusEffect(
 		useCallback(() => {
+			setFailedInvoicesRefreshing(true);
 			const timer = setTimeout(() => {
 				setRefreshing(false);
 			}, 2000);
@@ -461,6 +510,7 @@ const Dashboard = () => {
 	// }, [notifSettings]);
 
 	const onMountTasks = async () => {
+		setAppState('showConfetti', false);
 		await savePushNotificationToken();
 		await initializeNotificationSettings();
 		AppState.addEventListener('change', () => {
@@ -472,6 +522,7 @@ const Dashboard = () => {
 	useEffect(() => {
 		void fetchFilterOptions();
 		void onMountTasks();
+		void fetchWorkouts();
 		if (betaBuild) {
 			checkBetaActive();
 		}
@@ -895,6 +946,16 @@ const Dashboard = () => {
 
 			<LoggedInUserInfo />
 			{/* <WhatsNewDialog /> */}
+
+			{failedInvoices &&
+				failedInvoices?.invoices.length > 0 &&
+				showFailedInvoicesModal &&
+				!failedInvoicesRefreshing && (
+					<FailedInvoicesModal
+						failedInvoices={failedInvoices}
+						setShowFailedInvoicesModal={setShowFailedInvoicesModal}
+					/>
+				)}
 		</SafeScreen>
 	);
 };

@@ -152,7 +152,6 @@ const HealthCaptureScreen = ({
 
 	const parseHealthDetails = (healthInfo: UserHealthInfoType) => {
 		const questionsState = state.questions;
-
 		if (user?.user_data.is_health_captured) {
 			questionsState.forEach((item, index) => {
 				const question: QuestionType = questionsState[
@@ -167,21 +166,24 @@ const HealthCaptureScreen = ({
 
 				questionData.forEach((data: DataObject, dataIndex: number) => {
 					question.value = true;
+
 					if (!question.data[dataIndex]) {
 						question.data[dataIndex] = [];
 					}
 
-					Object.keys(data).forEach(slug => {
-						const columnDetails = item.tableColumns.find(
-							col => col.slug === slug,
-						);
+					// Iterate over tableColumns and ensure matching with data based on slug
+					item.tableColumns.forEach(column => {
+						const { slug } = column; // Get the slug from tableColumns
 
-						(question.data[dataIndex] as TableColumns[]).push({
-							type: columnDetails?.type,
-							slug: columnDetails?.slug,
-							required: columnDetails?.required,
-							value: data[slug],
-						} as TableColumns);
+						// Check if the data has a value for this slug
+						if (data[slug] !== undefined) {
+							(question.data[dataIndex] as TableColumns[]).push({
+								type: column.type,
+								slug: column.slug,
+								required: column.required,
+								value: data[slug], // Use the value from data
+							} as TableColumns);
+						}
 					});
 				});
 

@@ -22,7 +22,7 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { IScoringType, PrResultSchemaType } from '@/types/schemas/leaderboards';
 import { PrResultDataType } from '@/types/schemas/response';
-import { Constant, Say } from '@/utils';
+import { Constant, Func, Say } from '@/utils';
 import useStore from '@/zustand/Store';
 import { parseInt } from 'lodash';
 import moment from 'moment';
@@ -332,13 +332,13 @@ const ScoreMovementComponent = ({
 
 			// check if result has attribute isPR
 			userPR = prResults.find(
-				result => result.isPR,
+				result => result?.isPR,
 			) as PrResultSchemaType;
 		} else {
 			userPR = prResults as PrResultSchemaType;
 		}
 
-		if (userPR.isPR) {
+		if (userPR?.isPR) {
 			// remove keyboard
 			Keyboard.dismiss();
 
@@ -353,19 +353,19 @@ const ScoreMovementComponent = ({
 
 				// add delay to show toast for better UX
 				setTimeout(() => {
-					SimpleToast.showWithGravity(
-						'Congratulations on your new PR!',
-						SimpleToast.LONG,
-						SimpleToast.CENTER,
-					);
+					void Say.okThen(
+						// eslint-disable-next-line quotes
+						"You've just scored a personal best!",
+						'Congratulations!',
+					).then(() => setAppState('showConfetti', false));
 				}, 4000);
 			} else {
 				setTimeout(() => {
-					SimpleToast.showWithGravity(
-						'Congratulations on your first PR!',
-						SimpleToast.LONG,
-						SimpleToast.CENTER,
-					);
+					void Say.okThen(
+						// eslint-disable-next-line quotes
+						"You've just scored your first result!",
+						'Congratulations!',
+					).then(() => setAppState('showConfetti', false));
 				}, 4000);
 			}
 
@@ -380,6 +380,8 @@ const ScoreMovementComponent = ({
 	};
 
 	const onSubmit = () => {
+		const randomPRAnimation = Func.getRandomAnimation();
+		setAppState('randomAnimation', randomPRAnimation);
 		const hasEmptyFields = Object.values(fields).some(
 			value => value === '',
 		);

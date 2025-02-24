@@ -5,6 +5,8 @@ import {
 	Dashboard,
 	ScoreCommentsScreen,
 } from '@/screens';
+import FailedInvoicesDetailsScreen from '@/screens/FailedInvoicesDetailsScreen/FailedInvoicesDetailsScreen';
+import FailedInvoicesScreen from '@/screens/FailedInvoicesScreen/FailedInvoicesScreen';
 import { DashboardParamList } from '@/types/navigation';
 import { createStackNavigator } from '@react-navigation/stack';
 import { CommonHeaderOptions } from './utils/options';
@@ -46,6 +48,20 @@ const DashboardStackNavigator = () => {
 				component={BookingScreen}
 				options={{
 					title: 'My Bookings',
+				}}
+			/>
+			<Stack.Screen
+				name="FailedInvoices"
+				component={FailedInvoicesScreen}
+				options={{
+					title: 'Overdue Invoices',
+				}}
+			/>
+			<Stack.Screen
+				name="FailedInvoicesDetails"
+				component={FailedInvoicesDetailsScreen}
+				options={{
+					title: 'Overdue Invoices',
 				}}
 			/>
 		</Stack.Navigator>

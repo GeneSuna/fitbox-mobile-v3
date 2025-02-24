@@ -1,8 +1,11 @@
 export { default as changeProfileImage } from './changeProfileimage';
+export { default as checkPaymentIntentForInvoice } from './checkPaymentIntentForInvoice';
+export { default as createPaymentIntentForInvoice } from './createPaymentIntentForInvoice';
 export { default as fetchOne } from './fetchOne';
 export { default as getAttendanceProfile } from './getAttendanceProfile';
 export { default as getBookedSessions } from './getBookedSessions';
 export { default as getChildInfo } from './getChildInfo';
+export { default as getFailedPayments } from './getFailedPayments';
 export { default as getParentInfo } from './getParentInfo';
 export { default as getPastPerformance } from './getPastPerformance';
 export { default as getPastPerformanceHistory } from './getPastPerformanceHistory';
