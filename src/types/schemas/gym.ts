@@ -31,6 +31,19 @@ export const GymInfoSchema = z.object({
 	allow_attendance_report: boolOrOneZero.optional().default(1),
 });
 
+export const JoinGymSchema = z.object({
+	data: z.array(z.unknown()),
+	error: z.boolean(),
+	message: z.string(),
+});
+
+export const InviteEmailSchema = z.object({
+	data: z.array(z.unknown()),
+	error: z.boolean(),
+	message: z.string(),
+	resultCode: z.number().nullable(),
+});
+
 export type GymInfoType = z.infer<typeof GymInfoSchema>;
 export type MemberRolesType = z.infer<typeof MemberRolesSchema>;
 

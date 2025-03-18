@@ -1,10 +1,11 @@
 import useAuth from '@/auth/hooks/useAuth';
-import { Button, Row, Spacer } from '@/components/atoms';
+import { Button, Row, Spacer, Text } from '@/components/atoms';
 import { acceptWaiver, getWaiver } from '@/services/waivers';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ApplicationScreenProps } from '@/types/navigation';
 import { UserSchemaType } from '@/types/schemas/user';
+import { isEmpty } from 'lodash';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
 	ActivityIndicator,
@@ -47,7 +48,9 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 					setState(prevState => ({ ...prevState, loading: false }));
 				}
 			} catch (e) {
-				Alert.alert(e as string);
+				waiverRef.current = '';
+				setState(prevState => ({ ...prevState, loading: false }));
+				setIsLoading(false);
 			}
 		})();
 	}, []);
@@ -168,6 +171,14 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 		}
 	};
 
+	const handleContinue = () => {
+		const session = user?.user_data as UserSchemaType;
+
+		session.waiver_accepted = true;
+		updateUser(session);
+		navigation.navigate('Startup');
+	};
+
 	return state.loading ? (
 		<View style={styles.loader}>
 			<ActivityIndicator size="large" color={config.colors.brand} />
@@ -183,38 +194,57 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 				</View>
 			)}
 			<View style={layout.flex_1}>
-				<WebView
-					style={layout.flex_1}
-					source={{
-						uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(
-							waiverRef.current,
-						)}`,
-					}}
-					onLoadStart={() => setIsLoading(true)}
-					onLoadEnd={() => setIsLoading(false)}
-				/>
+				{!isEmpty(waiverRef.current) ? (
+					<WebView
+						style={layout.flex_1}
+						source={{
+							uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(
+								waiverRef.current,
+							)}`,
+						}}
+						onLoadStart={() => setIsLoading(true)}
+						onLoadEnd={() => setIsLoading(false)}
+					/>
+				) : (
+					<View style={[layout.flex_1, layout.justifyCenter]}>
+						<Text center>No waiver found</Text>
+					</View>
+				)}
 			</View>
 			<Spacer size="lg" />
 
 			<View style={styles.footer}>
-				<Row spacing="center">
-					<View style={layout.flex_1}>
-						<Button
-							title="Decline"
-							style={{ backgroundColor: config.colors.danger }}
-							onPress={handleDecline}
-						/>
-					</View>
-					<Spacer horizontal />
-					<View style={layout.flex_1}>
-						<Button
-							title="Accept"
-							style={{ backgroundColor: config.colors.success }}
-							onPress={() => void handleAccept()}
-							loading={state.accepting}
-						/>
-					</View>
-				</Row>
+				{!isEmpty(waiverRef.current) ? (
+					<Row spacing="center">
+						<View style={layout.flex_1}>
+							<Button
+								title="Decline"
+								style={{
+									backgroundColor: config.colors.danger,
+								}}
+								onPress={handleDecline}
+							/>
+						</View>
+						<Spacer horizontal />
+						<View style={layout.flex_1}>
+							<Button
+								title="Accept"
+								style={{
+									backgroundColor: config.colors.success,
+								}}
+								onPress={() => void handleAccept()}
+								loading={state.accepting}
+							/>
+						</View>
+					</Row>
+				) : (
+					<Button
+						title="Continue"
+						style={{ backgroundColor: config.colors.info }}
+						onPress={() => void handleContinue()}
+						loading={state.accepting}
+					/>
+				)}
 			</View>
 		</View>
 	);

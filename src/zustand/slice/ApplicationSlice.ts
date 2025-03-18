@@ -31,6 +31,7 @@ const defaultState: ApplicationStateInterface = {
 	upcomingSessionsState: [],
 	countryCode: '',
 	randomAnimation: { uri: {} as AnimationObject, index: 0 },
+	joiningOtherGym: false,
 };
 
 const createApplicationSlice: StateCreator<

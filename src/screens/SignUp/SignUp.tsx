@@ -8,13 +8,23 @@ import {
 	Spacer,
 	Text,
 } from '@/components/atoms';
-import { BottomPanel, QRCamera } from '@/components/molecules';
+import {
+	BottomPanel,
+	Modal as ModalMoleculeComponent,
+	QRCamera,
+} from '@/components/molecules';
+import { resetRoot } from '@/navigators/NavigationRef';
 import { checkEmail, register } from '@/services/auth';
-import { getUserGymInfoV2 } from '@/services/users';
+import { inviteEmail, joinGym } from '@/services/gym';
+import { getUserGymInfoV2, updateUserProfile } from '@/services/users';
 import { config } from '@/theme/_config';
+import layout from '@/theme/layout';
 import { ApplicationScreenProps, SignUpParams } from '@/types/navigation';
 import { GymInfoType, MemberRolesType } from '@/types/schemas/gym';
+import { LoginResponseSchemaType } from '@/types/schemas/response';
 import { Constant, Say } from '@/utils';
+import { ICatchError } from '@/utils/Say';
+import useStore from '@/zustand/Store';
 import { capitalize, isArray, isEmpty } from 'lodash';
 import moment from 'moment';
 import { RefObject, createRef, useEffect, useRef, useState } from 'react';
@@ -165,13 +175,33 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 	);
 
 	const [allowPassword, setAllowPassword] = useState<boolean>();
+	const [joiningGym, setJoiningGym] = useState<boolean>(false);
+	const [sendingInvite, setSendingInvite] = useState<boolean>(false);
+	const [emailInput, setEmailInput] = useState<string>('');
+	const [emailExists, setEmailExists] = useState<boolean>(false);
+
+	const {
+		loggedInUser,
+		clearClasses,
+		clearFilters,
+		clearStates,
+		setAppState,
+	} = useStore(storeState => ({
+		loggedInUser: storeState.loggedInUser,
+		clearClasses: storeState.clearClasses,
+		clearFilters: storeState.clearFilters,
+		clearStates: storeState.clearAppState,
+		setAppState: storeState.setAppState,
+	}));
+
+	const loggedInUserConst = loggedInUser as LoginResponseSchemaType;
 
 	const roleModalRef: RefObject<ModalComponent> = createRef();
 	const stateRef = useRef<State>();
 	stateRef.current = state;
 	let timeoutFunction: NodeJS.Timeout | null = null;
 	const recaptchaRef = useRef<GoogleRecaptchaRefAttributes>(null);
-	const { signIn } = useAuth();
+	const { signIn, isLoggedIn, updateUser } = useAuth();
 
 	useEffect(() => {
 		const fields: Fields = {} as Fields;
@@ -260,7 +290,10 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 	};
 
 	const handleOnChange = (code: string) => {
-		setState(prev => ({ ...prev, code, gymInfo: null }));
+		setState(prev => ({ ...prev, code }));
+		if (code.length !== MAX_CODE_LENGTH) {
+			setState(prev => ({ ...prev, gymInfo: null }));
+		}
 	};
 
 	const onCaptchaVerified = async () => {
@@ -320,6 +353,48 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 
 	const onCaptchaError = () => {
 		recaptchaRef.current?.close();
+	};
+
+	const onPressJoinGym = () => {
+		setJoiningGym(true);
+		joinGym({ team_id: state.code })
+			.then(res => {
+				if (res.error) {
+					Say.err(res.message);
+				} else {
+					void updateUserProfile({
+						default_team_id: Number(state.code),
+					}).then(updateUserRes => {
+						if (!updateUserRes.error) {
+							updateUser({
+								...loggedInUserConst.user_data,
+								is_staff: updateUserRes.user_data
+									.is_staff as boolean,
+								waiver_accepted:
+									!!updateUserRes.user_data.waiver_accepted,
+								has_payment_details:
+									!!updateUserRes.user_data
+										.has_payment_details,
+							});
+							// clear calendar state
+							clearClasses();
+
+							// clear global state
+							clearStates();
+
+							// clear filter state
+							clearFilters();
+
+							// reset navigation to home
+							navigation.navigate('Startup');
+						}
+					});
+				}
+			})
+			.catch(err => {
+				Say.err(err as ICatchError);
+			})
+			.finally(() => setJoiningGym(false));
 	};
 
 	const onSubmit = async () => {
@@ -393,6 +468,45 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 		return !isEmpty(fieldsError);
 	};
 
+	const onPressConfirmButton = () => {
+		if (isLoggedIn) {
+			onPressJoinGym();
+		} else {
+			setState(prevState => ({
+				...prevState,
+				proceed: true,
+			}));
+		}
+	};
+
+	const handleLogIn = () => {
+		setAppState('joiningOtherGym', true);
+		setEmailExists(false);
+		navigation.push('Login', {
+			emailFromSignin: emailInput,
+		});
+	};
+
+	const handleSendLink = () => {
+		setEmailExists(false);
+		setSendingInvite(true);
+		void inviteEmail({
+			email: emailInput,
+			team_id: state.code,
+		})
+			.then(res => {
+				if (res.error) {
+					Say.err('Something went wrong');
+				} else {
+					void Say.okThen(res.message, 'Request Sent').then(() =>
+						resetRoot(),
+					);
+				}
+			})
+			.catch(err => Say.err(err as ICatchError))
+			.finally(() => setSendingInvite(false));
+	};
+
 	const handleErrorMessage = (err: string[] | string) => {
 		if (isArray(err)) {
 			throw new Error(err.join('\n'));
@@ -410,6 +524,8 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 						validatingEmail: true,
 					}));
 
+					setEmailInput(email);
+
 					const reg =
 						/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -423,14 +539,57 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 					if (!res.error) {
 						if (res.data.exists) {
 							if (res.data.isActive) {
-								await Say.okThen(
-									'Email already exist. Please sign in instead',
-									'Oops!',
-								).then(() =>
-									navigation.push('Login', {
-										emailFromSignin: email,
-									}),
-								);
+								// Alert.alert(
+								// 	'Email already in use',
+								// 	'It looks like you already have a fitbox account.\n \n• Log in to continue with your existing account.\n• Joining a new gym? We can send you a verification link to connect your account to this gym.',
+								// 	[
+								// 		{
+								// 			text: 'Login',
+								// 			onPress: () => {
+								// 				setAppState(
+								// 					'joiningOtherGym',
+								// 					true,
+								// 				);
+								// 				navigation.push('Login', {
+								// 					emailFromSignin: email,
+								// 				});
+								// 			},
+								// 		},
+								// 		{
+								// 			text: 'Send Link',
+								// 			onPress: () => {
+								// 				setSendingInvite(true);
+								// 				void inviteEmail({
+								// 					email,
+								// 					team_id: state.code,
+								// 				})
+								// 					.then(inviteEmailRes => {
+								// 						if (res.error) {
+								// 							Say.err(
+								// 								'Something went wrong',
+								// 							);
+								// 						} else {
+								// 							void Say.okThen(
+								// 								inviteEmailRes.message,
+								// 								'Request Sent',
+								// 							).then(() =>
+								// 								resetRoot(),
+								// 							);
+								// 						}
+								// 					})
+								// 					.catch(err =>
+								// 						Say.err(
+								// 							err as ICatchError,
+								// 						),
+								// 					)
+								// 					.finally(() =>
+								// 						setSendingInvite(false),
+								// 					);
+								// 			},
+								// 		},
+								// 	],
+								// );
+								setEmailExists(true);
 							} else {
 								await Say.okThen(
 									'Email already exist. Please contact your gym administrator to activate your account',
@@ -580,6 +739,69 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 						</View>
 					</Modal>
 
+					<ModalMoleculeComponent visible={sendingInvite}>
+						<View style={styles.modalComponentStyle}>
+							<ActivityIndicator
+								size="large"
+								color={config.colors.brand}
+							/>
+						</View>
+					</ModalMoleculeComponent>
+
+					<ModalMoleculeComponent visible={emailExists}>
+						<Card
+							style={{
+								marginHorizontal: config.metrics.md,
+								padding: config.metrics.md,
+							}}
+						>
+							<Text bold size="md" center>
+								Email already in use
+							</Text>
+							<Text size="rg" center>
+								It looks like you already have a fitbox account.
+							</Text>
+							<Spacer />
+							<Row>
+								<Text>
+									<Text size="rg" bold>
+										● Log in{' '}
+									</Text>
+									<Text size="rg">
+										to continue with your existing account.
+									</Text>
+								</Text>
+							</Row>
+							<Row>
+								<Text>
+									<Text size="rg" bold>
+										● Joining a new gym?{' '}
+									</Text>
+									<Text size="rg">
+										We can send you a verification link to
+										connect your account to this gym.
+									</Text>
+								</Text>
+							</Row>
+							<Spacer />
+							<Row>
+								<Button
+									title="Log In"
+									onPress={handleLogIn}
+									style={layout.flex_1}
+									mode="outlined"
+								/>
+								<View style={{ width: config.metrics.sm }} />
+								<Button
+									title="Send Link"
+									onPress={handleSendLink}
+									style={layout.flex_1}
+									mode="outlined"
+								/>
+							</Row>
+						</Card>
+					</ModalMoleculeComponent>
+
 					{/* Date Modal */}
 					<DateTimePicker
 						mode="date"
@@ -726,7 +948,7 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 						onPress={() => void onSubmit()}
 					/>
 				</ScrollView>
-				<KeyboardSpacer />
+				{Platform.OS !== 'android' && <KeyboardSpacer />}
 			</>
 		);
 	};
@@ -809,13 +1031,9 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 						<Button
 							title="Confirm"
 							sm
-							onPress={() =>
-								setState(prevState => ({
-									...prevState,
-									proceed: true,
-								}))
-							}
+							onPress={onPressConfirmButton}
 							style={styles.buttonStyle}
+							loading={joiningGym}
 						/>
 					</View>
 				)}
@@ -887,6 +1105,12 @@ const styles = StyleSheet.create({
 	enterCodeTextInput: { width: '70%', paddingVertical: 10 },
 	codeEnterViewContainer: { alignItems: 'center' },
 	codeEnterTextInputContainer: { flexDirection: 'row', alignItems: 'center' },
+	modalComponentStyle: {
+		flex: 1,
+		backgroundColor: 'rgba(0,0,0,.3)',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
 });
 
 export default SignUp;

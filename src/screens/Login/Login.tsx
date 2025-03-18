@@ -130,7 +130,6 @@ const Login = ({ navigation, route }: ApplicationScreenProps) => {
 			Say.err('Please complete all information');
 		else {
 			setProcessing(true);
-
 			// call auth service to sign in
 			signIn(useEmail, usePassword)
 				.then(res => {

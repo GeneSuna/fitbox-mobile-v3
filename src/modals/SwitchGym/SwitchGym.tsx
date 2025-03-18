@@ -1,19 +1,26 @@
+import { Row, Text } from '@/components/atoms';
 import { FlatList, Loader } from '@/components/molecules';
 import useSwitchableUsers from '@/hooks/useSwitchableUsers';
 import { resetRoot } from '@/navigators/NavigationRef';
 import { getUserGyms, updateUserProfile } from '@/services/users';
+import { config } from '@/theme/_config';
+import { ApplicationStackParamList } from '@/types/navigation';
 import { Gym } from '@/types/schemas/gym';
 import { LoginResponseSchemaType } from '@/types/schemas/response';
 import { Say } from '@/utils';
 import useStore from '@/zustand/Store';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import { isArray } from 'lodash';
 import { useCallback, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SelectGymItem from './components/SelectGymItem';
 
 const SwitchGym = () => {
 	const teamId = useStore(state => state.teamId);
+	const navigation: NavigationProp<ApplicationStackParamList> =
+		useNavigation();
 	const clearClasses = useStore(state => state.clearClasses);
 	const clearFilters = useStore(state => state.clearFilters);
 	const clearStates = useStore(state => state.clearAppState);
@@ -89,6 +96,26 @@ const SwitchGym = () => {
 		);
 	}, []);
 
+	const renderAddGymFooter = () => {
+		// TODO: linting error for navigation to signup
+		return (
+			<TouchableOpacity onPress={() => navigation.navigate('SignUp', {})}>
+				<View style={styles.addGymCon}>
+					<Row>
+						<Icon
+							name="plus"
+							size={20}
+							color={config.backgrounds.light}
+						/>
+						<Text style={styles.addGymText} color="light" bold>
+							Add Gym
+						</Text>
+					</Row>
+				</View>
+			</TouchableOpacity>
+		);
+	};
+
 	const sortedData = useMemo(() => {
 		let useSortedData: Gym[] = [];
 
@@ -117,7 +144,7 @@ const SwitchGym = () => {
 				onRefresh={() => void refetch()}
 				useRefresh
 			/>
-
+			{renderAddGymFooter()}
 			{switching && <Loader />}
 		</View>
 	);
@@ -126,5 +153,17 @@ const SwitchGym = () => {
 export default SwitchGym;
 
 const styles = StyleSheet.create({
-	container: {},
+	container: {
+		flex: 1,
+	},
+	addGymCon: {
+		height: 50,
+		backgroundColor: config.colors.brand,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	addGymText: {
+		fontSize: 15,
+		marginHorizontal: config.metrics.xs,
+	},
 });
