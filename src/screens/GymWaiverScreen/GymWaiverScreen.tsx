@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import useAuth from '@/auth/hooks/useAuth';
 import { Button, Row, Spacer, Text } from '@/components/atoms';
 import { acceptWaiver, getWaiver } from '@/services/waivers';
@@ -5,11 +6,13 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ApplicationScreenProps } from '@/types/navigation';
 import { UserSchemaType } from '@/types/schemas/user';
+import * as Sentry from '@sentry/react-native';
 import { isEmpty } from 'lodash';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
 	ActivityIndicator,
 	Alert,
+	NativeSyntheticEvent,
 	Permission,
 	PermissionsAndroid,
 	Platform,
@@ -20,7 +23,7 @@ import {
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import SimpleToast from 'react-native-simple-toast';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import WebView from 'react-native-webview';
+import WebView, { WebViewNavigation } from 'react-native-webview';
 
 type StateTypes = {
 	loading: boolean;
@@ -36,8 +39,17 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 		downloading: false,
 	});
 
+	const [refreshCount, setRefreshCount] = useState(0);
+
 	const [isLoading, setIsLoading] = useState(true);
 	const waiverRef = useRef<string>('');
+	const webViewRef = useRef<WebView>(null);
+
+	const generateWebKey = () => {
+		const key = Math.random() * 1000000;
+		return key.toString(10);
+	};
+	const [webKey, setWebKey] = useState(generateWebKey());
 
 	useEffect(() => {
 		void (async () => {
@@ -179,6 +191,23 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 		navigation.navigate('Startup');
 	};
 
+	const handleLoadEnd = (data: NativeSyntheticEvent<WebViewNavigation>) => {
+		setIsLoading(false);
+		const { nativeEvent } = data;
+		const { title }: { title: string } = nativeEvent;
+
+		if (!title.trim()) {
+			webViewRef.current?.stopLoading();
+			webViewRef.current?.reload();
+			setWebKey(generateWebKey());
+			setRefreshCount(prevCount => prevCount + 1);
+		} else {
+			Sentry.captureMessage(
+				`PDF loaded successfully after: ${refreshCount + 1} refreshes`,
+			);
+		}
+	};
+
 	return state.loading ? (
 		<View style={styles.loader}>
 			<ActivityIndicator size="large" color={config.colors.brand} />
@@ -196,6 +225,8 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 			<View style={layout.flex_1}>
 				{!isEmpty(waiverRef.current) ? (
 					<WebView
+						ref={webViewRef}
+						key={webKey}
 						style={layout.flex_1}
 						source={{
 							uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(
@@ -203,7 +234,7 @@ const GymWaiverScreen = ({ navigation }: ApplicationScreenProps) => {
 							)}`,
 						}}
 						onLoadStart={() => setIsLoading(true)}
-						onLoadEnd={() => setIsLoading(false)}
+						onLoadEnd={handleLoadEnd}
 					/>
 				) : (
 					<View style={[layout.flex_1, layout.justifyCenter]}>
