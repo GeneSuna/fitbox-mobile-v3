@@ -98,6 +98,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 		selectedMessage: null,
 		sending: false,
 	});
+	const [callOnEndReached, setCallOnEndReached] = useState(false);
 	const [gifUrl, setGIFUrl] = useState<string>('');
 	const isStaff = user?.user_data.is_staff;
 	const [disableReply, setDisableReply] = useState(false);
@@ -127,6 +128,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 
 			if (conversationMessage || attachedFiles.length > 0) {
 				setState(prevState => ({ ...prevState, sending: true }));
+				setCallOnEndReached(true);
 				list = list.slice();
 
 				const payload: {
@@ -182,6 +184,10 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 			}
 		} catch (e) {
 			Say.err(e as ICatchError);
+		} finally {
+			setTimeout(() => {
+				setCallOnEndReached(false);
+			}, 500);
 		}
 
 		return setState(prevState => ({
@@ -307,11 +313,13 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 	};
 
 	const handleEndReach = async () => {
+		if (callOnEndReached) return;
 		setState(prevState => ({ ...prevState, page: prevState.page + 1 }));
 		await getData(state.page + 1);
 	};
 
 	const handleRefresh = () => {
+		if (callOnEndReached) return;
 		setState(prevState => ({ ...prevState, refreshing: true, list: [] }));
 		void getData();
 	};
