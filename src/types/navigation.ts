@@ -58,6 +58,7 @@ export type ApplicationStackParamList = {
 	Subscription: SubscriptionParams;
 	SubscriptionDetails: SubscriptionDetailsParams;
 	WorkoutHistory: WorkoutHistoryParams;
+	AttendancePastPerformance: undefined;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;

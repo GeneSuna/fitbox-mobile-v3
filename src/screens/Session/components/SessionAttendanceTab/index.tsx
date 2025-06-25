@@ -1,8 +1,9 @@
-import { Button, Text } from '@/components/atoms';
+import { Button, Row, Text } from '@/components/atoms';
 import { FlatList } from '@/components/molecules';
 import { updateAttendance } from '@/services/leaderboards';
 import { attendSession } from '@/services/session';
 import { config } from '@/theme/_config';
+import layout from '@/theme/layout';
 import { ApplicationStackParamList } from '@/types/navigation';
 import {
 	NotBookedMemberSchemaType,
@@ -339,18 +340,38 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 					{`${bookedMembersRef.current.length} / ${attendanceLimit}`}
 				</Text>
 			)}
-			{showAddButton && (
+			<Row style={{ marginHorizontal: metrics.md }}>
 				<Button
 					variant="darkgray"
 					mode="outlined"
-					title="+ Add Attendance"
-					onPress={toggleAttendanceModal}
+					title="Past Performance"
+					onPress={() =>
+						navigation.navigate('AttendancePastPerformance')
+					}
 					style={{
 						marginBottom: metrics.md,
-						marginHorizontal: metrics.lg,
+						...layout.flex_1,
+						marginRight: metrics.sm,
+						// marginHorizontal: metrics.lg,
 					}}
+					sm
 				/>
-			)}
+				{showAddButton && (
+					<Button
+						variant="darkgray"
+						mode="outlined"
+						title="+ Add Attendance"
+						onPress={toggleAttendanceModal}
+						style={{
+							marginBottom: metrics.md,
+							...layout.flex_1,
+							marginLeft: metrics.sm,
+							// marginHorizontal: metrics.lg,
+						}}
+						sm
+					/>
+				)}
+			</Row>
 		</View>
 	);
 

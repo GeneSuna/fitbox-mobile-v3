@@ -9,9 +9,10 @@ const { width } = Dimensions.get('window');
 
 interface OneRmComponent {
 	weight: number; // value of one rm (kg)
+	noHeader?: boolean; // if true, it will not show the header
 }
 
-const OneRMComponent = ({ weight }: OneRmComponent) => {
+const OneRMComponent = ({ weight, noHeader = false }: OneRmComponent) => {
 	const [percent, setPercent] = useState<number>(75);
 
 	const trackOptions = {
@@ -22,29 +23,45 @@ const OneRMComponent = ({ weight }: OneRmComponent) => {
 	const result = ((percent / 100) * weight).toFixed(2);
 	return (
 		<View style={styles.mainCon}>
-			<View style={[layout.itemsCenter, layout.selfStart]}>
-				<Text style={{ color: config.fonts.colors.brand }}>
-					Your 1RM
-				</Text>
-				<Spacer size="sm" />
-				<Text bold color="darkgray">
-					{weight} kg
-				</Text>
-			</View>
+			{!noHeader && (
+				<View style={[layout.itemsCenter, layout.selfStart]}>
+					<Text style={{ color: config.fonts.colors.brand }}>
+						Your 1RM
+					</Text>
+					<Spacer size="sm" />
+					<Text bold color="darkgray">
+						{weight} kg
+					</Text>
+				</View>
+			)}
 			<Spacer />
-			<Text center bold>
-				Your percentages
-			</Text>
-			<Spacer size="sm" />
-			<Row style={styles.titleContainer}>
-				<Text bold size="lg" color="darkgray">
-					{result.replace('.00', '')}kg
-				</Text>
-				<Spacer horizontal size="xs" />
-				<Text size="lg" color="mute">
-					({percent}%)
-				</Text>
-			</Row>
+			{noHeader ? (
+				<Row style={styles.titleContainer}>
+					<Text size="lg" color="mute">
+						Percentage:
+					</Text>
+					<Spacer horizontal size="xs" />
+					<Text bold size="lg" color="darkgray">
+						{percent}%
+					</Text>
+				</Row>
+			) : (
+				<>
+					<Text center bold>
+						Your percentages
+					</Text>
+					<Spacer size="sm" />
+					<Row style={styles.titleContainer}>
+						<Text bold size="lg" color="darkgray">
+							{result.replace('.00', '')}kg
+						</Text>
+						<Spacer horizontal size="xs" />
+						<Text size="lg" color="mute">
+							({percent}%)
+						</Text>
+					</Row>
+				</>
+			)}
 			<View style={layout.itemsCenter}>
 				<MultiSlider
 					onValuesChange={values => setPercent(values[0] as number)}

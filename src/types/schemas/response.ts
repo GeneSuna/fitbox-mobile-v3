@@ -21,6 +21,7 @@ import {
 	ScoreDetailsDataSchema,
 	ScoreResultSchema,
 	ScoringTypeSchema,
+	WorkoutItemSchema,
 } from './leaderboards';
 import {
 	ContactDataSchema,
@@ -397,6 +398,10 @@ export const GetWorkoutResponseSchema = apiResponseSchema(
 		benchmark: z.array(WorkoutSchema),
 		favorite: z.array(WorkoutSchema),
 	}),
+);
+
+export const GetWorkoutsByClassResponseSchema = apiResponseSchema(
+	z.array(WorkoutItemSchema),
 );
 
 export const GetAttendanceProfileResponseSchema = z.object({

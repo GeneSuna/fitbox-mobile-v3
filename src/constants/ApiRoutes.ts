@@ -103,4 +103,6 @@ export default {
 	checkPaymentIntentForInvoice: `${v1}user/checkPaymentIntentForInvoice`,
 	joinGym: `${v1}user/joinGym`,
 	inviteEmail: `${v2}user/inviteEmail`,
+	getWorkoutsByClass: `${v1}get-workouts-by-class`,
+	getLeaderboardByWorkout: `${v1}get-leaderboard-by-workout`,
 };

@@ -183,6 +183,13 @@ export const OneRmSchema = z.object({
 	weight: z.string(),
 });
 
+export const WorkoutItemSchema = z.object({
+	id: z.number(),
+	name: z.string(),
+});
+
+export type WorkoutType = z.infer<typeof WorkoutItemSchema>;
+
 export type IScoringType = z.infer<typeof ScoringTypeSchema>;
 export type SectionType = z.infer<typeof SectionSchema>;
 export type LeaderboardsDataType = z.infer<typeof LeaderboardsDataSchema>;
