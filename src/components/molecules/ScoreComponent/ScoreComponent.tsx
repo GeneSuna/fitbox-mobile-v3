@@ -101,8 +101,6 @@ const ScoreComponent = ({
 		scoringBottomSheet: state.scoringBottomSheet,
 	}));
 
-	const keyboardVisible = Func.useKeyboardStatus();
-
 	// create input ref
 	const inputRefs: MutableRefObject<{
 		[key: string]: HTMLInputElement | null;
@@ -1075,7 +1073,6 @@ const ScoreComponent = ({
 			</View>
 
 			<ScoreComment
-				isKeyboardVisible={keyboardVisible}
 				commentField={state.commentField}
 				commentValue={state.commentValue}
 				commentLeaderboardVisible={state.commentLeaderboardVisible}
@@ -1111,7 +1108,7 @@ const ScoreComponent = ({
 					}));
 
 					// submit score
-					void submitScore();
+					// void submitScore();
 				}}
 			/>
 

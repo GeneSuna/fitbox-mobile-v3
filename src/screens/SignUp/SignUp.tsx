@@ -659,6 +659,14 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 		}
 	};
 
+	const handleCancel = () => {
+		setEmailExists(false);
+		setState(prevState => ({
+			...prevState,
+			fields: { ...(prevState.fields as Fields), email: '' },
+		}));
+	};
+
 	const renderFormView = () => {
 		const { gymInfo, processing, role, activeFieldInput } = state;
 		const rolesList = gymInfo?.member_roles;
@@ -781,6 +789,17 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 										<View
 											style={{ width: config.metrics.sm }}
 										/>
+									</>
+								)}
+								{isArchivedUser && (
+									<>
+										<Button
+											title="Cancel"
+											onPress={handleCancel}
+											style={layout.flex_1}
+											mode="outlined"
+										/>
+										<Spacer horizontal size="sm" />
 									</>
 								)}
 								<Button
