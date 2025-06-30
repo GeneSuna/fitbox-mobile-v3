@@ -32,9 +32,9 @@ const ScoreComment = ({
 		visible={commentField !== null}
 		onClose={onClose}
 		rightTitle={
-			<TouchableOpacity onPress={onSave}>
+			<TouchableOpacity onPress={() => onSave()}>
 				<Text color="info" size="md">
-					Save
+					Done
 				</Text>
 			</TouchableOpacity>
 		}
@@ -74,6 +74,7 @@ const ScoreComment = ({
 					placeholder="Comments/Notes"
 					multiline
 					allowFontScaling={false}
+					textAlignVertical="top"
 				/>
 			</View>
 
