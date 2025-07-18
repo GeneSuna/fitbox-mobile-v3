@@ -11,6 +11,7 @@ import {
 	AttendanceGraphSchema,
 	AttendanceReportDataSchema,
 	GetPastPerformanceResultSchema,
+	LeaderboardByWorkoutSchema,
 	LeaderboardsDataSchema,
 	OneRmSchema,
 	PastPerformanceHistorySchema,
@@ -415,3 +416,7 @@ export const GetMinVersionSchema = z.object({
 	minVersion: z.string(),
 	depth: z.number(),
 });
+
+export const GetLeaderboardByWorkoutResponseSchema = apiResponseSchema(
+	LeaderboardByWorkoutSchema,
+);

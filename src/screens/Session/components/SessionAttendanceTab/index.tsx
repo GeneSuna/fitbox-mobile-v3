@@ -346,7 +346,9 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 					mode="outlined"
 					title="Past Performance"
 					onPress={() =>
-						navigation.navigate('AttendancePastPerformance')
+						navigation.navigate('AttendancePastPerformance', {
+							session,
+						})
 					}
 					style={{
 						marginBottom: metrics.md,

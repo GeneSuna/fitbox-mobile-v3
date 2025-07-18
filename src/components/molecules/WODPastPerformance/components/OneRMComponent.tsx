@@ -10,10 +10,17 @@ const { width } = Dimensions.get('window');
 interface OneRmComponent {
 	weight: number; // value of one rm (kg)
 	noHeader?: boolean; // if true, it will not show the header
+	initialPercentage?: number;
+	setPercentage?: (percentage: number) => void; // callback to set percentage
 }
 
-const OneRMComponent = ({ weight, noHeader = false }: OneRmComponent) => {
-	const [percent, setPercent] = useState<number>(75);
+const OneRMComponent = ({
+	weight,
+	noHeader = false,
+	initialPercentage = 75,
+	setPercentage,
+}: OneRmComponent) => {
+	const [percent, setPercent] = useState<number>(initialPercentage);
 
 	const trackOptions = {
 		min: 0,
@@ -64,7 +71,10 @@ const OneRMComponent = ({ weight, noHeader = false }: OneRmComponent) => {
 			)}
 			<View style={layout.itemsCenter}>
 				<MultiSlider
-					onValuesChange={values => setPercent(values[0] as number)}
+					onValuesChange={values => {
+						setPercent(values[0] as number);
+						setPercentage?.(values[0] as number);
+					}}
 					pressedMarkerStyle={styles.pressedMarkerStyle}
 					unselectedStyle={styles.unselectedStyle}
 					selectedStyle={styles.selectedStyle}
