@@ -16,7 +16,7 @@ import BottomSheet, {
 import { BottomSheetDefaultBackdropProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import { useFocusEffect } from '@react-navigation/native';
 import { JSX, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Dimensions, Platform, StyleSheet, View } from 'react-native';
+import { Dimensions, Keyboard, Platform, StyleSheet, View } from 'react-native';
 import SimpleToast from 'react-native-simple-toast';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -48,6 +48,7 @@ const SessionScoringScreen = ({ route }: ApplicationScreenProps) => {
 	}, [isBottomSheetOpen]);
 
 	const handleOpenBottomSheet = () => {
+		Keyboard.dismiss();
 		bottomSheetRef.current?.expand(); // Use 'expand' to open it to the first snap point that isn't '0%'
 		setBottomSheetOpen(true);
 	};
