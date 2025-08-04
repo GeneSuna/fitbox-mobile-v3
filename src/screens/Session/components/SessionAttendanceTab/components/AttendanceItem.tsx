@@ -47,6 +47,7 @@ interface AttendanceItemProps {
 	) => Promise<void>;
 	infoFlags: { name: string; color: string; icon: string }[];
 	isBirthday: boolean;
+	isLastItem?: boolean;
 }
 
 type AttendanceInfo = {
@@ -67,6 +68,7 @@ const AttendanceItem = ({
 	handleToggleUserAttendance,
 	infoFlags,
 	isBirthday,
+	isLastItem = false,
 }: AttendanceItemProps) => {
 	const loggedInUser = useStore(state => state.loggedInUser);
 	const [visible, setVisible] = useState<boolean>(false);
@@ -313,7 +315,14 @@ const AttendanceItem = ({
 
 	return (
 		<>
-			<Row style={styles.container}>
+			<Row
+				style={[
+					styles.container,
+					isLastItem && {
+						marginBottom: config.metrics.xl + config.metrics.xl,
+					},
+				]}
+			>
 				<TouchableOpacity onPress={handleOnPress} style={layout.flex_1}>
 					<Row style={styles.detailsContainer}>
 						<View style={styles.avatarCon}>
