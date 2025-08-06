@@ -548,6 +548,7 @@ const ApplicationNavigator = () => {
 								options={{
 									...TabHeaderOptions,
 									headerBackTitleVisible: false,
+									title: 'Health Capture',
 								}}
 							/>
 							<Stack.Screen
