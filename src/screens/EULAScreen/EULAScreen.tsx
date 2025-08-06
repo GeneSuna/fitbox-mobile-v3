@@ -7,8 +7,14 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ApplicationScreenProps } from '@/types/navigation';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, View } from 'react-native';
-import HTMLView from 'react-native-htmlview';
+import {
+	ActivityIndicator,
+	Alert,
+	StyleSheet,
+	useWindowDimensions,
+	View,
+} from 'react-native';
+import RenderHTML from 'react-native-render-html';
 
 type StateTypes = {
 	eula: string;
@@ -24,11 +30,14 @@ const EULAScreen = ({ navigation }: ApplicationScreenProps) => {
 		loading: true,
 	});
 
+	const { width } = useWindowDimensions();
+
 	useEffect(() => {
 		void (async () => {
 			try {
 				const res = await getEula();
-				setState({ ...state, eula: res.eula, loading: false });
+				const decodedHtml = res.eula;
+				setState({ ...state, eula: decodedHtml, loading: false });
 			} catch (e) {
 				console.log('e: ', e);
 			}
@@ -75,7 +84,26 @@ const EULAScreen = ({ navigation }: ApplicationScreenProps) => {
 	) : (
 		<View style={styles.eulaContainerStyle}>
 			<ScrollView>
-				<HTMLView value={state.eula} stylesheet={cssStyles} />
+				<RenderHTML
+					contentWidth={width}
+					source={{ html: state.eula }}
+					baseStyle={styles.baseStyle}
+					tagsStyles={{
+						h2: {
+							fontSize: 20,
+							fontWeight: 'bold',
+							marginVertical: 12,
+						},
+						p: { marginVertical: 8 },
+						ul: { paddingLeft: 20, marginVertical: 8 },
+						ol: {
+							paddingLeft: 20,
+							marginVertical: 8,
+						},
+						li: { marginVertical: 0 },
+						strong: { fontWeight: 'bold' },
+					}}
+				/>
 			</ScrollView>
 
 			<Spacer />
@@ -111,11 +139,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 	},
-});
-
-const cssStyles = StyleSheet.create({
-	strong: {
-		fontWeight: 'bold',
+	baseStyle: {
+		fontSize: 16,
+		lineHeight: 24,
+		color: '#333',
 	},
 });
+
 export default EULAScreen;
