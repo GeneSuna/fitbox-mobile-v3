@@ -1,20 +1,15 @@
 /* eslint-disable no-console */
 import useAuth from '@/auth/hooks/useAuth';
-import { Button, Row, ScrollView, Spacer } from '@/components/atoms';
+import { Button, Row, Spacer } from '@/components/atoms';
 import { getEula } from '@/services/eula';
 import acceptEula from '@/services/eula/acceptEula';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ApplicationScreenProps } from '@/types/navigation';
+import { decode } from 'html-entities';
 import { useEffect, useState } from 'react';
-import {
-	ActivityIndicator,
-	Alert,
-	StyleSheet,
-	useWindowDimensions,
-	View,
-} from 'react-native';
-import RenderHTML from 'react-native-render-html';
+import { ActivityIndicator, Alert, StyleSheet, View } from 'react-native';
+import WebView from 'react-native-webview';
 
 type StateTypes = {
 	eula: string;
@@ -30,13 +25,11 @@ const EULAScreen = ({ navigation }: ApplicationScreenProps) => {
 		loading: true,
 	});
 
-	const { width } = useWindowDimensions();
-
 	useEffect(() => {
 		void (async () => {
 			try {
 				const res = await getEula();
-				const decodedHtml = res.eula;
+				const decodedHtml = decode(res.eula);
 				setState({ ...state, eula: decodedHtml, loading: false });
 			} catch (e) {
 				console.log('e: ', e);
@@ -77,34 +70,70 @@ const EULAScreen = ({ navigation }: ApplicationScreenProps) => {
 		}
 	};
 
+	const htmlContent = `
+  <html>
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body {
+          font-family: -apple-system, Roboto, Helvetica, Arial, sans-serif;
+          font-size: 14px;
+          color: #333;
+          line-height: 1.6;
+        }
+
+        h2 {
+          font-size: 20px;
+          margin-top: 24px;
+          margin-bottom: 12px;
+          font-weight: bold;
+        }
+
+        ul, ol {
+          margin: 8px 0 8px 12px;
+          padding-left: 12px;
+        }
+
+        li {
+          margin: 4px 0;
+        }
+
+        ol li::marker {
+          font-weight: bold;
+          font-size: 14px;
+        }
+
+        strong {
+          font-weight: bold;
+        }
+
+        .underlined {
+          text-decoration: underline;
+        }
+
+        .heavy p {
+          font-weight: 600;
+        }
+      </style>
+    </head>
+    <body>
+      ${state.eula}
+    </body>
+  </html>
+`;
+
 	return state.loading ? (
 		<View style={styles.loaderStyle}>
 			<ActivityIndicator color={config.colors.brand} size="large" />
 		</View>
 	) : (
 		<View style={styles.eulaContainerStyle}>
-			<ScrollView>
-				<RenderHTML
-					contentWidth={width}
-					source={{ html: state.eula }}
-					baseStyle={styles.baseStyle}
-					tagsStyles={{
-						h2: {
-							fontSize: 20,
-							fontWeight: 'bold',
-							marginVertical: 12,
-						},
-						p: { marginVertical: 8 },
-						ul: { paddingLeft: 20, marginVertical: 8 },
-						ol: {
-							paddingLeft: 20,
-							marginVertical: 8,
-						},
-						li: { marginVertical: 0 },
-						strong: { fontWeight: 'bold' },
-					}}
-				/>
-			</ScrollView>
+			<WebView
+				originWhitelist={['*']}
+				source={{ html: htmlContent }}
+				style={layout.flex_1}
+				showsVerticalScrollIndicator={false}
+			/>
 
 			<Spacer />
 
