@@ -1,15 +1,17 @@
 import { Avatar, Row, Spacer, Text } from '@/components/atoms';
 import OneRMComponent from '@/components/molecules/WODPastPerformance/components/OneRMComponent';
-import { getLeaderboardByWorkout } from '@/services/leaderboards';
+import { navigationRef } from '@/navigators/NavigationRef';
+import { getOneRMsBySessionSection } from '@/services/leaderboards';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ApplicationScreenProps } from '@/types/navigation';
-import { MovementEntryType, WorkoutType } from '@/types/schemas/leaderboards';
+import { WorkoutType } from '@/types/schemas/leaderboards';
 import {
 	SessionDetailSchemaType,
 	SessionSectionSchemaType,
 } from '@/types/schemas/session';
-import useStore from '@/zustand/Store';
+import { Say } from '@/utils';
+import { isArray } from 'lodash';
 import { useEffect, useState } from 'react';
 import {
 	ActivityIndicator,
@@ -29,11 +31,6 @@ type UserScores = {
 };
 
 const AttendancePastPerformance = ({ route }: ApplicationScreenProps) => {
-	const { benchmarks, favorites } = useStore(s => ({
-		benchmarks: s.benchmarks,
-		favorites: s.favorites,
-	}));
-
 	const [workouts, setWorkouts] = useState<WorkoutType[]>([]);
 	const [activeWorkout, setActiveWorkout] = useState<WorkoutType>();
 	const [showWorkouts, setShowWorkouts] = useState(false);
@@ -41,9 +38,9 @@ const AttendancePastPerformance = ({ route }: ApplicationScreenProps) => {
 	const [displayUserScores, setDisplayUserScores] = useState<UserScores[]>(
 		[],
 	);
+
 	const [scoresLoading, setScoresLoading] = useState<boolean>(false);
 
-	const [, setHasOneRm] = useState<boolean>(false);
 	const [percent, setPercent] = useState<number>(100);
 
 	const { params } = route;
@@ -61,19 +58,12 @@ const AttendancePastPerformance = ({ route }: ApplicationScreenProps) => {
 		id: number | null;
 	}[] = [];
 
-	(session.sections as SessionSectionSchemaType[]).map(
-		(item: SessionSectionSchemaType) => {
-			const benchmarkData = benchmarks.find(
-				bm => bm.id === item.fb_wod?.id,
-			);
-
-			const favoritesData = favorites.find(f => f.id === item.fb_wod?.id);
-
+	if (session?.sections && isArray(session.sections)) {
+		session.sections.map((item: SessionSectionSchemaType) => {
 			if (
-				((item.fb_wod?.is_benchmark && benchmarkData) ||
-					(!item.fb_wod?.is_benchmark && favoritesData) ||
-					(item.wod_movements && item.wod_movements?.length > 0)) &&
-				item.scoring_type_id === 20
+				item.wod_movements &&
+				item.wod_movements?.length > 0 &&
+				item.scoring_type_id === 20 // For Load
 			) {
 				if (item.wod_movements && item.wod_movements.length > 0) {
 					item.wod_movements.map(movement => {
@@ -97,15 +87,18 @@ const AttendancePastPerformance = ({ route }: ApplicationScreenProps) => {
 				}
 			}
 			return null;
-		},
-	);
+		});
+	} else {
+		void Say.okThen('No sections found in the session.').then(() => {
+			navigationRef.goBack();
+		});
+	}
 
 	const users = session.member_attendance.map(item => item.user);
 
 	useEffect(() => {
 		setWorkouts(sections);
 		setActiveWorkout(sections[0] || null);
-		// fetchDetails();
 	}, []);
 
 	useEffect(() => {
@@ -133,129 +126,41 @@ const AttendancePastPerformance = ({ route }: ApplicationScreenProps) => {
 		setDisplayUserScores(results);
 	}, [percent]);
 
-	// const fetchDetails = () => {
-	// 	void getUserMovements(4)
-	// 		.then(res => {
-	// 			if (!res.error) {
-	// 				if (res.data.one_rm) {
-	// 					console.log('One RM:', res.data.one_rm);
-	// 				}
-	// 			} else {
-	// 				Say.err('Something went wrong!');
-
-	// 				// Go back
-	// 			}
-	// 		})
-	// 		.catch(e => {
-	// 			Say.err(e as ICatchError);
-	// 		});
-	// };
-
-	const scoreFormat = (id: number, score: MovementEntryType) => {
-		switch (id) {
-			// case 8: // AMRP
-			// 	return `${score.value} x ${score.reps}`;
-			// case 9: // AMRep
-			// 	return `${score.value} reps`;
-			// case 34: // Calories
-			// 	return `${score.value} cal`;
-			// case 20: // For Load
-			// 	return `${Number(score.value) * (percent / 100)} kg`;
-			default:
-				return score.value;
-		}
-	};
-
 	const getScores = () => {
 		setScoresLoading(true);
-		getLeaderboardByWorkout((activeWorkout?.sectionId as number) || 0)
-			.then(data => {
-				const scores = data?.data;
-				const results: {
-					firstname: string;
-					lastname: string;
-					value: string;
-					image: string | undefined;
-					id: number;
-				}[] = [];
+		getOneRMsBySessionSection(activeWorkout?.sectionId || 0, session.id)
+			.then(res => {
+				if (!res.error) {
+					if (res.data) {
+						const results: {
+							firstname: string;
+							lastname: string;
+							value: string;
+							image: string | undefined;
+							id: number;
+						}[] = [];
 
-				if (scores?.one_rm) setHasOneRm(true);
-
-				// console.log('scoringtypeid: ', activeWorkout);
-				// console.log('data@@@: ', scores.movements);
-
-				Object.values(scores.movements).forEach(movementEntries => {
-					movementEntries.forEach(entry => {
-						const isMatch = activeWorkout?.movementId
-							? entry.wod_movement_id === activeWorkout.movementId
-							: entry.wod_section_id === activeWorkout?.sectionId;
-
-						if (isMatch) {
-							const user = users.find(
-								u => u.id === entry.user_id,
+						users.forEach(user => {
+							const oneRMData = res.data.find(
+								item => item.user_id === user.id,
 							);
-
-							const userScoreDetails = {
-								firstname: entry.firstname,
-								lastname: entry.lastname,
-								value: scoreFormat(
-									activeWorkout?.scoringTypeId || 0,
-									entry as MovementEntryType,
-								),
-								image: user?.profile_image,
-								id: entry.user_id,
-							};
-
-							results.push(userScoreDetails);
-						}
-					});
-				});
-
-				users.forEach(user => {
-					const doesNotHaveScore = !results.some(
-						result => result.id === user.id,
-					);
-					if (doesNotHaveScore) {
-						results.push({
-							firstname: user.firstname,
-							lastname: user.lastname,
-							value: '-',
-							image: user.profile_image,
-							id: user.id,
+							if (oneRMData) {
+								results.push({
+									firstname: user.firstname,
+									lastname: user.lastname,
+									value: oneRMData.weight || '-',
+									image: user.profile_image,
+									id: user.id,
+								});
+							}
 						});
+
+						setUserScores(results);
+						setDisplayUserScores(results);
 					}
-				});
-
-				setUserScores(results);
-				setDisplayUserScores(results);
+				}
 			})
-			.catch(() => {
-				const results: {
-					firstname: string;
-					lastname: string;
-					value: string;
-					image: string | undefined;
-					id: number;
-				}[] = [];
-
-				users.forEach(user => {
-					const doesNotHaveScore = !results.some(
-						result => result.id === user.id,
-					);
-					if (doesNotHaveScore) {
-						results.push({
-							firstname: user.firstname,
-							lastname: user.lastname,
-							value: '-',
-							image: user.profile_image,
-							id: user.id,
-						});
-					}
-				});
-
-				setUserScores(results);
-				setDisplayUserScores(results);
-			})
+			.catch(err => Say.err((err as string) || 'Failed to fetch scores'))
 			.finally(() => setScoresLoading(false));
 	};
 
@@ -368,7 +273,6 @@ const AttendancePastPerformance = ({ route }: ApplicationScreenProps) => {
 				<Spacer horizontal size="xs" />
 				<View style={styles.attendanceListNameCon}>
 					<Text numberOfLines={1}>
-						{/* {name + (id === loggedInUser?.id ? ' (You)' : '')} */}
 						{item.firstname} {item.lastname}
 					</Text>
 				</View>

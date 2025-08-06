@@ -13,6 +13,7 @@ import {
 	GetPastPerformanceResultSchema,
 	LeaderboardByWorkoutSchema,
 	LeaderboardsDataSchema,
+	OneRMDataItemSchema,
 	OneRmSchema,
 	PastPerformanceHistorySchema,
 	PastPerformanceResultSchema,
@@ -420,3 +421,9 @@ export const GetMinVersionSchema = z.object({
 export const GetLeaderboardByWorkoutResponseSchema = apiResponseSchema(
 	LeaderboardByWorkoutSchema,
 );
+
+export const GetOneRMsBySessionSectionResponseSchema = z.object({
+	data: z.array(OneRMDataItemSchema),
+	error: z.boolean(),
+	message: z.string(),
+});

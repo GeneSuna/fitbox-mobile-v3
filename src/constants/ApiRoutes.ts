@@ -105,4 +105,5 @@ export default {
 	inviteEmail: `${v2}user/inviteEmail`,
 	getWorkoutsByClass: `${v1}get-workouts-by-class`,
 	getLeaderboardByWorkout: `${v1}get-leaderboard-by-workout`,
+	getOneRMsBySessionSection: `${v1}get-onerms-by-session-section`,
 };

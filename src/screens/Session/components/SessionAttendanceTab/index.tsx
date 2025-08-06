@@ -18,7 +18,7 @@ import {
 	useNavigation,
 } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
-import { isNil, sortBy } from 'lodash';
+import { isArray, isNil, sortBy } from 'lodash';
 import moment from 'moment';
 import { useCallback, useRef, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
@@ -334,6 +334,16 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 		[processingMembers],
 	);
 
+	const hasForLoadMovements =
+		session.sections &&
+		isArray(session.sections) &&
+		session.sections.find(item => item.scoring_type_id === 20);
+
+	const hidePastPerformanceButton =
+		(!session.sections && !isArray(session.sections)) ||
+		bookedMembersRef.current.length === 0 ||
+		!hasForLoadMovements;
+
 	const StickyHeaderComponent = (
 		<View>
 			{attendanceLimit !== null && (
@@ -342,7 +352,7 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 				</Text>
 			)}
 			<Row style={{ marginHorizontal: metrics.md }}>
-				{showAddButton && (
+				{showAddButton && !hidePastPerformanceButton && (
 					<Button
 						variant="darkgray"
 						mode="outlined"

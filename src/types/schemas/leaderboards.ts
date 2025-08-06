@@ -219,6 +219,13 @@ export const WorkoutItemSchema = z
 	})
 	.nullable();
 
+export const OneRMDataItemSchema = z.object({
+	movement_id: z.number(),
+	user_id: z.number(),
+	weight: z.string().nullable(),
+});
+
+export type OneRMDataItemType = z.infer<typeof OneRMDataItemSchema>;
 export type WorkoutType = z.infer<typeof WorkoutItemSchema>;
 
 export type IScoringType = z.infer<typeof ScoringTypeSchema>;

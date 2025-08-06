@@ -6,6 +6,7 @@ export { default as deleteScore } from './deleteScore';
 export { default as getAttendanceReport } from './getAttendanceReport';
 export { default as getClassLeaderboard } from './getClassLeaderboards';
 export { default as getLeaderboardByWorkout } from './getLeaderboardByWorkout';
+export { default as getOneRMsBySessionSection } from './getOneRMsbySessionSections';
 export { default as getScore } from './getScore';
 export { default as getScoreApplauses } from './getScoreApplauses';
 export { default as getScoreComments } from './getScoreComments';
