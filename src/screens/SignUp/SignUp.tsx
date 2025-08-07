@@ -951,7 +951,7 @@ const SignUp = ({ navigation, route }: ApplicationScreenProps) => {
 				/>
 				{(Func.isAndroid15OrLater() || Platform.OS === 'ios') && (
 					<KeyboardSpacer
-						heightDeduction={Func.isAndroid15OrLater() ? 50 : 80}
+						heightDeduction={Func.isAndroid15OrLater() ? 10 : 10}
 					/>
 				)}
 			</ScrollView>
