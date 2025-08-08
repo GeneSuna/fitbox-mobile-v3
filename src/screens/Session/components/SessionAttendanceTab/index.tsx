@@ -271,7 +271,7 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 
 	const renderItem = useCallback(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		({ item }: any) => {
+		({ item, index }: any) => {
 			const {
 				user,
 				user_id: userId,
@@ -326,6 +326,7 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 					loading={processingMembers.includes(userId)}
 					infoFlags={infoFlags}
 					isBirthday={isBirthday}
+					isLastItem={index === bookedMembersRef.current.length - 1}
 				/>
 			);
 		},
