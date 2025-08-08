@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 	},
 	markerStyle: {
-		width: 18,
-		height: 12,
+		width: 21,
+		height: 15,
 		backgroundColor: '#3C3C3C',
 		shadowColor: '#000',
 		shadowOffset: {
@@ -125,6 +125,6 @@ const styles = StyleSheet.create({
 		borderWidth: 0,
 	},
 	pressedMarkerStyle: {
-		height: 12,
+		height: 15,
 	},
 });

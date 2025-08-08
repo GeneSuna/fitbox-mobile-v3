@@ -11,7 +11,7 @@ import {
 	SessionSectionSchemaType,
 } from '@/types/schemas/session';
 import { Say } from '@/utils';
-import { isArray } from 'lodash';
+import { isArray, sortBy } from 'lodash';
 import { useEffect, useState } from 'react';
 import {
 	ActivityIndicator,
@@ -312,7 +312,9 @@ const AttendancePastPerformance = ({ route }: ApplicationScreenProps) => {
 					/>
 					<FlatList
 						renderItem={renderLeaderboard}
-						data={displayUserScores}
+						data={sortBy(displayUserScores, item =>
+							item.firstname.toLowerCase(),
+						)}
 					/>
 				</>
 			)}

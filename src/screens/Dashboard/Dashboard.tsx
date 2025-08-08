@@ -159,12 +159,17 @@ const Dashboard = () => {
 		setLoggedInUser: state.setLoggedInUser,
 	}));
 
+	const userState = loggedInUser as LoginResponseSchemaType;
+
 	const [failedInvoicesRefreshing, setFailedInvoicesRefreshing] =
 		useState<boolean>(true);
 	const [refreshing, setRefreshing] = useState<boolean>(true);
 	const [gymBanner, setGymBanner] = useState<string>('');
 	const [gymLogo, setGymLogo] = useState<string>('');
 	const [showAttendanceReport, setShowAttendanceReport] =
+		useState<boolean>(false);
+
+	const [hasPrevSubscriptions, setHasPrevSubscriptions] =
 		useState<boolean>(false);
 
 	const [upcomingSessionsIsLoading, setUpcomingSessionsIsLoading] =
@@ -237,9 +242,19 @@ const Dashboard = () => {
 			});
 	};
 
+	useEffect(() => {
+		setLoggedInUser({
+			...userState,
+			user_data: {
+				...userState.user_data,
+				has_previous_subscriptions: hasPrevSubscriptions,
+			},
+		});
+	}, [hasPrevSubscriptions]);
+
 	const initializeAppStates = async () => {
 		const res = await getUserGymInfo();
-		const userState = loggedInUser as LoginResponseSchemaType;
+
 		if (!res.error) {
 			// TODO: Update the following once other functionalities are implemented
 			// const gymParams = {
@@ -279,16 +294,7 @@ const Dashboard = () => {
 				});
 			}
 
-			setLoggedInUser({
-				...userState,
-				user_data: {
-					...userState.user_data,
-					has_previous_subscriptions:
-						res.user_data.has_previous_subscriptions,
-				},
-			});
-
-			const { gym_info: gymInfo } = res;
+			const { gym_info: gymInfo, user_data: userData } = res;
 			setAppState(
 				'emptyRequiredFields',
 				parseEmptyRequiredFields(
@@ -313,6 +319,8 @@ const Dashboard = () => {
 
 			setShowAttendanceReport(gymInfo.allow_attendance_report);
 			setAttendanceFilter(gymInfo.mobile_dashboard_type);
+
+			setHasPrevSubscriptions(userData.has_previous_subscriptions);
 		}
 	};
 
