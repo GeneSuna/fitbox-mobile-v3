@@ -176,7 +176,7 @@ const AttendancePastPerformance = ({ route }: ApplicationScreenProps) => {
 
 	const renderWorkoutDropDown = () => {
 		return (
-			<View>
+			<View style={styles.dropdownContainer}>
 				<TouchableOpacity
 					style={styles.headerContainer}
 					onPress={() => setShowWorkouts(!showWorkouts)}
@@ -367,5 +367,8 @@ const styles = StyleSheet.create({
 	bestScoreContainer: {
 		flex: 1,
 		alignItems: 'flex-end',
+	},
+	dropdownContainer: {
+		zIndex: 9999,
 	},
 });
