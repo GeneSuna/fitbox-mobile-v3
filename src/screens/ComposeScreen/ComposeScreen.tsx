@@ -186,7 +186,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 	const handlePressRecipients = () => {
 		setAppState('message', state.message);
 		setAppState('subject', state.subject);
-		if (defaultSubject) {
+		if (defaultSubject || navigateToSession) {
 			navigation.navigate('Contacts', { defaultRecipients: contacts });
 		} else {
 			navigation.navigate('Contacts', {});

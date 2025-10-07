@@ -29,10 +29,16 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { isArray, isNil, sortBy } from 'lodash';
 import moment from 'moment';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
 import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import SimpleToast from 'react-native-simple-toast';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import IonicIcon from 'react-native-vector-icons/Ionicons';
 import AttendanceItem from './components/AttendanceItem';
 
 const { metrics } = config;
@@ -81,8 +87,6 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 	const toggleAttendanceModal = () =>
 		navigation.navigate('AddAttendance', { session });
 
-	const initializedRef = useRef(false);
-
 	useFocusEffect(
 		useCallback(() => {
 			setBookedMembers(session.member_attendance);
@@ -90,6 +94,7 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 		}, [session]),
 	);
 
+	const prevAttendanceRef = useRef([] as SessionMemberAttendanceSchemaType[]);
 	const bookedMembersRef = useRef(session.member_attendance);
 	const stateRef = useRef<State>();
 	const contactListRef = useRef<ContactMembersType[]>([]);
@@ -101,6 +106,32 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 			await getData();
 		})();
 	}, []);
+
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () =>
+				session.member_attendance.length > 0 && isStaff
+					? renderCreateButton()
+					: null,
+		});
+	}, [session.member_attendance, contactList, isStaff]);
+
+	const renderCreateButton = () => (
+		<TouchableOpacity onPress={() => saveContacts()}>
+			<View
+				style={{
+					paddingHorizontal: config.metrics.rg,
+				}}
+			>
+				<IonicIcon
+					name="create-outline"
+					size={25}
+					color="white"
+					style={{ paddingBottom: config.metrics.sm }}
+				/>
+			</View>
+		</TouchableOpacity>
+	);
 
 	const getData = async (sortByRefresh?: string) => {
 		setState(prevState => ({ ...prevState, refreshing: true }));
@@ -130,28 +161,29 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 	};
 
 	useEffect(() => {
-		if (contactList.length === 0 || initializedRef.current) return;
-		initializedRef.current = true;
+		if (contactList.length === 0) return;
 
-		session.member_attendance.forEach(member => {
-			const userIndex = contactListRef.current.findIndex(
-				c => c.id === member.user_id,
-			);
-			if (userIndex !== -1) handleToggleContact(userIndex);
+		const prev = prevAttendanceRef.current;
+		const curr = session.member_attendance ?? [];
+
+		const prevIds = prev.map(m => m.user_id).sort();
+		const currIds = curr.map(m => m.user_id).sort();
+
+		if (JSON.stringify(prevIds) === JSON.stringify(currIds)) return;
+
+		prevAttendanceRef.current = curr;
+
+		const updatedList = contactList.map(contact => {
+			const isBooked = curr.some(member => member.user_id === contact.id);
+			return { ...contact, is_selected: isBooked };
 		});
-	}, [contactList]);
 
-	const handleToggleContact = (index: number) => {
-		const updatedContactList = [...contactList];
-		(updatedContactList[index] as ContactMembersType).is_selected = !(
-			updatedContactList[index] as ContactMembersType
-		).is_selected;
-		setContactList(updatedContactList);
-	};
+		setContactList(updatedList);
+	}, [contactList, session.member_attendance]);
 
 	const saveContacts = () => {
-		const { groups } = stateRef.current as State;
 		const contacts: ContactMembersType[] = [];
+		const { groups } = stateRef.current as State;
 		groups.forEach(group => {
 			group.members?.forEach((c: ContactGroupMembersType) => {
 				if (c.is_selected) {
@@ -511,11 +543,6 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 				</Text>
 			)}
 			<Row style={{ marginHorizontal: metrics.md }}>
-				<TouchableOpacity onPress={() => saveContacts()}>
-					<View style={styles.messageButton}>
-						<Icon name="envelope" size={20} />
-					</View>
-				</TouchableOpacity>
 				{session.member_attendance.length > 0 &&
 					!hidePastPerformanceButton &&
 					isStaff && (
