@@ -69,9 +69,7 @@ const ResultRow = (props: Props) => {
 	} = props;
 
 	// 17, 20 for load/aggregate
-	const hideRxSwitch =
-		section.scoring_by === 'movement' &&
-		[17, 20].includes(section.scoring_type_id);
+	const hideRxSwitch = section.scoring_by === 'movement';
 
 	const isPR = !!isPr;
 
@@ -161,6 +159,7 @@ const ResultRow = (props: Props) => {
 						score_id: scoreId,
 						type: 'likes',
 						showComments,
+						hideRxSwitch,
 					})
 				}
 			>

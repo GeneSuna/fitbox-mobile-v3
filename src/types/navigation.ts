@@ -211,6 +211,7 @@ export type ScoreCommentsParams = {
 	score_id: number;
 	type: string;
 	showComments: boolean;
+	hideRxSwitch: boolean;
 };
 
 export type PaymentInformationParams = {

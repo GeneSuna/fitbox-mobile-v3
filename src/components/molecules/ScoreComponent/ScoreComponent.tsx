@@ -186,9 +186,7 @@ const ScoreComponent = ({
 	console.log('@setDeleting', setDeleting);
 
 	const hideRxSwitch =
-		(section.scoring_by === 'movement' &&
-			[17, 20].includes(Number(section.scoring_type_id))) ||
-		independentScoring; // 17, 20 for load/aggregate
+		section.scoring_by === 'movement' || independentScoring; // 17, 20 for load/aggregate
 
 	const checkValueFormat = (value: string | number, unit_type?: string) => {
 		let useValue = value;
