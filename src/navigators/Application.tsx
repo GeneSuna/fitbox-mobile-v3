@@ -393,13 +393,14 @@ const ApplicationNavigator = () => {
 	const getTrimmedTitle = (title: string) => {
 		const { width } = Dimensions.get('window');
 
-		if (Platform.OS === 'ios') {
-			const maxTitleLength = Math.floor((width - 100) / 8); // Adjust for iOS screen size
+		const maxTitleLength =
+			Platform.OS === 'ios'
+				? Math.floor((width - 100) / 8)
+				: Math.floor((width - 100) / 10);
 
-			// Trim the title if it exceeds the available space
-			if (title.length > maxTitleLength) {
-				return `${title.substring(0, maxTitleLength - 5)}...`; // Trim title and add ellipsis
-			}
+		// Trim the title if it exceeds the available space
+		if (title.length > maxTitleLength) {
+			return `${title.substring(0, maxTitleLength - 5)}...`; // Trim title and add ellipsis
 		}
 
 		return title;

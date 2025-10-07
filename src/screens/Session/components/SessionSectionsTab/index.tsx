@@ -22,7 +22,7 @@ import useStore from '@/zustand/Store';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
 import { isArray, isEmpty, parseInt } from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import WebView from 'react-native-webview';
@@ -70,6 +70,12 @@ const SessionsSectionsTab = ({
 	const isAttend = !!session.member_attendance.some(
 		member => member.user_id === loggedInUser?.id,
 	);
+
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => null,
+		});
+	}, []);
 
 	const [isVideoLoading, setIsVideoLoading] = useState(false);
 	const [videoModalActive, setVideoModalActive] = useState(false);
