@@ -497,9 +497,7 @@ const ApplicationNavigator = () => {
 								component={Session}
 								options={({ route }) => ({
 									title: getTrimmedTitle(
-										`${
-											route.params.title
-										}A Cery Long Title Sample Only`,
+										`${route.params.title}`,
 									),
 									...TabHeaderOptions,
 								})}
