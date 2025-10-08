@@ -193,6 +193,9 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 		}
 	};
 
+	const keyboardSpaceriOS = defaultSubject || navigateToSession ? 40 : 80;
+	const keyboardSpacerAndroid = defaultSubject || navigateToSession ? 10 : 50;
+
 	return (
 		<View style={layout.flex_1}>
 			<View style={styles.recipientContainer}>
@@ -295,11 +298,18 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 					handleSendMessage={handleSendMessage}
 					setGIFUrl={setGIFUrl}
 					handleBrowseFiles={handleBrowseFiles}
+					isFromSession={
+						navigateToSession || !isEmpty(defaultSubject)
+					}
 				/>
 			</View>
 			{(Func.isAndroid15OrLater() || Platform.OS === 'ios') && (
 				<KeyboardSpacer
-					heightDeduction={Func.isAndroid15OrLater() ? 50 : 80}
+					heightDeduction={
+						Func.isAndroid15OrLater()
+							? keyboardSpacerAndroid
+							: keyboardSpaceriOS
+					}
 				/>
 			)}
 		</View>
