@@ -85,7 +85,7 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 	>(session.member_attendance);
 	const [cancelledMembers, setCancelledMembers] = useState<
 		SessionCancelledMemberSchemaType[]
-	>(session.cancelled_members);
+	>([]);
 	const queryClient = useQueryClient();
 	const [notBookedMembers, setNotBookedMembers] = useState<
 		NotBookedMemberSchemaType[]
@@ -95,9 +95,36 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 
 	useFocusEffect(
 		useCallback(() => {
+			const latestCancelled = Object.values(
+				session.cancelled_members.reduce(
+					(
+						acc: {
+							[key: number]: SessionCancelledMemberSchemaType;
+						},
+						curr,
+					) => {
+						const existing = acc[curr.user_id];
+						if (!existing) {
+							// eslint-disable-next-line no-param-reassign
+							acc[curr.user_id] = curr;
+						} else if (
+							new Date(curr.deleted_at) >
+							new Date(existing.deleted_at)
+						) {
+							// compare deleted_at, keep the latest
+
+							// eslint-disable-next-line no-param-reassign
+							acc[curr.user_id] = curr;
+						}
+						return acc;
+					},
+					{},
+				),
+			);
+
 			setBookedMembers(session.member_attendance);
 			bookedMembersRef.current = session.member_attendance;
-			setCancelledMembers(session.cancelled_members);
+			setCancelledMembers(latestCancelled);
 		}, [session]),
 	);
 
@@ -624,7 +651,9 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 					)}
 				</Row>
 				{toggleCancelledList &&
-					cancelledMembers.map((member, index) => {
+					sortBy(cancelledMembers, item =>
+						item.user.firstname.toLowerCase(),
+					).map((member, index) => {
 						return (
 							<Row key={index} style={styles.detailsContainer}>
 								<View style={styles.avatarCon}>
@@ -658,6 +687,8 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 	const keyExtractor = (item: SessionMemberAttendanceSchemaType) =>
 		item.user_id.toString();
 
+	const footerMarginTop = bookedMembersRef.current.length > 0 ? -25 : 0;
+
 	return (
 		<FlatList
 			data={sortBy(bookedMembersRef.current, item =>
@@ -667,7 +698,10 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 			extractor={keyExtractor}
 			ListHeaderComponent={StickyHeaderComponent}
 			ListFooterComponent={renderListFooter}
-			ListFooterComponentStyle={styles.footer}
+			ListFooterComponentStyle={[
+				styles.footer,
+				{ marginTop: footerMarginTop },
+			]}
 		/>
 	);
 };
@@ -718,7 +752,6 @@ const styles = StyleSheet.create({
 	},
 	footer: {
 		marginBottom: 30,
-		marginTop: -25,
 	},
 	cancelledContainer: {
 		flexDirection: 'row',
