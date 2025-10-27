@@ -32,6 +32,7 @@ import {
 	AppState,
 	AppStateStatus,
 	Dimensions,
+	Platform,
 	RefreshControl,
 	StyleSheet,
 	TouchableOpacity,
@@ -632,8 +633,8 @@ const styles = StyleSheet.create({
 	},
 	animationContainer: {
 		position: 'absolute',
-		top: '56%',
-		left: '10%',
+		top: Platform.OS === 'ios' ? '52%' : '56%',
+		left: Platform.OS === 'ios' ? '8%' : '10%',
 	},
 	animationStyle: {
 		width: 400,
