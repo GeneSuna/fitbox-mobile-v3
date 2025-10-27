@@ -17,6 +17,7 @@ import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import { FlashList } from '@shopify/flash-list';
 import { isArray } from 'lodash';
+import LottieView from 'lottie-react-native';
 import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 import {
@@ -34,10 +35,12 @@ import {
 	RefreshControl,
 	StyleSheet,
 	TouchableOpacity,
+	TouchableWithoutFeedback,
 	View,
 } from 'react-native';
 import { Badge } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import pumpkinAnimation from '../../theme/animations/pumpkins.json';
 import AgendaItem, { AGENDA_ITEM_HEIGHT } from './components/AgendaItem';
 import CalendarFilterPanel from './components/CalendarFilterPanel';
 import CalendarFilterSelect from './components/CalendarFilterSelectPanel';
@@ -133,6 +136,22 @@ const Calendar = () => {
 		useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const calendarWeekRef = useRef<CalendarWeekRef>(null);
+
+	const [showAnimation, setShowAnimation] = useState(false);
+	const animationDate = '2025-10-31';
+
+	useEffect(() => {
+		if (currentDate === animationDate) {
+			setShowAnimation(true);
+			const timer = setTimeout(() => {
+				setShowAnimation(false);
+			}, 5000);
+
+			return () => clearTimeout(timer);
+		}
+
+		return undefined;
+	}, [currentDate]);
 
 	useEffect(() => {
 		Sentry.addBreadcrumb({
@@ -533,6 +552,19 @@ const Calendar = () => {
 				</View>
 			)}
 
+			{showAnimation && (
+				<TouchableWithoutFeedback
+					onPress={() => setShowAnimation(false)}
+				>
+					<View style={styles.animationContainer}>
+						<LottieView
+							source={pumpkinAnimation}
+							style={styles.animationStyle}
+							autoPlay
+						/>
+					</View>
+				</TouchableWithoutFeedback>
+			)}
 			{/* Modals */}
 			<CalendarFilterPanel />
 			<CalendarFilterSelect type={FilterTypeEnum.CLASS} />
@@ -597,5 +629,14 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		bottom: '7%',
 		left: config.metrics.md,
+	},
+	animationContainer: {
+		position: 'absolute',
+		top: '56%',
+		left: '10%',
+	},
+	animationStyle: {
+		width: 400,
+		height: 400,
 	},
 });
