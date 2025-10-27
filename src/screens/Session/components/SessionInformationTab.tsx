@@ -4,8 +4,9 @@ import layout from '@/theme/layout';
 import { SessionDetailSchemaType } from '@/types/schemas/session';
 import { Func } from '@/utils';
 import useStore from '@/zustand/Store';
+import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo } from 'react';
 import { Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 const { metrics } = config;
@@ -20,6 +21,14 @@ const SessionInformationTab = ({ session }: SessionInformationTabProps) => {
 	const startTime = useMemo(() => moment(session?.start_datetime), [session]);
 	const endTime = useMemo(() => moment(session?.end_datetime), [session]);
 	const description = useMemo(() => session?.description, [session]);
+
+	const navigation = useNavigation();
+
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => null,
+		});
+	}, []);
 
 	const hasBookingLock = useMemo(() => {
 		if (session) {

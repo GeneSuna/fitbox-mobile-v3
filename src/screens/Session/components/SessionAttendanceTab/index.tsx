@@ -1,10 +1,17 @@
+import useAuth from '@/auth/hooks/useAuth';
 import { Button, Row, Text } from '@/components/atoms';
 import { FlatList } from '@/components/molecules';
 import { updateAttendance } from '@/services/leaderboards';
+import { getContacts } from '@/services/message';
 import { attendSession } from '@/services/session';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ApplicationStackParamList } from '@/types/navigation';
+import {
+	ContactGroupMembersType,
+	ContactGroupType,
+	ContactMembersType,
+} from '@/types/schemas/message';
 import {
 	NotBookedMemberSchemaType,
 	SessionDetailSchemaType,
@@ -12,6 +19,7 @@ import {
 	SessionSectionSchemaType,
 } from '@/types/schemas/session';
 import { Say } from '@/utils';
+import { ICatchError } from '@/utils/Say';
 import useStore from '@/zustand/Store';
 import {
 	NavigationProp,
@@ -21,9 +29,16 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { isArray, isNil, sortBy } from 'lodash';
 import moment from 'moment';
-import { useCallback, useRef, useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import {
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import SimpleToast from 'react-native-simple-toast';
+import IonicIcon from 'react-native-vector-icons/Ionicons';
 import AttendanceItem from './components/AttendanceItem';
 
 const { metrics } = config;
@@ -31,6 +46,14 @@ const { metrics } = config;
 interface SessionAttendanceTabProps {
 	session: SessionDetailSchemaType;
 }
+
+type State = {
+	groups: ContactGroupType[];
+	loading: boolean;
+	refreshing: boolean;
+	sortBy: string;
+	searchQuery: string;
+};
 const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 	const navigation =
 		useNavigation<NavigationProp<ApplicationStackParamList>>();
@@ -38,6 +61,20 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 	const bookButtonCallback = useStore(state => state.bookButtonCallback);
 	const isStaff = loggedInUser?.user_data.is_staff;
 	const attendanceLimit = session?.attendance_limit;
+	const { user: authUser } = useAuth();
+
+	const [state, setState] = useState<State>({
+		groups: [],
+		loading: true,
+		refreshing: false,
+		sortBy: 'player',
+		searchQuery: '',
+	});
+	const [contactList, setContactList] = useState<ContactMembersType[]>([]);
+
+	const { teamId } = useStore(s => ({
+		teamId: s.teamId,
+	}));
 
 	const [processingMembers, setProcessingMembers] = useState<number[]>([]);
 	const [bookedMembers, setBookedMembers] = useState<
@@ -57,7 +94,119 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 		}, [session]),
 	);
 
+	const prevAttendanceRef = useRef([] as SessionMemberAttendanceSchemaType[]);
 	const bookedMembersRef = useRef(session.member_attendance);
+	const stateRef = useRef<State>();
+	const contactListRef = useRef<ContactMembersType[]>([]);
+	stateRef.current = state;
+	contactListRef.current = contactList;
+
+	useEffect(() => {
+		void (async () => {
+			await getData();
+		})();
+	}, []);
+
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () =>
+				session.member_attendance.length > 0 && isStaff
+					? renderCreateButton()
+					: null,
+		});
+	}, [session.member_attendance, contactList, isStaff]);
+
+	const renderCreateButton = () => (
+		<TouchableOpacity onPress={() => saveContacts()}>
+			<View
+				style={{
+					paddingHorizontal: config.metrics.rg,
+				}}
+			>
+				<IonicIcon
+					name="create-outline"
+					size={25}
+					color="white"
+					style={{ paddingBottom: config.metrics.sm }}
+				/>
+			</View>
+		</TouchableOpacity>
+	);
+
+	const getData = async (sortByRefresh?: string) => {
+		setState(prevState => ({ ...prevState, refreshing: true }));
+		let list: ContactMembersType[] = [];
+		let groups: ContactGroupType[] = [];
+		let sort = '';
+		try {
+			const res = await getContacts(teamId);
+			groups = res.data.groups;
+			list = res.data.members;
+		} catch (e) {
+			Say.err(e as ICatchError);
+		}
+
+		if (sort === '') {
+			sort = authUser?.user_data.is_staff ? 'player' : 'staff';
+		}
+
+		setState(prevState => ({
+			...prevState,
+			groups,
+			loading: false,
+			refreshing: false,
+			sortBy: sortByRefresh || sort,
+		}));
+		setContactList(sortBy(list, 'fullname'));
+	};
+
+	useEffect(() => {
+		if (contactList.length === 0) return;
+
+		const prev = prevAttendanceRef.current;
+		const curr = session.member_attendance ?? [];
+
+		const prevIds = prev.map(m => m.user_id).sort();
+		const currIds = curr.map(m => m.user_id).sort();
+
+		if (JSON.stringify(prevIds) === JSON.stringify(currIds)) return;
+
+		prevAttendanceRef.current = curr;
+
+		const updatedList = contactList.map(contact => {
+			const isBooked = curr.some(member => member.user_id === contact.id);
+			return { ...contact, is_selected: isBooked };
+		});
+
+		setContactList(updatedList);
+	}, [contactList, session.member_attendance]);
+
+	const saveContacts = () => {
+		const contacts: ContactMembersType[] = [];
+		const { groups } = stateRef.current as State;
+		groups.forEach(group => {
+			group.members?.forEach((c: ContactGroupMembersType) => {
+				if (c.is_selected) {
+					const contact = {
+						...c,
+						fullname: `${c.first_name} ${c.last_name}`,
+					};
+					contacts.push(contact);
+				}
+			});
+		});
+
+		contactListRef.current.forEach((c: ContactMembersType) => {
+			if (c.is_selected && !contacts.includes(c)) {
+				contacts.push(c);
+			}
+		});
+
+		navigation.navigate('Compose', {
+			contacts,
+			defaultSubject: `${session.comment} - ${moment(session.start_datetime).format('MMM D, YYYY h:mm A')}`,
+		});
+	};
 
 	const addProcessingMember = (userId: number) => {
 		setProcessingMembers([...processingMembers, userId]);
@@ -378,7 +527,8 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 	const hasForLoadMovements =
 		session.sections &&
 		isArray(session.sections) &&
-		session.sections.find(item => item.scoring_type_id === 20);
+		session.sections.find(item => item.scoring_type_id === 20) &&
+		session.sections.find(item => item.scoring_by === 'movement');
 
 	const hidePastPerformanceButton =
 		(!session.sections && !isArray(session.sections)) ||
@@ -412,7 +562,6 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 							style={{
 								marginBottom: metrics.md,
 								...layout.flex_1,
-								marginRight: metrics.sm,
 								// marginHorizontal: metrics.lg,
 							}}
 							sm
@@ -458,6 +607,16 @@ const styles = StyleSheet.create({
 		textAlign: 'right',
 		marginRight: config.metrics.lg,
 		marginBottom: config.metrics.md,
+	},
+	messageButton: {
+		borderColor: config.borders.colors.darkgray,
+		borderWidth: 1,
+		height: 42,
+		width: 40,
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 8,
+		marginRight: metrics.sm,
 	},
 });
 

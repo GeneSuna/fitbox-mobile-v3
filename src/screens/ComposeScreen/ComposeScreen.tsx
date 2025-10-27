@@ -19,6 +19,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
+import SimpleToast from 'react-native-simple-toast';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -40,22 +41,25 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 		storeSubject,
 		attachedFiles,
 		inboxTeamId,
+		teamId,
 	} = useStore(state => ({
 		setAppState: state.setAppState,
 		storeMessage: state.message,
 		storeSubject: state.subject,
 		attachedFiles: state.attachedFiles,
 		inboxTeamId: state.inboxTeamId,
+		teamId: state.teamId,
 	}));
 	const { user } = useAuth();
-	const { contacts } = route.params as ComposeParams;
+	const { contacts, defaultSubject, navigateToSession } =
+		route.params as ComposeParams;
 	const [replyDisabled, setDisableReply] = useState(false);
 	const [state, setState] = useState<State>({
 		message: storeMessage || '',
 		to: '',
 		recipients: '',
 		recipientIds: [],
-		subject: storeSubject || '',
+		subject: storeSubject || defaultSubject || '',
 		disable_reply: false,
 		sending: false,
 		isStaff: !!user?.user_data.is_staff,
@@ -75,7 +79,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 		setAppState('message', '');
 		setAppState('subject', '');
 		setAppState('attachedFiles', []);
-		navigation.navigate('Inbox');
+		navigation.goBack();
 	};
 
 	const handleClearFiles = () => {
@@ -97,7 +101,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 
 			setState(prevState => ({ ...prevState, recipients, recipientIds }));
 		}
-	}, []);
+	}, [contacts]);
 
 	const handleEnterMessage = (message: string) =>
 		setState(prevState => ({ ...prevState, message }));
@@ -144,7 +148,7 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 					message: composeMessage,
 					recipients: recipientIds.join(','),
 					disable_reply: !!replyDisabled,
-					team_id: inboxTeamId,
+					team_id: defaultSubject ? teamId : inboxTeamId,
 				};
 
 				if (attachedFiles.length > 0) {
@@ -167,7 +171,12 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 				setState(prevState => ({ ...prevState, message: '' }));
 				setGIFUrl('');
 				setAppState('attachedFiles', []);
-				navigation.navigate('Inbox');
+				if (navigateToSession || defaultSubject) {
+					navigation.goBack();
+					SimpleToast.show('Message sent', SimpleToast.SHORT);
+				} else {
+					navigation.navigate('Inbox');
+				}
 			}
 		} catch (e) {
 			return Alert.alert('Something went wrong');
@@ -179,8 +188,15 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 	const handlePressRecipients = () => {
 		setAppState('message', state.message);
 		setAppState('subject', state.subject);
-		navigation.navigate('Contacts');
+		if (defaultSubject || navigateToSession) {
+			navigation.navigate('Contacts', { defaultRecipients: contacts });
+		} else {
+			navigation.navigate('Contacts', {});
+		}
 	};
+
+	const keyboardSpaceriOS = defaultSubject || navigateToSession ? 40 : 80;
+	const keyboardSpacerAndroid = defaultSubject || navigateToSession ? 10 : 50;
 
 	return (
 		<View style={layout.flex_1}>
@@ -284,11 +300,18 @@ const ComposeScreen = ({ navigation, route }: ComposeScreenProps) => {
 					handleSendMessage={handleSendMessage}
 					setGIFUrl={setGIFUrl}
 					handleBrowseFiles={handleBrowseFiles}
+					isFromSession={
+						navigateToSession || !isEmpty(defaultSubject)
+					}
 				/>
 			</View>
 			{(Func.isAndroid15OrLater() || Platform.OS === 'ios') && (
 				<KeyboardSpacer
-					heightDeduction={Func.isAndroid15OrLater() ? 50 : 80}
+					heightDeduction={
+						Func.isAndroid15OrLater()
+							? keyboardSpacerAndroid
+							: keyboardSpaceriOS
+					}
 				/>
 			)}
 		</View>

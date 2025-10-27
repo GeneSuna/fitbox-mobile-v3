@@ -12,7 +12,7 @@ import useStore from '@/zustand/Store';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { isArray } from 'lodash';
 import moment from 'moment';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
 	ActivityIndicator,
 	Platform,
@@ -123,6 +123,12 @@ const ClassResultsScreen = ({
 		void (async () => {
 			await fetchVenues();
 		})();
+	}, []);
+
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => null,
+		});
 	}, []);
 
 	useEffect(() => {
