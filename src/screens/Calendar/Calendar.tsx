@@ -141,12 +141,11 @@ const Calendar = () => {
 
 	const [showAnimation, setShowAnimation] = useState(false);
 	const animationDate = '2025-10-31';
-	const fadeAnim = useRef(new Animated.Value(0)).current; // for opacity
-	const slideAnim = useRef(new Animated.Value(80)).current; // for Y position (starts below)
+	const fadeAnim = useRef(new Animated.Value(0)).current;
+	const slideAnim = useRef(new Animated.Value(80)).current;
 
 	useEffect(() => {
 		if (currentDate !== animationDate) {
-			// reset immediately if not the right date
 			setShowAnimation(false);
 			fadeAnim.setValue(0);
 			slideAnim.setValue(80);
@@ -155,7 +154,6 @@ const Calendar = () => {
 
 		setShowAnimation(true);
 
-		// 🆙 Animate IN (from bottom to position + fade in)
 		Animated.parallel([
 			Animated.timing(fadeAnim, {
 				toValue: 1,
@@ -170,7 +168,6 @@ const Calendar = () => {
 			}),
 		]).start();
 
-		// ⏳ After 5s, animate OUT (slide down + fade out)
 		const timer = setTimeout(() => {
 			Animated.parallel([
 				Animated.timing(fadeAnim, {
@@ -186,13 +183,11 @@ const Calendar = () => {
 			]).start(() => setShowAnimation(false));
 		}, 5000);
 
-		// 🧹 Clean up
 		// eslint-disable-next-line consistent-return
 		return () => {
 			clearTimeout(timer);
 			setShowAnimation(false);
 
-			// stop current animations and reset values — no returns in callbacks
 			fadeAnim.stopAnimation(() => {
 				fadeAnim.setValue(0);
 			});
@@ -241,7 +236,7 @@ const Calendar = () => {
 		);
 
 		return () => {
-			subscription.remove(); // Clean up the subscription on unmount
+			subscription.remove();
 		};
 	}, []);
 	useEffect(() => {
