@@ -305,6 +305,11 @@ const Dashboard = () => {
 			// setAppState('gymParameters', gymInfo.gymParams);
 			setAppState('teamId', gymInfo.gym_lookup);
 			setAppState('shopUrl', gymInfo.online_store);
+			setAppState('storeSignature', userData.store_signature || '');
+			setAppState(
+				'storeSignatureExpiry',
+				userData.store_signature_expiry || 0,
+			);
 			setAppState('unreadMessages', gymInfo.num_of_unread_messages);
 			setAppState('unreadMessageCallback', initializeAppStates);
 			setAppState('allowLeaderboards', !!gymInfo.allow_leaderboards);

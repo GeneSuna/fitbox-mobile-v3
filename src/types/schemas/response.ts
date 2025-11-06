@@ -113,6 +113,8 @@ export const GetUserGymInfoResponseSchema = z.object({
 		has_waived_subscriptions: z.boolean(),
 		waiver_accepted: boolOrOneZero,
 		has_previous_subscriptions: z.boolean(),
+		store_signature: z.string().optional(),
+		store_signature_expiry: z.number().optional(),
 	}),
 });
 
