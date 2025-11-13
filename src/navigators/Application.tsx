@@ -102,6 +102,9 @@ const linking: LinkingOptions<ApplicationStackParamList> = {
 			Invite: {
 				path: 'auth/invite/:inviteCode',
 			},
+			Shop: {
+				path: 'shop',
+			},
 			// TODO: Still need to implement this
 			// SignupWithSub: {
 			// 	path: 'auth/signup/:gymCode/:subscriptionId',

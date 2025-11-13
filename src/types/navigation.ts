@@ -74,6 +74,7 @@ export type ApplicationStackParamList = {
 	BrowseMedia: undefined;
 	Camera: undefined;
 	fitboxGallery: undefined;
+	Shop: undefined;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
