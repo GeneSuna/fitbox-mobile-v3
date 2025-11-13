@@ -1,7 +1,7 @@
 import useAuth from '@/auth/hooks/useAuth';
 import { SafeScreen } from '@/components/template';
 import useStore from '@/zustand/Store';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import WebView from 'react-native-webview';
 
 const Shop = () => {
@@ -16,14 +16,17 @@ const Shop = () => {
 		}),
 	);
 
-	const storeUrl = `${shopUrl}?fb_email=${user?.user_data.email}&fb_first=${user?.user_data.first_name}&fb_last=${user?.user_data.last_name}&fb_sig=${storeSignature}&fb_expiry=${storeSignatureExpiry}&fb_gym=${teamId}`;
+	const storeUrl = useMemo(() => {
+		return `${shopUrl}?fb_email=${user?.user_data.email}&fb_first=${user?.user_data.first_name}&fb_last=${user?.user_data.last_name}&fb_sig=${storeSignature}&fb_expiry=${storeSignatureExpiry}&fb_gym=${teamId}`;
+	}, [shopUrl, user, storeSignature, storeSignatureExpiry, teamId]);
+
 	useEffect(() => {
 		ref.current?.reload();
-	}, [shopUrl]);
+	}, [storeUrl]);
 
 	return (
 		<SafeScreen>
-			<WebView ref={ref} source={{ uri: storeUrl }} />
+			<WebView ref={ref} key={storeUrl} source={{ uri: storeUrl }} />
 		</SafeScreen>
 	);
 };
