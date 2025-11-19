@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import useAuth from '@/auth/hooks/useAuth';
 import { SafeScreen } from '@/components/template';
 import useStore from '@/zustand/Store';
@@ -23,6 +24,38 @@ const Shop = () => {
 	useEffect(() => {
 		ref.current?.reload();
 	}, [storeUrl]);
+
+	useEffect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
+		startMobilePay();
+	}, []);
+
+	const startMobilePay = async () => {
+		try {
+			const baseUrl = shopUrl.replace(/\/shop\/?$/, '/');
+			const mobilePayUrl = `${baseUrl}wp-json/fitbox/v1/mobile-pay/start`;
+
+			console.log('Calling: ', mobilePayUrl);
+
+			const response = await fetch(mobilePayUrl, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					// Add auth header if your endpoint needs it:
+					// "Authorization": `Bearer ${token}`,
+				},
+				body: JSON.stringify({
+					order_key: 123,
+				}),
+			});
+
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+			const data = await response.json();
+			console.log('mobile-pay/start result:', data);
+		} catch (err) {
+			console.error('Error calling mobile pay:', err);
+		}
+	};
 
 	return (
 		<SafeScreen>
