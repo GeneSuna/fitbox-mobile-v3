@@ -81,6 +81,7 @@ import {
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { Badge } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import confettiAnimation from '../theme/animations/confetti.json';
 import DashboardStackNavigator, { ResetToDashboard } from './DashboardStack';
 import MenuStackNavigator from './MenuStack';
@@ -354,6 +355,7 @@ const Stack = createStackNavigator<ApplicationStackParamList>();
 const ApplicationNavigator = () => {
 	const { variant, navigationTheme, colors } = useTheme();
 	const { getApiUrl } = useAuth();
+	const insets = useSafeAreaInsets();
 
 	const {
 		notifications,
@@ -500,6 +502,7 @@ const ApplicationNavigator = () => {
 										`${route.params.title}`,
 									),
 									...TabHeaderOptions,
+									cardStyle: { paddingBottom: insets.bottom },
 								})}
 							/>
 							<Stack.Screen
@@ -508,6 +511,7 @@ const ApplicationNavigator = () => {
 								options={{
 									title: 'Class Results',
 									...TabHeaderOptions,
+									cardStyle: { paddingBottom: insets.bottom },
 								}}
 							/>
 							<Stack.Screen
@@ -516,6 +520,7 @@ const ApplicationNavigator = () => {
 								options={{
 									title: 'End User License Agreement',
 									...TabHeaderOptions,
+									cardStyle: { paddingBottom: insets.bottom },
 								}}
 							/>
 							<Stack.Screen
@@ -532,6 +537,7 @@ const ApplicationNavigator = () => {
 								options={{
 									title: 'Gym Waiver',
 									...TabHeaderOptions,
+									cardStyle: { paddingBottom: insets.bottom },
 								}}
 							/>
 							<Stack.Screen
@@ -540,6 +546,7 @@ const ApplicationNavigator = () => {
 								options={{
 									...TabHeaderOptions,
 									headerBackTitleVisible: false,
+									cardStyle: { paddingBottom: insets.bottom },
 								}}
 							/>
 							<Stack.Screen
@@ -549,6 +556,7 @@ const ApplicationNavigator = () => {
 									...TabHeaderOptions,
 									headerBackTitleVisible: false,
 									title: 'Health Capture',
+									cardStyle: { paddingBottom: insets.bottom },
 								}}
 							/>
 							<Stack.Screen
@@ -558,6 +566,7 @@ const ApplicationNavigator = () => {
 									...TabHeaderOptions,
 									headerBackTitleVisible: false,
 									title: 'Sign Up',
+									cardStyle: { paddingBottom: insets.bottom },
 								}}
 							/>
 							<Stack.Screen
@@ -566,6 +575,7 @@ const ApplicationNavigator = () => {
 								options={() => ({
 									...TabHeaderOptions,
 									title: 'Add Result',
+									cardStyle: { paddingBottom: insets.bottom },
 								})}
 							/>
 							<Stack.Screen
