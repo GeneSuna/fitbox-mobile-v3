@@ -466,8 +466,20 @@ const ClassResultsScreen = ({
 		} = state;
 		const showResults: LeaderboardsDataType[] = [];
 
-		if (results.length) {
-			results.forEach(data => {
+		const allComplete = results.every(
+			item => item.section?.scoring_type_id === 3,
+		);
+
+		let sortedResults = results;
+
+		if (allComplete) {
+			sortedResults = [...results].sort((a, b) =>
+				a.firstname.localeCompare(b.firstname),
+			);
+		}
+
+		if (sortedResults.length) {
+			sortedResults.forEach(data => {
 				const passGender = gender === data.gender || gender === '';
 				const removeInvalid =
 					data.value === 'No' && data.section.scoring_type_id === 3;
