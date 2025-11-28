@@ -466,17 +466,32 @@ const ClassResultsScreen = ({
 		} = state;
 		const showResults: LeaderboardsDataType[] = [];
 
-		if (results.length) {
-			results.map(data =>
-				gender === data.gender || gender === ''
-					? showResults.push(data)
-					: null,
+		const allComplete = results.every(
+			item => item.section?.scoring_type_id === 3,
+		);
+
+		let sortedResults = results;
+
+		if (allComplete) {
+			sortedResults = [...results].sort((a, b) =>
+				a.firstname.localeCompare(b.firstname),
 			);
+		}
+
+		if (sortedResults.length) {
+			sortedResults.forEach(data => {
+				const passGender = gender === data.gender || gender === '';
+				const removeInvalid =
+					data.value === 'No' && data.section.scoring_type_id === 3;
+
+				if (passGender && !removeInvalid) {
+					showResults.push(data);
+				}
+			});
 
 			return showResults.length ? (
 				showResults.map((data, i) => {
 					let show = true;
-
 					// filtered by page
 					if (ageFrom !== '' && ageTo !== '') {
 						show = false;
@@ -520,7 +535,7 @@ const ClassResultsScreen = ({
 					center
 					size="md"
 					color="darkgray"
-					style={{ marginTop: config.metrics.lg }}
+					style={{ marginVertical: config.metrics.lg }}
 				>
 					No results found
 				</Text>
