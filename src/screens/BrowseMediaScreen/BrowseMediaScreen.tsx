@@ -9,6 +9,7 @@ import ImageCropPicker, {
 	ImageOrVideo,
 	Video,
 } from 'react-native-image-crop-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type AttachedFilesType = {
@@ -30,6 +31,30 @@ const BrowseMediaScreen = ({ navigation }: ComposeScreenProps) => {
 	const ALLOWED_FILE_TYPES = [...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES];
 
 	const handleOpenGallery = async () => {
+		if (Platform.OS === 'android') {
+			// ANDROID → Use the system Photo Picker (no permissions required)
+			const result = await launchImageLibrary({
+				mediaType: 'mixed',
+				selectionLimit: 0,
+				includeBase64: true,
+				presentationStyle: 'fullScreen',
+			});
+
+			if (result.assets?.length) {
+				const mapped = result.assets.map(a => ({
+					path: a.uri!,
+					mime: a.type,
+					size: a.fileSize,
+					data: a.base64,
+					filename: a.fileName,
+				})) as ImageOrVideo[];
+
+				void processFiles(mapped);
+			}
+			return;
+		}
+
+		// iOS → keep using react-native-image-crop-picker
 		await ImageCropPicker.openPicker({
 			includeBase64: true,
 			multiple: true,
