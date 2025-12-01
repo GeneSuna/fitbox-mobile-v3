@@ -387,6 +387,7 @@ const SessionAttendanceTab = ({ session }: SessionAttendanceTabProps) => {
 		// 	// check if user is already in processingMembers
 		if (processingMembers.length > 0) {
 			Say.warn('Please wait while we are processing your request');
+			return;
 		}
 
 		addProcessingMember(userId);

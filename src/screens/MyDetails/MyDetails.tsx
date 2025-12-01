@@ -48,6 +48,7 @@ import ImageCropPicker, {
 	Image,
 	Options,
 } from 'react-native-image-crop-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -405,10 +406,27 @@ const MyDetails = ({ navigation, route }: MenuStackNavigatorProps) => {
 		return style;
 	};
 
-	const pickImageFromGallery = () => {
-		void ImageCropPicker.openPicker(imageOptions).then(
-			({ data: image }: Image) => uploadProfileImage(image as string),
-		);
+	const pickImageFromGallery = async () => {
+		try {
+			if (Platform.OS === 'android') {
+				const result = await launchImageLibrary({
+					mediaType: 'photo',
+					includeBase64: true,
+				});
+
+				const base64 = result.assets?.[0]?.base64;
+				if (base64) {
+					await uploadProfileImage(base64);
+				}
+			} else {
+				const image: Image =
+					await ImageCropPicker.openPicker(imageOptions);
+				await uploadProfileImage(image.data as string);
+			}
+		} catch (error) {
+			// console.log('Error picking image:', error);
+			Say.err(error as ICatchError);
+		}
 	};
 
 	const pickImageFromCamera = () => {
@@ -744,7 +762,10 @@ const MyDetails = ({ navigation, route }: MenuStackNavigatorProps) => {
 					>
 						<View style={styles.flexOne} />
 					</TouchableWithoutFeedback>
-					<Card onPress={pickImageFromGallery} style={styles.card}>
+					<Card
+						onPress={() => void pickImageFromGallery()}
+						style={styles.card}
+					>
 						<Row spacing="space-between" align="center">
 							<Row align="center">
 								<Icon
