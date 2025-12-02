@@ -35,6 +35,7 @@ const defaultState: ApplicationStateInterface = {
 	inboxTeamId: 0,
 	storeSignature: '',
 	storeSignatureExpiry: 0,
+	stripeCustomerId: '',
 };
 
 const createApplicationSlice: StateCreator<

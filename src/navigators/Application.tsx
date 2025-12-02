@@ -104,7 +104,7 @@ const linking: LinkingOptions<ApplicationStackParamList> = {
 				path: 'auth/invite/:inviteCode',
 			},
 			Shop: {
-				path: 'shop',
+				path: 'auth/shop/pay/:orderKey',
 			},
 			// TODO: Still need to implement this
 			// SignupWithSub: {
@@ -764,6 +764,14 @@ const ApplicationNavigator = () => {
 								}}
 							/>
 						</Stack.Group>
+						<Tab.Screen
+							name="Shop"
+							component={Shop}
+							options={{
+								headerRight: ShopHeaderRightComponent,
+								title: 'Gym Shop',
+							}}
+						/>
 					</Stack.Navigator>
 				</NavigationContainer>
 

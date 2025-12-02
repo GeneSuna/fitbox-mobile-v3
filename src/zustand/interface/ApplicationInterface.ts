@@ -34,6 +34,7 @@ interface ApplicationStateInterface {
 	inboxTeamId: number;
 	storeSignature: string;
 	storeSignatureExpiry: number;
+	stripeCustomerId: string;
 }
 
 interface AttachedFilesInterface {

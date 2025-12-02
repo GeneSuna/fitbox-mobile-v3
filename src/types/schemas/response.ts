@@ -115,6 +115,7 @@ export const GetUserGymInfoResponseSchema = z.object({
 		has_previous_subscriptions: z.boolean(),
 		store_signature: z.string().optional(),
 		store_signature_expiry: z.number().optional(),
+		stripe_customer_id: z.string().nullable().optional(),
 	}),
 });
 

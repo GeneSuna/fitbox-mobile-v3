@@ -310,6 +310,7 @@ const Dashboard = () => {
 				'storeSignatureExpiry',
 				userData.store_signature_expiry || 0,
 			);
+			setAppState('stripeCustomerId', userData.stripe_customer_id || '');
 			setAppState('unreadMessages', gymInfo.num_of_unread_messages);
 			setAppState('unreadMessageCallback', initializeAppStates);
 			setAppState('allowLeaderboards', !!gymInfo.allow_leaderboards);

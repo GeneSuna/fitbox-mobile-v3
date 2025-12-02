@@ -5,9 +5,10 @@ import { navigate, resetRoot } from '@/navigators/NavigationRef';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import { MainTabScreenProps } from '@/types/navigation';
+import { MenuStackParamList } from '@/types/navigation';
 import { Constant } from '@/utils';
 import useStore from '@/zustand/Store';
+import { StackScreenProps } from '@react-navigation/stack';
 import { useQueryClient } from '@tanstack/react-query';
 import { isEmpty } from 'lodash';
 import { Alert, Linking, StyleSheet, View } from 'react-native';
@@ -143,7 +144,9 @@ const menuOptions = [
 	},
 ];
 
-const Menu = ({ navigation }: MainTabScreenProps) => {
+type MenuScreenProps = StackScreenProps<MenuStackParamList, 'Menu'>;
+
+const Menu = ({ navigation }: MenuScreenProps) => {
 	const queryClient = useQueryClient();
 
 	const { variant, changeTheme } = useTheme();
@@ -213,7 +216,7 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 				break;
 			case 'logout': {
 				signOut();
-				navigation.reset({
+				navigation.getParent()?.reset({
 					index: 0,
 					routes: [{ name: 'Landing' }],
 				});
