@@ -402,9 +402,15 @@ const ScoreComponent = ({
 				leaderboard_visible: state.hideOnLeaderboard,
 			};
 
-			if (section.comments !== '') {
-				sectionPayload.comment_leaderboard_visible =
-					section?.comment_leaderboard_visible;
+			// if (section.comments !== '') {
+			// 	sectionPayload.comment_leaderboard_visible =
+			// 		section?.comment_leaderboard_visible;
+			// }
+
+			if (state.commentLeaderboardVisible && section.comments !== '') {
+				sectionPayload.comment_leaderboard_visible = true;
+			} else {
+				sectionPayload.comment_leaderboard_visible = false;
 			}
 
 			payload.sections = [sectionPayload];
@@ -832,6 +838,17 @@ const ScoreComponent = ({
 		setSection(newSection);
 	};
 
+	const handleMovementLeaderboardComment = (
+		movementId: number | null = null,
+	) => {
+		const newSection = { ...section };
+		if (movementId) {
+			newSection.movements[movementId]!.comment_leaderboard_visible =
+				!newSection.movements[movementId]!.comment_leaderboard_visible;
+		}
+		setSection(newSection);
+	};
+
 	const getScoreSection = (
 		unitType: string | undefined,
 		method: string | undefined,
@@ -1129,16 +1146,28 @@ const ScoreComponent = ({
 			<ScoreComment
 				commentField={state.commentField}
 				commentValue={state.commentValue}
-				commentLeaderboardVisible={state.commentLeaderboardVisible}
+				commentLeaderboardVisible={
+					state.commentField === 'section'
+						? state.commentLeaderboardVisible
+						: section.movements[state.commentField as number]
+								?.comment_leaderboard_visible
+				}
 				enableLeaderboardComment={state.enableLeaderboardComment}
 				onCommentChange={val => {
 					setState(s => ({ ...s, commentValue: val }));
 				}}
 				onLeaderboardClick={() => {
-					setState(s => ({
-						...s,
-						commentLeaderboardVisible: !s.commentLeaderboardVisible,
-					}));
+					if (state.commentField === 'section') {
+						setState(s => ({
+							...s,
+							commentLeaderboardVisible:
+								!s.commentLeaderboardVisible,
+						}));
+					} else {
+						handleMovementLeaderboardComment(
+							state.commentField as number,
+						);
+					}
 				}}
 				onClose={() => {
 					Keyboard.dismiss();
