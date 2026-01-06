@@ -74,6 +74,7 @@ import DashboardActionButton from './components/DashboardActionButton';
 import DashboardHeader from './components/DashboardHeader';
 import FailedInvoicesModal from './components/FailedInvoicesModal';
 import LoggedInUserInfo from './components/LoggedInUserInfo';
+import LoginNotification from './components/LoginNotification';
 import RequiredFieldsModal from './components/RequiredFieldsModal';
 
 // List of action buttons to be displayed on the dashboard screen
@@ -1145,6 +1146,7 @@ const Dashboard = () => {
 						setShowFailedInvoicesModal={setShowFailedInvoicesModal}
 					/>
 				)}
+			<LoginNotification />
 		</SafeAreaView>
 	);
 };
