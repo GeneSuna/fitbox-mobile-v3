@@ -101,7 +101,7 @@ const InboxItem = ({ index, data, onPress }: InboxItemProps) => {
 
 	// Prepare others number
 	const othersNumber =
-		listOfUsers.length > 1 ? `${listOfUsers.length - 1} members` : '';
+		listOfUsers.length > 1 ? `${listOfUsers.length} members` : '';
 
 	// Check if last reply is sender
 	const lastReplyIsSender = data.sender_id === senderInfo.id;
