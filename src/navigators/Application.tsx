@@ -71,6 +71,7 @@ import { Constant, Func } from '@/utils';
 import useStore from '@/zustand/Store';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import LottieView from 'lottie-react-native';
+import moment from 'moment';
 import { useEffect, useState } from 'react';
 import {
 	Dimensions,
@@ -159,14 +160,21 @@ const tabBarIconRender = ({
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const MainTabNavigator = () => {
 	const { variant, colors } = useTheme();
-	const { shopUrl, activeMonth, headerTitle, clearClasses, unreadMessages } =
-		useStore(state => ({
-			shopUrl: state.shopUrl,
-			activeMonth: state.activeMonth,
-			headerTitle: state.headerTitle,
-			clearClasses: state.clearClasses,
-			unreadMessages: state.unreadMessages,
-		}));
+	const {
+		shopUrl,
+		activeMonth,
+		headerTitle,
+		clearClasses,
+		unreadMessages,
+		setState,
+	} = useStore(state => ({
+		shopUrl: state.shopUrl,
+		activeMonth: state.activeMonth,
+		headerTitle: state.headerTitle,
+		clearClasses: state.clearClasses,
+		unreadMessages: state.unreadMessages,
+		setState: state.setAppState,
+	}));
 	const [currentTab, setCurrentTab] = useState<string>('DashboardStack');
 	const [loadingCalendar, setLoadingCalendar] = useState<boolean>(false);
 
@@ -216,6 +224,11 @@ const MainTabNavigator = () => {
 					if (slRoute.name === 'DashboardStack') {
 						ResetToDashboard();
 					}
+
+					if (slRoute.name === 'Shop' && currentTab === 'Shop') {
+						const cleanUrl = shopUrl.split('?')[0]; // remove existing query params
+						setState('shopUrl', `${cleanUrl}?v=${moment().unix()}`);
+					}
 				},
 			})}
 		>
@@ -243,11 +256,11 @@ const MainTabNavigator = () => {
 			<Tab.Screen
 				name="Shop"
 				component={Shop}
-				options={{
-					tabBarButton: !shopUrl ? () => null : undefined,
-					headerRight: ShopHeaderRightComponent,
-					title: 'Gym Shop',
-				}}
+				// options={{
+				// 	tabBarButton: !shopUrl ? () => null : undefined,
+				// 	headerRight: ShopHeaderRightComponent,
+				// 	title: 'Gym Shop',
+				// }}
 			/>
 			<Tab.Screen
 				name="MenuTab"
