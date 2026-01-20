@@ -70,7 +70,7 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 			}}
 		>
 			<Icon
-				name="chevron-left"
+				name="arrow-left"
 				size={config.metrics.lg}
 				color="white"
 				style={{ marginLeft: config.metrics.rg }}
