@@ -58,6 +58,8 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 	};
 	const shopDomain = getHostname(shopUrl);
 
+	const isAtHomeRef = useRef(true);
+
 	const renderBackButton = () => (
 		<TouchableOpacity
 			onPress={() => {
@@ -208,7 +210,7 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 						const isExternal =
 							!getHostname(url).startsWith(shopDomain);
 
-						if (isExternal) {
+						if (isExternal && isAtHomeRef.current) {
 							void Linking.openURL(url);
 							return false; // MUST be boolean
 						}
@@ -231,6 +233,8 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 				}) => {
 					const isHome =
 						cleanShopUrl(navState.url) === cleanShopUrl(shopUrl);
+
+					isAtHomeRef.current = isHome;
 
 					if (isHome) {
 						setShowBackButton(false);
