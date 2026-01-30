@@ -178,6 +178,16 @@ export const CheckPaymentIntentForInvoice = z.object({
 	userPaymentDetailsUpdated: z.boolean(),
 });
 
+export const MobilePayStartSchema = z.object({
+	amount: z.number(),
+	currency: z.string(),
+	customer_ephemeral_key_secret: z.string(),
+	customer_id: z.string(),
+	order_id: z.number(),
+	payment_intent_client_secret: z.string(),
+	payment_intent_id: z.string(),
+});
+
 export type FailedInvoicesType = z.infer<typeof FailedInvoicesSchema>;
 export type InsufficientFundsInvoicesType = z.infer<
 	typeof InsufficientFundsInvoicesSchema

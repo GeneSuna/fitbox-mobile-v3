@@ -36,6 +36,10 @@ export type AttendancePastPerformanceParams = {
 	session: SessionDetailSchemaType;
 };
 
+export type ShopParams = {
+	orderKey: string;
+};
+
 export type ApplicationStackParamList = {
 	Example: undefined;
 	Main: undefined;
@@ -74,6 +78,8 @@ export type ApplicationStackParamList = {
 	BrowseMedia: undefined;
 	Camera: undefined;
 	fitboxGallery: undefined;
+	Shop: ShopParams;
+	PaymentInformation: undefined;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
@@ -171,6 +177,8 @@ export type MenuStackParamList = {
 	HelpScreen: undefined;
 	HealthCapture: HealthCaptureParams;
 	PerformanceSummary: undefined;
+	SwitchUser: undefined;
+	SwitchGym: undefined;
 };
 export type MenuStackNavigatorProps = StackScreenProps<MenuStackParamList>;
 

@@ -11,7 +11,7 @@ import { getUserGymInfo, getUserProfile } from '@/services/users';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import {
-	MainTabScreenProps,
+	ApplicationScreenProps,
 	SubscriptionSetupParams,
 } from '@/types/navigation';
 import {
@@ -59,7 +59,7 @@ type StateProps = {
 const iosVersion = parseInt(Platform.Version as string, 10);
 const initialStartDate = moment().format(Constant.DEFAULT_DATE_FORMAT);
 
-const SubscriptionSetup = ({ route, navigation }: MainTabScreenProps) => {
+const SubscriptionSetup = ({ route, navigation }: ApplicationScreenProps) => {
 	const params = route.params as SubscriptionSetupParams;
 
 	const fromSubscription = params?.fromSubscription ?? false;
