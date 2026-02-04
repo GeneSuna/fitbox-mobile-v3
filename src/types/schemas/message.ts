@@ -44,7 +44,7 @@ const LegacyActionSchema = z.object({
 export type NewActionType = z.infer<typeof NewActionSchema>;
 const NewActionSchema = z.object({
 	screen: z.string(),
-	text: z.string(),
+	text: z.string().optional(),
 });
 
 export type AnnouncementsItemType = z.infer<typeof AnnouncementsItemSchema>;

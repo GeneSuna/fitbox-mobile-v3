@@ -1,7 +1,7 @@
 import { Button, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import { AnnouncementsItemType, NewActionType } from '@/types/schemas/message';
-import { useState } from 'react';
+import { Func } from '@/utils';
 import { Image, Modal, ScrollView, StyleSheet, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -10,32 +10,26 @@ const LoginNotification = ({
 	onClose,
 	index,
 	navigation,
+	resetCurrentIndex,
 }: {
 	item: AnnouncementsItemType;
 	onClose: () => void;
 	index: number;
 	navigation: (screen: string, params?: object) => void;
+	resetCurrentIndex: () => void;
 }) => {
-	// Use type assertion to bypass TypeScript error for navigation
+	const hasAction =
+		item?.action &&
+		(item.action as NewActionType).screen &&
+		(item.action as NewActionType).screen !== 'none';
 
-	const [showNotification, setShowNotification] = useState<boolean>(true);
-
-	// const { setAppState } = useStore(state => ({
-	// 	setAppState: state.setAppState,
-	// }));
-
-	const hasAction = item.action && (item.action as NewActionType).screen;
-
-	const imageAttachment = item.attached_files
+	const imageAttachment = item?.attached_files
 		? item.attached_files.find(file => file.type === 'image')
 		: null;
 
 	const navigateToScreen = (screen: string) => {
-		setShowNotification(false);
+		resetCurrentIndex();
 		switch (screen) {
-			case 'dashboard':
-				navigation('Dashboard');
-				break;
 			case 'calendar':
 				navigation('Calendar');
 				break;
@@ -43,13 +37,16 @@ const LoginNotification = ({
 				navigation('Shop');
 				break;
 			case 'inbox':
-				navigation('Inbox');
+				navigation('InboxStack');
 				break;
 			case 'memberships':
 				navigation('Subscription');
 				break;
 			case 'settings':
-				navigation('MenuStack', { screen: 'MyDetails' });
+				navigation('MenuTab');
+				break;
+			case 'performance':
+				navigation('MenuTab', { screen: 'PerformanceSummary' });
 				break;
 			default:
 				break;
@@ -57,7 +54,7 @@ const LoginNotification = ({
 	};
 
 	return (
-		<Modal visible={showNotification} transparent animationType="fade">
+		<Modal visible transparent animationType="fade">
 			<View style={styles.container}>
 				<View style={styles.cardContainer}>
 					<ScrollView showsVerticalScrollIndicator>
@@ -79,7 +76,7 @@ const LoginNotification = ({
 						)}
 						<Spacer size={config.metrics.lg} />
 						<Text size="rg" center>
-							{item.message}
+							{Func.stripHtmlTags(item.message)}
 						</Text>
 						<Spacer />
 					</ScrollView>
@@ -92,10 +89,12 @@ const LoginNotification = ({
 								color: config.backgrounds.light,
 							}}
 							style={{ marginBottom: config.metrics.sm }}
-							onPress={() => navigateToScreen('performance')}
-							title={
-								(item.action as NewActionType).text ?? 'View'
+							onPress={() =>
+								navigateToScreen(
+									(item.action as NewActionType).screen,
+								)
 							}
+							title={`View ${(item.action as NewActionType).screen.charAt(0).toUpperCase() + (item.action as NewActionType).screen.slice(1)}`}
 						/>
 					)}
 					<Button
