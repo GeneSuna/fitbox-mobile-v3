@@ -10,7 +10,6 @@ import {
 	initPaymentSheet,
 	presentPaymentSheet,
 } from '@stripe/stripe-react-native';
-import moment from 'moment';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
 	ActivityIndicator,
@@ -32,14 +31,12 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 		teamId,
 		customerId,
 		countryCode,
-		setState,
 	} = useStore(state => ({
 		storeSignature: state.storeSignature,
 		storeSignatureExpiry: state.storeSignatureExpiry,
 		teamId: state.teamId,
 		customerId: state.stripeCustomerId,
 		countryCode: state.countryCode,
-		setState: state.setAppState,
 	}));
 	const { orderKey } = (route.params as ShopParams) || {};
 	const currentApi = getApiUrl();
@@ -66,8 +63,10 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 				if (canGoBack) {
 					ref.current?.goBack();
 				} else {
-					const cleanUrl = shopUrl.split('?')[0]; // remove existing query params
-					setState('shopUrl', `${cleanUrl}?v=${moment().unix()}`);
+					ref.current?.injectJavaScript(`
+			window.location.href = '${storeUrl}';
+			true;
+		`);
 				}
 			}}
 		>
