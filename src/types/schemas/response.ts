@@ -31,6 +31,7 @@ import {
 	ConversationArchivedListDataSchema,
 	FitboxGalleryDataSchema,
 	MessageItemSchema,
+	MessageItemUserSchema,
 	SearchGIFResultsSchema,
 	SendMessageDataSchema,
 } from './message';
@@ -304,6 +305,7 @@ export const GetConversationMessagesSchema = z.object({
 	page: z.number(),
 	total_items: z.number(),
 	total_pages: z.number(),
+	user_list: z.array(MessageItemUserSchema),
 });
 
 export const CheckConversationReplyStatusSchema = apiResponseSchema(

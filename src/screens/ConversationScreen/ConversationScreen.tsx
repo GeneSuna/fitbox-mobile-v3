@@ -36,6 +36,7 @@ import {
 	View,
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -79,9 +80,6 @@ const longPressOptions = [
 
 const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 	const { conversation } = route.params as ConversationParams;
-	const recipientIds = conversation.user_list
-		.filter(user => user.id !== conversation.userId)
-		.map(user => user.id);
 	const { user } = useAuth();
 	const [state, setState] = useState<State>({
 		list: [],
@@ -103,6 +101,8 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 	const isStaff = user?.user_data.is_staff;
 	const [disableReply, setDisableReply] = useState(false);
 
+	const canGoBack = navigation.canGoBack();
+
 	const { attachedFiles, setAppState, unreadMessageCallback, inboxTeamId } =
 		useStore(store => ({
 			attachedFiles: store.attachedFiles,
@@ -119,6 +119,9 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 		try {
 			let { message, list } = state;
 			const { subject, convoId, sending } = state;
+			const recipientIds = state.userList
+				.filter(item => item.id !== conversation.userId)
+				.map(item => item.id);
 
 			if (sending) return false;
 			message = message.trim();
@@ -247,8 +250,23 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 		);
 	};
 
+	const renderBackButton = () => (
+		<TouchableOpacity
+			onPress={() => {
+				navigation.navigate('Inbox');
+			}}
+		>
+			<FontAwesomeIcon
+				name="arrow-left"
+				size={config.metrics.lg}
+				color="white"
+				style={{ marginLeft: config.metrics.rg }}
+			/>
+		</TouchableOpacity>
+	);
+
 	const toggleViewUsers = () => {
-		const recipientsList = conversation.user_list.filter(
+		const recipientsList = state.userList.filter(
 			userData => userData.id !== user?.user_data.user_id,
 		);
 
@@ -260,7 +278,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 	};
 
 	useLayoutEffect(() => {
-		let users = conversation.user_list;
+		let users = state.userList;
 
 		if (users.length > 1) {
 			users = users.filter(
@@ -285,8 +303,9 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 		navigation.setOptions({
 			title: screenTitle,
 			headerRight: renderInfoButton,
+			headerLeft: canGoBack ? undefined : renderBackButton,
 		});
-	}, []);
+	}, [state.userList]);
 
 	useEffect(() => {
 		const onMessageListener = messaging().onMessage(message => {
@@ -365,6 +384,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 
 	const getData = async (page: number = 0) => {
 		let list: SendMessageDataType[] = [];
+		let recipients: MessageItemUserType[] = [];
 		try {
 			const { convo_id: conversationId } = conversation;
 			const res = await getConversationMessages({
@@ -373,6 +393,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 			});
 
 			list = res.data;
+			recipients = res.user_list;
 		} catch (e) {
 			Say.err(e as ICatchError);
 		}
@@ -382,6 +403,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 			list: [...prevState.list, ...list],
 			loading: false,
 			refreshing: false,
+			userList: [...prevState.userList, ...recipients],
 		}));
 
 		unreadMessageCallback();
