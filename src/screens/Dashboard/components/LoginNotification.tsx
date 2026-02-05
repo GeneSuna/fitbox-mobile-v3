@@ -2,7 +2,7 @@ import { Button, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import { AnnouncementsItemType, NewActionType } from '@/types/schemas/message';
 import { Func } from '@/utils';
-import { Image, Modal, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const LoginNotification = ({
@@ -55,8 +55,11 @@ const LoginNotification = ({
 
 	return (
 		<Modal visible transparent animationType="fade">
-			<View style={styles.container}>
-				<View style={styles.cardContainer}>
+			<Pressable style={styles.container} onPress={onClose}>
+				<Pressable
+					style={styles.cardContainer}
+					onPress={e => e.stopPropagation()}
+				>
 					<ScrollView showsVerticalScrollIndicator>
 						<Icon
 							name="close-outline"
@@ -112,8 +115,8 @@ const LoginNotification = ({
 						}
 						title="View Message"
 					/>
-				</View>
-			</View>
+				</Pressable>
+			</Pressable>
 		</Modal>
 	);
 };
