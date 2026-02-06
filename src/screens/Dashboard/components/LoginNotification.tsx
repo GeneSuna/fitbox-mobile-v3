@@ -67,7 +67,7 @@ const LoginNotification = ({
 							style={styles.closeIcon}
 							onPress={onClose}
 						/>
-						<Text size="md" bold center>
+						<Text size="lg" bold center>
 							{item.subject}
 						</Text>
 						<Spacer />
