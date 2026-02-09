@@ -2,7 +2,7 @@ import { Button, Spacer, Text } from '@/components/atoms';
 import { config } from '@/theme/_config';
 import { AnnouncementsItemType, NewActionType } from '@/types/schemas/message';
 import { Func } from '@/utils';
-import { Image, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Image, Modal, Pressable, StyleSheet, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const LoginNotification = ({
@@ -26,6 +26,10 @@ const LoginNotification = ({
 	const imageAttachment = item?.attached_files
 		? item.attached_files.find(file => file.type === 'image')
 		: null;
+
+	const MAX_CHARS = 200;
+	const messageText = Func.stripHtmlTags(item.message);
+	const isTruncated = messageText.length > MAX_CHARS;
 
 	const navigateToScreen = (screen: string) => {
 		resetCurrentIndex();
@@ -60,7 +64,7 @@ const LoginNotification = ({
 					style={styles.cardContainer}
 					onPress={e => e.stopPropagation()}
 				>
-					<ScrollView showsVerticalScrollIndicator>
+					<View>
 						<Icon
 							name="close-outline"
 							size={config.metrics.lg}
@@ -79,10 +83,35 @@ const LoginNotification = ({
 						)}
 						<Spacer size={config.metrics.lg} />
 						<Text size="rg" center>
-							{Func.stripHtmlTags(item.message)}
+							{!isTruncated ? (
+								messageText
+							) : (
+								<>
+									{messageText.substring(0, MAX_CHARS)}
+									{isTruncated && (
+										<>
+											<Text>... </Text>
+											<Text
+												style={styles.viewMoreText}
+												onPress={() =>
+													navigation('InboxStack', {
+														screen: 'Conversation',
+														params: {
+															conversation: item,
+															index,
+														},
+													})
+												}
+											>
+												View More
+											</Text>
+										</>
+									)}
+								</>
+							)}
 						</Text>
 						<Spacer />
-					</ScrollView>
+					</View>
 
 					{hasAction && (
 						<Button
@@ -138,9 +167,8 @@ const styles = StyleSheet.create({
 		backgroundColor: config.backgrounds.light,
 	},
 	image: {
-		width: '100%',
+		resizeMode: 'contain',
 		height: 300,
-		resizeMode: 'cover',
 	},
 	closeIcon: {
 		paddingBottom: config.metrics.sm,
@@ -151,6 +179,10 @@ const styles = StyleSheet.create({
 		maxHeight: '80%', // This applies correctly
 		backgroundColor: config.backgrounds.light,
 		padding: 15,
+	},
+	viewMoreText: {
+		color: config.colors.brand,
+		fontWeight: '600',
 	},
 });
 

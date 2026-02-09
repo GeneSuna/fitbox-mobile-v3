@@ -101,8 +101,6 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 	const isStaff = user?.user_data.is_staff;
 	const [disableReply, setDisableReply] = useState(false);
 
-	const canGoBack = navigation.canGoBack();
-
 	const { attachedFiles, setAppState, unreadMessageCallback, inboxTeamId } =
 		useStore(store => ({
 			attachedFiles: store.attachedFiles,
@@ -303,7 +301,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 		navigation.setOptions({
 			title: screenTitle,
 			headerRight: renderInfoButton,
-			headerLeft: canGoBack ? undefined : renderBackButton,
+			headerLeft: renderBackButton,
 		});
 	}, [state.userList]);
 
