@@ -251,7 +251,7 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 	const renderBackButton = () => (
 		<TouchableOpacity
 			onPress={() => {
-				navigation.navigate('Inbox');
+				navigation.reset({ index: 0, routes: [{ name: 'Inbox' }] });
 			}}
 		>
 			<FontAwesomeIcon
@@ -284,9 +284,9 @@ const ConversationScreen = ({ route, navigation }: InboxScreenProps) => {
 			);
 		}
 
-		let screenTitle = `${users[0]?.firstname as string} ${
-			users[0]?.lastname as string
-		}`;
+		let screenTitle = users[0]
+			? `${users[0]?.firstname} ${users[0]?.lastname}`
+			: '';
 
 		if (users.length > 1) {
 			screenTitle = `${users.length} members`;
