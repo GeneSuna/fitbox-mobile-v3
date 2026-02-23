@@ -50,7 +50,9 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 	const [showBackButton, setShowBackButton] = useState(false);
 
 	const storeUrl = useMemo(() => {
-		return `${shopUrl}?fb_email=${user?.user_data.email}&fb_first=${user?.user_data.first_name}&fb_last=${user?.user_data.last_name}&fb_sig=${storeSignature}&fb_expiry=${storeSignatureExpiry}&fb_gym=${teamId}`;
+		if (shopUrl.endsWith('/'))
+			return `${shopUrl}?fb_email=${user?.user_data.email}&fb_first=${user?.user_data.first_name}&fb_last=${user?.user_data.last_name}&fb_sig=${storeSignature}&fb_expiry=${storeSignatureExpiry}&fb_gym=${teamId}`;
+		return `${shopUrl}&fb_email=${user?.user_data.email}&fb_first=${user?.user_data.first_name}&fb_last=${user?.user_data.last_name}&fb_sig=${storeSignature}&fb_expiry=${storeSignatureExpiry}&fb_gym=${teamId}`;
 	}, [shopUrl, user, storeSignature, storeSignatureExpiry, teamId]);
 
 	const getHostname = (url: string | undefined) => {
@@ -70,6 +72,7 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 					setState('shopUrl', `${cleanUrl}?v=${moment().unix()}`);
 				}
 			}}
+			style={{ borderColor: 'green', borderWidth: 0.5 }}
 		>
 			<Icon
 				name="arrow-left"
