@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { GymClassType, GymVenueType } from '@/types/schemas/gym';
 import {
 	ClassFiltersDataType,
@@ -27,6 +28,8 @@ type ClassItemData = {
 	isCoach?: boolean;
 	color?: string;
 	buyNow?: boolean;
+	waitlistLength?: number;
+	waitlistNumber?: number;
 };
 
 type ClassItem = {
@@ -90,6 +93,6 @@ export type {
 	ClassItem,
 	ClassItemData,
 	SessionStateInterface,
-	VenueFilter,
+	VenueFilter
 };
 export default SessionInterface;

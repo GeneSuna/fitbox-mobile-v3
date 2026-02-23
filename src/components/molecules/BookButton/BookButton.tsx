@@ -32,6 +32,8 @@ interface BookButtonProps {
 	setAttending?: (value: boolean) => void;
 	showBuyButton?: boolean;
 	disableUnbooking?: boolean;
+	waitlistLength?: number;
+	waitlistNumber?: number;
 }
 
 const BookButton = ({
@@ -50,6 +52,8 @@ const BookButton = ({
 	setAttending = () => {},
 	showBuyButton,
 	disableUnbooking = false,
+	waitlistLength,
+	waitlistNumber,
 }: BookButtonProps) => {
 	const navigation =
 		useNavigation<NavigationProp<ApplicationStackParamList>>();
@@ -427,11 +431,15 @@ const BookButton = ({
 	if (!isAttending && isWaitlisted && !isPreviewMode) {
 		return (
 			<Button
-				title="Waitlisted"
+				title={
+					waitlistNumber
+						? `${Func.toOrdinal(waitlistNumber)} on Waitlist`
+						: 'Waitlisted'
+				}
 				variant="brand"
 				fullWidth
 				compact
-				sm
+				xs
 				mode="contained"
 			/>
 		);
@@ -459,7 +467,11 @@ const BookButton = ({
 						compact
 						fullWidth
 						mode={isPreviewMode ? 'contained' : 'outlined'}
-						title={isPreviewMode ? 'Join Waitlist' : 'Waitlist'}
+						title={
+							isPreviewMode
+								? `Join Waitlist (${waitlistLength ?? 0})`
+								: `Waitlist (${waitlistLength ?? 0})`
+						}
 						onPress={handleWaitlist}
 						loading={isLoading}
 					/>

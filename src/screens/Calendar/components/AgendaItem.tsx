@@ -38,6 +38,8 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 			isCoach,
 			color,
 			buyNow,
+			waitlistLength,
+			waitlistNumber,
 		},
 		setIsFromSession,
 	}: AgendaItemProps) => {
@@ -111,6 +113,8 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 						setAttending={setIsAttending}
 						handleViewSession={handleViewSession}
 						showBuyButton={buyNow as boolean}
+						waitlistLength={waitlistLength}
+						waitlistNumber={waitlistNumber}
 					/>
 				</View>
 			</TouchableOpacity>

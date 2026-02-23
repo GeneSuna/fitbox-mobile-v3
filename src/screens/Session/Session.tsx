@@ -166,6 +166,21 @@ const Session = ({ route, navigation }: ApplicationScreenProps) => {
 		[session, loggedInUser],
 	);
 
+	const waitlistNumber = useMemo(() => {
+		const waitlist = Array.isArray(session?.waitlist)
+			? session?.waitlist
+			: [];
+		const index = waitlist?.findIndex(w => w.user_id === loggedInUser?.id);
+		return index !== -1 ? (index as number) + 1 : -1;
+	}, [session, loggedInUser]);
+
+	const waitlistLength = useMemo(() => {
+		if (session?.waitlist && isArray(session.waitlist)) {
+			return session.waitlist.length;
+		}
+		return 0;
+	}, [session]);
+
 	const spotsLeft = useMemo(() => {
 		if (session && session?.attendance_limit !== null && bookedMembers) {
 			return Number(session.attendance_limit) - bookedMembers.length;
@@ -229,6 +244,8 @@ const Session = ({ route, navigation }: ApplicationScreenProps) => {
 				waitlistEnabled={!!waitlistEnabled}
 				waitlistTime={Number(waitlistTime)}
 				disableUnbooking={disableUnbooking}
+				waitlistNumber={waitlistNumber}
+				waitlistLength={waitlistLength}
 			/>
 
 			<SessionTabButtons
