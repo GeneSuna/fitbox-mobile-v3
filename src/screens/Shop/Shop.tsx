@@ -60,6 +60,8 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 	};
 	const shopDomain = getHostname(shopUrl);
 
+	const allowedDomains = [shopDomain, 'newpos.fitbox.iq'];
+
 	const isAtHomeRef = useRef(true);
 
 	const renderBackButton = () => (
@@ -201,6 +203,7 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 				onShouldStartLoadWithRequest={(request: { url: string }) => {
 					try {
 						const { url } = request;
+						const hostname = getHostname(url);
 						// console.log('WebView navigating to:', url);
 
 						// Always allow non-http(s) URLs to avoid crashes
@@ -208,8 +211,13 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 							return true;
 						}
 
-						const isExternal =
-							!getHostname(url).startsWith(shopDomain);
+						// const isExternal =
+						// 	!getHostname(url).startsWith(shopDomain);
+						const isExternal = !allowedDomains.some(
+							domain =>
+								hostname === domain ||
+								hostname.endsWith(`.${domain}`),
+						);
 
 						if (isExternal && isAtHomeRef.current) {
 							void Linking.openURL(url);
