@@ -71,7 +71,6 @@ import { Constant, Func } from '@/utils';
 import useStore from '@/zustand/Store';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import LottieView from 'lottie-react-native';
-import moment from 'moment';
 import { useEffect, useState } from 'react';
 import {
 	Dimensions,
@@ -226,8 +225,10 @@ const MainTabNavigator = () => {
 					}
 
 					if (slRoute.name === 'Shop' && currentTab === 'Shop') {
-						const cleanUrl = shopUrl.split('?')[0]; // remove existing query params
-						setState('shopUrl', `${cleanUrl}?v=${moment().unix()}`);
+						const base = shopUrl.split('?')[0];
+						const timestamp = Date.now();
+
+						setState('shopUrl', `${base}?v=${timestamp}`);
 					}
 				},
 			})}

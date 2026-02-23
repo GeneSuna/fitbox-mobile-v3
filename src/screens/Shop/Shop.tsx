@@ -10,7 +10,6 @@ import {
 	initPaymentSheet,
 	presentPaymentSheet,
 } from '@stripe/stripe-react-native';
-import moment from 'moment';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
 	ActivityIndicator,
@@ -50,9 +49,18 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 	const [showBackButton, setShowBackButton] = useState(false);
 
 	const storeUrl = useMemo(() => {
-		if (shopUrl.endsWith('/'))
-			return `${shopUrl}?fb_email=${user?.user_data.email}&fb_first=${user?.user_data.first_name}&fb_last=${user?.user_data.last_name}&fb_sig=${storeSignature}&fb_expiry=${storeSignatureExpiry}&fb_gym=${teamId}`;
-		return `${shopUrl}&fb_email=${user?.user_data.email}&fb_first=${user?.user_data.first_name}&fb_last=${user?.user_data.last_name}&fb_sig=${storeSignature}&fb_expiry=${storeSignatureExpiry}&fb_gym=${teamId}`;
+		if (!shopUrl) return '';
+
+		const params = new URLSearchParams({
+			fb_email: user?.user_data.email ?? '',
+			fb_first: user?.user_data.first_name ?? '',
+			fb_last: user?.user_data.last_name ?? '',
+			fb_sig: storeSignature ?? '',
+			fb_expiry: String(storeSignatureExpiry ?? ''),
+			fb_gym: String(teamId ?? ''),
+		});
+
+		return `${shopUrl}?${params.toString()}`;
 	}, [shopUrl, user, storeSignature, storeSignatureExpiry, teamId]);
 
 	const getHostname = (url: string | undefined) => {
@@ -70,8 +78,10 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 				if (canGoBack) {
 					ref.current?.goBack();
 				} else {
-					const cleanUrl = shopUrl.split('?')[0]; // remove existing query params
-					setState('shopUrl', `${cleanUrl}?v=${moment().unix()}`);
+					const base = shopUrl.split('?')[0];
+					const timestamp = Date.now();
+
+					setState('shopUrl', `${base}?v=${timestamp}`);
 				}
 			}}
 			style={{
@@ -114,19 +124,68 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 	}, [orderKey]);
 
 	function cleanShopUrl(url: string) {
-		const idx = url.indexOf('/shop/');
-		if (idx === -1) return url; // fallback
+		if (!url) return '';
 
-		return `${url.substring(0, idx)}/`;
+		// Remove query params
+		let base = url.split('?')[0];
+
+		// Remove trailing slash
+		if (base?.endsWith('/')) {
+			base = base.slice(0, -1);
+		}
+
+		// Remove /shop at the end
+		if (base?.endsWith('/shop')) {
+			base = base.slice(0, -5); // remove 5 chars
+		}
+
+		return base;
+	}
+
+	function buildMobilePayUrl(
+		url: string,
+		orderkey: string,
+		id: string,
+		ts: number,
+	) {
+		const base = shopUrl.split('?')[0] || url; // fallback to url if split fails
+
+		const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+
+		const query = [
+			`order_key=${encodeURIComponent(orderkey)}`,
+			`customer_id=${encodeURIComponent(id)}`,
+			`_ts=${encodeURIComponent(ts)}`,
+		].join('&');
+
+		return `${normalizedBase}wp-json/fitbox/v1/mobile-pay/start?${query}`;
+	}
+
+	function buildConfirmationUrl(
+		url: string,
+		orderId: string,
+		orderkey: string,
+	) {
+		const base = shopUrl.split('?')[0] || url;
+		const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+
+		// Encode the key param
+		const keyParam = `key=${encodeURIComponent(orderkey)}`;
+
+		return `${normalizedBase}checkout/order-received/${encodeURIComponent(orderId)}/?${keyParam}`;
 	}
 
 	const startMobilePay = async (orderkey: string) => {
 		try {
 			const ts = Date.now();
-			const baseUrl = cleanShopUrl(shopUrl);
-			const mobilePayUrl = `${baseUrl}wp-json/fitbox/v1/mobile-pay/start?order_key=${orderkey}&customer_id=${customerId}&_ts=${ts}`;
+			const mobilePayUrl = buildMobilePayUrl(
+				shopUrl,
+				orderkey,
+				customerId,
+				ts,
+			);
 
-			// console.log('Calling: ', mobilePayUrl);
+			console.log('MOBILE PAY URL:', mobilePayUrl);
 
 			const response = await fetch(mobilePayUrl, {
 				method: 'POST',
@@ -175,7 +234,11 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 				ref.current?.reload();
 				setIsLoading(false);
 			} else {
-				const confirmationUrl = `${baseUrl}checkout/order-received/${parsedData.order_id}/?key=${orderkey}`;
+				const confirmationUrl = buildConfirmationUrl(
+					shopUrl,
+					String(parsedData.order_id),
+					orderkey,
+				);
 
 				ref.current?.injectJavaScript(`
 				window.location.href = '${confirmationUrl}';
