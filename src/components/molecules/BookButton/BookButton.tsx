@@ -461,17 +461,23 @@ const BookButton = ({
 	if (!isAttending && spotsLeft === 0 && isSessionWithin72Hours) {
 		if (waitlistBtn) {
 			if (!isWaitlisted) {
-				return (
+				return isPreviewMode ? (
 					<Button
 						sm
 						compact
 						fullWidth
-						mode={isPreviewMode ? 'contained' : 'outlined'}
-						title={
-							isPreviewMode
-								? `Join Waitlist (${waitlistLength ?? 0})`
-								: `Waitlist (${waitlistLength ?? 0})`
-						}
+						mode="contained"
+						title={`Join Waitlist (${waitlistLength ?? 0})`}
+						onPress={handleWaitlist}
+						loading={isLoading}
+					/>
+				) : (
+					<Button
+						xs
+						compact
+						fullWidth
+						mode="outlined"
+						title={`${waitlistLength ?? 0} on Waitlist`}
 						onPress={handleWaitlist}
 						loading={isLoading}
 					/>

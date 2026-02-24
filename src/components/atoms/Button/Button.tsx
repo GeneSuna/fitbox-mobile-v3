@@ -90,7 +90,7 @@ const Button = ({
 		return (
 			<TouchableRipple
 				{...rest}
-				style={[customStyle, styles.xsNoBorder]}
+				style={[customStyle, !isOutlined && styles.xsBorder]}
 				onPress={rest.onPress}
 				disabled={rest.disabled}
 			>
@@ -122,7 +122,7 @@ const Button = ({
 };
 
 const styles = StyleSheet.create({
-	xsNoBorder: {
+	xsBorder: {
 		borderWidth: 0,
 	},
 	xsContent: {
