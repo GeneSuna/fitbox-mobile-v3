@@ -18,11 +18,13 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import WebView from 'react-native-webview';
 
 const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 	const ref = useRef<WebView>(null);
+	const appVersion = DeviceInfo.getVersion();
 	const shopUrl = useStore(state => state.shopUrl);
 	const { user, getApiUrl } = useAuth();
 	const {
@@ -263,6 +265,7 @@ const Shop = ({ navigation, route }: ApplicationScreenProps) => {
 				ref={ref}
 				key={storeUrl}
 				source={{ uri: storeUrl }}
+				headers={{ 'x-app-version': appVersion }}
 				onShouldStartLoadWithRequest={(request: { url: string }) => {
 					try {
 						const { url } = request;
