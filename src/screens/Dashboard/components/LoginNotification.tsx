@@ -95,35 +95,19 @@ const LoginNotification = ({
 						<Spacer />
 						{otherAttachments.length > 0 && (
 							<View style={styles.otherAttachments}>
-								{displayedAttachments.map(file => (
-									<View
-										key={file.id}
-										style={styles.attachmentRow}
-									>
-										<Icon
-											name="attach-outline"
-											size={14}
-											style={styles.attachmentIcon}
-										/>
-										<Text
-											size="sm"
-											style={styles.attachmentLabel}
-										>
-											{file.name}
-										</Text>
-									</View>
-								))}
-								{remainingCount > 0 && (
-									<Text
-										size="sm"
-										style={styles.attachmentLabel}
-									>
-										and {remainingCount} other
-										{remainingCount === 1
-											? ' attachment'
-											: ' attachments'}
-									</Text>
-								)}
+								<Icon
+									name="attach-outline"
+									size={14}
+									style={styles.attachmentIcon}
+								/>
+								<Text size="sm" style={styles.attachmentLabel}>
+									Attachments:{' '}
+									{displayedAttachments
+										.map(f => f.name)
+										.join(', ')}
+									{remainingCount > 0 &&
+										` + ${remainingCount} more`}
+								</Text>
 							</View>
 						)}
 						<Spacer size={config.metrics.lg} />
@@ -231,11 +215,9 @@ const styles = StyleSheet.create({
 	},
 	otherAttachments: {
 		marginTop: config.metrics.sm,
-	},
-	attachmentRow: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		marginBottom: 4,
+		flexWrap: 'wrap',
 	},
 	attachmentIcon: {
 		color: '#666',
