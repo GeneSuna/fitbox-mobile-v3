@@ -172,6 +172,12 @@ const createSessionSlice: StateCreator<
 								w.user_id === userId,
 						);
 
+						const waitlistLength = item.member_waitlist.length || 0;
+						const waitlistNumber =
+							item.member_waitlist.findIndex(
+								w => w.user_id === userId,
+							) + 1;
+
 						// return data
 						return {
 							start: moment(item.local_start).format('H:mm'),
@@ -193,6 +199,8 @@ const createSessionSlice: StateCreator<
 							spotsLeft,
 							duration,
 							buyNow: item.class.buy_now_flag as boolean,
+							waitlistLength,
+							waitlistNumber,
 						};
 					});
 					const lastFetched = moment().format('YYYY-MM-DD HH:mm:ss');

@@ -1,6 +1,7 @@
 import { Button, Row } from '@/components/atoms';
 import { BookButton } from '@/components/molecules';
 import layout from '@/theme/layout';
+import { Func } from '@/utils';
 import moment from 'moment';
 import { memo, useCallback, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -17,6 +18,8 @@ interface SessionActionButtonsProps {
 	waitlistEnabled: boolean;
 	waitlistTime: number;
 	disableUnbooking?: boolean;
+	waitlistNumber?: number;
+	waitlistLength?: number;
 }
 
 const SessionActionButtons = ({
@@ -31,6 +34,8 @@ const SessionActionButtons = ({
 	waitlistEnabled,
 	waitlistTime,
 	disableUnbooking = false,
+	waitlistNumber,
+	waitlistLength,
 }: SessionActionButtonsProps) => {
 	const [isAttending, setAttending] = useState<boolean>(propsIsAttending);
 
@@ -40,7 +45,17 @@ const SessionActionButtons = ({
 		}
 
 		if (isWaitlist) {
-			return <Button sm mode="outlined" title="Waitlisted" />;
+			return (
+				<Button
+					sm
+					mode="outlined"
+					title={
+						waitlistNumber
+							? `${Func.toOrdinal(waitlistNumber)} on Waitlist`
+							: 'Waitlisted'
+					}
+				/>
+			);
 		}
 
 		if (spotsLeft === 0) {
@@ -82,6 +97,7 @@ const SessionActionButtons = ({
 				setAttending={setAttending}
 				isPreviewMode
 				disableUnbooking={disableUnbooking}
+				waitlistLength={waitlistLength}
 			/>
 		);
 	}, [islocked, isAttending, isWaitlist, spotsLeft, waitlistEnabled]);

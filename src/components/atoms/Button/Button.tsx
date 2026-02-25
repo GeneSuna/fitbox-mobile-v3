@@ -2,8 +2,15 @@ import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { ComponentProps } from 'react';
-import { StyleProp, TextStyle, ViewStyle } from 'react-native';
-import { Button as Btn } from 'react-native-paper';
+import {
+	StyleProp,
+	StyleSheet,
+	Text,
+	TextStyle,
+	View,
+	ViewStyle,
+} from 'react-native';
+import { Button as Btn, TouchableRipple } from 'react-native-paper';
 import { FontColors } from '../Text/Text';
 
 type ButtonTypeWithoutChildren = Omit<ComponentProps<typeof Btn>, 'children'>;
@@ -17,6 +24,7 @@ interface ButtonProps extends ButtonTypeWithoutChildren {
 	fullWidth?: boolean;
 	bold?: boolean;
 	flex1?: boolean;
+	xs?: boolean;
 }
 
 const contrastColor = (color: string) => {
@@ -31,6 +39,7 @@ const contrastColor = (color: string) => {
 
 const Button = ({
 	sm = false,
+	xs = false,
 	rounded = false,
 	variant = 'brand',
 	fullWidth = false,
@@ -70,10 +79,32 @@ const Button = ({
 			? colors[variant].color
 			: contrastColor(customStyle.backgroundColor as string), // default is white
 		...(sm ? { fontSize: config.fonts.metrics.sm } : {}),
+		...(xs ? { fontSize: config.fonts.metrics.xs } : {}),
 		...(rest.labelStyle as TextStyle),
 		...(bold ? layout.fontMontserratBold : layout.fontMontserratRegular),
 		...(flex1 ? { flex: 1, textAlign: 'center' } : {}),
 	};
+
+	// xs: use custom touchable so label can wrap to 2 lines (Paper Button hardcodes numberOfLines={1})
+	if (xs) {
+		return (
+			<TouchableRipple
+				{...rest}
+				style={[customStyle, !isOutlined && styles.xsBorder]}
+				onPress={rest.onPress}
+				disabled={rest.disabled}
+			>
+				<View style={styles.xsContent}>
+					<Text
+						numberOfLines={2}
+						style={[labelStyle, styles.xsLabel]}
+					>
+						{title}
+					</Text>
+				</View>
+			</TouchableRipple>
+		);
+	}
 
 	return (
 		<Btn
@@ -89,5 +120,20 @@ const Button = ({
 		</Btn>
 	);
 };
+
+const styles = StyleSheet.create({
+	xsBorder: {
+		borderWidth: 0,
+	},
+	xsContent: {
+		paddingVertical: 8,
+		paddingHorizontal: 16,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	xsLabel: {
+		textAlign: 'center',
+	},
+});
 
 export default Button;

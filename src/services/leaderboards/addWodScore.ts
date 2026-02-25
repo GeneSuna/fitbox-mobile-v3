@@ -11,7 +11,7 @@ import { securedInstance } from '../instance';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AddWodScorePayload = { [key: string]: any };
 export default async (payload: AddWodScorePayload) => {
-	const response = await securedInstance()
+	const response = await securedInstance(60000)
 		.post(`${ApiRoutes.addWodScore}`, {
 			body: JSON.stringify(payload),
 			throwHttpErrors: false,
