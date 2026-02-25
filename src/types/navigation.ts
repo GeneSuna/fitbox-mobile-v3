@@ -80,6 +80,7 @@ export type ApplicationStackParamList = {
 	fitboxGallery: undefined;
 	Shop: ShopParams;
 	PaymentInformation: undefined;
+	Menu: undefined;
 };
 export type ApplicationScreenProps =
 	StackScreenProps<ApplicationStackParamList>;
