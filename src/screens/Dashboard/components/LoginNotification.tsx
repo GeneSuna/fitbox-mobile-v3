@@ -92,24 +92,7 @@ const LoginNotification = ({
 								style={styles.image}
 							/>
 						)}
-						<Spacer />
-						{otherAttachments.length > 0 && (
-							<View style={styles.otherAttachments}>
-								<Icon
-									name="attach-outline"
-									size={14}
-									style={styles.attachmentIcon}
-								/>
-								<Text size="sm" style={styles.attachmentLabel}>
-									Attachments:{' '}
-									{displayedAttachments
-										.map(f => f.name)
-										.join(', ')}
-									{remainingCount > 0 &&
-										` + ${remainingCount} more`}
-								</Text>
-							</View>
-						)}
+
 						<Spacer size={config.metrics.lg} />
 						<Text size="rg" center>
 							{!isTruncated ? (
@@ -139,6 +122,24 @@ const LoginNotification = ({
 								</>
 							)}
 						</Text>
+						<Spacer />
+						{otherAttachments.length > 0 && (
+							<View style={styles.otherAttachments}>
+								<Icon
+									name="attach-outline"
+									size={16}
+									style={styles.attachmentIcon}
+								/>
+								<Text size="sm" style={styles.attachmentLabel}>
+									Attachments:{' '}
+									{displayedAttachments
+										.map(f => f.name)
+										.join(', ')}
+									{remainingCount > 0 &&
+										` + ${remainingCount} more`}
+								</Text>
+							</View>
+						)}
 						<Spacer />
 					</View>
 
@@ -216,12 +217,12 @@ const styles = StyleSheet.create({
 	otherAttachments: {
 		marginTop: config.metrics.sm,
 		flexDirection: 'row',
-		alignItems: 'center',
+		alignItems: 'flex-start',
 		flexWrap: 'wrap',
 	},
 	attachmentIcon: {
 		color: '#666',
-		marginRight: 6,
+		marginRight: 2,
 	},
 	attachmentLabel: {
 		fontSize: 12,
