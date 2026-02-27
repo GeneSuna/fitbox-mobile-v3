@@ -26,10 +26,12 @@ import {
 	WorkoutItemSchema,
 } from './leaderboards';
 import {
+	AnnouncementsItemSchema,
 	ContactDataSchema,
 	ConversationArchivedListDataSchema,
 	FitboxGalleryDataSchema,
 	MessageItemSchema,
+	MessageItemUserSchema,
 	SearchGIFResultsSchema,
 	SendMessageDataSchema,
 } from './message';
@@ -103,6 +105,12 @@ export const GetConversationListResponseSchema = z.object({
 	total_pages: z.number(),
 });
 
+export const GetAnnouncementsResponseSchema = z.object({
+	data: z.array(AnnouncementsItemSchema),
+	message: z.string(),
+	error: z.boolean(),
+});
+
 export const GetUserGymInfoResponseSchema = z.object({
 	gym_info: GymInfoSchema,
 	message: z.string(),
@@ -113,6 +121,9 @@ export const GetUserGymInfoResponseSchema = z.object({
 		has_waived_subscriptions: z.boolean(),
 		waiver_accepted: boolOrOneZero,
 		has_previous_subscriptions: z.boolean(),
+		store_signature: z.string().optional(),
+		store_signature_expiry: z.number().optional(),
+		stripe_customer_id: z.string().nullable().optional(),
 	}),
 });
 
@@ -294,6 +305,7 @@ export const GetConversationMessagesSchema = z.object({
 	page: z.number(),
 	total_items: z.number(),
 	total_pages: z.number(),
+	user_list: z.array(MessageItemUserSchema),
 });
 
 export const CheckConversationReplyStatusSchema = apiResponseSchema(

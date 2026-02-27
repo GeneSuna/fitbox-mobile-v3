@@ -4,7 +4,7 @@ import { navigate } from '@/navigators/NavigationRef';
 import { acceptInvite, validateInvite } from '@/services/auth';
 import { getSubscriptionInfo } from '@/services/subscription';
 import { config } from '@/theme/_config';
-import { InviteParams, MainTabScreenProps } from '@/types/navigation';
+import { ApplicationStackParamList, InviteParams } from '@/types/navigation';
 import {
 	UserDetailsType,
 	UserSchemaType,
@@ -14,6 +14,7 @@ import {
 import { Constant, Func, Say } from '@/utils';
 import { ICatchError } from '@/utils/Say';
 import useStore from '@/zustand/Store';
+import { StackScreenProps } from '@react-navigation/stack';
 import { capitalize, isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, TextInput, View } from 'react-native';
@@ -66,7 +67,9 @@ const passwordFields = ['password', 'confirm_password'];
 
 const skipPaymentGateways = ['cash', 'bank_transfer'];
 
-const InviteCodeScreen = ({ navigation, route }: MainTabScreenProps) => {
+type InviteScreenProps = StackScreenProps<ApplicationStackParamList, 'Invite'>;
+
+const InviteCodeScreen = ({ navigation, route }: InviteScreenProps) => {
 	const { user, signOut, updateUser, signIn } = useAuth();
 	const { setAppState, clearClasses, clearFilters, clearStates } = useStore(
 		state => ({

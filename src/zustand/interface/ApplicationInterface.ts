@@ -32,6 +32,9 @@ interface ApplicationStateInterface {
 	randomAnimation: { uri: AnimationObject; index: number };
 	joiningOtherGym: boolean;
 	inboxTeamId: number;
+	storeSignature: string;
+	storeSignatureExpiry: number;
+	stripeCustomerId: string;
 }
 
 interface AttachedFilesInterface {

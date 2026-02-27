@@ -10,10 +10,16 @@ import useStore from '@/zustand/Store';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { debounce } from 'lodash';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
-import { ListRenderItemInfo, StyleSheet, View } from 'react-native';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import {
+	ListRenderItemInfo,
+	StyleSheet,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import SimpleToast from 'react-native-simple-toast';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 const PastPerformance = ({ navigation }: PerformanceSummaryScreenProps) => {
 	const queryClient = useQueryClient();
@@ -23,6 +29,30 @@ const PastPerformance = ({ navigation }: PerformanceSummaryScreenProps) => {
 		benchmarks: s.benchmarks,
 		favorites: s.favorites,
 	}));
+
+	const renderBackButton = () => (
+		<TouchableOpacity
+			onPress={() => {
+				navigation.reset({ index: 0, routes: [{ name: 'Menu' }] });
+			}}
+		>
+			<FontAwesomeIcon
+				name="arrow-left"
+				size={config.metrics.lg}
+				color="white"
+				style={{
+					paddingLeft: config.metrics.rg,
+					paddingRight: config.metrics.md,
+				}}
+			/>
+		</TouchableOpacity>
+	);
+
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerLeft: () => renderBackButton(),
+		});
+	}, []);
 
 	const {
 		data,

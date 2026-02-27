@@ -277,6 +277,12 @@ const isAndroid15OrLater = () => {
 	return Platform.OS === 'android' && Platform.Version >= 35;
 };
 
+const toOrdinal = (n: number) =>
+	n +
+	(['th', 'st', 'nd', 'rd'][((n % 100) - 20) % 10] ||
+		['th', 'st', 'nd', 'rd'][n % 100] ||
+		'th');
+
 export default {
 	decodeHtml,
 	stripHtmlTags,
@@ -301,4 +307,5 @@ export default {
 	getRandomAnimation,
 	useKeyboardStatus,
 	isAndroid15OrLater,
+	toOrdinal,
 };
