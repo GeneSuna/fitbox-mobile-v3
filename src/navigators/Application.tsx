@@ -405,7 +405,7 @@ const ApplicationNavigator = () => {
 		}
 		if (url.includes('fitbox.iq')) {
 			// temp for testing
-			return Constant.STRIPE_PUBLISHABLE_KEY.TEST;
+			return Constant.STRIPE_PUBLISHABLE_KEY.LIVE;
 		}
 		return '';
 	};
