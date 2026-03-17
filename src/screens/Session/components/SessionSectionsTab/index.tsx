@@ -192,9 +192,9 @@ const SessionsSectionsTab = ({
 					// Merge data if section have fb_wod
 					let useTextSection = '';
 					if (section?.fb_wod?.wod_section?.text_section !== '') {
-						useTextSection =
-							String(fbWod.wod_section.text_section) +
-							(fbWod.notes ? `<br/> ${fbWod.notes}` : '');
+						useTextSection = fbWod.wod_section.text_section
+							? String(fbWod.wod_section.text_section)
+							: `${fbWod.notes ? `<br/> ${fbWod.notes}` : ''}`;
 					} else {
 						useTextSection = String(fbWod.notes);
 					}
