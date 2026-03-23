@@ -48,8 +48,12 @@ const decodeHtml = (str: string): string => {
 
 const stripHtmlTags = (str: string) => {
 	return decodeHtml(str)
+		.replace(/<br\s*\/?>/gi, ' ')
+		.replace(/<\/(p|div|h[1-6]|li)>/gi, ' ')
 		.replace(/(<([^>]+)>)/gi, '')
-		.replace(/&nbsp;/g, ' ');
+		.replace(/&nbsp;/g, ' ')
+		.replace(/\s{2,}/g, ' ')
+		.trim();
 };
 
 const getDuration = (start: string, end: string) => {
