@@ -4,7 +4,7 @@ import { config } from '@/theme/_config';
 import { ApplicationStackParamList } from '@/types/navigation';
 import { ClassItemData } from '@/zustand/interface/SessionInterface';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export const AGENDA_ITEM_HEIGHT = 84;
@@ -38,6 +38,8 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 			isCoach,
 			color,
 			buyNow,
+			waitlistLength,
+			waitlistNumber,
 		},
 		setIsFromSession,
 	}: AgendaItemProps) => {
@@ -46,6 +48,12 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 
 		const [isAttending, setIsAttending] =
 			useState<boolean>(!!isAttendingProp);
+
+		// Keep local "optimistic" attendance state in sync with fresh server data.
+		// Otherwise pull-to-refresh updates props but the UI stays stuck.
+		useEffect(() => {
+			setIsAttending(!!isAttendingProp);
+		}, [isAttendingProp]);
 
 		const handleViewSession = useCallback(() => {
 			navigation.navigate('Session', {
@@ -111,6 +119,8 @@ const AgendaItem: React.FC<AgendaItemProps> = React.memo(
 						setAttending={setIsAttending}
 						handleViewSession={handleViewSession}
 						showBuyButton={buyNow as boolean}
+						waitlistLength={waitlistLength}
+						waitlistNumber={waitlistNumber}
 					/>
 				</View>
 			</TouchableOpacity>

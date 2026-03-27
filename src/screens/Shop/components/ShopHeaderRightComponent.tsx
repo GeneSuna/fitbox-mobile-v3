@@ -12,8 +12,10 @@ const ShopHeaderRightComponent = () => {
 	}));
 
 	const onOpenLink = () => void Linking.openURL(shopUrl);
-	const onRefresh = () =>
-		setState('shopUrl', `${shopUrl}?v=${moment().unix()}`); // this is to force refresh
+	const onRefresh = () => {
+		const cleanUrl = shopUrl.split('?')[0]; // remove existing query params
+		setState('shopUrl', `${cleanUrl}?v=${moment().unix()}`);
+	};
 
 	return (
 		<HeaderButtonGroup>

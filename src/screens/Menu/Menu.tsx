@@ -5,9 +5,10 @@ import { navigate, resetRoot } from '@/navigators/NavigationRef';
 import { useTheme } from '@/theme';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
-import { MainTabScreenProps } from '@/types/navigation';
+import { MenuStackParamList } from '@/types/navigation';
 import { Constant } from '@/utils';
 import useStore from '@/zustand/Store';
+import { StackScreenProps } from '@react-navigation/stack';
 import { useQueryClient } from '@tanstack/react-query';
 import { isEmpty } from 'lodash';
 import { Alert, Linking, StyleSheet, View } from 'react-native';
@@ -143,13 +144,22 @@ const menuOptions = [
 	},
 ];
 
-const Menu = ({ navigation }: MainTabScreenProps) => {
+type MenuScreenProps = StackScreenProps<MenuStackParamList, 'Menu'>;
+
+const Menu = ({ navigation }: MenuScreenProps) => {
 	const queryClient = useQueryClient();
 
 	const { variant, changeTheme } = useTheme();
-	const { signOut, getApiUrl } = useAuth();
+	const { signOut, getApiUrl, user } = useAuth();
 	const { hasSwitchableUsers } = useSwitchableUsers();
-	const { shopUrl, clearStates, emptyRequiredFields } = useStore(state => ({
+	const {
+		shopUrl,
+		clearStates,
+		emptyRequiredFields,
+		storeSignature,
+		storeSignatureExpiry,
+		teamId,
+	} = useStore(state => ({
 		shopUrl: state.shopUrl,
 		clearStates: () => {
 			state.clearClasses();
@@ -157,10 +167,15 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 			state.clearFilters();
 		},
 		emptyRequiredFields: state.emptyRequiredFields,
+		storeSignature: state.storeSignature,
+		storeSignatureExpiry: state.storeSignatureExpiry,
+		teamId: state.teamId,
 	}));
 
 	const version = DeviceInfo.getVersion();
 	const build = DeviceInfo.getBuildNumber();
+
+	const storeUrl = `${shopUrl}?fb_email=${user?.user_data.email}&fb_first=${user?.user_data.first_name}&fb_last=${user?.user_data.last_name}&fb_sig=${storeSignature}&fb_expiry=${storeSignatureExpiry}&fb_gym=${teamId}`;
 
 	const handleClearCache = () => {
 		// clear zustand state
@@ -197,11 +212,11 @@ const Menu = ({ navigation }: MainTabScreenProps) => {
 				changeTheme(variant === 'default' ? 'dark' : 'default');
 				break;
 			case 'shop':
-				void Linking.openURL(shopUrl);
+				void Linking.openURL(storeUrl);
 				break;
 			case 'logout': {
 				signOut();
-				navigation.reset({
+				navigation.getParent()?.reset({
 					index: 0,
 					routes: [{ name: 'Landing' }],
 				});

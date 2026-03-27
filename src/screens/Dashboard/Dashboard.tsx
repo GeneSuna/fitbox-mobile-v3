@@ -15,6 +15,7 @@ import { betaActive, savePushToken } from '@/services/auth';
 import { getGymClasses, getGymVenues } from '@/services/gym';
 import { getAttendanceReport } from '@/services/leaderboards';
 import getWorkouts from '@/services/leaderboards/getWorkouts';
+import { getAnnouncements, getConversationMessages } from '@/services/message';
 import { getClassFilters } from '@/services/session';
 import {
 	getBookedSessions,
@@ -28,6 +29,7 @@ import layout from '@/theme/layout';
 import resources from '@/theme/resources';
 import { ApplicationStackParamList } from '@/types/navigation';
 import { GymVenueType } from '@/types/schemas/gym';
+import { AnnouncementsItemType } from '@/types/schemas/message';
 import { NotificationSettingsState } from '@/types/schemas/notifications';
 import { FailedInvoicesType } from '@/types/schemas/payment';
 import { LoginResponseSchemaType } from '@/types/schemas/response';
@@ -45,6 +47,7 @@ import messaging, { firebase } from '@react-native-firebase/messaging';
 import {
 	NavigationProp,
 	useFocusEffect,
+	useIsFocused,
 	useNavigation,
 } from '@react-navigation/native';
 import { isArray, isEmpty } from 'lodash';
@@ -74,6 +77,7 @@ import DashboardActionButton from './components/DashboardActionButton';
 import DashboardHeader from './components/DashboardHeader';
 import FailedInvoicesModal from './components/FailedInvoicesModal';
 import LoggedInUserInfo from './components/LoggedInUserInfo';
+import LoginNotification from './components/LoginNotification';
 import RequiredFieldsModal from './components/RequiredFieldsModal';
 
 // List of action buttons to be displayed on the dashboard screen
@@ -104,9 +108,13 @@ const { metrics, fonts } = config;
 
 const Dashboard = () => {
 	const { t } = useTranslation(['dashboard']);
+	const isFocused = useIsFocused();
 	const { user, getApiUrl, signOut, updateUser } = useAuth();
 	const timezone = user?.user_data.dob.timezone as string;
 	const [attendanceFilter, setAttendanceFilter] = useState<string[]>([]);
+	const [loginNotifications, setLoginNotifications] = useState<
+		AnnouncementsItemType[]
+	>([]);
 	// const headerHeight = useHeaderHeight();
 	const { variant, navigationTheme } = useTheme();
 
@@ -192,6 +200,9 @@ const Dashboard = () => {
 		useState<boolean>(false);
 
 	const { hasSwitchableUsers } = useSwitchableUsers();
+
+	const [currentNotificationIndex, setCurrentNotificationIndex] =
+		useState<number>(0);
 	const betaBuild = false;
 	const onRefresh = () => {
 		void initializeAppStates();
@@ -252,6 +263,13 @@ const Dashboard = () => {
 		});
 	}, [hasPrevSubscriptions]);
 
+	useEffect(() => {
+		if (isFocused) {
+			setLoginNotifications([]);
+			setCurrentNotificationIndex(0);
+		}
+	}, [isFocused]);
+
 	const initializeAppStates = async () => {
 		const res = await getUserGymInfo();
 
@@ -305,6 +323,12 @@ const Dashboard = () => {
 			// setAppState('gymParameters', gymInfo.gymParams);
 			setAppState('teamId', gymInfo.gym_lookup);
 			setAppState('shopUrl', gymInfo.online_store);
+			setAppState('storeSignature', userData.store_signature || '');
+			setAppState(
+				'storeSignatureExpiry',
+				userData.store_signature_expiry || 0,
+			);
+			setAppState('stripeCustomerId', userData.stripe_customer_id || '');
 			setAppState('unreadMessages', gymInfo.num_of_unread_messages);
 			setAppState('unreadMessageCallback', initializeAppStates);
 			setAppState('allowLeaderboards', !!gymInfo.allow_leaderboards);
@@ -321,6 +345,45 @@ const Dashboard = () => {
 			setAttendanceFilter(gymInfo.mobile_dashboard_type);
 
 			setHasPrevSubscriptions(userData.has_previous_subscriptions);
+
+			if (gymInfo.num_of_unread_messages > 0) {
+				void getLoginNotifications(gymInfo.gym_lookup);
+			}
+		}
+	};
+
+	const getLoginNotifications = async (gymId: number | string) => {
+		const res = await getAnnouncements(gymId as number);
+		if (!res.error) {
+			if (res.data.length > 0) {
+				const announcements = res.data.reverse();
+				setLoginNotifications(announcements);
+			}
+		}
+	};
+
+	const onClosePopup = async () => {
+		try {
+			await getConversationMessages({
+				conversationId: loginNotifications[currentNotificationIndex]
+					?.convo_id as number,
+				page: 0,
+			});
+		} catch (e) {
+			Say.err(e as ICatchError);
+		}
+		setCurrentNotificationIndex(prev => prev + 1);
+	};
+
+	const resetCurrentIndex = async () => {
+		try {
+			await getConversationMessages({
+				conversationId: loginNotifications[currentNotificationIndex]
+					?.convo_id as number,
+				page: 0,
+			});
+		} catch (e) {
+			Say.err(e as ICatchError);
 		}
 	};
 
@@ -1143,6 +1206,23 @@ const Dashboard = () => {
 					<FailedInvoicesModal
 						failedInvoices={failedInvoices}
 						setShowFailedInvoicesModal={setShowFailedInvoicesModal}
+					/>
+				)}
+			{isFocused &&
+				loginNotifications.length > 0 &&
+				currentNotificationIndex < loginNotifications.length &&
+				loginNotifications[currentNotificationIndex] && (
+					<LoginNotification
+						item={
+							loginNotifications[
+								currentNotificationIndex
+							] as AnnouncementsItemType
+						}
+						onClose={() => void onClosePopup()}
+						navigation={navigate}
+						index={currentNotificationIndex}
+						key={currentNotificationIndex}
+						resetCurrentIndex={() => void resetCurrentIndex()}
 					/>
 				)}
 		</SafeAreaView>

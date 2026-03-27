@@ -103,6 +103,9 @@ const linking: LinkingOptions<ApplicationStackParamList> = {
 			Invite: {
 				path: 'auth/invite/:inviteCode',
 			},
+			Shop: {
+				path: 'auth/shop/pay/:orderKey',
+			},
 			// TODO: Still need to implement this
 			// SignupWithSub: {
 			// 	path: 'auth/signup/:gymCode/:subscriptionId',
@@ -156,14 +159,21 @@ const tabBarIconRender = ({
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const MainTabNavigator = () => {
 	const { variant, colors } = useTheme();
-	const { shopUrl, activeMonth, headerTitle, clearClasses, unreadMessages } =
-		useStore(state => ({
-			shopUrl: state.shopUrl,
-			activeMonth: state.activeMonth,
-			headerTitle: state.headerTitle,
-			clearClasses: state.clearClasses,
-			unreadMessages: state.unreadMessages,
-		}));
+	const {
+		shopUrl,
+		activeMonth,
+		headerTitle,
+		clearClasses,
+		unreadMessages,
+		setState,
+	} = useStore(state => ({
+		shopUrl: state.shopUrl,
+		activeMonth: state.activeMonth,
+		headerTitle: state.headerTitle,
+		clearClasses: state.clearClasses,
+		unreadMessages: state.unreadMessages,
+		setState: state.setAppState,
+	}));
 	const [currentTab, setCurrentTab] = useState<string>('DashboardStack');
 	const [loadingCalendar, setLoadingCalendar] = useState<boolean>(false);
 
@@ -213,6 +223,13 @@ const MainTabNavigator = () => {
 					if (slRoute.name === 'DashboardStack') {
 						ResetToDashboard();
 					}
+
+					if (slRoute.name === 'Shop' && currentTab === 'Shop') {
+						const base = shopUrl.split('?')[0];
+						const timestamp = Date.now();
+
+						setState('shopUrl', `${base}?v=${timestamp}`);
+					}
 				},
 			})}
 		>
@@ -240,11 +257,11 @@ const MainTabNavigator = () => {
 			<Tab.Screen
 				name="Shop"
 				component={Shop}
-				options={{
-					tabBarButton: !shopUrl ? () => null : undefined,
-					headerRight: ShopHeaderRightComponent,
-					title: 'Gym Shop',
-				}}
+				// options={{
+				// 	tabBarButton: !shopUrl ? () => null : undefined,
+				// 	headerRight: ShopHeaderRightComponent,
+				// 	title: 'Gym Shop',
+				// }}
 			/>
 			<Tab.Screen
 				name="MenuTab"
@@ -761,6 +778,14 @@ const ApplicationNavigator = () => {
 								}}
 							/>
 						</Stack.Group>
+						<Tab.Screen
+							name="Shop"
+							component={Shop}
+							options={{
+								headerRight: ShopHeaderRightComponent,
+								title: 'Gym Shop',
+							}}
+						/>
 					</Stack.Navigator>
 				</NavigationContainer>
 
