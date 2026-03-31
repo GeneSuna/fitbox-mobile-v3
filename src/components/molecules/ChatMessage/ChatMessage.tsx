@@ -1,9 +1,17 @@
 import useAuth from '@/auth/hooks/useAuth';
-import { Avatar, LinkPreview, Row, Spacer, Text } from '@/components/atoms';
+import {
+	Avatar,
+	LinkifiedText,
+	LinkPreview,
+	Row,
+	Spacer,
+	Text,
+} from '@/components/atoms';
 import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { SendMessageDataType } from '@/types/schemas/message';
-import { Func } from '@/utils';
+import { Func, Say } from '@/utils';
+import { ICatchError } from '@/utils/Say';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React from 'react';
@@ -11,6 +19,7 @@ import {
 	Image,
 	ImageSourcePropType,
 	ImageStyle,
+	Linking,
 	StyleProp,
 	StyleSheet,
 	TouchableOpacity,
@@ -18,6 +27,30 @@ import {
 } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import ImagePop from '../ImagePop/ImagePop';
+
+const htmlMessageStylesFromUser = {
+	p: {
+		color: 'white',
+		fontSize: config.fonts.metrics.md,
+		fontFamily: 'Montserrat-Regular',
+	},
+	a: {
+		color: 'white',
+		textDecorationLine: 'underline' as const,
+	},
+};
+
+const htmlMessageStylesFromOther = {
+	p: {
+		color: 'black',
+		fontSize: config.fonts.metrics.md,
+		fontFamily: 'Montserrat-Regular',
+	},
+	a: {
+		color: '#007AFF',
+		textDecorationLine: 'underline' as const,
+	},
+};
 
 type ChatMessageProps = {
 	data: SendMessageDataType;
@@ -63,7 +96,6 @@ const ChatMessage = (props: ChatMessageProps) => {
 
 	const flexDirection = isFromUser ? 'row-reverse' : 'row';
 	const alignItems = isFromUser ? 'flex-end' : 'flex-start';
-	const textColor = isFromUser ? 'white' : 'black';
 	const messageBubble = isFromUser
 		? { borderBottomRightRadius: 0 }
 		: { borderBottomLeftRadius: 0 };
@@ -134,18 +166,37 @@ const ChatMessage = (props: ChatMessageProps) => {
 						(isHTML ? (
 							<HTMLView
 								value={combinedString}
-								stylesheet={{
-									p: {
-										color: isFromUser ? 'white' : 'black',
-										fontSize: config.fonts.metrics.md,
-										fontFamily: 'Montserrat-Regular',
-									},
+								onLinkPress={url => {
+									const decoded = url.trim();
+									const uri = /^www\./i.test(decoded)
+										? `https://${decoded}`
+										: decoded;
+									void Linking.openURL(uri).catch(err =>
+										Say.err(err as ICatchError),
+									);
 								}}
+								stylesheet={
+									isFromUser
+										? htmlMessageStylesFromUser
+										: htmlMessageStylesFromOther
+								}
 							/>
 						) : (
-							<Text size="md" style={{ color: textColor }}>
+							<LinkifiedText
+								size="md"
+								style={
+									isFromUser
+										? styles.plainTextFromUser
+										: styles.plainTextFromOther
+								}
+								linkStyle={
+									isFromUser
+										? styles.plainLinkFromUser
+										: styles.plainLinkFromOther
+								}
+							>
 								{combinedString}
-							</Text>
+							</LinkifiedText>
 						))}
 					{hasGIF && (
 						<MemoizedImage
@@ -211,6 +262,18 @@ const styles = StyleSheet.create({
 	msg: {
 		padding: config.metrics.rg,
 		borderRadius: config.metrics.rg,
+	},
+	plainTextFromUser: {
+		color: 'white',
+	},
+	plainTextFromOther: {
+		color: 'black',
+	},
+	plainLinkFromUser: {
+		color: 'white',
+	},
+	plainLinkFromOther: {
+		color: '#007AFF',
 	},
 	gif: {
 		width: 150,
