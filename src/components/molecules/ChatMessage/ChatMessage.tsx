@@ -269,11 +269,18 @@ const styles = StyleSheet.create({
 	plainTextFromOther: {
 		color: 'black',
 	},
+	/** Distinct from body white on info-blue bubble; underline signals tappability */
 	plainLinkFromUser: {
-		color: 'white',
+		color: '#C8E8FF',
+		textDecorationLine: 'underline',
+		textDecorationStyle: 'solid',
+		textDecorationColor: '#FFFFFF',
 	},
 	plainLinkFromOther: {
-		color: '#007AFF',
+		color: '#0066CC',
+		textDecorationLine: 'underline',
+		textDecorationStyle: 'solid',
+		textDecorationColor: '#0066CC',
 	},
 	gif: {
 		width: 150,

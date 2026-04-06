@@ -84,16 +84,20 @@ const LinkifiedText = ({
 	...textProps
 }: LinkifiedTextProps) => {
 	const segments = splitPlainTextWithUrls(children);
+	const linkCombined = StyleSheet.flatten([styles.textStyle, linkStyle]);
 
 	return (
 		<Text {...textProps} style={style}>
 			{segments.map((seg, i) =>
 				seg.type === 'text' ? (
-					<Text key={i}>{seg.value}</Text>
+					<Text key={i} {...textProps} style={style}>
+						{seg.value}
+					</Text>
 				) : (
 					<Text
 						key={i}
-						style={[styles.textStyle, linkStyle]}
+						{...textProps}
+						style={linkCombined}
 						onPress={() => openLinkInBrowser(seg.value)}
 					>
 						{seg.value}
@@ -106,8 +110,10 @@ const LinkifiedText = ({
 
 const styles = StyleSheet.create({
 	textStyle: {
-		textDecorationLine: 'underline',
 		color: config.colors.brand,
+		textDecorationLine: 'underline',
+		textDecorationStyle: 'solid',
+		textDecorationColor: config.colors.brand,
 	},
 });
 
