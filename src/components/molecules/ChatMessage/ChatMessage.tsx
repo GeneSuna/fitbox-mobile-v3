@@ -11,6 +11,7 @@ import { config } from '@/theme/_config';
 import layout from '@/theme/layout';
 import { SendMessageDataType } from '@/types/schemas/message';
 import { Func, Say } from '@/utils';
+import { splitLeadingPlainTextUrl } from '@/utils/plainTextUrl';
 import { ICatchError } from '@/utils/Say';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
@@ -20,9 +21,9 @@ import {
 	ImageSourcePropType,
 	ImageStyle,
 	Linking,
+	Pressable,
 	StyleProp,
 	StyleSheet,
-	TouchableOpacity,
 	View,
 } from 'react-native';
 import HTMLView from 'react-native-htmlview';
@@ -87,11 +88,11 @@ const ChatMessage = (props: ChatMessageProps) => {
 			? lines.slice(0, -1).join('\n')
 			: lines.join('\n');
 
-	let link: string | null = null;
-	if (combinedString.substring(0, 4).toLowerCase() === 'http') {
-		const splitString = combinedString.split(' ');
-		link = splitString.shift() as string;
-		combinedString = splitString.join(' ');
+	const { url: leadUrl, remainder: afterLeadUrl } =
+		splitLeadingPlainTextUrl(combinedString);
+	const link = leadUrl;
+	if (leadUrl) {
+		combinedString = afterLeadUrl;
 	}
 
 	const flexDirection = isFromUser ? 'row-reverse' : 'row';
@@ -232,20 +233,26 @@ const ChatMessage = (props: ChatMessageProps) => {
 						</>
 					)}
 
-					{link && <LinkPreview link={link} />}
+					{link && (
+						<LinkPreview
+							link={link}
+							plainTextLeadUrl
+							plainTextFallbackStyle={
+								isFromUser
+									? styles.plainLinkFromUser
+									: styles.plainLinkFromOther
+							}
+						/>
+					)}
 				</View>
 			</View>
 		</Row>
 	);
 
 	return (
-		<TouchableOpacity
-			activeOpacity={0.9}
-			onLongPress={onLongPress}
-			delayLongPress={1000}
-		>
+		<Pressable onLongPress={onLongPress} delayLongPress={1000}>
 			{renderMessage()}
-		</TouchableOpacity>
+		</Pressable>
 	);
 };
 
