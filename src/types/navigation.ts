@@ -244,10 +244,45 @@ export type MainTabParamList = {
 	InboxStack: undefined;
 	Shop: undefined;
 	MenuTab: undefined;
+	TrainingStack: undefined;
 };
 export type MainTabScreenProps = StackScreenProps<
 	MainTabParamList & ApplicationStackParamList & MenuStackParamList
 >;
+
+export type TrainingStackParamList = {
+	TrainingRoot: undefined;
+	TrainingActivate: {
+		errorCode?:
+			| 'NOT_FOUND'
+			| 'NO_MEMBERSHIP'
+			| 'NETWORK_ERROR'
+			| 'UNKNOWN_GYM'
+			| 'PROVISION_FAILED';
+	};
+	TrainingToday: undefined;
+	TrainingWorkouts: undefined;
+	TrainingWorkoutDetail: { workoutId: string; assignmentId?: string };
+	TrainingRunWorkout: {
+		workoutId: string;
+		assignmentId?: string;
+		workoutName: string;
+	};
+	TrainingResults: undefined;
+	TrainingGymFeed: undefined;
+	TrainingWellness: undefined;
+	TrainingMaxes: undefined;
+	TrainingPRs: undefined;
+	TrainingCoachNotes: undefined;
+	TrainingNotifications: undefined;
+	TrainingSettings: undefined;
+	TrainingBuildList: undefined;
+	TrainingBuildEditor: { workoutId?: string };
+	TrainingBuildSchedule: { workoutId: string; workoutName: string };
+	TrainingCustomWorkoutsUpsell: undefined;
+};
+export type TrainingStackScreenProps<T extends keyof TrainingStackParamList> =
+	StackScreenProps<TrainingStackParamList, T>;
 
 export type MovementHistoryParams = {
 	movementId: number;

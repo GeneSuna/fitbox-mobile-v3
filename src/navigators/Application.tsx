@@ -71,8 +71,9 @@ import { Constant, Func } from '@/utils';
 import useStore from '@/zustand/Store';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import LottieView from 'lottie-react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
+	Animated,
 	Dimensions,
 	Platform,
 	StyleSheet,
@@ -85,6 +86,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import confettiAnimation from '../theme/animations/confetti.json';
 import DashboardStackNavigator, { ResetToDashboard } from './DashboardStack';
 import MenuStackNavigator from './MenuStack';
+import TrainingStackNavigator from './TrainingStack';
 import { navigationRef } from './NavigationRef';
 import HeaderCloseButton from './components/HeaderCloseButton';
 import { CommonHeaderOptions, TabHeaderOptions } from './utils/options';
@@ -120,6 +122,75 @@ const icons: Record<keyof MainTabParamList, string> = {
 	InboxStack: 'chat',
 	Shop: 'cart',
 	MenuTab: 'menu',
+	TrainingStack: 'dumbbell',
+};
+
+const AnimatedCartIcon = ({
+	name,
+	size,
+	color,
+}: {
+	name: string;
+	size: number;
+	color: string;
+}) => {
+	const anim = useRef(new Animated.Value(0)).current;
+
+	useEffect(() => {
+		const wiggle = Animated.loop(
+			Animated.sequence([
+				Animated.delay(3000),
+				Animated.timing(anim, {
+					toValue: 1,
+					duration: 80,
+					useNativeDriver: true,
+				}),
+				Animated.timing(anim, {
+					toValue: -1,
+					duration: 80,
+					useNativeDriver: true,
+				}),
+				Animated.timing(anim, {
+					toValue: 1,
+					duration: 80,
+					useNativeDriver: true,
+				}),
+				Animated.timing(anim, {
+					toValue: -1,
+					duration: 80,
+					useNativeDriver: true,
+				}),
+				Animated.timing(anim, {
+					toValue: 1,
+					duration: 80,
+					useNativeDriver: true,
+				}),
+				Animated.timing(anim, {
+					toValue: -1,
+					duration: 80,
+					useNativeDriver: true,
+				}),
+				Animated.timing(anim, {
+					toValue: 0,
+					duration: 80,
+					useNativeDriver: true,
+				}),
+			]),
+		);
+		wiggle.start();
+		return () => wiggle.stop();
+	}, [anim]);
+
+	const rotate = anim.interpolate({
+		inputRange: [-1, 1],
+		outputRange: ['-20deg', '20deg'],
+	});
+
+	return (
+		<Animated.View style={{ transform: [{ rotate }] }}>
+			<Ionicons name={name} size={size} color={color} />
+		</Animated.View>
+	);
 };
 
 const tabBarIconRender = ({
@@ -150,6 +221,12 @@ const tabBarIconRender = ({
 					{unreadMessages}
 				</Badge>
 			</>
+		);
+	}
+
+	if (route === 'Shop') {
+		return (
+			<AnimatedCartIcon name={icons[route]} size={size} color={color} />
 		);
 	}
 
@@ -262,6 +339,11 @@ const MainTabNavigator = () => {
 				// 	headerRight: ShopHeaderRightComponent,
 				// 	title: 'Gym Shop',
 				// }}
+			/>
+			<Tab.Screen
+				name="TrainingStack"
+				component={TrainingStackNavigator}
+				options={{ headerShown: false }}
 			/>
 			<Tab.Screen
 				name="MenuTab"

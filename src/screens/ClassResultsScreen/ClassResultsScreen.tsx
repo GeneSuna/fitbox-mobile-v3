@@ -713,8 +713,7 @@ const ClassResultsScreen = ({
 							<Text center size="rg" bold color="darkgray">
 								{resultDateParsed !== 'Today'
 									? `${resultDateParsed} - `
-									: // eslint-disable-next-line quotes
-										"Today's"}{' '}
+									: "Today's"}{' '}
 								Results
 							</Text>
 							<Row style={{ marginTop: config.metrics.md }}>

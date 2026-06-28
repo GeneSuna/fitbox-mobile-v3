@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-
 import {
 	BookableSchemaType,
 	SessionSectionSchemaType,

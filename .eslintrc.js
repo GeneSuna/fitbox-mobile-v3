@@ -17,7 +17,12 @@ module.exports = {
 		'plugin:react/jsx-runtime',
 	],
 	parser: '@typescript-eslint/parser',
-	ignorePatterns: ['plugins/**/*', 'metro.config.js', 'scripts/**/*.js'],
+	ignorePatterns: [
+		'plugins/**/*',
+		'metro.config.js',
+		'scripts/**/*.js',
+		'src/screens/Training/Build/**',
+	],
 	parserOptions: {
 		ecmaFeatures: {
 			jsx: true,
@@ -43,7 +48,7 @@ module.exports = {
 		'@typescript-eslint/no-use-before-define': 'off',
 		'global-require': 0,
 		'react-hooks/exhaustive-deps': 'off',
-		quotes: ['error', 'single'],
+		quotes: ['error', 'single', { avoidEscape: true }],
 		'object-curly-spacing': ['error', 'always'],
 		'array-bracket-spacing': ['error', 'never'],
 		'react/require-default-props': ['off'],
@@ -102,4 +107,15 @@ module.exports = {
 			},
 		],
 	},
+	overrides: [
+		{
+			files: [
+				'src/screens/Training/**/*',
+				'src/services/workoutStudio/**/*',
+			],
+			rules: {
+				'react-native/no-inline-styles': 'off',
+			},
+		},
+	],
 };

@@ -155,6 +155,14 @@ export default {
 	MASQUERADE_USER_API_TOKEN,
 	API_URL: process.env.API_URL ?? '',
 	HELP_URL: process.env.HELP_URL ?? '',
+	WS_SUPABASE_URL:
+		process.env.WS_SUPABASE_URL ??
+		'https://vwubzxjfyfnxabbelcnz.supabase.co',
+	WS_SUPABASE_ANON_KEY: process.env.WS_SUPABASE_ANON_KEY ?? '',
+	WS_BRIDGE_URL:
+		process.env.WS_BRIDGE_URL ??
+		'https://studio.fitbox.iq/api/public/mobile/auth/exchange',
+	WS_BRIDGE_KEY: process.env.WS_BRIDGE_KEY ?? '',
 	IS_ANDROID: Platform.OS === 'android',
 	SORT_OPTIONS,
 	DEFAULT_DATE_FORMAT,

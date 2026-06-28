@@ -250,7 +250,6 @@ const ScoreComponent = ({
 				// add delay to show toast for better UX
 				setTimeout(() => {
 					void Say.okThen(
-						// eslint-disable-next-line quotes
 						"You've just scored a personal best!",
 						'Congratulations!',
 					).then(() => setAppState('showConfetti', false));
@@ -258,7 +257,6 @@ const ScoreComponent = ({
 			} else {
 				setTimeout(() => {
 					void Say.okThen(
-						// eslint-disable-next-line quotes
 						"You've just scored your first result!",
 						'Congratulations!',
 					).then(() => setAppState('showConfetti', false));
