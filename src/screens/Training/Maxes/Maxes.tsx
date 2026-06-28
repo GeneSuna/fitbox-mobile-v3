@@ -24,7 +24,7 @@ const Maxes = () => {
 			wsApi()
 				.get('athlete_rms', {
 					searchParams: {
-						select: 'id,rep_max,weight,achieved_on,notes,movements(name)',
+						select: 'id,rep_max,weight_kg,achieved_on,notes,movements(name)',
 						user_id: `eq.${uid}`,
 						rep_max: 'in.(1,3,5)',
 						order: 'movements(name).asc,rep_max.asc',
@@ -90,7 +90,7 @@ const Maxes = () => {
 							{item.rep_max}RM
 						</Text>
 						<Text style={[styles.weight, { color: '#3B82F6' }]}>
-							{item.weight} kg
+							{item.weight_kg} kg
 						</Text>
 						<Text style={[styles.date, { color: '#6B7280' }]}>
 							{item.achieved_on}

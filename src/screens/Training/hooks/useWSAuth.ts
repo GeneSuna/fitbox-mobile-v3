@@ -43,8 +43,8 @@ export const useWSAuth = () => {
 
 		const result = await exchangeForWSSession({
 			email,
-			fitbox_gym_id: gymId ?? null,
-			fitbox_member_id: memberId,
+			fitbox_gym_id: gymId != null ? String(gymId) : null,
+			fitbox_member_id: String(memberId),
 			full_name: fullName,
 		});
 		if ('session' in result) {

@@ -47,10 +47,10 @@ const useToday = () => {
 			wsApi()
 				.get('workout_assignments', {
 					searchParams: {
-						select: 'id,workout_id,scheduled_for,status,workouts(name,est_duration_min)',
+						select: 'id,workout_id,due_date,status,workouts(name,est_duration_min)',
 						athlete_id: `eq.${uid}`,
 						tenant_id: `eq.${tenantId}`,
-						scheduled_for: `eq.${todayStr}`,
+						due_date: `eq.${todayStr}`,
 					},
 				})
 				.json<WorkoutAssignment[]>(),
@@ -104,7 +104,7 @@ const useToday = () => {
 			wsApi()
 				.get('athlete_rms', {
 					searchParams: {
-						select: 'id,rep_max,weight,achieved_on,movements(name)',
+						select: 'id,rep_max,weight_kg,achieved_on,movements(name)',
 						user_id: `eq.${uid}`,
 						achieved_on: `gte.${fourteenAgo}`,
 						order: 'achieved_on.desc',
@@ -328,7 +328,7 @@ const Today = () => {
 										{ color: '#3B82F6' },
 									]}
 								>
-									{pr.weight}kg x {pr.rep_max}RM
+									{pr.weight_kg}kg x {pr.rep_max}RM
 								</Text>
 							</TouchableOpacity>
 						))}

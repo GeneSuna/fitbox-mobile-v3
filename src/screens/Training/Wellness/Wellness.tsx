@@ -58,7 +58,7 @@ const Wellness = () => {
 				.get('wellness_dimensions', {
 					searchParams: {
 						tenant_id: `eq.${tenantId}`,
-						order: 'order_index.asc',
+						order: 'position.asc',
 					},
 				})
 				.json<WellnessDimension[]>(),
@@ -118,7 +118,7 @@ const Wellness = () => {
 							json: {
 								wellness_response_id: responseId,
 								dimension_id: d.id,
-								score: scores[d.id] ?? 3,
+								value: scores[d.id] ?? 3,
 							},
 						})
 						.json(),

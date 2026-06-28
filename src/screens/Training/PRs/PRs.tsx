@@ -19,7 +19,7 @@ const PRs = () => {
 			wsApi()
 				.get('athlete_rms', {
 					searchParams: {
-						select: 'id,rep_max,weight,achieved_on,movements(name)',
+						select: 'id,rep_max,weight_kg,achieved_on,movements(name)',
 						user_id: `eq.${uid}`,
 						order: 'achieved_on.desc',
 					},
@@ -72,7 +72,7 @@ const PRs = () => {
 						</Text>
 					</View>
 					<Text style={[styles.weight, { color: '#3B82F6' }]}>
-						{item.weight}kg x {item.rep_max}RM
+						{item.weight_kg}kg x {item.rep_max}RM
 					</Text>
 				</View>
 			)}

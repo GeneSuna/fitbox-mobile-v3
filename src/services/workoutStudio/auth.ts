@@ -65,8 +65,8 @@ const isExpired = (expiresAt: number) => Date.now() / 1000 > expiresAt - 60;
 
 type ExchangeParams = {
 	email: string;
-	fitbox_gym_id: number | null;
-	fitbox_member_id: number;
+	fitbox_gym_id: string | null;
+	fitbox_member_id: string;
 	full_name: string;
 };
 

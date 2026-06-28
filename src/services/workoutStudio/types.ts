@@ -1,7 +1,7 @@
 export type WorkoutAssignment = {
 	id: string;
 	workout_id: string;
-	scheduled_for: string;
+	due_date: string;
 	status: string;
 	workouts: {
 		name: string;
@@ -49,7 +49,7 @@ export type AthleteRM = {
 	id: string;
 	movement_id: string;
 	rep_max: number;
-	weight: number;
+	weight_kg: number;
 	achieved_on: string;
 	source: string;
 	notes: string | null;
@@ -122,10 +122,10 @@ export type SetResult = {
 
 export type WellnessDimension = {
 	id: string;
-	name: string;
+	slug: string;
 	label: string;
 	higher_is_better: boolean;
-	order_index: number;
+	position: number;
 };
 
 export type PersonalWorkout = {

@@ -36,12 +36,12 @@ const WorkoutList = () => {
 			wsApi()
 				.get('workout_assignments', {
 					searchParams: {
-						select: 'id,workout_id,scheduled_for,status,workouts(name,est_duration_min)',
+						select: 'id,workout_id,due_date,status,workouts(name,est_duration_min)',
 						athlete_id: `eq.${uid}`,
 						tenant_id: `eq.${tenantId}`,
-						scheduled_for: `gte.${from}`,
-						'scheduled_for.lte': to,
-						order: 'scheduled_for.asc',
+						due_date: `gte.${from}`,
+						'due_date.lte': to,
+						order: 'due_date.asc',
 					},
 				})
 				.json<WorkoutAssignment[]>(),
@@ -53,7 +53,7 @@ const WorkoutList = () => {
 		if (!data) return [];
 		const grouped: Record<string, WorkoutAssignment[]> = {};
 		data.forEach(a => {
-			const d = a.scheduled_for;
+			const d = a.due_date;
 			if (!grouped[d]) grouped[d] = [];
 			grouped[d]!.push(a);
 		});
