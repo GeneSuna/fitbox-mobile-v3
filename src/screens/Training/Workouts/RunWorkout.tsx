@@ -104,7 +104,7 @@ const RunWorkout = ({ route, navigation }: Props) => {
 		}));
 
 	const getSetStates = (bm: BlockMovement): SetState[] =>
-		setStates[bm.id] ?? initSetStates(bm.prescribed_sets ?? 3);
+		setStates[bm.id] ?? initSetStates(bm.sets ?? 3);
 
 	const updateSet = (
 		bmId: string,
@@ -146,7 +146,7 @@ const RunWorkout = ({ route, navigation }: Props) => {
 				.catch(() => {});
 		}
 
-		const restSecs = bm.rest_seconds ?? DEFAULT_REST;
+		const restSecs = DEFAULT_REST;
 		setRestTimer(restSecs);
 		if (restInterval.current) clearInterval(restInterval.current);
 		restInterval.current = setInterval(() => {
@@ -215,7 +215,7 @@ const RunWorkout = ({ route, navigation }: Props) => {
 				{workout.workout_sections
 					?.sort(
 						(a: WorkoutSection, b: WorkoutSection) =>
-							a.order_index - b.order_index,
+							a.position - b.position,
 					)
 					.map((section: WorkoutSection) => (
 						<View key={section.id} style={styles.section}>
@@ -230,7 +230,7 @@ const RunWorkout = ({ route, navigation }: Props) => {
 							{section.section_blocks
 								?.sort(
 									(a: SectionBlock, b: SectionBlock) =>
-										a.order_index - b.order_index,
+										a.position - b.position,
 								)
 								.map((block: SectionBlock) => (
 									<View
@@ -245,9 +245,7 @@ const RunWorkout = ({ route, navigation }: Props) => {
 												(
 													a: BlockMovement,
 													b: BlockMovement,
-												) =>
-													a.order_index -
-													b.order_index,
+												) => a.position - b.position,
 											)
 											.map((bm: BlockMovement) => {
 												const states = getSetStates(bm);
@@ -266,7 +264,7 @@ const RunWorkout = ({ route, navigation }: Props) => {
 														>
 															{bm.movements.name}
 														</Text>
-														{bm.prescribed_sets && (
+														{bm.sets && (
 															<Text
 																style={[
 																	styles.prescription,
@@ -275,15 +273,12 @@ const RunWorkout = ({ route, navigation }: Props) => {
 																	},
 																]}
 															>
-																{
-																	bm.prescribed_sets
-																}{' '}
-																sets
-																{bm.prescribed_reps
-																	? ` × ${bm.prescribed_reps}`
+																{bm.sets} sets
+																{bm.reps_scheme
+																	? ` × ${bm.reps_scheme}`
 																	: ''}
-																{bm.prescribed_weight
-																	? ` @ ${bm.prescribed_weight}kg`
+																{bm.weight_kg
+																	? ` @ ${bm.weight_kg}kg`
 																	: ''}
 															</Text>
 														)}

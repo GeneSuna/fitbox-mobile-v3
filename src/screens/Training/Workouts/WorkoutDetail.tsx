@@ -56,14 +56,14 @@ const WorkoutDetailScreen = ({ route, navigation }: Props) => {
 				<Text style={[styles.title, { color: '#111827' }]}>
 					{data.name}
 				</Text>
-				{data.est_duration_min && (
+				{data.estimated_duration_minutes && (
 					<Text style={[styles.meta, { color: '#6B7280' }]}>
-						~{data.est_duration_min} min
+						~{data.estimated_duration_minutes} min
 					</Text>
 				)}
 
 				{data.workout_sections
-					?.sort((a, b) => a.order_index - b.order_index)
+					?.sort((a, b) => a.position - b.position)
 					.map(section => (
 						<View key={section.id} style={styles.section}>
 							<Text
@@ -75,7 +75,7 @@ const WorkoutDetailScreen = ({ route, navigation }: Props) => {
 								{section.name}
 							</Text>
 							{section.section_blocks
-								?.sort((a, b) => a.order_index - b.order_index)
+								?.sort((a, b) => a.position - b.position)
 								.map(block => (
 									<View
 										key={block.id}
@@ -84,21 +84,20 @@ const WorkoutDetailScreen = ({ route, navigation }: Props) => {
 											{ backgroundColor: '#FFFFFF' },
 										]}
 									>
-										{block.name && (
+										{block.label && (
 											<Text
 												style={[
 													styles.blockName,
 													{ color: '#6B7280' },
 												]}
 											>
-												{block.name}
+												{block.label}
 											</Text>
 										)}
 										{block.block_movements
 											?.sort(
 												(a, b) =>
-													a.order_index -
-													b.order_index,
+													a.position - b.position,
 											)
 											.map(bm => (
 												<View
@@ -124,17 +123,16 @@ const WorkoutDetailScreen = ({ route, navigation }: Props) => {
 														]}
 													>
 														{[
-															bm.prescribed_sets &&
-																`${bm.prescribed_sets} sets`,
-															bm.prescribed_reps &&
-																`${bm.prescribed_reps} reps`,
-															bm.prescribed_weight &&
-																`@ ${bm.prescribed_weight}kg`,
+															bm.sets &&
+																`${bm.sets} sets`,
+															bm.reps_scheme,
+															bm.weight_kg &&
+																`@ ${bm.weight_kg}kg`,
 														]
 															.filter(Boolean)
 															.join(' · ')}
 													</Text>
-													{bm.scaling_notes && (
+													{bm.notes && (
 														<Text
 															style={[
 																styles.scalingNote,
@@ -143,7 +141,7 @@ const WorkoutDetailScreen = ({ route, navigation }: Props) => {
 																},
 															]}
 														>
-															{bm.scaling_notes}
+															{bm.notes}
 														</Text>
 													)}
 												</View>

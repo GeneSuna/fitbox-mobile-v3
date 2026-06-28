@@ -12,33 +12,33 @@ export type WorkoutAssignment = {
 export type WorkoutDetail = {
 	id: string;
 	name: string;
-	est_duration_min: number | null;
+	estimated_duration_minutes: number | null;
 	workout_sections: WorkoutSection[];
 };
 
 export type WorkoutSection = {
 	id: string;
 	name: string;
-	order_index: number;
+	position: number;
 	section_blocks: SectionBlock[];
 };
 
 export type SectionBlock = {
 	id: string;
-	name: string | null;
-	block_type: string;
-	order_index: number;
+	label: string | null;
+	intent: string;
+	position: number;
+	rest_seconds: number | null;
 	block_movements: BlockMovement[];
 };
 
 export type BlockMovement = {
 	id: string;
-	order_index: number;
-	prescribed_sets: number | null;
-	prescribed_reps: number | null;
-	prescribed_weight: number | null;
-	rest_seconds: number | null;
-	scaling_notes: string | null;
+	position: number;
+	sets: number | null;
+	reps_scheme: string | null;
+	weight_kg: number | null;
+	notes: string | null;
 	movements: {
 		id: string;
 		name: string;
