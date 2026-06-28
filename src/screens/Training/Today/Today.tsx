@@ -47,9 +47,8 @@ const useToday = () => {
 			wsApi()
 				.get('workout_assignments', {
 					searchParams: {
-						select: 'id,workout_id,due_date,status,workouts(name,est_duration_min)',
+						select: 'id,workout_id,due_date,notes,workouts(name,estimated_duration_minutes)',
 						athlete_id: `eq.${uid}`,
-						tenant_id: `eq.${tenantId}`,
 						due_date: `eq.${todayStr}`,
 					},
 				})
@@ -191,11 +190,11 @@ const Today = () => {
 					<Text style={[styles.workoutName, { color: '#111827' }]}>
 						{a.workouts.name}
 					</Text>
-					{a.workouts.est_duration_min && (
+					{a.workouts.estimated_duration_minutes && (
 						<Text
 							style={[styles.workoutMeta, { color: '#6B7280' }]}
 						>
-							~{a.workouts.est_duration_min} min
+							~{a.workouts.estimated_duration_minutes} min
 						</Text>
 					)}
 				</View>

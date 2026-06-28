@@ -65,9 +65,9 @@ const isExpired = (expiresAt: number) => Date.now() / 1000 > expiresAt - 60;
 
 type ExchangeParams = {
 	email: string;
-	fitbox_gym_id: number | null;
-	fitbox_member_id: number;
-	full_name: string;
+	fitbox_gym_id?: string;
+	fitbox_member_id?: string;
+	full_name?: string;
 };
 
 export const exchangeForWSSession = async (
@@ -94,9 +94,9 @@ export const exchangeForWSSession = async (
 			if (err.response.status === 404) {
 				try {
 					const body = await err.response.json<{
-						error_code?: string;
+						error?: string;
 					}>();
-					if (body.error_code === 'unknown_gym')
+					if (body.error === 'unknown_gym')
 						return { error: 'UNKNOWN_GYM' };
 				} catch {
 					/* body not JSON */

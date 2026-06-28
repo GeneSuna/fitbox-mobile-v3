@@ -36,9 +36,8 @@ const WorkoutList = () => {
 			wsApi()
 				.get('workout_assignments', {
 					searchParams: {
-						select: 'id,workout_id,due_date,status,workouts(name,est_duration_min)',
+						select: 'id,workout_id,due_date,notes,workouts(name,estimated_duration_minutes)',
 						athlete_id: `eq.${uid}`,
-						tenant_id: `eq.${tenantId}`,
 						due_date: `gte.${from}`,
 						'due_date.lte': to,
 						order: 'due_date.asc',
@@ -114,26 +113,11 @@ const WorkoutList = () => {
 						>
 							{item.workouts.name}
 						</Text>
-						{item.workouts.est_duration_min && (
+						{item.workouts.estimated_duration_minutes && (
 							<Text style={[styles.meta, { color: '#6B7280' }]}>
-								~{item.workouts.est_duration_min} min
+								~{item.workouts.estimated_duration_minutes} min
 							</Text>
 						)}
-					</View>
-					<View
-						style={[
-							styles.statusBadge,
-							{
-								backgroundColor:
-									item.status === 'completed'
-										? '#43A047'
-										: '#F9FAFB',
-							},
-						]}
-					>
-						<Text style={styles.statusText}>
-							{item.status === 'completed' ? 'Done' : 'Scheduled'}
-						</Text>
 					</View>
 				</TouchableOpacity>
 			)}
@@ -162,8 +146,7 @@ const styles = StyleSheet.create({
 	cardLeft: { flex: 1 },
 	workoutName: { fontSize: 16, fontWeight: '600' },
 	meta: { fontSize: 13, marginTop: 2 },
-	statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6 },
-	statusText: { color: '#fff', fontSize: 12, fontWeight: '600' },
+
 	empty: { alignItems: 'center', padding: 40 },
 	emptyText: { fontSize: 15, textAlign: 'center' },
 });

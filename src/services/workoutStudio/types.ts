@@ -2,10 +2,10 @@ export type WorkoutAssignment = {
 	id: string;
 	workout_id: string;
 	due_date: string;
-	status: string;
+	notes: string | null;
 	workouts: {
 		name: string;
-		est_duration_min: number | null;
+		estimated_duration_minutes: number | null;
 	};
 };
 

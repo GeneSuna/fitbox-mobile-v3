@@ -43,9 +43,9 @@ export const useWSAuth = () => {
 
 		const result = await exchangeForWSSession({
 			email,
-			fitbox_gym_id: gymId ?? null,
-			fitbox_member_id: memberId,
-			full_name: fullName,
+			...(gymId != null ? { fitbox_gym_id: String(gymId) } : {}),
+			...(memberId != null ? { fitbox_member_id: String(memberId) } : {}),
+			...(fullName ? { full_name: fullName } : {}),
 		});
 		if ('session' in result) {
 			setState({ status: 'authenticated', session: result.session });
